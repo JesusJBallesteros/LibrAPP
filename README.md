@@ -20,11 +20,11 @@ do with it day to day is local, fast, and yours.
 
 ## Status
 
-Early. The ingest pipeline for Amazon Kindle exports works and is verified
-against its source. The browse interface is not built yet.
+Early. Ingest and catalog building work and are verified against their
+sources. The browse interface is not built yet.
 
 - [x] Kindle "Manage Your Content and Devices" PDF parser (237/237 records)
-- [ ] Catalog builder: merge sources, unroll series, authors, tags
+- [x] Catalog builder: merge sources, unroll series, resolve authors, tag
 - [ ] Browse interface
 - [ ] Shelf-photo ingest
 - [ ] Recommendations and synopses
@@ -68,6 +68,37 @@ clipped titles    : 3
 `delta +0` means every item Amazon claims to have was recovered. Each record
 carries its title, authors, publisher, acquisition date, read flag, and the
 collection and device counts.
+
+Then merge that with any catalog you already keep, into the file everything
+else reads:
+
+```bash
+python tools/librapp/build_catalog.py --kindle data/private/kindle-raw.json --xml sources/biblioteca.xml -o data/private/catalog.json
+```
+
+```
+books             : 290   (237 ebook, 59 physical, 6 both)
+authors           : 202
+read / unread     : 159 / 78   (53 unknown, all physical)
+
+needs a look:
+  xml unmatched   : 0
+  clipped titles  : 2
+  illegible spines: 3
+  no genre        : 1
+  authors merged  : 8
+```
+
+The **needs a look** block is a work queue, not a warning. The merge never
+guesses quietly: anything it could not settle is listed in the catalog's
+`review` section with enough detail to fix by hand. `authors merged` reports
+where two spellings of one person were folded together — `Plato` into `Platón`,
+`H. P. Lovecraft` into `Howard Phillips Lovecraft` — so a wrong merge is
+visible rather than silent.
+
+[`docs/schema.md`](docs/schema.md) describes what the catalog contains. The
+short version: `read` is three-valued, because a physical book has no record of
+ever having been read and calling that "unread" would invent an answer.
 
 ### Known limits of the source
 

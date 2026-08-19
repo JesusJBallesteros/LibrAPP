@@ -89,12 +89,17 @@ MONTHS = {
 
 # Publisher-ish trailing segments on the author line. Amazon appends the imprint
 # after a comma, indistinguishable from a co-author without a list to check.
-PUBLISHER_HINTS = re.compile(
+#
+# A naming word ('Ediciones', 'Verlag') is strong evidence on its own. A bare
+# company suffix is not: 'James S.A. Corey' is a pen name, not a limited
+# company, so suffixes count only at the very end of a segment.
+PUBLISHER_NAMING = re.compile(
     r"\b(ediciones|editorial|editores|publishing|publications|press|books|"
-    r"libros|verlag|edizioni|editions|s\.?l\.?|s\.?a\.?|ltd|inc|group|"
-    r"maeva|planeta|anagrama|alianza|gredos|debolsillo|penguin|random\s+house)\b",
+    r"libros|verlag|edizioni|editions|maeva|planeta|anagrama|alianza|gredos|"
+    r"debolsillo|penguin|random\s+house)\b",
     re.IGNORECASE,
 )
+CORPORATE_SUFFIX = re.compile(r"\b(s\.?a\.?u?|s\.?l\.?|ltd|inc|gmbh|group)\.?\s*$", re.IGNORECASE)
 
 
 def norm(s: str) -> str:
@@ -138,13 +143,19 @@ def split_authors(line: str) -> tuple[list[str], str | None]:
     the last comma-separated segment is tested for publisher-ness; a middle
     segment that looks like an imprint is left as an author rather than risk
     dropping a real co-author.
+
+    Some items credit the imprint and nobody else ('Editorial Planeta S.A.U.'
+    for Gomez-Jurado's El Paciente). Those yield no author at all, which is the
+    honest answer: the export does not name one.
     """
     parts = [p.strip() for p in line.split(",") if p.strip()]
     if not parts:
         return [], None
+    last = parts[-1]
+    naming = bool(PUBLISHER_NAMING.search(last))
     publisher = None
-    if len(parts) > 1 and PUBLISHER_HINTS.search(parts[-1]):
-        publisher = parts[-1]
+    if naming or (len(parts) > 1 and CORPORATE_SUFFIX.search(last)):
+        publisher = last
         parts = parts[:-1]
     return parts, publisher
 
@@ -167,6 +178,27 @@ def line_stream(doc) -> list[tuple[str, bool, int]]:
     return stream
 
 
+def drop_reprinted(content: list[tuple[str, bool, int]]) -> list[tuple[str, bool, int]]:
+    """Discard the re-rendered remains of a row split by a page break.
+
+    When the break falls *through* a line rather than between two, the printer
+    leaves the top slice on one page and the bottom slice on the next. The
+    bottom slices survive the debris filter because they still contain letters
+    ('a ques Go', 'Ale'), and being last they would be mistaken for the author.
+
+    The tell is that the earlier page already carries a complete title-and-
+    author pair. Where it carries only one line, the break fell cleanly between
+    the two and the later page's line is genuine, so nothing is dropped.
+    """
+    if len(content) < 2:
+        return content
+    first_page = content[0][2]
+    head = [c for c in content if c[2] == first_page]
+    if len(head) == len(content):
+        return content  # no page break inside this block
+    return head if len(head) >= 2 else content
+
+
 def parse_block(block: list[tuple[str, bool, int]]) -> dict | None:
     """Turn one record block into a record, or None if it holds no item."""
     anchor = next(
@@ -180,8 +212,8 @@ def parse_block(block: list[tuple[str, bool, int]]) -> dict | None:
     # removed. What remains is [title..., author]. The 'Showing N items' header
     # is skipped rather than treated as a boundary: it prints at the *foot* of a
     # page, so a block straddling the break has its title above it, not below.
-    content: list[tuple[str, bool]] = []
-    for text, trailing_space, _ in block[:anchor]:
+    content: list[tuple[str, bool, int]] = []
+    for text, trailing_space, page in block[:anchor]:
         if SHOWING_RE.match(text):
             continue
         if text in CHROME or text == "READ" or text == "Update available":
@@ -190,11 +222,12 @@ def parse_block(block: list[tuple[str, bool, int]]) -> dict | None:
             continue
         if is_debris(text):
             continue
-        content.append((text, trailing_space))
+        content.append((text, trailing_space, page))
 
+    content = drop_reprinted(content)
     author_line = content[-1][0] if content else ""
     title_parts = content[:-1]
-    title = norm(" ".join(t for t, _ in title_parts))
+    title = norm(" ".join(t for t, _, _ in title_parts))
     # PyMuPDF preserves the trailing space the UI leaves when it clips a title.
     title_clipped = bool(title_parts) and title_parts[-1][1]
 

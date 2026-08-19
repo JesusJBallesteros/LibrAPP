@@ -1,0 +1,194 @@
+{
+  "_comment": "Invented books, for trying LibrAPP without a catalog of your own. Every field and flag the schema defines appears at least once here. See docs/schema.md.",
+  "generated_at": "2026-08-19T00:00:00+00:00",
+  "counts": {
+    "books": 6,
+    "authors": 4,
+    "ebooks": 4,
+    "physical": 3,
+    "both_formats": 1,
+    "read": 2,
+    "unread": 2,
+    "read_unknown": 2
+  },
+  "books": [
+    {
+      "id": "eda-vantel-the-salt-clock",
+      "title": "The Salt Clock",
+      "title_key": "the salt clock",
+      "authors": ["eda-vantel"],
+      "series": "Tidewater",
+      "series_index": 1,
+      "formats": ["ebook"],
+      "publisher": "Ashgrove Press",
+      "acquired_on": "2019-03-11",
+      "read": true,
+      "collections": 1,
+      "devices": 2,
+      "update_available": false,
+      "genre": "Science fiction",
+      "tags": [
+        { "kind": "genre", "value": "Science fiction", "key": "science fiction" },
+        { "kind": "keyword", "value": "generation ship", "key": "generation ship" }
+      ],
+      "sources": ["kindle"],
+      "confidence": "high",
+      "flags": []
+    },
+    {
+      "id": "eda-vantel-the-salt-clock-ii-low-tide",
+      "title": "The Salt Clock II: Low Tide",
+      "title_key": "the salt clock ii low tide",
+      "authors": ["eda-vantel"],
+      "series": "Tidewater",
+      "series_index": 2,
+      "formats": ["ebook"],
+      "publisher": "Ashgrove Press",
+      "acquired_on": "2021-08-02",
+      "read": false,
+      "collections": 1,
+      "devices": 1,
+      "update_available": true,
+      "genre": "Science fiction",
+      "tags": [
+        { "kind": "genre", "value": "Science fiction", "key": "science fiction" }
+      ],
+      "sources": ["kindle"],
+      "confidence": "high",
+      "flags": []
+    },
+    {
+      "id": "marisol-oquendo-the-weight-of-small-decisions",
+      "title": "The Weight of Small Decisions",
+      "title_key": "the weight of small decisions",
+      "authors": ["marisol-oquendo"],
+      "series": null,
+      "series_index": null,
+      "formats": ["ebook", "physical"],
+      "publisher": null,
+      "acquired_on": "2024-01-19",
+      "read": true,
+      "collections": 2,
+      "devices": 1,
+      "update_available": false,
+      "genre": "Philosophy",
+      "tags": [
+        { "kind": "genre", "value": "Philosophy", "key": "philosophy" },
+        { "kind": "keyword", "value": "free will", "key": "free will" },
+        { "kind": "keyword", "value": "moral luck", "key": "moral luck" }
+      ],
+      "sources": ["kindle", "shelf"],
+      "confidence": "high",
+      "flags": []
+    },
+    {
+      "id": "j-t-halloran-notes-toward-a-quieter-machine",
+      "title": "Notes Toward a Quieter Machine: An Essay on Attention and",
+      "title_key": "notes toward a quieter machine an essay on attention and",
+      "authors": ["j-t-halloran"],
+      "series": null,
+      "series_index": null,
+      "formats": ["ebook"],
+      "publisher": null,
+      "acquired_on": "2025-11-30",
+      "read": false,
+      "collections": null,
+      "devices": 1,
+      "update_available": false,
+      "genre": null,
+      "tags": [],
+      "sources": ["kindle"],
+      "confidence": "high",
+      "flags": ["title_clipped", "no_genre"]
+    },
+    {
+      "id": "marisol-oquendo-a-grammar-of-rivers",
+      "title": "A Grammar of Rivers",
+      "title_key": "a grammar of rivers",
+      "authors": ["marisol-oquendo"],
+      "series": null,
+      "series_index": null,
+      "formats": ["physical"],
+      "publisher": null,
+      "acquired_on": null,
+      "read": null,
+      "collections": null,
+      "devices": null,
+      "update_available": false,
+      "genre": "Essay",
+      "tags": [{ "kind": "genre", "value": "Essay", "key": "essay" }],
+      "sources": ["shelf"],
+      "confidence": "medium",
+      "flags": []
+    },
+    {
+      "id": "reference-spine-partly-legible",
+      "title": "[spine partly legible]",
+      "title_key": "spine partly legible",
+      "authors": [],
+      "author_label": "Reference",
+      "series": null,
+      "series_index": null,
+      "formats": ["physical"],
+      "publisher": null,
+      "acquired_on": null,
+      "read": null,
+      "collections": null,
+      "devices": null,
+      "update_available": false,
+      "genre": null,
+      "tags": [],
+      "sources": ["shelf"],
+      "confidence": "low",
+      "flags": ["illegible_spine", "no_personal_author", "no_genre"]
+    }
+  ],
+  "authors": [
+    {
+      "id": "j-t-halloran",
+      "display_name": "J. T. Halloran",
+      "sort_name": "Halloran, J. T.",
+      "aliases": []
+    },
+    {
+      "id": "marisol-oquendo",
+      "display_name": "Marisol Oquendo",
+      "sort_name": "Oquendo, Marisol",
+      "aliases": ["M. Oquendo"]
+    },
+    {
+      "id": "eda-vantel",
+      "display_name": "Eda Vantel",
+      "sort_name": "Vantel, Eda",
+      "aliases": []
+    },
+    {
+      "id": "priyanka-raut",
+      "display_name": "Priyanka Raut",
+      "sort_name": "Raut, Priyanka",
+      "aliases": []
+    }
+  ],
+  "recommendations": [
+    {
+      "author": "Priyanka Raut",
+      "title": "The Cartographer's Objection",
+      "genre": "History of science",
+      "tags": [
+        { "kind": "genre", "value": "History of science", "key": "history of science" }
+      ],
+      "why": "Argues the opposite of The Weight of Small Decisions, and argues it well."
+    }
+  ],
+  "review": {
+    "author_variants_merged": [{ "merged": "M. Oquendo", "into": "Marisol Oquendo" }],
+    "xml_rows_unmatched": [],
+    "merged_formats": [{ "title": "The Weight of Small Decisions", "score": 1.0 }],
+    "clipped_titles": ["Notes Toward a Quieter Machine: An Essay on Attention and"],
+    "illegible": [{ "author_label": "Reference", "title": "[spine partly legible]" }],
+    "no_genre": [
+      "Notes Toward a Quieter Machine: An Essay on Attention and",
+      "[spine partly legible]"
+    ]
+  }
+}
