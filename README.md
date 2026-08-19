@@ -2,32 +2,56 @@
 
 A personal book catalog that works offline.
 
-LibrAPP turns whatever record you already have of your books — a photo of a
-shelf, a screenshot of a store library, a spreadsheet — into one clean local
-catalog you can browse, search and filter without a network connection and
-without asking anyone's permission.
+LibrAPP turns whatever record you already have of your books — a photograph of
+a shelf, a store export, a spreadsheet — into one clean local catalog you can
+browse, search and filter without a network connection and without asking
+anyone's permission.
 
 AI is used at the edges, never in the middle:
 
 | Stage | What happens | Needs AI |
 |---|---|---|
-| **Ingest** | Photos, screenshots and exports become structured records | yes, for photos |
-| **Catalog** | Browse, search, filter, mark as read, check what you own | **no** |
-| **Ask** | Recommendations, synopses, reading orders drawn from your catalog | yes |
+| **Ingest** | Photos, exports and lists become structured records | only for photos |
+| **Catalog** | Browse, search, filter, check what you own and what you have read | **no** |
+| **Ask** | Recommendations, synopses, what you forgot you bought | yes |
 
 The middle column is the point. Once a book is in the catalog, everything you
 do with it day to day is local, fast, and yours.
 
+## Any source, or all of them
+
+The three inputs are independent. A catalog can be built from a photograph
+alone, a list alone, or every source you have:
+
+```bash
+# a photograph of a shelf, and nothing else
+python tools/librapp/build_catalog.py --source shelf.json -o catalog.json
+
+# an exported list, and nothing else
+python tools/librapp/build_catalog.py --source list.json -o catalog.json
+
+# everything, merged
+python tools/librapp/build_catalog.py --source kindle.json --source shelf.json --source list.json -o catalog.json
+```
+
+Each ingester writes the same envelope ([`records.py`](tools/librapp/records.py))
+and the builder reads nothing else, so a new kind of input means one more
+ingester and no change to anything downstream.
+
+Sources that describe the same book are merged into one entry owning every
+format it was found in. Where they disagree, the more reliable source wins on
+matters of fact — a store export knows the acquisition date, a photograph
+cannot — while judgements like genre come from whoever troubled to make one.
+
 ## Status
 
-Early. Ingest and catalog building work and are verified against their
-sources. The browse interface is not built yet.
-
-- [x] Kindle "Manage Your Content and Devices" PDF parser (237/237 records)
-- [x] Catalog builder: merge sources, unroll series, resolve authors, tag
+- [x] Store export ingest — Amazon Kindle "Manage Your Content and Devices" PDF
+- [x] List ingest — `.xlsx`, `.csv`, `.tsv`, `.xml`
+- [x] Shelf-photo ingest — tiling, transcription, validation
+- [x] Catalog builder — any number of sources, in any combination
+- [x] Offline queries, including books you bought and forgot
+- [x] Prompts for synopses and recommendations
 - [ ] Browse interface
-- [ ] Shelf-photo ingest
-- [ ] Recommendations and synopses
 
 ## Your data stays yours
 
@@ -37,93 +61,145 @@ This repository is public. **Your catalog is not part of it.**
 shelf photographs — and the catalog built from them stay on your machine. What
 ships here is the tooling and a small sample catalog.
 
-If you want your own catalog version-controlled, keep `data/private/` as a
-separate private repository.
-
 ## Requirements
 
 - Python 3.11+
-- [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF ingest: `pip install pymupdf`
+- [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF ingest — `pip install pymupdf`
+- [Pillow](https://python-pillow.org/) for photo ingest — `pip install pillow`
 
-## Usage
+Nothing is needed for lists or for querying.
 
-Export your Kindle library from **Amazon → Manage Your Content and Devices**,
-printing the paginated list to PDF. Then:
+## Ingesting
+
+### A photograph of a shelf
+
+Photograph the shelf at **full resolution**, straight on. This is the one step
+that matters more than any code here: a whole bookcase at 1 megapixel is
+unreadable, and the same shelf at 50 is not.
 
 ```bash
-python tools/librapp/parse_kindle.py sources/kindle-all-titles.pdf -o data/private/kindle-raw.json
+python tools/librapp/parse_shelf.py tile sources/shelf/shelf.jpg -o work/tiles
 ```
 
-It reports what it found, so you can check the extraction rather than trust it:
+That cuts the photograph into overlapping crops at native resolution. Read them
+following [`prompts/ingest-shelf.md`](prompts/ingest-shelf.md) — point Claude
+Code at the tiles, or use any model that can see — and write the transcription
+it describes. Then:
+
+```bash
+python tools/librapp/parse_shelf.py import work/spines.json -o data/private/shelf.json
+```
+
+The import refuses a transcription with an untitled book or an unknown
+confidence value, which is the point: a bad read should stop before it reaches
+the catalog rather than after.
+
+A photograph yields a title, usually an author, sometimes a publisher — and
+nothing else. No dates, no read flags. The catalog records that as *unknown*
+rather than guessing, and another source can fill it in later.
+
+### A list you already keep
+
+```bash
+python tools/librapp/parse_table.py library.xlsx -o data/private/list.json
+python tools/librapp/parse_table.py books.csv    -o data/private/list.json --format physical
+```
+
+Columns are matched by name, in several languages — a sheet headed `Autor /
+Título / Género` works as well as `author / title / genre`. A file holding more
+than one list is refused until you name which one with `--section`, so a
+wishlist is never silently imported as books you own.
+
+Rows standing for a whole series in one cell are marked rather than counted as
+one book. If another source has the individual volumes, they inherit the row's
+genre; if nothing does, the row survives as a single flagged entry instead of
+quietly disappearing.
+
+### A store export
+
+Export from **Amazon → Manage Your Content and Devices**, printing the
+paginated list to PDF.
+
+```bash
+python tools/librapp/parse_kindle.py sources/kindle.pdf -o data/private/kindle.json
+```
 
 ```
 blocks found      : 237  (0 duplicate screens merged)
 unique records    : 237
 Amazon claims     : 237   -> delta +0
 read              : 159
-unparseable dates : 0
 clipped titles    : 3
 ```
 
-`delta +0` means every item Amazon claims to have was recovered. Each record
-carries its title, authors, publisher, acquisition date, read flag, and the
-collection and device counts.
+`delta +0` means every item Amazon claims to have was recovered.
 
-Then merge that with any catalog you already keep, into the file everything
-else reads:
+Two things about that source are worth knowing. Its own page clips long titles
+mid-word with no ellipsis, so those are flagged and repaired later from any
+source that has them whole. And the print-to-PDF splits records across page
+breaks, leaving half-rendered fragments behind; the parser reads the document
+as one continuous stream to stitch them back together. If `no title parsed` is
+ever above zero, a record was lost and the extraction should not be trusted.
+
+## Using the catalog
 
 ```bash
-python tools/librapp/build_catalog.py --kindle data/private/kindle-raw.json --xml sources/biblioteca.xml -o data/private/catalog.json
+python tools/librapp/query.py stats
+python tools/librapp/query.py search kant
+python tools/librapp/query.py series --volumes
+python tools/librapp/query.py unread --since 2024
 ```
 
-```
-books             : 290   (237 ebook, 59 physical, 6 both)
-authors           : 202
-read / unread     : 159 / 78   (53 unknown, all physical)
+### What you bought and forgot
 
-needs a look:
-  xml unmatched   : 0
-  clipped titles  : 2
-  illegible spines: 3
-  no genre        : 1
-  authors merged  : 8
+```bash
+python tools/librapp/query.py forgotten
 ```
 
-The **needs a look** block is a work queue, not a warning. The merge never
-guesses quietly: anything it could not settle is listed in the catalog's
-`review` section with enough detail to fix by hand. `authors merged` reports
-where two spellings of one person were folded together — `Plato` into `Platón`,
-`H. P. Lovecraft` into `Howard Phillips Lovecraft` — so a wrong merge is
-visible rather than silent.
+Books explicitly marked unread, ordered by how long they have waited and
+weighted by how much you evidently wanted them — filing a book into a
+collection, or pushing it to several devices, is a record of intent that a
+purchase date alone is not.
 
-[`docs/schema.md`](docs/schema.md) describes what the catalog contains. The
-short version: `read` is three-valued, because a physical book has no record of
-ever having been read and calling that "unread" would invent an answer.
+Only books *known* to be unread are eligible. A physical book whose read state
+nobody ever recorded is unknown, not unread, and guessing would fill the list
+with books already finished.
 
-### Known limits of the source
+## Asking
 
-Amazon's own page clips long titles to a fixed pixel width, mid-word and with
-no ellipsis. Those records are flagged `title_clipped` rather than silently
-kept — the catalog builder repairs them from other sources.
+The prompts live in [`prompts/`](prompts) as plain text, so they can be read and
+edited without touching code.
 
-The print-to-PDF also splits records across page breaks, leaving half-rendered
-fragments behind. The parser reads the document as one continuous stream to
-stitch those back together; if you see `no title parsed` above zero, a record
-was lost and the extraction should not be trusted.
+```bash
+python tools/librapp/query.py context > profile.md
+```
+
+`context` prints a compact picture of the collection — what it is made of, how
+it has moved over the years, which authors dominate, what is waiting unread.
+Hand that to a model along with [`prompts/synopsis.md`](prompts/synopsis.md) or
+[`prompts/recommend.md`](prompts/recommend.md).
+
+The book you ask about does **not** have to be in the catalog. The profile is
+there to say who is asking, not to limit what can be asked — the difference
+between a generic synopsis and one that tells you how the book stands against
+the shelf you already own.
 
 ## Layout
 
 ```
-tools/librapp/     ingest and catalog-building scripts
+tools/librapp/     ingest, build and query
+  records.py       the envelope every source writes and the builder reads
+  textmatch.py     deciding when two records mean the same book or person
 prompts/           AI prompts, version-controlled as plain text
-data/sample/       small anonymised catalog, committed
+data/sample/       small invented catalog, committed
 data/private/      your real catalog                  (gitignored)
 sources/           your raw exports and photographs   (gitignored)
 docs/              schema and design notes
 ```
 
-Prompts live in `prompts/` as files rather than embedded in code, so they can
-be read, edited and diffed without touching Python.
+[`docs/schema.md`](docs/schema.md) describes what the catalog contains. The
+short version: `read` is three-valued, because a book nobody ever recorded
+reading is not the same as one known to be unread.
 
 ## Licence
 

@@ -1,146 +1,237 @@
 {
-  "_comment": "Invented books, for trying LibrAPP without a catalog of your own. Every field and flag the schema defines appears at least once here. See docs/schema.md.",
-  "generated_at": "2026-08-19T00:00:00+00:00",
+  "generated_at": "2026-08-19T14:30:23+00:00",
+  "sources": [
+    {
+      "name": "sample-store",
+      "kind": "store-export",
+      "origin": "invented-export.pdf",
+      "format": "ebook",
+      "confidence": "high"
+    },
+    {
+      "name": "sample-shelf",
+      "kind": "photo",
+      "origin": "invented-shelf.jpg",
+      "format": "physical",
+      "confidence": "medium"
+    }
+  ],
   "counts": {
     "books": 6,
-    "authors": 4,
-    "ebooks": 4,
-    "physical": 3,
-    "both_formats": 1,
+    "authors": 3,
+    "by_format": {
+      "ebook": 4,
+      "physical": 4
+    },
+    "in_multiple_sources": 2,
     "read": 2,
     "unread": 2,
     "read_unknown": 2
   },
   "books": [
     {
-      "id": "eda-vantel-the-salt-clock",
-      "title": "The Salt Clock",
+      "id": "eda-vantel-the-salt-clock-tidewater-1",
+      "title": "The Salt Clock (Tidewater 1)",
       "title_key": "the salt clock",
-      "authors": ["eda-vantel"],
+      "authors": [
+        "eda-vantel"
+      ],
+      "author_label": null,
       "series": "Tidewater",
       "series_index": 1,
-      "formats": ["ebook"],
+      "formats": [
+        "ebook",
+        "physical"
+      ],
       "publisher": "Ashgrove Press",
       "acquired_on": "2019-03-11",
       "read": true,
       "collections": 1,
       "devices": 2,
       "update_available": false,
-      "genre": "Science fiction",
-      "tags": [
-        { "kind": "genre", "value": "Science fiction", "key": "science fiction" },
-        { "kind": "keyword", "value": "generation ship", "key": "generation ship" }
+      "location": "top shelf",
+      "genre": null,
+      "tags": [],
+      "sources": [
+        "sample-shelf",
+        "sample-store"
       ],
-      "sources": ["kindle"],
       "confidence": "high",
-      "flags": []
+      "flags": [
+        "no_genre"
+      ]
     },
     {
-      "id": "eda-vantel-the-salt-clock-ii-low-tide",
-      "title": "The Salt Clock II: Low Tide",
+      "id": "eda-vantel-the-salt-clock-ii-low-tide-tidewater-2",
+      "title": "The Salt Clock II: Low Tide (Tidewater 2)",
       "title_key": "the salt clock ii low tide",
-      "authors": ["eda-vantel"],
+      "authors": [
+        "eda-vantel"
+      ],
+      "author_label": null,
       "series": "Tidewater",
       "series_index": 2,
-      "formats": ["ebook"],
+      "formats": [
+        "ebook"
+      ],
       "publisher": "Ashgrove Press",
       "acquired_on": "2021-08-02",
       "read": false,
       "collections": 1,
-      "devices": 1,
+      "devices": 3,
       "update_available": true,
-      "genre": "Science fiction",
-      "tags": [
-        { "kind": "genre", "value": "Science fiction", "key": "science fiction" }
+      "location": null,
+      "genre": null,
+      "tags": [],
+      "sources": [
+        "sample-store"
       ],
-      "sources": ["kindle"],
       "confidence": "high",
+      "flags": [
+        "no_genre"
+      ]
+    },
+    {
+      "id": "j-t-halloran-notes-toward-a-quieter-machine-an-essay-on-attention-and",
+      "title": "Notes Toward a Quieter Machine: An Essay on Attention and",
+      "title_key": "notes toward a quieter machine an essay on attention and",
+      "authors": [
+        "j-t-halloran"
+      ],
+      "author_label": null,
+      "series": null,
+      "series_index": null,
+      "formats": [
+        "ebook"
+      ],
+      "publisher": null,
+      "acquired_on": "2020-11-30",
+      "read": false,
+      "collections": null,
+      "devices": 1,
+      "update_available": false,
+      "location": null,
+      "genre": null,
+      "tags": [],
+      "sources": [
+        "sample-store"
+      ],
+      "confidence": "high",
+      "flags": [
+        "no_genre",
+        "title_clipped"
+      ]
+    },
+    {
+      "id": "marisol-oquendo-a-grammar-of-rivers",
+      "title": "A Grammar of Rivers",
+      "title_key": "a grammar of rivers",
+      "authors": [
+        "marisol-oquendo"
+      ],
+      "author_label": null,
+      "series": null,
+      "series_index": null,
+      "formats": [
+        "physical"
+      ],
+      "publisher": null,
+      "acquired_on": null,
+      "read": null,
+      "collections": null,
+      "devices": null,
+      "update_available": false,
+      "location": "top shelf",
+      "genre": "Essay",
+      "tags": [
+        {
+          "kind": "genre",
+          "value": "Essay",
+          "key": "essay"
+        }
+      ],
+      "sources": [
+        "sample-shelf"
+      ],
+      "confidence": "medium",
       "flags": []
     },
     {
       "id": "marisol-oquendo-the-weight-of-small-decisions",
       "title": "The Weight of Small Decisions",
       "title_key": "the weight of small decisions",
-      "authors": ["marisol-oquendo"],
+      "authors": [
+        "marisol-oquendo"
+      ],
+      "author_label": null,
       "series": null,
       "series_index": null,
-      "formats": ["ebook", "physical"],
+      "formats": [
+        "ebook",
+        "physical"
+      ],
       "publisher": null,
       "acquired_on": "2024-01-19",
       "read": true,
       "collections": 2,
       "devices": 1,
       "update_available": false,
+      "location": "top shelf",
       "genre": "Philosophy",
       "tags": [
-        { "kind": "genre", "value": "Philosophy", "key": "philosophy" },
-        { "kind": "keyword", "value": "free will", "key": "free will" },
-        { "kind": "keyword", "value": "moral luck", "key": "moral luck" }
+        {
+          "kind": "genre",
+          "value": "Philosophy",
+          "key": "philosophy"
+        },
+        {
+          "kind": "keyword",
+          "value": "free will",
+          "key": "free will"
+        },
+        {
+          "kind": "keyword",
+          "value": "moral luck",
+          "key": "moral luck"
+        }
       ],
-      "sources": ["kindle", "shelf"],
+      "sources": [
+        "sample-shelf",
+        "sample-store"
+      ],
       "confidence": "high",
       "flags": []
     },
     {
-      "id": "j-t-halloran-notes-toward-a-quieter-machine",
-      "title": "Notes Toward a Quieter Machine: An Essay on Attention and",
-      "title_key": "notes toward a quieter machine an essay on attention and",
-      "authors": ["j-t-halloran"],
-      "series": null,
-      "series_index": null,
-      "formats": ["ebook"],
-      "publisher": null,
-      "acquired_on": "2025-11-30",
-      "read": false,
-      "collections": null,
-      "devices": 1,
-      "update_available": false,
-      "genre": null,
-      "tags": [],
-      "sources": ["kindle"],
-      "confidence": "high",
-      "flags": ["title_clipped", "no_genre"]
-    },
-    {
-      "id": "marisol-oquendo-a-grammar-of-rivers",
-      "title": "A Grammar of Rivers",
-      "title_key": "a grammar of rivers",
-      "authors": ["marisol-oquendo"],
-      "series": null,
-      "series_index": null,
-      "formats": ["physical"],
-      "publisher": null,
-      "acquired_on": null,
-      "read": null,
-      "collections": null,
-      "devices": null,
-      "update_available": false,
-      "genre": "Essay",
-      "tags": [{ "kind": "genre", "value": "Essay", "key": "essay" }],
-      "sources": ["shelf"],
-      "confidence": "medium",
-      "flags": []
-    },
-    {
-      "id": "reference-spine-partly-legible",
+      "id": "spine-partly-legible",
       "title": "[spine partly legible]",
       "title_key": "spine partly legible",
       "authors": [],
       "author_label": "Reference",
       "series": null,
       "series_index": null,
-      "formats": ["physical"],
+      "formats": [
+        "physical"
+      ],
       "publisher": null,
       "acquired_on": null,
       "read": null,
       "collections": null,
       "devices": null,
       "update_available": false,
+      "location": "top shelf",
       "genre": null,
       "tags": [],
-      "sources": ["shelf"],
+      "sources": [
+        "sample-shelf"
+      ],
       "confidence": "low",
-      "flags": ["illegible_spine", "no_personal_author", "no_genre"]
+      "flags": [
+        "illegible_spine",
+        "no_genre",
+        "no_personal_author",
+        "placeholder"
+      ]
     }
   ],
   "authors": [
@@ -154,39 +245,55 @@
       "id": "marisol-oquendo",
       "display_name": "Marisol Oquendo",
       "sort_name": "Oquendo, Marisol",
-      "aliases": ["M. Oquendo"]
+      "aliases": [
+        "M. Oquendo"
+      ]
     },
     {
       "id": "eda-vantel",
       "display_name": "Eda Vantel",
       "sort_name": "Vantel, Eda",
       "aliases": []
-    },
-    {
-      "id": "priyanka-raut",
-      "display_name": "Priyanka Raut",
-      "sort_name": "Raut, Priyanka",
-      "aliases": []
-    }
-  ],
-  "recommendations": [
-    {
-      "author": "Priyanka Raut",
-      "title": "The Cartographer's Objection",
-      "genre": "History of science",
-      "tags": [
-        { "kind": "genre", "value": "History of science", "key": "history of science" }
-      ],
-      "why": "Argues the opposite of The Weight of Small Decisions, and argues it well."
     }
   ],
   "review": {
-    "author_variants_merged": [{ "merged": "M. Oquendo", "into": "Marisol Oquendo" }],
-    "xml_rows_unmatched": [],
-    "merged_formats": [{ "title": "The Weight of Small Decisions", "score": 1.0 }],
-    "clipped_titles": ["Notes Toward a Quieter Machine: An Essay on Attention and"],
-    "illegible": [{ "author_label": "Reference", "title": "[spine partly legible]" }],
+    "author_variants_merged": [
+      {
+        "merged": "M. Oquendo",
+        "into": "Marisol Oquendo"
+      }
+    ],
+    "matched_across_sources": [
+      {
+        "title": "The Salt Clock (Tidewater 1)",
+        "sources": [
+          "sample-shelf",
+          "sample-store"
+        ]
+      },
+      {
+        "title": "The Weight of Small Decisions",
+        "sources": [
+          "sample-shelf",
+          "sample-store"
+        ]
+      }
+    ],
+    "series_not_expanded": [],
+    "clipped_titles": [
+      "Notes Toward a Quieter Machine: An Essay on Attention and"
+    ],
+    "low_confidence": [
+      {
+        "title": "[spine partly legible]",
+        "sources": [
+          "sample-shelf"
+        ]
+      }
+    ],
     "no_genre": [
+      "The Salt Clock (Tidewater 1)",
+      "The Salt Clock II: Low Tide (Tidewater 2)",
       "Notes Toward a Quieter Machine: An Essay on Attention and",
       "[spine partly legible]"
     ]

@@ -42,6 +42,10 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import records as rec
+
 try:
     import fitz  # PyMuPDF
 except ImportError:  # pragma: no cover
@@ -325,33 +329,58 @@ def main() -> int:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     ap.add_argument("pdf", type=Path, help="the Kindle 'Digital Content' print-to-PDF")
-    ap.add_argument("-o", "--out", type=Path, required=True, help="where to write the JSON")
+    ap.add_argument("-o", "--out", type=Path, required=True, help="where to write the source file")
+    ap.add_argument("--name", default="kindle", help="source name used when merging")
     args = ap.parse_args()
 
     raw, declared_total = parse(fitz.open(args.pdf))
-    records, dupes = dedupe(raw)
-    records.sort(key=sort_key)
+    parsed, dupes = dedupe(raw)
+    parsed.sort(key=sort_key)
 
-    payload = {
-        "source": args.pdf.name,
-        "parsed_records": len(records),
+    records = [
+        {
+            "title": r["title_raw"],
+            "title_clipped": r["title_clipped"],
+            "authors": r["authors"],
+            "publisher": r["publisher"],
+            "acquired_on": r["acquired_on"],
+            "read": r["read"],
+            "collections": r["collections"],
+            "devices": r["devices"],
+            "update_available": r["update_available"],
+        }
+        for r in parsed
+    ]
+
+    stats = {
         "raw_blocks": len(raw),
         "duplicate_blocks_merged": dupes,
         "amazon_declared_total": declared_total,
-        "records": records,
+        "parsed_records": len(records),
     }
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        rec.write(
+            args.out,
+            name=args.name,
+            kind="store-export",
+            origin=args.pdf.name,
+            format="ebook",
+            confidence="high",
+            records=records,
+            stats=stats,
+        )
+    except rec.SourceError as exc:
+        sys.exit(f"error: {exc}")
 
     print(f"blocks found      : {len(raw)}  ({dupes} duplicate screens merged)")
     print(f"unique records    : {len(records)}")
     if declared_total:
         print(f"Amazon claims     : {declared_total}   -> delta {len(records) - declared_total:+d}")
-    print(f"read              : {sum(1 for r in records if r['read'])}")
-    print(f"unparseable dates : {sum(1 for r in records if not r['acquired_on'])}")
-    print(f"clipped titles    : {sum(1 for r in records if r['title_clipped'])}")
-    print(f"no title parsed   : {sum(1 for r in records if not r['title_raw'])}")
-    print(f"no author parsed  : {sum(1 for r in records if not r['authors'])}")
+    print(f"read              : {sum(1 for r in parsed if r['read'])}")
+    print(f"unparseable dates : {sum(1 for r in parsed if not r['acquired_on'])}")
+    print(f"clipped titles    : {sum(1 for r in parsed if r['title_clipped'])}")
+    print(f"no title parsed   : {sum(1 for r in parsed if not r['title_raw'])}")
+    print(f"no author parsed  : {sum(1 for r in parsed if not r['authors'])}")
     print(f"written           : {args.out}")
     return 0
 

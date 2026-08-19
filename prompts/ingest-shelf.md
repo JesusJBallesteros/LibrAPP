@@ -1,0 +1,93 @@
+# Reading a shelf photograph
+
+Turn tiles of a bookshelf photograph into a transcription file.
+
+Run `parse_shelf.py tile` first. Read **every** tile, one at a time, at full
+size. Do not work from a scaled-down view of the whole shelf: at that size
+spine text is a few pixels tall and you will invent titles that look plausible.
+
+## What to record
+
+For each book you can see, record what is **printed on the spine** — not what
+you believe the book to be.
+
+- `title` — as printed. Keep the subtitle if the spine shows one.
+- `authors` — as printed, in normal order (`Terry Pratchett`, not
+  `Pratchett, Terry`). Several authors, several entries.
+- `publisher` — only if the spine or the imprint logo says so.
+- `series` / `series_index` — only if printed. Numbered uniform editions
+  (Gredos, Penguin Classics) usually print a volume number at the foot.
+- `confidence` — `high` when you read it cleanly, `medium` when you are
+  reconstructing from partial text, `low` when you are guessing.
+- `notes` — anything worth a human's attention: a script you cannot read, a
+  spine hidden behind another book, two copies of the same title.
+
+## Rules
+
+**Transcribe, do not identify.** If a spine reads `KANT · Crítica de la razón
+pura · taurus`, that is the record. Do not expand it to a full bibliographic
+title, do not add a publication year, do not correct the edition. The catalog
+would rather hold what is on the shelf than what a database thinks should be.
+
+**A guess is `low`, not a title.** If you can make out `La ciencia del ...
+umbral` and no more, record what you can read and mark it `low`, with the
+uncertainty in `notes`. Do not silently complete it. A wrong title read
+confidently is worse than an honest fragment: the fragment gets fixed, the
+confident error propagates into recommendations.
+
+**Non-Latin scripts.** Record them in their own script. If you can also give a
+transliteration or a translation, put it in `notes`. Do not replace the title
+with a translation.
+
+**Count carefully.** Tiles overlap, so a book at the edge of one tile appears
+again in the next. Record it once. Books lying flat on top of a row are still
+books. A spine you can see but not read is still worth an entry with
+`confidence: "low"` and whatever colour or size detail helps find it again.
+
+**Do not fill in what a photograph cannot see.** No acquisition dates, no read
+flags, no ISBNs, no genre unless the spine states a collection. The catalog
+treats a missing value as unknown, which is the truth here, and other sources
+may supply it later.
+
+## Output
+
+Write one JSON file:
+
+```json
+{
+  "photo": "shelf.jpg",
+  "shelves": [
+    {
+      "location": "top-left",
+      "books": [
+        {
+          "title": "Ethics in the Conflicts of Modernity",
+          "authors": ["Alasdair MacIntyre"],
+          "publisher": "Cambridge",
+          "confidence": "high"
+        },
+        {
+          "title": "La ciencia del último umbral",
+          "authors": ["Álex Gómez-Marín"],
+          "confidence": "medium",
+          "notes": "lower half of the spine is in shadow"
+        }
+      ]
+    }
+  ]
+}
+```
+
+`location` is free text — whatever will help you find the book again
+(`top-left`, `bottom shelf, right of the divider`). Group books by the shelf
+they sit on, in the order they stand, so the file reads like the shelf looks.
+
+Then:
+
+```bash
+python tools/librapp/parse_shelf.py import <file>.json -o data/private/shelf.json
+```
+
+It will refuse the file if a book has no title or an unknown confidence value,
+which is the point: a transcription that does not survive import is one you
+want to see before it reaches the catalog.
