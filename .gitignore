@@ -1,0 +1,26 @@
+# ---- Private data. LibrAPP is public; your library is not. ----
+# Raw inputs: Kindle exports, shelf photographs, spreadsheets.
+sources/
+# The real catalog, built from those inputs.
+data/private/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# ---- Web app (later) ----
+node_modules/
+dist/
+.vite/
+
+# ---- OS / editor ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Working notes about you, not about the code.
+HANDOFF.md
