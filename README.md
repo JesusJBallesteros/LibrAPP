@@ -1,18 +1,26 @@
 # LibrAPP
 
-A personal book catalog that runs entirely on your own device.
+### Create your full book catalog from a picture of your shelf.
 
-Photograph a shelf, drop in a spreadsheet, or import a store export. LibrAPP
-turns them into one catalog you can search, filter and browse offline. Your
-books stay on your device — there is no account, no server and no sync.
+## → [**Open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/) ←
 
-Install it on Windows, Linux or Android. It works with no network connection.
+No account, no signup, nothing to install first. Works offline once loaded, and
+installs as an app on Windows, Linux and Android.
+
+---
+
+Photograph a shelf and LibrAPP reads the spines into a catalog you can search,
+filter and browse. You can also import a spreadsheet, a CSV, or a store export
+— and combine all of them into one catalog with no duplicates.
+
+Your books stay on your device. There is no account, no server and no sync.
 
 ---
 
 ## Contents
 
 - [What it does](#what-it-does)
+- [Browser support](#browser-support)
 - [Install](#install)
 - [Adding your books](#adding-your-books)
 - [Using the catalog](#using-the-catalog)
@@ -52,19 +60,60 @@ plain code running locally. You can use LibrAPP without any AI at all.
 
 ---
 
+## Browser support
+
+| Browser | Browse & search | Photo import | Spreadsheet import | Folder storage | Install as app |
+|---|:--:|:--:|:--:|:--:|:--:|
+| **Chrome / Edge**, desktop 111+ | yes | yes | yes | yes | yes |
+| **Chrome**, Android 111+ | yes | yes | yes | browser storage | yes |
+| **Firefox** 113+ | yes | yes | yes | browser storage | no |
+| **Safari** 16.4+ | yes | yes | yes | browser storage | Add to Home Screen |
+
+**Chrome and Edge are the recommended browsers.** They are the only ones that
+can save your library to a folder you choose; everywhere else it goes into
+browser storage instead, which works the same from inside the app but is not
+visible to other programs. See [where your library
+lives](#where-your-library-lives).
+
+LibrAPP is developed and tested on Chrome and Edge, on desktop and on Android.
+Firefox and Safari meet the requirements below but are not regularly tested — if
+something breaks there, please open an issue.
+
+Internet Explorer and older browsers are not supported.
+
+<details>
+<summary>What LibrAPP needs from a browser</summary>
+
+| Feature | Used for |
+|---|---|
+| File System Access API | saving to a folder you choose (Chrome/Edge desktop only) |
+| Origin Private File System | browser storage, everywhere else |
+| `DecompressionStream` | reading `.xlsx` spreadsheets |
+| `OffscreenCanvas` | cutting a photograph into tiles |
+| Service workers | installing, and working offline |
+| Regular expression lookbehind | matching titles and author names |
+
+</details>
+
+---
+
 ## Install
+
+You do not have to install anything —
+[the app](https://jesusjballesteros.github.io/LibrAPP/) runs in the browser. But
+installing gives it its own icon and window, and makes offline use reliable.
 
 ### On a phone or tablet
 
-Open the app in Chrome and choose **Install app** (or **Add to Home screen**)
-from the browser menu. It gets its own icon and window.
+Open [LibrAPP](https://jesusjballesteros.github.io/LibrAPP/) in Chrome and
+choose **Install app** (or **Add to Home screen**) from the browser menu.
 
 ### On a desktop
 
-Open the app in Chrome or Edge and click the **install icon** in the address
-bar.
+Open [LibrAPP](https://jesusjballesteros.github.io/LibrAPP/) in Chrome or Edge
+and click the **install icon** in the address bar.
 
-### Running it yourself
+### Running your own copy
 
 LibrAPP is a static site. Build it and serve the `web/dist` folder from
 anywhere — a local server, a static host, GitHub Pages.
@@ -349,4 +398,16 @@ Your own library is never part of this repository: `sources/` and
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+[PolyForm Noncommercial 1.0.0](LICENSE.md).
+
+**Free for any non-commercial use** — personal, hobby, study, research, and use
+by charities, schools, universities, and public institutions. Use it, change it,
+share it.
+
+**Commercial use requires a separate licence.** If you want to use LibrAPP in or
+for a business, [open an
+issue](https://github.com/JesusJBallesteros/LibrAPP/issues) to ask.
+
+Note that this is a source-available licence, not an OSI-approved open source
+one. LibrAPP's own dependencies (React, pdf.js, and others) remain under their
+own MIT and Apache-2.0 terms.

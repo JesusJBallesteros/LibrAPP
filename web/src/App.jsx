@@ -64,7 +64,7 @@ export default function App() {
           <h1>
             Libr<em>APP</em>
           </h1>
-          <p>your shelf, offline</p>
+          <p>your shelf, catalogued</p>
         </div>
 
         <nav className="nav">
