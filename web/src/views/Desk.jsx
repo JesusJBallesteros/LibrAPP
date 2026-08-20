@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { authorNames, byline, copyText, forgotten, intentWhy } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
+import GenrePie from '../components/GenrePie.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 import { usableKey } from '../ai/key.js'
 // Imported under another name: `ask` is already the state holding which
@@ -33,6 +34,7 @@ export default function Desk({ catalog }) {
   const [question, setQuestion] = useState('')
   const [copied, setCopied] = useState(null)
   const [minYears, setMinYears] = useState(2)
+  const [showAllStale, setShowAllStale] = useState(false)
   const [keyStatus, setKeyStatus] = useState('absent')
   const [answer, setAnswer] = useState('')
   const [asking, setAsking] = useState(false)
@@ -100,12 +102,6 @@ export default function Desk({ catalog }) {
     )
   }
 
-  const genres = (catalog.books || [])
-    .flatMap((b) => (b.tags || []).filter((t) => t.kind === 'genre').map((t) => t.value))
-    .reduce((acc, v) => acc.set(v, (acc.get(v) || 0) + 1), new Map())
-  const topGenres = [...genres.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8)
-  const widest = topGenres[0]?.[1] || 1
-
   return (
     <div className="view">
       <header>
@@ -124,7 +120,13 @@ export default function Desk({ catalog }) {
               <h3 style={{ margin: 0 }}>Bought, and never opened</h3>
               <label className="field">
                 waiting at least
-                <select value={minYears} onChange={(e) => setMinYears(Number(e.target.value))}>
+                <select
+                  value={minYears}
+                  onChange={(e) => {
+                    setMinYears(Number(e.target.value))
+                    setShowAllStale(false)
+                  }}
+                >
                   {[1, 2, 3, 5, 8].map((y) => (
                     <option key={y} value={y}>
                       {y} year{y > 1 ? 's' : ''}
@@ -144,7 +146,7 @@ export default function Desk({ catalog }) {
             {stale.length === 0 ? (
               <p className="muted">Nothing has waited that long.</p>
             ) : (
-              stale.slice(0, 14).map((row) => (
+              (showAllStale ? stale : stale.slice(0, 5)).map((row) => (
                 <div className="forgotten-item spread" key={row.book.id}>
                   <span>
                     <span className="title">{row.book.title}</span>
@@ -156,21 +158,21 @@ export default function Desk({ catalog }) {
                 </div>
               ))
             )}
+
+            {stale.length > 5 && (
+              <button
+                className="btn small"
+                style={{ marginTop: 12 }}
+                onClick={() => setShowAllStale((shown) => !shown)}
+              >
+                {showAllStale ? 'Show only the first five' : `Show all ${stale.length}`}
+              </button>
+            )}
           </div>
 
           <div className="card">
             <h3>What the collection is made of</h3>
-            <div className="bars">
-              {topGenres.map(([value, n]) => (
-                <div className="bar-row" key={value}>
-                  <span className="n">{n}</span>
-                  <span className="bar" style={{ width: `${(n / widest) * 100}%` }} />
-                  <span className="muted" style={{ gridColumn: 3 }}>
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <GenrePie books={catalog.books} />
           </div>
         </div>
 

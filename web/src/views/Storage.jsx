@@ -132,6 +132,7 @@ export default function Storage({ lib }) {
         {lib.sources.length === 0 ? (
           <p className="muted">Nothing ingested yet.</p>
         ) : (
+          <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
             <thead>
               <tr style={{ textAlign: 'left', color: 'var(--ink-faint)' }}>
@@ -173,6 +174,7 @@ export default function Storage({ lib }) {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         <p className="tiny faint" style={{ marginTop: 10 }}>
           Every source stays as its ingester wrote it. Rebuilding merges all of them, so removing

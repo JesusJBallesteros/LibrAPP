@@ -1,0 +1,152 @@
+/**
+ * What the collection is made of.
+ *
+ * Part-to-whole at a glance, which is the one job a pie does well — and only
+ * because the slices are kept few. Genres are named until they account for
+ * roughly four fifths of the collection and everything after that becomes a
+ * single "other", so the chart never grows a long tail of slivers nobody can
+ * tell apart.
+ *
+ * The tag vocabulary is uncontrolled, so a real catalog has well over a hundred
+ * genre labels, most used once. Showing them all would be a rainbow that says
+ * nothing; showing the few that carry the collection says something.
+ *
+ * Colours come from a categorical palette validated for colour-vision
+ * deficiency against this app's own surfaces in both themes. Every slice is
+ * also named and counted in the legend, so identity never rests on colour
+ * alone.
+ */
+
+const NAMED_SHARE = 0.8
+const MAX_NAMED = 5
+
+/** Genre counts, largest first, with the tail folded into one slice. */
+export function summarise(books, { share = NAMED_SHARE, maxNamed = MAX_NAMED } = {}) {
+  const counts = new Map()
+  for (const book of books || []) {
+    for (const tag of book.tags || []) {
+      if (tag.kind !== 'genre') continue
+      counts.set(tag.value, (counts.get(tag.value) || 0) + 1)
+    }
+  }
+  const total = [...counts.values()].reduce((a, b) => a + b, 0)
+  if (!total) return { slices: [], total: 0, distinct: 0 }
+
+  const ordered = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  const named = []
+  let running = 0
+  for (const [value, n] of ordered) {
+    if (named.length >= maxNamed || running / total >= share) break
+    named.push({ label: value, count: n })
+    running += n
+  }
+
+  const rest = total - running
+  const restCount = ordered.length - named.length
+  // One leftover genre is worth naming; calling a single category "other"
+  // hides a fact for no gain.
+  if (restCount === 1) {
+    const [value, n] = ordered[named.length]
+    named.push({ label: value, count: n })
+    return { slices: withShare(named, total), total, distinct: ordered.length }
+  }
+  if (rest > 0) named.push({ label: 'other', count: rest, isOther: true, covers: restCount })
+  return { slices: withShare(named, total), total, distinct: ordered.length }
+}
+
+const withShare = (slices, total) =>
+  slices.map((s, i) => ({ ...s, share: s.count / total, slot: i + 1 }))
+
+/** A slice's outline, as an SVG path. */
+function arc(cx, cy, r, from, to) {
+  // A slice covering the whole circle cannot be drawn as an arc — its start and
+  // end points are the same — so it becomes two half circles.
+  if (to - from >= Math.PI * 2 - 1e-6) {
+    return `M ${cx - r} ${cy} A ${r} ${r} 0 1 1 ${cx + r} ${cy} A ${r} ${r} 0 1 1 ${cx - r} ${cy} Z`
+  }
+  const x1 = cx + r * Math.cos(from)
+  const y1 = cy + r * Math.sin(from)
+  const x2 = cx + r * Math.cos(to)
+  const y2 = cy + r * Math.sin(to)
+  const large = to - from > Math.PI ? 1 : 0
+  return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`
+}
+
+const percent = (share) => (share < 0.005 ? '<1%' : `${Math.round(share * 100)}%`)
+
+export default function GenrePie({ books, size = 168 }) {
+  const { slices, total, distinct } = summarise(books)
+  const other = slices.find((s) => s.isOther)
+  const named = slices.filter((s) => !s.isOther)
+
+  if (!slices.length) {
+    return <p className="muted tiny">No genres recorded yet.</p>
+  }
+
+  const r = size / 2 - 2
+  const cx = size / 2
+  const cy = size / 2
+  let angle = -Math.PI / 2 // start at twelve o'clock
+
+  const paths = slices.map((slice) => {
+    const from = angle
+    const to = angle + slice.share * Math.PI * 2
+    angle = to
+    return { ...slice, d: arc(cx, cy, r, from, to) }
+  })
+
+  return (
+    <div className="pie-wrap">
+      <svg
+        className="pie"
+        viewBox={`0 0 ${size} ${size}`}
+        width={size}
+        height={size}
+        role="img"
+        aria-label={`Genre composition of ${total} tagged books across ${distinct} genres`}
+      >
+        {paths.map((slice) => (
+          <path
+            key={slice.label}
+            d={slice.d}
+            fill={`var(--series-${slice.slot})`}
+            /* A 2px gap in the surface colour keeps adjacent slices apart even
+               when their hues are close for a colour-blind reader. */
+            stroke="var(--paper-raised)"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          >
+            <title>
+              {slice.label}: {slice.count} ({percent(slice.share)})
+            </title>
+          </path>
+        ))}
+      </svg>
+
+      <ul className="pie-legend">
+        {slices.map((slice) => (
+          <li key={slice.label}>
+            <span className="swatch" style={{ background: `var(--series-${slice.slot})` }} aria-hidden="true" />
+            <span className="pie-label">
+              {slice.label}
+              {slice.isOther && <span className="faint"> · {slice.covers} more</span>}
+            </span>
+            <span className="pie-value">
+              {slice.count} <span className="faint">{percent(slice.share)}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      {other && (
+        <p className="tiny faint pie-note">
+          The {named.length} largest genres cover{' '}
+          {Math.round(named.reduce((sum, s) => sum + s.share, 0) * 100)}% of tagged books. The other{' '}
+          {other.covers} labels are each too small to chart
+          {other.share > 0.5 && ' — genre tags come from your sources and are not a controlled list, so they fragment'}
+          .
+        </p>
+      )}
+    </div>
+  )
+}

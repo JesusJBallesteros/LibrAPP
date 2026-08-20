@@ -270,7 +270,10 @@ time: filing a book into a collection, or putting it on several devices, is a
 record of intent that a purchase date alone is not. Only books *known* to be
 unread appear.
 
-**What the collection is made of** — a breakdown by genre.
+**What the collection is made of** — the largest genres as a share of the
+whole, with the long tail grouped as *other*. Genre labels come from your
+sources and are not a controlled list, so the chart says how much of the
+collection the named genres actually cover.
 
 **Ask** — a synopsis of any book, or a recommendation. LibrAPP builds a profile
 of your reading (what the collection contains, how it has changed over the
@@ -401,11 +404,10 @@ web/src/store/     where a library lives on disk
 web/src/views/     the interface
 tools/librapp/     the Python command-line tools
 prompts/           AI prompts, as plain text
-docs/              catalog format and roadmap
+docs/              the catalog format
 ```
 
 - [`docs/schema.md`](docs/schema.md) — what the catalog contains
-- [`docs/roadmap.md`](docs/roadmap.md) — what is planned
 
 Your own library is never part of this repository: `sources/` and
 `data/private/` are gitignored.

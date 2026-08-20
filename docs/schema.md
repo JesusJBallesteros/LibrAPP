@@ -4,14 +4,16 @@ One JSON file holds the whole catalog. At this size — a few hundred books — 
 database would cost more than it returns, and a plain file diffs cleanly in git
 and is readable without any tool at all.
 
-`tools/librapp/build_catalog.py` writes it, from one or more **source files**.
-Nothing else should: hand-edits are lost on the next rebuild. Corrections
-belong in the sources, or in the overrides file described at the end.
+It is built from one or more **source files** — by the app, or by
+`tools/librapp/build_catalog.py`, which produce the same thing. Nothing else
+should write it: hand-edits are lost on the next rebuild. Corrections belong in
+the overrides file described below, which survives every rebuild.
 
-A source file is the envelope every ingester emits and the builder reads;
-`tools/librapp/records.py` defines and validates it. That indirection is what
-lets a catalog be built from a photograph alone, a list alone, or both, and
-what makes adding a new kind of input a matter of writing one more ingester.
+A source file is the envelope every ingester emits and the builder reads,
+defined and validated by `web/src/core/records.js` and its Python twin
+`tools/librapp/records.py`. That indirection is what lets a catalog be built
+from a photograph alone, a list alone, or both, and what makes adding a new kind
+of input a matter of writing one more ingester.
 
 ## Top level
 
@@ -119,12 +121,16 @@ on its own:
 
 ## Known gaps
 
-**The tag vocabulary is not controlled.** 338 books carry 126 distinct genre
-labels, 78 of them used exactly once, mixing levels of abstraction freely —
-`Fantasy` sits beside `Weird / cosmic horror` and `Philosophy of mind`. The tags
-are recorded faithfully with their kind so a later pass can normalise them
-against the whole distribution; until then, filtering by genre will behave
-unevenly.
+**The tag vocabulary is not controlled.** A catalog of 338 books carries around
+126 distinct genre labels, most used once or twice, mixing levels of abstraction
+freely — `Fantasy` sits beside `Weird / cosmic horror` and `Philosophy of mind`.
+Tags are recorded faithfully with their kind, so a later pass could normalise
+them against the whole distribution.
+
+Two visible consequences until then: filtering by genre behaves unevenly, and
+the composition chart on the desk shows the five largest genres covering only
+about a third of the collection, with the rest grouped as *other*. The chart
+says so rather than implying the tail is uninteresting.
 
 **Language is not recorded.** No source states a language reliably.
 
