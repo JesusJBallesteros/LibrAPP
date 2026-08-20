@@ -124,8 +124,20 @@ Done: the matching and merging core, proved byte-identical against Python
 `delta +0`, every field identical to Python's except the two noted below
 (`web/scripts/kindle-parity.mjs`).
 
-Remaining: `parse_table` (xlsx/csv/xml) and `parse_shelf` tiling (Canvas). Then
-storage, then the app becomes installable on Android as well as on a desktop.
+Also done: `parse_table`, identical on XML, .xlsx and CSV — the spreadsheet
+path reads the zip with `DecompressionStream` and a hand-rolled central-
+directory walk, so nothing has to be bundled. And `parse_shelf`, whose tile
+geometry matches Python's exactly and whose transcription reader produces the
+same 98 records; tiling itself moves to Canvas, so a photograph never leaves
+the device.
+
+The whole pipeline now runs end to end in JavaScript from the raw files
+(`web/scripts/end-to-end.mjs`) and produces the same catalog: 338 books, 236
+authors, every count matching. 33 entries differ, and all of them are titles
+the better clip detection repaired from another source.
+
+Remaining: storage, then the app becomes installable on Android as well as on
+a desktop.
 
 ### Two places the JavaScript deliberately differs from the Python
 
