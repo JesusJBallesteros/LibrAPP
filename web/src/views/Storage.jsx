@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
+import { checkCapabilities } from '../store/capabilities.js'
 
 const KINDS = {
   folder: 'a folder you chose — plain files you can open, back up or commit',
@@ -31,6 +32,8 @@ export default function Storage({ lib }) {
     URL.revokeObjectURL(url)
     setNote(`Exported ${bundle.sources.length} source(s).`)
   }
+
+  const capabilities = checkCapabilities()
 
   const review = lib.catalog?.review || {}
   const removed = review.removed_by_hand || []
@@ -175,6 +178,49 @@ export default function Storage({ lib }) {
           Every source stays as its ingester wrote it. Rebuilding merges all of them, so removing
           one and rebuilding is how an import is undone.
         </p>
+      </div>
+
+      <div className="card">
+        <div className="spread">
+          <h3 style={{ margin: 0 }}>Your browser</h3>
+          <span className={`pill ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'flag'}`}>
+            {capabilities.complete
+              ? 'everything supported'
+              : capabilities.usable
+                ? `${capabilities.missingOptional.length} feature(s) unavailable`
+                : 'not supported'}
+          </span>
+        </div>
+        <p className="muted tiny" style={{ marginTop: 8 }}>
+          Checked by trying each feature, not by reading the browser's name — so this is what your
+          browser can actually do, whichever one it is.
+        </p>
+
+        <div style={{ marginTop: 12 }}>
+          {capabilities.checks.map((c) => (
+            <div className="forgotten-item spread" key={c.id}>
+              <span>
+                <span className="title" style={{ font: '500 14px/1.3 var(--sans)' }}>{c.label}</span>
+                <div className="why">
+                  {c.needed}
+                  {!c.ok && c.fix ? ` — ${c.fix}` : ''}
+                </div>
+              </span>
+              <span className={`pill ${c.ok ? 'read' : c.required ? 'flag' : 'unread'}`}>
+                {c.ok ? 'yes' : c.required ? 'missing' : 'no'}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {!capabilities.usable && (
+          <div className="notice bad" style={{ marginTop: 12 }}>
+            <p className="tiny">
+              LibrAPP cannot run properly in this browser. Try a current version of Chrome, Edge,
+              Brave, Firefox or Safari.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="card">

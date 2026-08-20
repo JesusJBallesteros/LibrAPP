@@ -59,36 +59,60 @@ plain code running locally. You can use LibrAPP without any AI at all.
 
 ## Browser support
 
-| Browser | Browse & search | Photo import | Spreadsheet import | Folder storage | Install as app |
-|---|:--:|:--:|:--:|:--:|:--:|
-| **Chrome / Edge**, desktop 111+ | yes | yes | yes | yes | yes |
-| **Chrome**, Android 111+ | yes | yes | yes | browser storage | yes |
-| **Firefox** 113+ | yes | yes | yes | browser storage | no |
-| **Safari** 16.4+ | yes | yes | yes | browser storage | Add to Home Screen |
+LibrAPP is an ordinary web page, so what matters is the engine underneath a
+browser rather than its name.
 
-**Chrome and Edge are the recommended browsers.** They are the only ones that
-can save your library to a folder you choose; everywhere else it goes into
-browser storage instead, which works the same from inside the app but is not
-visible to other programs. See [where your library
-lives](#where-your-library-lives).
+| Engine | Browsers | Everything works? |
+|---|---|---|
+| **Chromium** | Chrome, Edge, **Brave**, Opera, Vivaldi, Arc, **Comet**, Samsung Internet | Yes |
+| **Gecko** | Firefox 113+ | Yes, except saving to a folder and installing as an app |
+| **WebKit** | Safari 16.4+, all iOS browsers | Yes, except saving to a folder; install via Add to Home Screen |
 
-LibrAPP is developed and tested on Chrome and Edge, on desktop and on Android.
-Firefox and Safari meet the requirements below but are not regularly tested — if
-something breaks there, please open an issue.
+Any Chromium browser gets the full feature set, including Brave and Perplexity's
+Comet. Only Chromium browsers on a desktop can save your library to a folder you
+choose; everywhere else it goes into browser storage, which works identically
+from inside the app but is not visible to other programs. See [where your
+library lives](#where-your-library-lives).
 
-Internet Explorer and older browsers are not supported.
+**Not sure about yours?** Open LibrAPP and go to **Library → Your browser**. It
+tests each feature and tells you what works, which is more reliable than any
+table — including this one.
+
+### If you use strict privacy settings
+
+Brave's Shields, Firefox's strict mode and similar features do not stop LibrAPP
+working. But **anything set to clear site data when you close the browser will
+delete a library kept in browser storage.** If you use those settings:
+
+- prefer saving to a folder (Chromium desktop), or
+- allow LibrAPP's storage as an exception, or
+- keep an export — **Library → Export**.
+
+LibrAPP warns you when its storage is not marked persistent.
+
+### Tested on
+
+Chrome and Edge on desktop, and Chrome on Android. Other Chromium browsers use
+the same engine and the same APIs, so they are expected to behave identically,
+but they are not part of regular testing. Firefox and Safari meet the
+requirements below and are also untested. If something breaks in yours, please
+open an issue — the **Your browser** panel says exactly what is missing.
+
+Internet Explorer and browsers older than the versions above are not supported.
 
 <details>
 <summary>What LibrAPP needs from a browser</summary>
 
-| Feature | Used for |
-|---|---|
-| File System Access API | saving to a folder you choose (Chrome/Edge desktop only) |
-| Origin Private File System | browser storage, everywhere else |
-| `DecompressionStream` | reading `.xlsx` spreadsheets |
-| `OffscreenCanvas` | cutting a photograph into tiles |
-| Service workers | installing, and working offline |
-| Regular expression lookbehind | matching titles and author names |
+| Feature | Used for | Without it |
+|---|---|---|
+| Secure context (HTTPS) | everything | nothing works |
+| IndexedDB | settings and where your library is | nothing works |
+| Origin Private File System | keeping the catalog | nothing works |
+| Regex lookbehind and Unicode escapes | matching titles and names | nothing works |
+| File System Access API | saving to a folder you choose | browser storage is used instead |
+| `DecompressionStream` | reading `.xlsx` spreadsheets | CSV, XML and PDF still import |
+| `OffscreenCanvas`, `createImageBitmap` | tiling a photograph | import from a list instead |
+| Service workers | installing, and offline use | runs online only |
 
 </details>
 
