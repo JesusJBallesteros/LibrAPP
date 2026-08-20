@@ -119,17 +119,43 @@ other retires that check. Sequencing matters — see below.
 
 ## 3 · Finish the JavaScript port
 
-Remaining: `parse_kindle` (PDF via pdf.js), `parse_table` (xlsx/csv/xml), and
-`parse_shelf` tiling (Canvas). Then storage, then the app becomes installable
-on Android as well as on a desktop.
+Done: the matching and merging core, proved byte-identical against Python
+(`web/scripts/parity.mjs`). And `parse_kindle`, via pdf.js — 237 records,
+`delta +0`, every field identical to Python's except the two noted below
+(`web/scripts/kindle-parity.mjs`).
 
-The parity harness (`web/scripts/parity.mjs`) is the safety net for all of it.
-It only works while both implementations are meant to agree.
+Remaining: `parse_table` (xlsx/csv/xml) and `parse_shelf` tiling (Canvas). Then
+storage, then the app becomes installable on Android as well as on a desktop.
 
-**Known risk:** `parse_kindle` stitches records split across page breaks, and
-that logic depends on the *order* PyMuPDF emits text lines. pdf.js makes no
-such guarantee. The bar is the one the Python meets: 237 records, `delta +0`,
-every record with a title, an author and a parseable date.
+### Two places the JavaScript deliberately differs from the Python
+
+Both are the port being more correct, and both are why the Kindle harness
+compares every field *except* `title_clipped`.
+
+**Clipped titles: 40 detected, against Python's 3.** Python infers a clipped
+title from a trailing space PyMuPDF happens to preserve, which catches almost
+none of them. pdf.js discards that space, so the port uses the evidence that
+actually exists — where the ink stopped. A title drawn to the column's edge was
+cut off by the browser rather than written that short. The rest of the flagged
+titles end mid-word (`…investigación cient`, `…(Bloomsbury Sigma) (E`), which
+is what a fixed-width clip looks like.
+
+**A soft hyphen.** PyMuPDF reports `César Garcí­a Muñoz`, with a soft
+hyphen inside the name; pdf.js does not. The port's spelling is the right one.
+
+The parity harnesses are the safety net for all of it. They only work while
+both implementations are meant to agree.
+
+**The risk that mattered, now settled:** `parse_kindle` stitches records split
+across page breaks, and that logic depends on the order the PDF library emits
+text in. pdf.js agrees with PyMuPDF about order — but not about where a line
+*ends*. It marks end-of-line on the item closing a run in the content stream,
+and the page puts a title and the buttons beside it in the same run, so grouping
+on that flag glues two columns together. Lines are broken on baseline changes
+and on horizontal gaps instead. The two populations do not overlap on this
+document: pdf.js splits a word wherever the font changes, so a ligature is its
+own item at a gap of zero, while separate controls on a row sit six points apart
+or more.
 
 **Open question:** reading spines needs a vision model. On a phone, copy-pasting
 eight tiles into an AI app is unpleasant enough that the Android path probably
