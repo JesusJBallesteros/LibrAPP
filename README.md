@@ -59,17 +59,13 @@ plain code running locally. You can use LibrAPP without any AI at all.
 
 ## Browser support
 
-LibrAPP is an ordinary web page, so what matters is the engine underneath a
-browser rather than its name.
-
 | Engine | Browsers | Everything works? |
 |---|---|---|
 | **Chromium** | Chrome, Edge, **Brave**, Opera, Vivaldi, Arc, **Comet**, Samsung Internet | Yes |
 | **Gecko** | Firefox 113+ | Yes, except saving to a folder and installing as an app |
 | **WebKit** | Safari 16.4+, all iOS browsers | Yes, except saving to a folder; install via Add to Home Screen |
 
-Any Chromium browser gets the full feature set, including Brave and Perplexity's
-Comet. Only Chromium browsers on a desktop can save your library to a folder you
+Only Chromium browsers on a desktop can save your library to a folder you
 choose; everywhere else it goes into browser storage, which works identically
 from inside the app but is not visible to other programs. See [where your
 library lives](#where-your-library-lives).
@@ -92,11 +88,9 @@ LibrAPP warns you when its storage is not marked persistent.
 
 ### Tested on
 
-Chrome and Edge on desktop, and Chrome on Android. Other Chromium browsers use
-the same engine and the same APIs, so they are expected to behave identically,
-but they are not part of regular testing. Firefox and Safari meet the
-requirements below and are also untested. If something breaks in yours, please
-open an issue — the **Your browser** panel says exactly what is missing.
+Chrome on W11 and Android. Firefox and Safari meet the
+requirements below but are untested. If something breaks in yours, please
+open an issue.
 
 Internet Explorer and browsers older than the versions above are not supported.
 
