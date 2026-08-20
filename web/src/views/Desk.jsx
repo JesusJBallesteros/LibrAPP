@@ -70,7 +70,7 @@ export default function Desk({ catalog }) {
     return (
       <div className="view">
         <header>
-          <h2>The LibrAPPrian's desk</h2>
+          <h2>LibrAPPrian's desk</h2>
           <p>Nothing to work with yet — build a catalog first.</p>
         </header>
       </div>
@@ -86,7 +86,7 @@ export default function Desk({ catalog }) {
   return (
     <div className="view">
       <header>
-        <h2>The LibrAPPrian's desk</h2>
+        <h2>LibrAPPrian's desk</h2>
         <p>
           Where the catalog stops being a list and starts being an argument. Everything on the left
           is computed locally. The right-hand side prepares a question for a model — your shelf is
