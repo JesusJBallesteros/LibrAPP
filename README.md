@@ -89,6 +89,36 @@ Five places:
 | **LibrAPPrian's desk** | what you bought and forgot, what the collection is made of, and questions to put to a model |
 | **Library** | where it lives, what it was built from, and export or import |
 
+### An optional API key
+
+Reading spines off a photograph is the one step no parser can do. Without a key
+LibrAPP prepares the tiles and the instructions for you to paste into any AI
+session, and the desk assembles its request the same way — that route needs
+nothing and is the default.
+
+Given a key, LibrAPP can do those two things itself. The box that takes it sits
+in **Shelf picture** and on the **desk**, wherever it is about to be used, and
+it always says which of three states it is in:
+
+| | |
+|---|---|
+| no key stored | the paste-it-yourself route, unchanged |
+| stored · in use | LibrAPP may read spines and answer questions |
+| stored · switched off | the key is kept but never used |
+
+Switching off and deleting answer different questions — "not now" and "not
+ever" — so they are separate buttons.
+
+**What a key costs you, in both senses.** Reading a whole 50 MP shelf is about
+28 cents; a close-up of three books is under three. And a key held in a browser
+is readable by anything running on this page, so use one scoped to its own
+workspace with a spend limit. Nothing that touches a key is ever required: every
+feature has a route that works without one.
+
+A model reading a spine can be wrong in a way the catalog cannot detect later,
+so what comes back is shown for approval before it is imported. Automating the
+call does not automate the trust.
+
 ### Where your library lives
 
 On a desktop, LibrAPP asks for **a folder you choose**. The files are yours:

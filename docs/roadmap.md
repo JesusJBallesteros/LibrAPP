@@ -184,10 +184,17 @@ document: pdf.js splits a word wherever the font changes, so a ligature is its
 own item at a gap of zero, while separate controls on a row sit six points apart
 or more.
 
-**Open question:** reading spines needs a vision model. On a phone, copy-pasting
-eight tiles into an AI app is unpleasant enough that the Android path probably
-wants an optional API key — which cuts against the earlier decision to hold no
-keys. To be decided when the shelf ingest is built, not before.
+**Settled:** an optional API key, held in the browser, entered through an
+explicit box that appears wherever it is about to be used and shows which of
+three states it is in — absent, in use, or stored but switched off. Every
+feature keeps a route that needs no key, so the earlier "agent-first" decision
+survives: the key is a convenience, never a dependency.
+
+Direct browser access was the thing worth checking first, and it works — a
+request from the page reaches `api.anthropic.com` and comes back with a real
+status, so no proxy is needed. The trade accepted knowingly: a key in a browser
+is readable by anything on the origin, which is why the interface says so and
+recommends a workspace-scoped key with a spend limit.
 
 ---
 

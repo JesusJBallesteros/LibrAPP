@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react'
 import { authorNames, byline, copyText, forgotten, intentWhy } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
+import ApiKeyBox from '../components/ApiKeyBox.jsx'
+import { usableKey } from '../ai/key.js'
+// Imported under another name: `ask` is already the state holding which
+// prompt is selected, and the local binding silently shadows the import.
+import { actualCost, ask as askModel, dollars } from '../ai/claude.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
 
@@ -28,6 +33,11 @@ export default function Desk({ catalog }) {
   const [question, setQuestion] = useState('')
   const [copied, setCopied] = useState(null)
   const [minYears, setMinYears] = useState(2)
+  const [keyStatus, setKeyStatus] = useState('absent')
+  const [answer, setAnswer] = useState('')
+  const [asking, setAsking] = useState(false)
+  const [spent, setSpent] = useState(null)
+  const [askError, setAskError] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
@@ -48,6 +58,29 @@ export default function Desk({ catalog }) {
       question.trim() ? `## The question\n\n${question.trim()}` : '## The question\n\n(fill this in)',
     ].join('\n')
   }, [context, chosen, question])
+
+  const askClaude = async () => {
+    setAskError(null)
+    setAnswer('')
+    setSpent(null)
+    setAsking(true)
+    try {
+      const apiKey = await usableKey()
+      if (!apiKey) throw new Error('No key is switched on.')
+      // The same block the copy button produces, so both routes ask the same
+      // question of the same model.
+      const { usage } = await askModel({
+        apiKey,
+        request: assembled,
+        onText: (chunk) => setAnswer((prior) => prior + chunk),
+      })
+      setSpent(actualCost(usage))
+    } catch (err) {
+      setAskError(err.message)
+    } finally {
+      setAsking(false)
+    }
+  }
 
   const flash = async (key, text) => {
     if (await copyText(text)) {
@@ -162,28 +195,62 @@ export default function Desk({ catalog }) {
             />
 
             <div className="row" style={{ marginTop: 10 }}>
+              {keyStatus === 'active' && (
+                <button
+                  className="btn primary"
+                  disabled={!assembled || asking}
+                  onClick={askClaude}
+                >
+                  {asking ? 'thinking…' : 'Ask Claude'}
+                </button>
+              )}
               <button
-                className="btn primary"
+                className={keyStatus === 'active' ? 'btn' : 'btn primary'}
                 disabled={!assembled}
                 onClick={() => flash('all', assembled)}
               >
                 {copied === 'all' ? 'Copied' : 'Copy the whole request'}
               </button>
-              <button
-                className="btn"
-                disabled={!context}
-                onClick={() => flash('ctx', context)}
-              >
+              <button className="btn" disabled={!context} onClick={() => flash('ctx', context)}>
                 {copied === 'ctx' ? 'Copied' : 'Copy just the profile'}
               </button>
             </div>
 
+            {askError && (
+              <div className="notice bad" style={{ marginTop: 12 }}>
+                <p className="tiny">{askError}</p>
+              </div>
+            )}
+
+            {(answer || asking) && (
+              <div style={{ marginTop: 14 }}>
+                <div className="spread">
+                  <strong className="tiny">Answer</strong>
+                  <span className="tiny faint">
+                    {asking ? 'streaming…' : spent !== null ? `cost ${dollars(spent)}` : ''}
+                  </span>
+                </div>
+                <pre className="snippet" style={{ marginTop: 8, whiteSpace: 'pre-wrap', maxHeight: 420 }}>
+                  {answer || ' '}
+                </pre>
+                {!asking && answer && (
+                  <button className="btn small" style={{ marginTop: 8 }} onClick={() => flash('answer', answer)}>
+                    {copied === 'answer' ? 'Copied' : 'Copy the answer'}
+                  </button>
+                )}
+              </div>
+            )}
+
+            <div style={{ marginTop: 16 }}>
+              <ApiKeyBox what="the desk" onChange={setKeyStatus} />
+            </div>
+
             <div className="notice" style={{ marginTop: 14 }}>
               <p className="tiny">
-                LibrAPP does not call a model itself, and holds no API key. It assembles the
-                instructions, your reading profile and your question into one block — paste it into
-                any AI session you already use. The prompts live in <code>prompts/</code> as plain
-                text, so you can edit how it asks.
+                {keyStatus === 'active'
+                  ? 'With a key, LibrAPP asks on your behalf. Without one it assembles the request for you to paste into any AI session — the same instructions, the same profile, the same question.'
+                  : 'LibrAPP assembles the instructions, your reading profile and your question into one block — paste it into any AI session you already use. Add a key below and it can ask for you instead.'}{' '}
+                The prompts live in <code>prompts/</code> as plain text, so you can edit how it asks.
               </p>
             </div>
           </div>
