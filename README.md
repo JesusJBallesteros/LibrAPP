@@ -45,10 +45,7 @@ plain code running locally. You can use LibrAPP without any AI at all.
 - **Nothing leaves your device.** No account to create, nothing uploaded.
 - **Works offline.** The catalog is a file on your device, not a web service.
 - **Reads what you already have.** Most catalogs make you type everything in.
-- **Honest about gaps.** A book nobody recorded reading is marked *not
-  recorded*, not *unread*. Uncertain entries say they are uncertain.
-- **Your data is plain JSON.** Readable, backup-able, and yours if you stop
-  using LibrAPP.
+- **Your data is plain JSON.** Readable, transferable and always yours.
 
 ---
 
@@ -83,9 +80,7 @@ You need at least one source. Any one of these is enough on its own.
 
 ### A photograph of a shelf
 
-Photograph the shelf straight on at your camera's **full resolution**. This
-matters more than anything else: a bookcase at 1 megapixel is unreadable, the
-same shelf at 50 is not.
+Photograph the shelf straight on at your camera's **full resolution**.
 
 1. Open **Shelf picture** and choose the photo.
 2. LibrAPP cuts it into tiles at full resolution. A close-up of a few books
@@ -159,9 +154,6 @@ it, and how confident LibrAPP is about the entry.
 | **read** | a source recorded it as read |
 | **unread** | a source recorded it as unread |
 | **not recorded** | nothing has ever said either way |
-
-The third is not a shade of the second. Treating unknown as unread would invent
-an answer for every book that came from a photograph.
 
 ### Confidence
 
