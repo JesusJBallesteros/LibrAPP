@@ -133,6 +133,11 @@ join key is author plus title.
 
 ## Overriding a value
 
-Not built yet. When it is, corrections belong in a separate `overrides.json`
-applied after the merge, so that a rebuild never discards them and the
-correction stays visible as a correction.
+Not built yet; specified in [roadmap.md](roadmap.md). Corrections belong in a
+separate `overrides.json` applied after the merge, so that a rebuild never
+discards them and the correction stays visible as a correction.
+
+The catch worth knowing before relying on it: the catalog is rebuilt from its
+sources every time, so **removing an entry cannot mean deleting it**. The next
+rebuild would read the same sources and put it back. Removal has to be a
+recorded suppression that outlives the rebuild.

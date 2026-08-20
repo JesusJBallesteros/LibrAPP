@@ -52,6 +52,8 @@ cannot — while judgements like genre come from whoever troubled to make one.
 - [x] Offline queries, including books you bought and forgot
 - [x] Prompts for synopses and recommendations
 - [x] Browse interface — a local window over all of it
+- [ ] Manual entry, and editing that overrides every source — see [docs/roadmap.md](docs/roadmap.md)
+- [ ] Installable on Windows, Linux and Android without a terminal
 
 ## Your data stays yours
 
