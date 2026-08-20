@@ -261,7 +261,7 @@ def collapsed_index(collapsed: list[dict]) -> dict[frozenset[str], list[dict]]:
     for record in collapsed:
         # The row's title lists the volumes as well as naming the series; only
         # the part before the first list separator is the name itself.
-        name = record["series"] or re.split(r"[-–—;(]|vols?\.", record["title"])[0]
+        name = record["series"] or re.split(r"[-–—;(]|\bvols?\.", record["title"])[0]
         name = name.strip(" ,;")
         entry = {
             "genre": record["genre"],
