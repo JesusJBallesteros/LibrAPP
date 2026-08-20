@@ -10,7 +10,7 @@ import { clean } from './textmatch.js'
 
 export const SCHEMA_VERSION = 1
 
-export const KINDS = new Set(['store-export', 'photo', 'table'])
+export const KINDS = new Set(['store-export', 'photo', 'table', 'manual'])
 export const FORMATS = new Set(['ebook', 'physical', 'audio'])
 export const CONFIDENCE = { high: 3, medium: 2, low: 1 }
 

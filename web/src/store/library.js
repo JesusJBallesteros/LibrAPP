@@ -9,10 +9,13 @@
 // diffs cleanly if the folder happens to be a git repository.
 
 import { build } from '../core/build.js'
-import { makeSource, readSource, SourceError } from '../core/records.js'
+import { applyOverrides, emptyOverrides, readOverrides } from '../core/overrides.js'
+import { makeSource, normalise, readSource, SourceError } from '../core/records.js'
 
 const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
+const OVERRIDES = 'overrides.json'
+const MANUAL = 'manual'
 
 export class Library {
   constructor(backend) {
@@ -73,6 +76,51 @@ export class Library {
     }
   }
 
+  // -- corrections ---------------------------------------------------------
+
+  async readOverrides() {
+    const text = await this.backend.readText(OVERRIDES)
+    if (!text) return emptyOverrides()
+    return readOverrides(JSON.parse(text))
+  }
+
+  async writeOverrides(overrides) {
+    await this.backend.writeText(OVERRIDES, JSON.stringify(overrides, null, 2))
+  }
+
+  // -- typing a book in ----------------------------------------------------
+
+  /**
+   * Append one hand-typed book to the manual source.
+   *
+   * Read, append, write: the manual source is the only one a person edits by
+   * hand and the only one that cannot be regenerated from something upstream,
+   * so a write must never lose the records already in it.
+   *
+   * It is a source like any other, so a book typed in here clusters and merges
+   * with the same book from an export rather than becoming a duplicate. High
+   * confidence is right: someone holding the book outranks a model reading a
+   * spine, though a store export still owns the purchase date.
+   */
+  async addManualRecord(record) {
+    const text = await this.backend.readText(`${SOURCES}/${MANUAL}.json`)
+    const existing = text ? readSource(JSON.parse(text), `${MANUAL}.json`).records : []
+    const kept = existing.map((r) => {
+      const { _source, ...rest } = r
+      return rest
+    })
+    kept.push(normalise(record))
+    return this.putSource({
+      name: MANUAL,
+      kind: 'manual',
+      origin: 'typed in',
+      format: 'physical',
+      confidence: 'high',
+      records: kept,
+      stats: { entries: kept.length },
+    })
+  }
+
   /** Rebuild from every source present, and store the result. */
   async rebuild() {
     const sources = await this.readSources()
@@ -86,7 +134,10 @@ export class Library {
     // Ordered by name, so a rebuild is reproducible: source order decides which
     // record supplies a book's credit when two are equally reliable.
     sources.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0))
-    const catalog = build(sources)
+    // Built first, corrected second. The merge never sees the corrections, so
+    // a correction cannot quietly change how two sources are reconciled — it
+    // only changes what the finished entry says.
+    const catalog = applyOverrides(build(sources), await this.readOverrides())
     await this.backend.writeText(CATALOG, JSON.stringify(catalog, null, 2))
     return catalog
   }
@@ -109,6 +160,9 @@ export class Library {
       librapp_bundle: 1,
       exported_at: new Date().toISOString(),
       sources,
+      // Corrections travel with the sources. They are the one thing in a
+      // library that exists nowhere else and cannot be derived again.
+      overrides: await this.readOverrides(),
     }
   }
 
@@ -125,6 +179,7 @@ export class Library {
       await this.backend.writeText(`${SOURCES}/${file}`, JSON.stringify(payload, null, 2))
       written++
     }
+    if (bundle.overrides) await this.writeOverrides(readOverrides(bundle.overrides))
     return written
   }
 }

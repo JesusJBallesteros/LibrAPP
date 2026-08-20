@@ -131,13 +131,36 @@ unevenly.
 **No ISBNs or ASINs.** No source carries one, so `id` is a slug and the only
 join key is author plus title.
 
-## Overriding a value
+## Corrections
 
-Not built yet; specified in [roadmap.md](roadmap.md). Corrections belong in a
-separate `overrides.json` applied after the merge, so that a rebuild never
-discards them and the correction stays visible as a correction.
+Corrections live in `overrides.json`, beside the catalog, and are applied after
+the merge. The merge never sees them, so a correction cannot change how two
+sources are reconciled — only what the finished entry says.
 
-The catch worth knowing before relying on it: the catalog is rebuilt from its
-sources every time, so **removing an entry cannot mean deleting it**. The next
-rebuild would read the same sources and put it back. Removal has to be a
-recorded suppression that outlives the rebuild.
+```jsonc
+{
+  "librapp_overrides": 1,
+  "entries": {
+    "<book id>": {
+      "set":     { "genre": "Reference" },   // only fields actually changed
+      "removed": false,
+      "at":      "2026-08-20",
+      "title":   "…",                        // as it was when the note was made
+      "authors": ["…"]                       // so an orphan can still be named
+    }
+  }
+}
+```
+
+A corrected entry carries `overridden: {fields, was, at, why}` and the flag
+`corrected`, so what a value used to be is never lost.
+
+**Removal is a suppression, not a deletion.** The catalog is rebuilt from its
+sources every time, so deleting an entry would simply bring it back on the next
+rebuild. Removed entries appear in `review.removed_by_hand`.
+
+**An override is keyed on the entry id**, which is a slug of author and title,
+and therefore changes when a better source supplies a fuller title. Each
+override stores the title and authors it was made against, so one that no
+longer resolves is listed in `review.orphaned_overrides` rather than silently
+dropped.

@@ -6,7 +6,27 @@ are easy to forget and expensive to rediscover.
 
 ---
 
-## 1 · Manual entry
+## 0 · The desk on a phone
+
+Reported after using LibrAPP on Android, where the desk is the view that fares
+worst.
+
+**Widgets overflow the screen width.** The desk lays out two columns and its
+cards assume room they do not have on a phone. Everything there should fit a
+narrow screen without sideways scrolling.
+
+**Replace the composition bar chart with a pie chart.** Name the categories
+that make up the first 80% explicitly and collapse the remainder into a single
+"other" slice — a long list of thin bars says less than a few named wedges, and
+costs more width.
+
+**"Bought, and never opened" should start at five titles**, with a control to
+expand to the full list. It currently renders up to fourteen, which on a phone
+pushes everything below it off the screen.
+
+---
+
+## 1 · Manual entry — done
 
 **Add a book by typing it.** A form with the fields the schema already has —
 title, authors, series and volume, formats, read state, acquired date, genre,
@@ -43,7 +63,7 @@ Amazon does, Amazon knows the purchase date better than you do.
 
 ---
 
-## 2 · Edit and remove, overriding every source
+## 2 · Edit and remove, overriding every source — done
 
 **Correct any field on any entry, or take an entry out**, and have that decision
 win over whatever the sources say — permanently, across every future rebuild.
@@ -109,15 +129,29 @@ Kept separate for three reasons:
   record would mean rewriting an ingested file, and ingested files should stay
   exactly as their source produced them.
 
-### Effect on the port
+### How it was built
 
-This changes `build()`, which is the function currently proved byte-identical
-between the Python and JavaScript implementations. Adding it to one and not the
-other retires that check. Sequencing matters — see below.
+`build()` is untouched. Corrections are applied to the finished catalog by
+`core/overrides.js`, so the merge never sees them and a correction cannot
+quietly change how two sources are reconciled — it only changes what the
+finished entry says.
+
+Two things came out of using it that were not in this specification:
+
+**Only changed fields are recorded.** The first version stored every field on
+the form, which pinned each one to its current value so no later improvement to
+a source could ever reach the entry again — and it invented a duplicate author
+by re-resolving a name that had not changed. The editor now records the
+difference, and refuses a save that changes nothing.
+
+**Restoring a removed book is not the same as undoing every correction.** A
+book can be both edited and removed; bringing it back should not silently
+discard the edit. `Restore` clears only the removal, while `Undo` on an edited
+entry drops the correction entirely.
 
 ---
 
-## 3 · Finish the JavaScript port
+## 3 · The JavaScript port — done
 
 Done: the matching and merging core, proved byte-identical against Python
 (`web/scripts/parity.mjs`). And `parse_kindle`, via pdf.js — 237 records,
@@ -198,15 +232,10 @@ recommends a workspace-scoped key with a spend limit.
 
 ---
 
-## Order
+## What is left
 
-**3 before 2.** The override layer changes `build()`, and `build()` is what the
-parity harness checks. Changing it in one language would blunt the harness
-precisely while porting the riskiest code that depends on it. Once the port is
-done and proved, the Python becomes a frozen reference and the override layer
-gets written once, in one place.
+**0 · the desk on a phone**, above. The only outstanding item.
 
-**1 can go whenever.** Manual entry adds a source and does not touch `build()`,
-so it does not disturb the harness at all. If something useful is wanted before
-the port lands, this is the safe one to pull forward — at the cost of writing
-the form twice, once against the Python server and again after the port.
+The Python tools remain as a working command-line path over the same folder
+layout, and as the reference the JavaScript was proved against. They do not
+apply corrections, which exist only in the app.

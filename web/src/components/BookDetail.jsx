@@ -9,6 +9,7 @@ const FLAG_TEXT = {
   no_genre: 'no genre recorded yet',
   placeholder: 'a stand-in, not a real title — re-photograph this one',
   series_not_expanded: 'stands for several volumes no source lists individually',
+  corrected: 'you corrected this entry by hand',
 }
 
 const CONFIDENCE_TEXT = {
@@ -17,7 +18,7 @@ const CONFIDENCE_TEXT = {
   low: 'a guess',
 }
 
-export default function BookDetail({ book, authors, onClose }) {
+export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy }) {
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -43,9 +44,26 @@ export default function BookDetail({ book, authors, onClose }) {
       <aside className="detail" onClick={(e) => e.stopPropagation()}>
         <div className="spread" style={{ marginBottom: 10 }}>
           <span className={`pill ${state}`}>{READ_LABEL[state]}</span>
-          <button className="btn small" onClick={onClose}>
-            Close
-          </button>
+          <span className="row" style={{ gap: 6 }}>
+            {onEdit && (
+              <button className="btn small" onClick={() => onEdit(book)} disabled={busy}>
+                Edit
+              </button>
+            )}
+            {onRemove && (
+              <button
+                className="btn small"
+                onClick={() => onRemove(book)}
+                disabled={busy}
+                style={{ borderColor: 'color-mix(in srgb, var(--bad) 50%, transparent)', color: 'var(--bad)' }}
+              >
+                Remove
+              </button>
+            )}
+            <button className="btn small" onClick={onClose}>
+              Close
+            </button>
+          </span>
         </div>
 
         <h3>{book.title}</h3>
@@ -65,6 +83,27 @@ export default function BookDetail({ book, authors, onClose }) {
             Nothing has ever recorded whether this was read. That is not the same as unread, so it
             is left blank rather than guessed.
           </p>
+        )}
+
+        {book.overridden && (
+          <div className="notice" style={{ marginTop: 14 }}>
+            <p className="tiny">
+              <strong>Corrected by hand{book.overridden.at ? ` on ${book.overridden.at}` : ''}.</strong>{' '}
+              {book.overridden.fields.join(', ')} — overriding what the sources say.
+              {book.overridden.why ? ` ${book.overridden.why}` : ''}
+            </p>
+            <p className="tiny" style={{ marginTop: 6 }}>
+              Before:{' '}
+              {book.overridden.fields
+                .map((f) => `${f} = ${JSON.stringify(book.overridden.was[f])}`)
+                .join(' · ')}
+            </p>
+            {onRevert && (
+              <button className="btn small" style={{ marginTop: 8 }} onClick={() => onRevert(book)} disabled={busy}>
+                Undo this correction
+              </button>
+            )}
+          </div>
         )}
 
         {book.notes && (

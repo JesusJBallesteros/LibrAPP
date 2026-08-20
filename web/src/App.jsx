@@ -118,7 +118,7 @@ export default function App() {
         )}
 
         {view === 'catalog' ? (
-          <Catalog catalog={lib.catalog} onGo={setView} />
+          <Catalog catalog={lib.catalog} onGo={setView} lib={lib} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} />
         ) : view === 'list' ? (

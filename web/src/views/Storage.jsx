@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
+import { clearOverride, setRemoved } from '../core/overrides.js'
 
 const KINDS = {
   folder: 'a folder you chose — plain files you can open, back up or commit',
@@ -30,6 +31,36 @@ export default function Storage({ lib }) {
     URL.revokeObjectURL(url)
     setNote(`Exported ${bundle.sources.length} source(s).`)
   }
+
+  const review = lib.catalog?.review || {}
+  const removed = review.removed_by_hand || []
+  const corrected = review.corrected || []
+  const orphaned = review.orphaned_overrides || []
+
+  /** Drop a correction entirely, returning the entry to what the sources say. */
+  const undo = (id, title) =>
+    lib.run(async (library) => {
+      await library.writeOverrides(clearOverride(await library.readOverrides(), id))
+      await library.rebuild()
+      setNote(`Correction to ${title || id} undone.`)
+    })
+
+  /**
+   * Bring a removed book back without discarding anything else about it.
+   *
+   * A book can be both edited and removed, and undoing the removal should not
+   * quietly undo the edit as well — that is a second decision the person did
+   * not make.
+   */
+  const restore = (entry) =>
+    lib.run(async (library) => {
+      const overrides = await library.readOverrides()
+      await library.writeOverrides(
+        setRemoved(overrides, { id: entry.id, title: entry.title, authors: entry.authors }, false),
+      )
+      await library.rebuild()
+      setNote(`${entry.title || entry.id} restored.`)
+    })
 
   const importBundle = (file) =>
     lib.run(async (library) => {
@@ -144,6 +175,75 @@ export default function Storage({ lib }) {
           Every source stays as its ingester wrote it. Rebuilding merges all of them, so removing
           one and rebuilding is how an import is undone.
         </p>
+      </div>
+
+      <div className="card">
+        <h3>Corrections you have made</h3>
+        <p className="muted tiny">
+          Kept in <code>overrides.json</code>, apart from your sources and applied after every
+          rebuild. Removing a book cannot delete it — the next rebuild reads the same sources and
+          would put it back — so a removal is recorded here instead, and can be undone.
+        </p>
+
+        {!removed.length && !corrected.length && !orphaned.length && (
+          <p className="muted" style={{ marginTop: 10 }}>Nothing corrected yet.</p>
+        )}
+
+        {removed.length > 0 && (
+          <div style={{ marginTop: 12 }}>
+            <strong className="tiny">Removed ({removed.length})</strong>
+            {removed.map((r) => (
+              <div className="forgotten-item spread" key={r.id}>
+                <span>
+                  <span className="title">{r.title}</span>
+                  {r.why && <div className="why">{r.why}</div>}
+                </span>
+                <button className="btn small" disabled={lib.busy} onClick={() => restore(r)}>
+                  Restore
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {corrected.length > 0 && (
+          <div style={{ marginTop: 14 }}>
+            <strong className="tiny">Edited ({corrected.length})</strong>
+            {corrected.map((c) => (
+              <div className="forgotten-item spread" key={c.id}>
+                <span>
+                  <span className="title">{c.title}</span>
+                  <div className="why">changed {c.fields.join(', ')}</div>
+                </span>
+                <button className="btn small" disabled={lib.busy} onClick={() => undo(c.id, c.title)}>
+                  Undo
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {orphaned.length > 0 && (
+          <div className="notice bad" style={{ marginTop: 14 }}>
+            <p className="tiny">
+              <strong>{orphaned.length} correction(s) no longer match any book.</strong> An entry is
+              identified by its author and title, so this happens when a better source supplies a
+              fuller title and the identity changes. They are listed rather than dropped, because
+              silence would look like the correction had stopped mattering.
+            </p>
+            {orphaned.map((o) => (
+              <div className="forgotten-item spread" key={o.id}>
+                <span>
+                  <span className="title">{o.title || o.id}</span>
+                  <div className="why">{o.removed ? 'was removed' : 'was edited'}{o.at ? ` on ${o.at}` : ''}</div>
+                </span>
+                <button className="btn small" disabled={lib.busy} onClick={() => undo(o.id, o.title)}>
+                  Forget it
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="card">

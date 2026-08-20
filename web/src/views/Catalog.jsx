@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import BookDetail from '../components/BookDetail.jsx'
+import BookEditor from '../components/BookEditor.jsx'
+import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
 import { READ_LABEL, authorNames, byline, fold, readState, sortName, uniqueSorted } from '../lib.js'
 
 const GROUPINGS = [
@@ -15,7 +17,7 @@ const SORTS = {
   oldest: (a, b) => (a.acquired_on || '￿').localeCompare(b.acquired_on || '￿'),
 }
 
-export default function Catalog({ catalog, onGo }) {
+export default function Catalog({ catalog, onGo, lib }) {
   const [q, setQ] = useState('')
   const [read, setRead] = useState('all')
   const [format, setFormat] = useState('all')
@@ -23,6 +25,7 @@ export default function Catalog({ catalog, onGo }) {
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)
+  const [editing, setEditing] = useState(null) // an existing book, or 'new'
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
 
@@ -95,7 +98,24 @@ export default function Catalog({ catalog, onGo }) {
           <button className="btn" onClick={() => onGo('list')}>
             Upload a list
           </button>
+          <button className="btn" onClick={() => setEditing('new')}>
+            Type a book in
+          </button>
         </div>
+        {editing === 'new' && (
+          <BookEditor
+            authorNames={authors}
+            busy={lib?.busy}
+            onCancel={() => setEditing(null)}
+            onSave={(record) =>
+              lib.run(async (library) => {
+                await library.addManualRecord(record)
+                await library.rebuild()
+                setEditing(null)
+              })
+            }
+          />
+        )}
       </div>
     )
   }
@@ -110,8 +130,13 @@ export default function Catalog({ catalog, onGo }) {
               ? `${prepared.length} books`
               : `${shown.length} of ${prepared.length} books`}
             {catalog.generated_at && ` · built ${new Date(catalog.generated_at).toLocaleString()}`}
+            {catalog.counts?.corrected ? ` · ${catalog.counts.corrected} corrected` : ''}
+            {catalog.counts?.removed ? ` · ${catalog.counts.removed} removed` : ''}
           </p>
         </div>
+        <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
+          Type a book in
+        </button>
       </header>
 
       <div className="toolbar">
@@ -234,7 +259,61 @@ export default function Catalog({ catalog, onGo }) {
       )}
 
       {selected && (
-        <BookDetail book={selected} authors={authors} onClose={() => setSelected(null)} />
+        <BookDetail
+          book={selected}
+          authors={authors}
+          busy={lib?.busy}
+          onClose={() => setSelected(null)}
+          onEdit={(book) => {
+            setSelected(null)
+            setEditing(book)
+          }}
+          onRemove={(book) =>
+            lib.run(async (library) => {
+              await library.writeOverrides(setRemoved(await library.readOverrides(), book, true))
+              await library.rebuild()
+              setSelected(null)
+            })
+          }
+          onRevert={(book) =>
+            lib.run(async (library) => {
+              await library.writeOverrides(clearOverride(await library.readOverrides(), book.id))
+              await library.rebuild()
+              setSelected(null)
+            })
+          }
+        />
+      )}
+
+      {editing && editing !== 'new' && (
+        <BookEditor
+          book={editing}
+          authorNames={authors}
+          busy={lib?.busy}
+          onCancel={() => setEditing(null)}
+          onSave={(changes) =>
+            lib.run(async (library) => {
+              await library.writeOverrides(setOverride(await library.readOverrides(), editing, changes))
+              await library.rebuild()
+              setEditing(null)
+            })
+          }
+        />
+      )}
+
+      {editing === 'new' && (
+        <BookEditor
+          authorNames={authors}
+          busy={lib?.busy}
+          onCancel={() => setEditing(null)}
+          onSave={(record) =>
+            lib.run(async (library) => {
+              await library.addManualRecord(record)
+              await library.rebuild()
+              setEditing(null)
+            })
+          }
+        />
       )}
     </div>
   )

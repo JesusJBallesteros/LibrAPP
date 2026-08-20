@@ -1,289 +1,351 @@
 # LibrAPP
 
-A personal book catalog that works offline.
+A personal book catalog that runs entirely on your own device.
 
-LibrAPP turns whatever record you already have of your books — a photograph of
-a shelf, a store export, a spreadsheet — into one clean local catalog you can
-browse, search and filter without a network connection and without asking
-anyone's permission.
+Photograph a shelf, drop in a spreadsheet, or import a store export. LibrAPP
+turns them into one catalog you can search, filter and browse offline. Your
+books stay on your device — there is no account, no server and no sync.
 
-AI is used at the edges, never in the middle:
+Install it on Windows, Linux or Android. It works with no network connection.
 
-| Stage | What happens | Needs AI |
-|---|---|---|
-| **Ingest** | Photos, exports and lists become structured records | only for photos |
-| **Catalog** | Browse, search, filter, check what you own and what you have read | **no** |
-| **Ask** | Recommendations, synopses, what you forgot you bought | yes |
+---
 
-The middle column is the point. Once a book is in the catalog, everything you
-do with it day to day is local, fast, and yours.
+## Contents
 
-## Any source, or all of them
+- [What it does](#what-it-does)
+- [Install](#install)
+- [Adding your books](#adding-your-books)
+- [Using the catalog](#using-the-catalog)
+- [Corrections](#corrections)
+- [The desk](#the-desk)
+- [Where your library lives](#where-your-library-lives)
+- [Optional API key](#optional-api-key)
+- [Command-line tools](#command-line-tools)
+- [Development](#development)
+- [Licence](#licence)
 
-The three inputs are independent. A catalog can be built from a photograph
-alone, a list alone, or every source you have:
+---
 
-```bash
-# a photograph of a shelf, and nothing else
-python tools/librapp/build_catalog.py --source shelf.json -o catalog.json
+## What it does
 
-# an exported list, and nothing else
-python tools/librapp/build_catalog.py --source list.json -o catalog.json
+| | |
+|---|---|
+| **Import** | shelf photographs, spreadsheets, CSV, XML, store exports as PDF |
+| **Merge** | the same book from several sources becomes one entry, not duplicates |
+| **Browse** | search, filter and group offline — no network, no waiting |
+| **Correct** | edit or remove any entry; corrections outlast every rebuild |
+| **Ask** | recommendations and synopses, using your catalog as context |
 
-# everything, merged
-python tools/librapp/build_catalog.py --source kindle.json --source shelf.json --source list.json -o catalog.json
-```
+Only two steps involve AI: reading spines off a photograph, and asking
+questions. Everything else — importing, merging, searching, filtering — is
+plain code running locally. You can use LibrAPP without any AI at all.
 
-Each ingester writes the same envelope ([`records.py`](tools/librapp/records.py))
-and the builder reads nothing else, so a new kind of input means one more
-ingester and no change to anything downstream.
+### Why it might suit you
 
-Sources that describe the same book are merged into one entry owning every
-format it was found in. Where they disagree, the more reliable source wins on
-matters of fact — a store export knows the acquisition date, a photograph
-cannot — while judgements like genre come from whoever troubled to make one.
+- **Nothing leaves your device.** No account to create, nothing uploaded.
+- **Works offline.** The catalog is a file on your device, not a web service.
+- **Reads what you already have.** Most catalogs make you type everything in.
+- **Honest about gaps.** A book nobody recorded reading is marked *not
+  recorded*, not *unread*. Uncertain entries say they are uncertain.
+- **Your data is plain JSON.** Readable, backup-able, and yours if you stop
+  using LibrAPP.
 
-## Status
+---
 
-- [x] Store export ingest — Amazon Kindle "Manage Your Content and Devices" PDF
-- [x] List ingest — `.xlsx`, `.csv`, `.tsv`, `.xml`
-- [x] Shelf-photo ingest — tiling, transcription, validation
-- [x] Catalog builder — any number of sources, in any combination
-- [x] Offline queries, including books you bought and forgot
-- [x] Prompts for synopses and recommendations
-- [x] Browse interface — a local window over all of it
-- [x] Installable on Windows, Linux and Android — no terminal, no server, no Python
-- [ ] Manual entry, and editing that overrides every source — see [docs/roadmap.md](docs/roadmap.md)
+## Install
 
-## Your data stays yours
+### On a phone or tablet
 
-This repository is public. **Your catalog is not part of it.**
+Open the app in Chrome and choose **Install app** (or **Add to Home screen**)
+from the browser menu. It gets its own icon and window.
 
-`sources/` and `data/private/` are gitignored. Raw inputs — your exports, your
-shelf photographs — and the catalog built from them stay on your machine. What
-ships here is the tooling and a small sample catalog.
+### On a desktop
 
-## The app
+Open the app in Chrome or Edge and click the **install icon** in the address
+bar.
+
+### Running it yourself
+
+LibrAPP is a static site. Build it and serve the `web/dist` folder from
+anywhere — a local server, a static host, GitHub Pages.
 
 ```bash
 cd web && npm install && npm run build
 ```
 
-Serve `web/dist` from anywhere — including a static host like GitHub Pages —
-and open it. Chrome and Edge will offer to **install** it, on Windows, Linux
-and Android alike: its own window, its own icon, no browser chrome, and it
-keeps working with no network.
+Requirements: Node 20+ to build. Nothing to run it.
 
-There is no server and no Python behind it. Every ingester runs in the browser:
-the PDF is read with pdf.js, the spreadsheet with a zip reader over the
-platform's own `DecompressionStream`, the photograph is cut up on a canvas.
-Nothing is uploaded, because there is nowhere to upload it to.
+---
 
-Five places:
+## Adding your books
 
-| | |
-|---|---|
-| **Catalog** | everything you own — search, filter by read state, format or source, group by title, author or series, click any book for the whole record |
-| **Shelf picture** | drop a photograph, get tiles, bring back the transcription |
-| **Upload list** | drop a spreadsheet, CSV, XML or store export |
-| **LibrAPPrian's desk** | what you bought and forgot, what the collection is made of, and questions to put to a model |
-| **Library** | where it lives, what it was built from, and export or import |
-
-### An optional API key
-
-Reading spines off a photograph is the one step no parser can do. Without a key
-LibrAPP prepares the tiles and the instructions for you to paste into any AI
-session, and the desk assembles its request the same way — that route needs
-nothing and is the default.
-
-Given a key, LibrAPP can do those two things itself. The box that takes it sits
-in **Shelf picture** and on the **desk**, wherever it is about to be used, and
-it always says which of three states it is in:
-
-| | |
-|---|---|
-| no key stored | the paste-it-yourself route, unchanged |
-| stored · in use | LibrAPP may read spines and answer questions |
-| stored · switched off | the key is kept but never used |
-
-Switching off and deleting answer different questions — "not now" and "not
-ever" — so they are separate buttons.
-
-**What a key costs you, in both senses.** Reading a whole 50 MP shelf is about
-28 cents; a close-up of three books is under three. And a key held in a browser
-is readable by anything running on this page, so use one scoped to its own
-workspace with a spend limit. Nothing that touches a key is ever required: every
-feature has a route that works without one.
-
-A model reading a spine can be wrong in a way the catalog cannot detect later,
-so what comes back is shown for approval before it is imported. Automating the
-call does not automate the trust.
-
-### Where your library lives
-
-On a desktop, LibrAPP asks for **a folder you choose**. The files are yours:
-plain JSON you can read, back up, or keep in a private repository, laid out
-exactly as the command-line tools expect, so both can work on the same folder.
-
-Android Chrome has no folder picker, so there it uses **browser storage** —
-same file semantics, managed by the browser, invisible outside the app. Export
-and import are how a library moves between devices. An export holds the
-sources, not the catalog: the catalog is rebuilt on the other side, so two
-copies cannot drift into disagreeing about which is current.
-
-Working on the interface itself:
-
-```bash
-cd web && npm run dev
-```
-
-## Requirements
-
-- Python 3.11+
-- [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF ingest — `pip install pymupdf`
-- [Pillow](https://python-pillow.org/) for photo ingest — `pip install pillow`
-
-Nothing is needed for lists or for querying. Node is needed only to build the
-interface, never to run it — the built files are plain HTML, CSS and JavaScript.
-
-## Ingesting
+You need at least one source. Any one of these is enough on its own.
 
 ### A photograph of a shelf
 
-Photograph the shelf at **full resolution**, straight on. This is the one step
-that matters more than any code here: a whole bookcase at 1 megapixel is
-unreadable, and the same shelf at 50 is not.
+Photograph the shelf straight on at your camera's **full resolution**. This
+matters more than anything else: a bookcase at 1 megapixel is unreadable, the
+same shelf at 50 is not.
 
-```bash
-python tools/librapp/parse_shelf.py tile sources/shelf/shelf.jpg -o work/tiles
-```
+1. Open **Shelf picture** and choose the photo.
+2. LibrAPP cuts it into tiles at full resolution. A close-up of a few books
+   stays whole; a wide bookcase is split into several tiles. Adjust the grid
+   with the **across** and **down** buttons if the default does not suit your
+   shelf.
+3. Read the tiles:
+   - With an [API key](#optional-api-key): press **Read these tiles for me**.
+   - Without one: press **Copy the instructions**, save the tiles, and give
+     both to any AI assistant. Bring back the JSON it writes.
+4. Check what it read, then import.
 
-That cuts the photograph into overlapping crops at native resolution. Read them
-following [`prompts/ingest-shelf.md`](prompts/ingest-shelf.md) — point Claude
-Code at the tiles, or use any model that can see — and write the transcription
-it describes. Then:
+Aim for tiles showing a handful of whole spines with the title readable top to
+bottom. Adding **rows** splits titles in half — only do it when the photo
+really shows shelves stacked above one another.
 
-```bash
-python tools/librapp/parse_shelf.py import work/spines.json -o data/private/shelf.json
-```
-
-The import refuses a transcription with an untitled book or an unknown
-confidence value, which is the point: a bad read should stop before it reaches
-the catalog rather than after.
-
-A photograph yields a title, usually an author, sometimes a publisher — and
-nothing else. No dates, no read flags. The catalog records that as *unknown*
-rather than guessing, and another source can fill it in later.
+A photograph shows a title, usually an author, sometimes a publisher. It cannot
+show when you bought a book or whether you read it, so those stay blank until
+another source fills them in.
 
 ### A list you already keep
 
-```bash
-python tools/librapp/parse_table.py library.xlsx -o data/private/list.json
-python tools/librapp/parse_table.py books.csv    -o data/private/list.json --format physical
-```
+Open **Upload list** and drop in a `.xlsx`, `.csv`, `.tsv` or `.xml` file.
 
-Columns are matched by name, in several languages — a sheet headed `Autor /
-Título / Género` works as well as `author / title / genre`. A file holding more
-than one list is refused until you name which one with `--section`, so a
-wishlist is never silently imported as books you own.
+Columns are matched by name in English, Spanish and German, so a sheet headed
+`Autor / Título / Género` works as well as `author / title / genre`. Recognised
+columns include title, author, genre, keywords, series, volume, publisher,
+acquired date, read status, format and location. Unrecognised columns are
+ignored.
 
-Rows standing for a whole series in one cell are marked rather than counted as
-one book. If another source has the individual volumes, they inherit the row's
-genre; if nothing does, the row survives as a single flagged entry instead of
-quietly disappearing.
+If a file holds more than one list, LibrAPP asks which one you want before
+importing anything.
 
 ### A store export
 
-Export from **Amazon → Manage Your Content and Devices**, printing the
-paginated list to PDF.
+Export your library from Amazon's **Manage Your Content and Devices** page,
+printing the list to PDF, then drop the PDF into **Upload list**.
+
+This recovers the title, authors, publisher, purchase date, read status and how
+many devices and collections each book is in.
+
+### Typing a book in
+
+Press **Type a book in** from the catalog for anything the other sources cannot
+see — a gift, a borrowed book, something read but not owned.
+
+Typed entries merge with the same book from other sources rather than
+duplicating it.
+
+---
+
+## Using the catalog
+
+**Search** across titles, authors, series and tags.
+
+**Filter** by read status, format (paper, ebook, audio) and which source a book
+came from.
+
+**Group** by title, author or series.
+
+**Sort** by title, author, newest or oldest.
+
+**Click any book** for the full record: series and volume, formats, purchase
+date, publisher, genre and tags, where it is shelved, which sources know about
+it, and how confident LibrAPP is about the entry.
+
+### Read status has three values
+
+| | |
+|---|---|
+| **read** | a source recorded it as read |
+| **unread** | a source recorded it as unread |
+| **not recorded** | nothing has ever said either way |
+
+The third is not a shade of the second. Treating unknown as unread would invent
+an answer for every book that came from a photograph.
+
+### Confidence
+
+| | |
+|---|---|
+| **high** | from a machine-readable source, checked against its own count |
+| **medium** | transcribed by eye or by a model — a photograph, a hand-kept list |
+| **low** | a guess, or a placeholder for something illegible |
+
+When two sources disagree, the more reliable one wins on facts it can know. A
+store export knows the purchase date; a photograph does not. Judgements like
+genre come from whichever source recorded one.
+
+---
+
+## Corrections
+
+Anything LibrAPP got wrong can be fixed, and the fix outlasts every rebuild.
+
+**Edit** any entry from its detail panel. Only the fields you actually change
+are recorded, so later improvements to your sources still reach the rest of the
+entry. A corrected entry says so, shows what it said before, and can be undone.
+
+**Remove** an entry to take it out of the catalog. Because the catalog is
+rebuilt from your sources every time, a removal is stored as a decision rather
+than a deletion — otherwise the next rebuild would bring the book straight
+back.
+
+Everything you have corrected is listed under **Library → Corrections you have
+made**, where removals can be restored and edits undone.
+
+---
+
+## The desk
+
+The **LibrAPPrian's desk** is where the catalog stops being a list.
+
+**Bought, and never opened** — books you own and have not read, ordered by how
+long they have waited and weighted by how much you evidently wanted them at the
+time: filing a book into a collection, or putting it on several devices, is a
+record of intent that a purchase date alone is not. Only books *known* to be
+unread appear.
+
+**What the collection is made of** — a breakdown by genre.
+
+**Ask** — a synopsis of any book, or a recommendation. LibrAPP builds a profile
+of your reading (what the collection contains, how it has changed over the
+years, which authors dominate, what is waiting unread) and sends it with your
+question, so the answer is about your shelf rather than books in general.
+
+With an API key it asks directly. Without one it assembles the whole request
+for you to paste into any AI assistant.
+
+The book you ask about does not have to be one you own.
+
+The prompts live in [`prompts/`](prompts) as plain text. Edit them to change how
+LibrAPP asks.
+
+---
+
+## Where your library lives
+
+LibrAPP asks once, the first time you open it.
+
+**A folder you choose** (desktop). Plain JSON files you can read, back up, or
+keep in a private repository:
+
+```
+sources/       one file per import, exactly as it was read
+catalog.json   rebuilt from all of them
+overrides.json your corrections
+```
+
+**Browser storage** (phone, or if you prefer). Managed by the browser and
+private to LibrAPP. Not visible to other apps, so export is how a copy leaves
+the device.
+
+Either can be changed later from **Library**.
+
+### Moving between devices
+
+**Library → Export** writes one file holding your sources and corrections.
+Import it on the other device and the catalog is rebuilt there.
+
+This is a copy, not a sync. Changes on one device do not appear on the other.
+
+### Backups
+
+If you chose a folder, back it up like any other folder. If you use browser
+storage, export periodically — browsers can clear their own storage when a
+device runs short of space. LibrAPP warns you if your storage is not marked
+persistent.
+
+---
+
+## Optional API key
+
+LibrAPP works with no key. A key only lets it do two things itself instead of
+preparing them for you: reading spines from a photograph, and answering
+questions on the desk.
+
+The key box is in **Shelf picture** and on the **desk**, and always shows one of
+three states:
+
+| | |
+|---|---|
+| **no key stored** | LibrAPP prepares requests for you to paste elsewhere |
+| **stored · in use** | LibrAPP may read spines and answer questions |
+| **stored · switched off** | the key is kept but not used |
+
+Switching off keeps the key for later. Deleting removes it from the device.
+
+**Cost.** Reading a full 50-megapixel shelf costs roughly 28 cents. A close-up
+of a few books costs under three. LibrAPP shows an estimate before spending and
+the actual cost afterwards.
+
+**Security.** A key stored in a browser can be read by anything running on the
+page. Use a key scoped to its own workspace with a spend limit. The key is sent
+only to the API, is never written into your catalog, and is never included in an
+export.
+
+**Review.** Books read from a photograph are shown for your approval before
+they enter the catalog, with each entry's confidence beside it. A model reading
+a spine can be wrong in ways nothing downstream can detect.
+
+Get a key from the [Anthropic Console](https://console.anthropic.com/).
+
+---
+
+## Command-line tools
+
+Everything LibrAPP imports is also available as Python scripts in
+[`tools/librapp/`](tools/librapp), which read and write the same folder layout.
 
 ```bash
-python tools/librapp/parse_kindle.py sources/kindle.pdf -o data/private/kindle.json
-```
+python tools/librapp/parse_kindle.py export.pdf -o data/private/kindle.json
+python tools/librapp/parse_table.py library.xlsx -o data/private/list.json
+python tools/librapp/parse_shelf.py tile shelf.jpg -o work/tiles
+python tools/librapp/build_catalog.py --source data/private/kindle.json -o catalog.json
 
-```
-blocks found      : 237  (0 duplicate screens merged)
-unique records    : 237
-Amazon claims     : 237   -> delta +0
-read              : 159
-clipped titles    : 3
-```
-
-`delta +0` means every item Amazon claims to have was recovered.
-
-Two things about that source are worth knowing. Its own page clips long titles
-mid-word with no ellipsis, so those are flagged, and the merge then prefers a
-complete title from any other source that has one. That replacement is often
-*shorter* than the clipped text — the cut-off words are gone and nothing
-invents them. Where no source has the title whole, it stays truncated and keeps
-the flag. And the print-to-PDF splits records across page
-breaks, leaving half-rendered fragments behind; the parser reads the document
-as one continuous stream to stitch them back together. If `no title parsed` is
-ever above zero, a record was lost and the extraction should not be trusted.
-
-## Using the catalog from a terminal
-
-Everything the window does is also a command, and the commands came first.
-
-```bash
 python tools/librapp/query.py stats
 python tools/librapp/query.py search kant
 python tools/librapp/query.py series --volumes
-python tools/librapp/query.py unread --since 2024
-```
-
-### What you bought and forgot
-
-```bash
 python tools/librapp/query.py forgotten
+python tools/librapp/query.py context
 ```
 
-Books explicitly marked unread, ordered by how long they have waited and
-weighted by how much you evidently wanted them — filing a book into a
-collection, or pushing it to several devices, is a record of intent that a
-purchase date alone is not.
+Requires Python 3.11+, plus [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF
+import and [Pillow](https://python-pillow.org/) for photo tiling.
 
-Only books *known* to be unread are eligible. A physical book whose read state
-nobody ever recorded is unknown, not unread, and guessing would fill the list
-with books already finished.
+The command-line tools do not apply corrections — those are added by the app
+after the merge.
 
-## Asking
+---
 
-The prompts live in [`prompts/`](prompts) as plain text, so they can be read and
-edited without touching code.
+## Development
 
 ```bash
-python tools/librapp/query.py context > profile.md
+cd web
+npm install
+npm run dev      # development server
+npm run build    # production build into web/dist
 ```
 
-`context` prints a compact picture of the collection — what it is made of, how
-it has moved over the years, which authors dominate, what is waiting unread.
-Hand that to a model along with [`prompts/synopsis.md`](prompts/synopsis.md) or
-[`prompts/recommend.md`](prompts/recommend.md).
-
-The book you ask about does **not** have to be in the catalog. The profile is
-there to say who is asking, not to limit what can be asked — the difference
-between a generic synopsis and one that tells you how the book stands against
-the shelf you already own.
-
-## Layout
+The app has no backend. Everything runs in the browser: PDFs are read with
+pdf.js, spreadsheets with a small zip reader, photographs are tiled on a canvas.
 
 ```
-tools/librapp/     ingest, build, query and serve
-  serve.py         the local server behind the window
-web/               the interface (React, built with Vite)
-  records.py       the envelope every source writes and the builder reads
-  textmatch.py     deciding when two records mean the same book or person
-prompts/           AI prompts, version-controlled as plain text
-data/sample/       small invented catalog, committed
-data/private/      your real catalog                  (gitignored)
-sources/           your raw exports and photographs   (gitignored)
-docs/              schema and design notes
+web/src/core/      matching, merging and the catalog format
+web/src/ingest/    one module per kind of source
+web/src/store/     where a library lives on disk
+web/src/views/     the interface
+tools/librapp/     the Python command-line tools
+prompts/           AI prompts, as plain text
+docs/              catalog format and roadmap
 ```
 
-[`docs/schema.md`](docs/schema.md) describes what the catalog contains. The
-short version: `read` is three-valued, because a book nobody ever recorded
-reading is not the same as one known to be unread.
+- [`docs/schema.md`](docs/schema.md) — what the catalog contains
+- [`docs/roadmap.md`](docs/roadmap.md) — what is planned
+
+Your own library is never part of this repository: `sources/` and
+`data/private/` are gitignored.
+
+---
 
 ## Licence
 
