@@ -1,0 +1,80 @@
+# Publish the app to GitHub Pages.
+#
+# Only the interface is published — the code, and nothing else. A library lives
+# on the device that made it: `sources/` and `data/private/` are gitignored and
+# have nothing to do with this build. Serving the app from a URL is what makes
+# it installable on a phone, because Android requires HTTPS for a service
+# worker and localhost on a laptop is not reachable from one.
+
+name: Deploy the app to Pages
+
+on:
+  push:
+    branches: [main]
+    # Rebuild only when something the app is made of changes.
+    paths:
+      - 'web/**'
+      - 'prompts/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a queued run replaces an older one rather than
+# racing it.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        working-directory: web
+        run: npm ci
+
+      - name: Build
+        working-directory: web
+        # vite.config.js sets `base: './'`, so the build works unchanged under
+        # a project subpath like /LibrAPP/ as well as at a domain root.
+        run: npm run build
+
+      - name: Check the app can actually be installed
+        # A published page that cannot be installed is the one failure mode
+        # worth catching here, and it is cheap to check.
+        run: |
+          set -e
+          for f in web/dist/index.html web/dist/sw.js web/dist/manifest.webmanifest \
+                   web/dist/icons/icon-192.png web/dist/icons/icon-512.png \
+                   web/dist/icons/icon-maskable-512.png; do
+            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+          node --check web/dist/sw.js
+          grep -q 'manifest.webmanifest' web/dist/index.html
+          echo "manifest, icons and service worker are all present."
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

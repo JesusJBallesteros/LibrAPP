@@ -133,8 +133,23 @@ the device.
 
 The whole pipeline now runs end to end in JavaScript from the raw files
 (`web/scripts/end-to-end.mjs`) and produces the same catalog: 338 books, 236
-authors, every count matching. 33 entries differ, and all of them are titles
-the better clip detection repaired from another source.
+authors, every count matching. 33 entries differ, all of them titles.
+
+**What "repaired" means here, precisely.** Nothing reconstructs the words the
+browser cut off — they are gone, and no source has them. A repair means the
+merge stops preferring a clipped title and takes a *complete* one from another
+source instead, which is usually **shorter**:
+
+| | |
+|---|---|
+| Kindle export | `Heroínas: Cuentos en torno al 8 de marzo, Día Internacional de la Muje` |
+| hand-kept catalog | `Heroínas: Cuentos en torno al 8 de marzo` |
+| what the merge keeps | the second |
+
+Of the 40 titles flagged, 33 have a complete alternative and are swapped. The
+other 7 have none, so they keep the truncated text and carry the flag, which is
+the honest outcome: the catalog says the title is cut rather than pretending
+otherwise.
 
 Remaining: storage, then the app becomes installable on Android as well as on
 a desktop.

@@ -182,8 +182,11 @@ clipped titles    : 3
 `delta +0` means every item Amazon claims to have was recovered.
 
 Two things about that source are worth knowing. Its own page clips long titles
-mid-word with no ellipsis, so those are flagged and repaired later from any
-source that has them whole. And the print-to-PDF splits records across page
+mid-word with no ellipsis, so those are flagged, and the merge then prefers a
+complete title from any other source that has one. That replacement is often
+*shorter* than the clipped text — the cut-off words are gone and nothing
+invents them. Where no source has the title whole, it stays truncated and keeps
+the flag. And the print-to-PDF splits records across page
 breaks, leaving half-rendered fragments behind; the parser reads the document
 as one continuous stream to stitch them back together. If `no title parsed` is
 ever above zero, a record was lost and the extraction should not be trusted.
