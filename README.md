@@ -51,7 +51,7 @@ cannot — while judgements like genre come from whoever troubled to make one.
 - [x] Catalog builder — any number of sources, in any combination
 - [x] Offline queries, including books you bought and forgot
 - [x] Prompts for synopses and recommendations
-- [ ] Browse interface
+- [x] Browse interface — a local window over all of it
 
 ## Your data stays yours
 
@@ -61,13 +61,40 @@ This repository is public. **Your catalog is not part of it.**
 shelf photographs — and the catalog built from them stay on your machine. What
 ships here is the tooling and a small sample catalog.
 
+## The window
+
+```bash
+cd web && npm install && npm run build   # once
+python tools/librapp/serve.py            # then, whenever you want it
+```
+
+Open <http://127.0.0.1:8765>. Four places:
+
+| | |
+|---|---|
+| **Catalog** | everything you own — search, filter by read state, format or source, group by title, author or series, click any book for the whole record |
+| **Shelf picture** | drop a photograph, get tiles, bring back the transcription |
+| **Upload list** | drop a spreadsheet, CSV, XML or store export |
+| **The LibrAPPrian's desk** | what you bought and forgot, what the collection is made of, and questions to put to a model |
+
+The server binds to `127.0.0.1` and speaks to nothing on the network. It exists
+only because a browser cannot read your disk or run the ingesters; closing it
+stops the app. It uses nothing outside the Python standard library.
+
+Working on the interface itself:
+
+```bash
+cd web && npm run dev     # with serve.py running alongside
+```
+
 ## Requirements
 
 - Python 3.11+
 - [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF ingest — `pip install pymupdf`
 - [Pillow](https://python-pillow.org/) for photo ingest — `pip install pillow`
 
-Nothing is needed for lists or for querying.
+Nothing is needed for lists or for querying. Node is needed only to build the
+interface, never to run it — the built files are plain HTML, CSS and JavaScript.
 
 ## Ingesting
 
@@ -141,7 +168,9 @@ breaks, leaving half-rendered fragments behind; the parser reads the document
 as one continuous stream to stitch them back together. If `no title parsed` is
 ever above zero, a record was lost and the extraction should not be trusted.
 
-## Using the catalog
+## Using the catalog from a terminal
+
+Everything the window does is also a command, and the commands came first.
 
 ```bash
 python tools/librapp/query.py stats
@@ -187,7 +216,9 @@ the shelf you already own.
 ## Layout
 
 ```
-tools/librapp/     ingest, build and query
+tools/librapp/     ingest, build, query and serve
+  serve.py         the local server behind the window
+web/               the interface (React, built with Vite)
   records.py       the envelope every source writes and the builder reads
   textmatch.py     deciding when two records mean the same book or person
 prompts/           AI prompts, version-controlled as plain text

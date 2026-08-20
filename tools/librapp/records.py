@@ -52,6 +52,7 @@ RECORD_FIELDS: dict[str, Any] = {
     "title": "",
     "title_clipped": False,      # the source cut the title off mid-word
     "authors": [],
+    "author_label": None,        # stands in where there is no personal author
     "publisher": None,
     "acquired_on": None,         # ISO date
     "read": None,                # True | False | None=unknown
@@ -86,7 +87,7 @@ def normalise(record: dict) -> dict:
 
     out["title"] = clean(str(out["title"] or ""))
     out["authors"] = [clean(a) for a in (out["authors"] or []) if clean(a)]
-    for key in ("publisher", "genre", "keywords", "series", "location", "notes"):
+    for key in ("publisher", "genre", "keywords", "series", "location", "notes", "author_label"):
         if out[key]:
             out[key] = clean(str(out[key]))
     out["formats"] = sorted({f for f in (out["formats"] or []) if f})

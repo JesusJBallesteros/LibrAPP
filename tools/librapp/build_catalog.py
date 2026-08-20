@@ -249,9 +249,15 @@ def cluster_records(sources: list[dict]) -> tuple[list[Cluster], list[dict]]:
     return clusters, collapsed
 
 
-def collapsed_index(collapsed: list[dict]) -> dict[frozenset[str], dict]:
-    """What a collapsed row can tell the volumes it stands for, keyed by author."""
-    out: dict[frozenset[str], dict] = {}
+def collapsed_index(collapsed: list[dict]) -> dict[frozenset[str], list[dict]]:
+    """What collapsed rows can tell the volumes they stand for, keyed by author.
+
+    An author may have more than one - Pratchett has Discworld and the Long
+    Earth - so each keeps its own entry and the volume chooses between them.
+    Keeping only the last would give every Discworld book the Long Earth's
+    keywords, which is exactly the kind of quiet wrongness that survives review.
+    """
+    out: dict[frozenset[str], list[dict]] = {}
     for record in collapsed:
         # The row's title lists the volumes as well as naming the series; only
         # the part before the first list separator is the name itself.
@@ -268,8 +274,25 @@ def collapsed_index(collapsed: list[dict]) -> dict[frozenset[str], dict]:
         # by volumes a source files under any one of them alone.
         for name in record["authors"]:
             for credit in split_credits(name):
-                out[author_tokens(credit)] = entry
+                out.setdefault(author_tokens(credit), []).append(entry)
     return out
+
+
+def inherited_from(candidates: list[dict], title: str) -> dict | None:
+    """Which of an author's collapsed rows, if any, stands for this book.
+
+    A row that names the book wins. Where none does, a lone row is still worth
+    inheriting a genre from - one series, one judgement - but several rows are
+    not, because picking between them would be a guess.
+    """
+    if not candidates:
+        return None
+    opening = " ".join(title_head(title).split()[:5])
+    if len(opening.split()) >= 2:
+        for entry in candidates:
+            if opening in entry["listed"]:
+                return entry
+    return candidates[0] if len(candidates) == 1 else None
 
 
 # --------------------------------------------------------------------------- #
@@ -320,15 +343,14 @@ def build_entry(cluster: Cluster, collapsed: dict, authors: AuthorIndex, ids: se
     if not series:
         series, series_index = detect_series(title)
 
-    inherited = collapsed.get(author_tokens(credits[0])) if credits else None
+    inherited = inherited_from(collapsed.get(author_tokens(credits[0]), []), title) if credits else None
     if inherited:
         genre = genre or inherited["genre"]
         keywords = keywords or inherited["keywords"]
-        # The genre judgement covers everything the author wrote in that vein,
-        # but the series name only covers volumes the row actually lists -
-        # otherwise a standalone book by the same author is filed into it.
-        # Compared on the opening words: a row listing 'La Guerra de los
-        # Cielos, vols. 1-4' never matches the tail of '... Volumen 3'.
+        # The series name only covers volumes the row actually lists, otherwise
+        # a standalone book by the same author is filed into it. Compared on
+        # the opening words: a row listing 'La Guerra de los Cielos, vols. 1-4'
+        # never matches the tail of '... Volumen 3'.
         opening = " ".join(title_head(title).split()[:5])
         if not series and len(opening.split()) >= 2 and opening in inherited["listed"]:
             series = inherited["series"]
@@ -356,7 +378,8 @@ def build_entry(cluster: Cluster, collapsed: dict, authors: AuthorIndex, ids: se
         "title": title,
         "title_key": title_key(title),
         "authors": author_ids,
-        "author_label": first_fact("notes") if not author_ids else None,
+        "author_label": first_fact("author_label") if not author_ids else None,
+        "notes": first_fact("notes"),
         "series": series,
         "series_index": series_index,
         "formats": formats,

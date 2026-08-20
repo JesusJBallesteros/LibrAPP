@@ -263,7 +263,7 @@ def rows_to_records(rows: list[dict], section: str | None = None) -> list[dict]:
             "read": parse_read(picked.get("read", "")),
             "location": picked.get("location") or None,
             "collapsed": collapsed,
-            "notes": label,
+            "author_label": label,
         }
         if collapsed:
             record["listed_volumes"] = title
