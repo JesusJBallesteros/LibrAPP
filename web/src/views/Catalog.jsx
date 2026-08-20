@@ -15,7 +15,7 @@ const SORTS = {
   oldest: (a, b) => (a.acquired_on || '￿').localeCompare(b.acquired_on || '￿'),
 }
 
-export default function Catalog({ catalog, state, onGo }) {
+export default function Catalog({ catalog, onGo }) {
   const [q, setQ] = useState('')
   const [read, setRead] = useState('all')
   const [format, setFormat] = useState('all')
@@ -109,8 +109,7 @@ export default function Catalog({ catalog, state, onGo }) {
             {shown.length === prepared.length
               ? `${prepared.length} books`
               : `${shown.length} of ${prepared.length} books`}
-            {state?.catalog?.generated_at &&
-              ` · built ${new Date(state.catalog.generated_at).toLocaleString()}`}
+            {catalog.generated_at && ` · built ${new Date(catalog.generated_at).toLocaleString()}`}
           </p>
         </div>
       </header>

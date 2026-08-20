@@ -52,8 +52,8 @@ cannot — while judgements like genre come from whoever troubled to make one.
 - [x] Offline queries, including books you bought and forgot
 - [x] Prompts for synopses and recommendations
 - [x] Browse interface — a local window over all of it
+- [x] Installable on Windows, Linux and Android — no terminal, no server, no Python
 - [ ] Manual entry, and editing that overrides every source — see [docs/roadmap.md](docs/roadmap.md)
-- [ ] Installable on Windows, Linux and Android without a terminal
 
 ## Your data stays yours
 
@@ -63,30 +63,48 @@ This repository is public. **Your catalog is not part of it.**
 shelf photographs — and the catalog built from them stay on your machine. What
 ships here is the tooling and a small sample catalog.
 
-## The window
+## The app
 
 ```bash
-cd web && npm install && npm run build   # once
-python tools/librapp/serve.py            # then, whenever you want it
+cd web && npm install && npm run build
 ```
 
-Open <http://127.0.0.1:8765>. Four places:
+Serve `web/dist` from anywhere — including a static host like GitHub Pages —
+and open it. Chrome and Edge will offer to **install** it, on Windows, Linux
+and Android alike: its own window, its own icon, no browser chrome, and it
+keeps working with no network.
+
+There is no server and no Python behind it. Every ingester runs in the browser:
+the PDF is read with pdf.js, the spreadsheet with a zip reader over the
+platform's own `DecompressionStream`, the photograph is cut up on a canvas.
+Nothing is uploaded, because there is nowhere to upload it to.
+
+Five places:
 
 | | |
 |---|---|
 | **Catalog** | everything you own — search, filter by read state, format or source, group by title, author or series, click any book for the whole record |
 | **Shelf picture** | drop a photograph, get tiles, bring back the transcription |
 | **Upload list** | drop a spreadsheet, CSV, XML or store export |
-| **The LibrAPPrian's desk** | what you bought and forgot, what the collection is made of, and questions to put to a model |
+| **LibrAPPrian's desk** | what you bought and forgot, what the collection is made of, and questions to put to a model |
+| **Library** | where it lives, what it was built from, and export or import |
 
-The server binds to `127.0.0.1` and speaks to nothing on the network. It exists
-only because a browser cannot read your disk or run the ingesters; closing it
-stops the app. It uses nothing outside the Python standard library.
+### Where your library lives
+
+On a desktop, LibrAPP asks for **a folder you choose**. The files are yours:
+plain JSON you can read, back up, or keep in a private repository, laid out
+exactly as the command-line tools expect, so both can work on the same folder.
+
+Android Chrome has no folder picker, so there it uses **browser storage** —
+same file semantics, managed by the browser, invisible outside the app. Export
+and import are how a library moves between devices. An export holds the
+sources, not the catalog: the catalog is rebuilt on the other side, so two
+copies cannot drift into disagreeing about which is current.
 
 Working on the interface itself:
 
 ```bash
-cd web && npm run dev     # with serve.py running alongside
+cd web && npm run dev
 ```
 
 ## Requirements

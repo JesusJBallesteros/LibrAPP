@@ -1,11 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
-import { api } from '../api.js'
+import { useMemo, useState } from 'react'
 import { authorNames, byline, copyText, forgotten, intentWhy } from '../lib.js'
+import { readerProfile } from '../core/profile.js'
+import synopsisPrompt from '../../../prompts/synopsis.md?raw'
+import recommendPrompt from '../../../prompts/recommend.md?raw'
 
 const ASKS = [
   {
     id: 'synopsis',
-    file: 'synopsis.md',
+    text: synopsisPrompt,
     label: 'Synopsis',
     placeholder: 'Which book? It does not have to be one you own.',
     blurb:
@@ -13,7 +15,7 @@ const ASKS = [
   },
   {
     id: 'recommend',
-    file: 'recommend.md',
+    text: recommendPrompt,
     label: 'Recommendation',
     placeholder: 'Anything to steer it? "something for a long flight", or leave blank.',
     blurb:
@@ -22,42 +24,30 @@ const ASKS = [
 ]
 
 export default function Desk({ catalog }) {
-  const [context, setContext] = useState(null)
-  const [prompts, setPrompts] = useState({})
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
   const [copied, setCopied] = useState(null)
   const [minYears, setMinYears] = useState(2)
-  const [error, setError] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
 
-  useEffect(() => {
-    if (!catalog) return
-    api.context().then((r) => setContext(r.markdown)).catch((e) => setError(e.message))
-  }, [catalog])
-
-  useEffect(() => {
-    const chosen = ASKS.find((a) => a.id === ask)
-    if (prompts[chosen.file]) return
-    api
-      .prompt(chosen.file)
-      .then((r) => setPrompts((p) => ({ ...p, [r.name]: r.markdown })))
-      .catch((e) => setError(e.message))
-  }, [ask, prompts])
+  // Built here rather than fetched: the profile is a view of the catalog
+  // already in hand, and computing it locally is what lets the desk work with
+  // no network at all.
+  const context = useMemo(() => (catalog ? readerProfile(catalog) : null), [catalog])
 
   const chosen = ASKS.find((a) => a.id === ask)
   const assembled = useMemo(() => {
-    if (!context || !prompts[chosen.file]) return ''
+    if (!context) return ''
     return [
-      prompts[chosen.file].trim(),
+      chosen.text.trim(),
       '\n---\n',
       context.trim(),
       '\n---\n',
       question.trim() ? `## The question\n\n${question.trim()}` : '## The question\n\n(fill this in)',
     ].join('\n')
-  }, [context, prompts, chosen, question])
+  }, [context, chosen, question])
 
   const flash = async (key, text) => {
     if (await copyText(text)) {
@@ -93,12 +83,6 @@ export default function Desk({ catalog }) {
           what makes the answer yours rather than generic.
         </p>
       </header>
-
-      {error && (
-        <div className="notice bad">
-          <p>{error}</p>
-        </div>
-      )}
 
       <div className="desk-grid">
         <div>

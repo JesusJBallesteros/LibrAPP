@@ -1,48 +1,67 @@
 import { useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import { api } from '../api.js'
+import { loadTranscription, tileImage } from '../ingest/shelf.js'
 import { copyText } from '../lib.js'
+import promptText from '../../../prompts/ingest-shelf.md?raw'
 
 /**
  * Reading a shelf is the one step a parser cannot do, so this view is honest
- * about the hand-off rather than pretending to be automatic: it prepares the
- * tiles and the instructions, a model reads them, and the result comes back
- * here to be checked and imported.
+ * about the hand-off rather than pretending to be automatic: it cuts the tiles,
+ * a model reads them, and the result comes back here to be checked and merged.
+ *
+ * Everything happens on the device. A fifty-megapixel photograph is cut up in
+ * the browser and never crosses a network, which matters most on a phone.
  */
-export default function Shelf({ onDone }) {
+export default function Shelf({ lib }) {
   const [tiles, setTiles] = useState(null)
-  const [busy, setBusy] = useState(false)
+  const [working, setWorking] = useState(false)
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(null)
+  const [showPrompt, setShowPrompt] = useState(false)
 
-  const run = async (fn) => {
-    setBusy(true)
+  const onPhoto = async (file) => {
     setError(null)
+    setResult(null)
+    setWorking(true)
     try {
-      return await fn()
+      setTiles(await tileImage(file))
     } catch (err) {
       setError(err.message)
-      return null
     } finally {
-      setBusy(false)
+      setWorking(false)
     }
   }
 
-  const onPhoto = (file) =>
-    run(async () => {
-      setResult(null)
-      const manifest = await api.uploadPhoto(file)
-      setTiles(manifest)
+  const onTranscription = (file) =>
+    lib.run(async (library) => {
+      const { records, stats } = loadTranscription(JSON.parse(await file.text()))
+      await library.putSource({
+        name: 'shelf',
+        kind: 'photo',
+        origin: stats.photo || file.name,
+        format: 'physical',
+        confidence: 'medium',
+        records,
+        stats,
+      })
+      const catalog = await library.rebuild()
+      setResult({ count: records.length, stats, counts: catalog.counts })
     })
 
-  const onTranscription = (file) =>
-    run(async () => {
-      const imported = await api.uploadTranscription(file, { name: 'shelf', confidence: 'medium' })
-      const built = await api.rebuild()
-      setResult({ ...imported, counts: built.counts })
-      await onDone()
-    })
+  const flash = async (key, text) => {
+    if (await copyText(text)) {
+      setCopied(key)
+      setTimeout(() => setCopied(null), 1800)
+    }
+  }
+
+  const saveTile = (tile) => {
+    const a = document.createElement('a')
+    a.href = tile.url
+    a.download = tile.tile
+    a.click()
+  }
 
   return (
     <div className="view">
@@ -65,13 +84,13 @@ export default function Shelf({ onDone }) {
         <h3>1 · The photograph</h3>
         <DropZone
           glyph="📷"
-          title="Drop a shelf photograph"
-          hint="or click to choose · JPEG or PNG"
+          title="Take or choose a photograph"
+          hint="JPEG or PNG · nothing is uploaded"
           accept="image/*"
-          disabled={busy}
+          disabled={working}
           onFile={onPhoto}
         />
-        {busy && !tiles && <p className="tiny faint" style={{ marginTop: 10 }}>Cutting it into tiles…</p>}
+        {working && <p className="tiny faint" style={{ marginTop: 10 }}>Cutting it into tiles…</p>}
       </div>
 
       {tiles && (
@@ -80,34 +99,44 @@ export default function Shelf({ onDone }) {
             <div className="spread">
               <h3 style={{ margin: 0 }}>2 · Read the spines</h3>
               <span className="tiny faint">
-                {tiles.photo} · {tiles.photo_size[0]}×{tiles.photo_size[1]} · {tiles.tiles.length} tiles
+                {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} · {tiles.tiles.length} tiles
               </span>
             </div>
             <p className="muted tiny" style={{ marginTop: 8 }}>
-              Tiles are cropped at native resolution and overlap slightly, so a book on a seam is
-              whole in one of them. Point Claude Code at the folder below with{' '}
-              <code>prompts/ingest-shelf.md</code>, and have it write the transcription.
+              Tiles are cut at native resolution and overlap slightly, so a book on a seam is whole
+              in one of them. Give them to a model along with the instructions below, and have it
+              write the transcription.
             </p>
 
-            <pre className="snippet" style={{ marginTop: 10 }}>{tiles.tiles_dir}</pre>
-            <div className="row" style={{ marginTop: 8 }}>
-              <button
-                className="btn small"
-                onClick={async () => {
-                  setCopied(await copyText(tiles.tiles_dir))
-                  setTimeout(() => setCopied(false), 1800)
-                }}
-              >
-                {copied ? 'Copied' : 'Copy folder path'}
+            <div className="row" style={{ marginTop: 10 }}>
+              <button className="btn small" onClick={() => flash('prompt', promptText)}>
+                {copied === 'prompt' ? 'Copied' : 'Copy the instructions'}
+              </button>
+              <button className="btn small" onClick={() => setShowPrompt((s) => !s)}>
+                {showPrompt ? 'Hide them' : 'Read them'}
+              </button>
+              <button className="btn small" onClick={() => tiles.tiles.forEach(saveTile)}>
+                Save all tiles
               </button>
             </div>
+
+            {showPrompt && (
+              <pre className="snippet" style={{ marginTop: 12, maxHeight: 320 }}>
+                {promptText}
+              </pre>
+            )}
 
             <div className="tiles" style={{ marginTop: 14 }}>
               {tiles.tiles.map((t) => (
                 <figure key={t.tile}>
-                  <img src={`/api/tile/${tiles.stem}/${t.tile}`} alt={`Tile row ${t.row}, column ${t.column}`} loading="lazy" />
-                  <figcaption>
-                    r{t.row}c{t.column}
+                  <img src={t.url} alt={`Tile row ${t.row}, column ${t.column}`} loading="lazy" />
+                  <figcaption className="spread">
+                    <span>
+                      r{t.row}c{t.column}
+                    </span>
+                    <button className="btn small" onClick={() => saveTile(t)}>
+                      Save
+                    </button>
                   </figcaption>
                 </figure>
               ))}
@@ -125,7 +154,7 @@ export default function Shelf({ onDone }) {
               title="Drop the transcription"
               hint="the JSON file the model wrote"
               accept=".json,application/json"
-              disabled={busy}
+              disabled={lib.busy}
               onFile={onTranscription}
             />
           </div>
@@ -136,11 +165,8 @@ export default function Shelf({ onDone }) {
         <div className="notice good">
           <p>
             <strong>
-              {result.records} books read from the photograph
-              {result.stats?.uncertain_spines
-                ? `, ${result.stats.uncertain_spines} spine(s) uncertain`
-                : ''}
-              .
+              {result.count} books read from the photograph
+              {result.stats.uncertain_spines ? `, ${result.stats.uncertain_spines} spine(s) uncertain` : ''}.
             </strong>
           </p>
           <p className="tiny">
