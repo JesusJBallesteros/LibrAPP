@@ -2,9 +2,14 @@
 
 Turn tiles of a bookshelf photograph into a transcription file.
 
-Run `parse_shelf.py tile` first. Read **every** tile, one at a time, at full
-size. Do not work from a scaled-down view of the whole shelf: at that size
-spine text is a few pixels tall and you will invent titles that look plausible.
+Read **every** tile, one at a time, at full size. Do not work from a
+scaled-down view of the whole shelf: at that size spine text is a few pixels
+tall and you will invent titles that look plausible.
+
+A close-up of three books is often a single tile, and a wide bookcase may be
+eight. If a tile arrives with a title cut in half across its top or bottom
+edge, say so rather than guessing the rest — the grid can be changed and the
+photograph cut again.
 
 ## What to record
 

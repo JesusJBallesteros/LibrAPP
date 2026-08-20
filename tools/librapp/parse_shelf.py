@@ -46,16 +46,51 @@ TILE_WIDTH = 1250
 
 # How much neighbouring tiles overlap, as a fraction. A book on the seam is
 # then whole in one of them rather than split down the middle in both.
-OVERLAP = 0.06
+OVERLAP = 0.12
+
+# Below this a photograph is left whole: a picture this size cannot hold enough
+# books to need cutting, and cutting one up does far more harm than good.
+WHOLE_BELOW_MEGAPIXELS = 20
+
+# Roughly how many megapixels of original per tile, above that threshold.
+MEGAPIXELS_PER_TILE = 6
+MAX_TILES = 12
 
 
-def tile(photo: Path, out_dir: Path, cols: int, rows: int) -> dict:
+def suggest_grid(width: int, height: int) -> tuple[int, int]:
+    """A starting grid for a photograph, to be adjusted by whoever took it.
+
+    There is no way to get this right from the image alone. What decides a good
+    tile is how many spines are in it, and that is a fact about the shelf, not
+    about the file: 50 megapixels of a full bookcase wants eight tiles, and 12
+    megapixels of three books wants one. So this errs towards leaving the
+    photograph whole.
+
+    Rows are kept as few as the shape allows, because the two cuts are not
+    equally costly. Books stand upright, so a vertical cut crosses a spine's
+    width and the overlap covers it, while a horizontal cut runs straight
+    through the title and leaves half of it in each tile.
+    """
+    megapixels = width * height / 1e6
+    if megapixels < WHOLE_BELOW_MEGAPIXELS:
+        return 1, 1
+    wanted = min(MAX_TILES, max(2, round(megapixels / MEGAPIXELS_PER_TILE)))
+    rows = max(1, round((wanted / (width / height)) ** 0.5))
+    cols = max(1, -(-wanted // rows))
+    return cols, rows
+
+
+def tile(photo: Path, out_dir: Path, cols: int | None = None, rows: int | None = None) -> dict:
     """Cut a photograph into overlapping crops a model can read."""
     if Image is None:
         sys.exit("Pillow is required to tile photographs:  pip install pillow")
 
     image = Image.open(photo)
     width, height = image.size
+    if cols is None or rows is None:
+        suggested = suggest_grid(width, height)
+        cols = cols if cols is not None else suggested[0]
+        rows = rows if rows is not None else suggested[1]
     out_dir.mkdir(parents=True, exist_ok=True)
 
     step_x, step_y = width / cols, height / rows
@@ -159,8 +194,10 @@ def main() -> int:
     t = sub.add_parser("tile", help="cut a photograph into readable crops")
     t.add_argument("photo", type=Path)
     t.add_argument("-o", "--out", type=Path, required=True, help="directory for the tiles")
-    t.add_argument("--columns", type=int, default=4)
-    t.add_argument("--rows", type=int, default=2)
+    t.add_argument("--columns", type=int, default=None,
+                   help="tiles across; chosen from the photograph if omitted")
+    t.add_argument("--rows", type=int, default=None,
+                   help="tiles down; adding these is what splits a title in half")
 
     i = sub.add_parser("import", help="turn a transcription into a source file")
     i.add_argument("transcription", type=Path)

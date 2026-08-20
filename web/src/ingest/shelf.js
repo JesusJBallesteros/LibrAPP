@@ -20,8 +20,45 @@ import { CONFIDENCE } from '../core/records.js'
 export const TILE_WIDTH = 1250
 
 // How much neighbouring tiles overlap, as a fraction. A book on the seam is
-// then whole in one of them rather than split down the middle in both.
-export const OVERLAP = 0.06
+// then whole in one of them rather than split down the middle in both. Wide
+// enough to cover a spine's width on a normal shelf shot; a close-up where one
+// spine spans a third of the frame needs fewer tiles, not more overlap.
+export const OVERLAP = 0.12
+
+// Below this, a photograph is left whole. It is not that the pixels could not
+// be divided — it is that a picture this size cannot hold enough books to need
+// it, and cutting one up does far more harm than leaving it alone.
+const WHOLE_BELOW_MEGAPIXELS = 20
+
+// Roughly how many megapixels of original per tile, above that threshold.
+// Calibrated on a 50 MP shot of two full shelves, which reads well at eight.
+const MEGAPIXELS_PER_TILE = 6
+const MAX_TILES = 12
+
+/**
+ * A starting grid for a photograph, to be adjusted by whoever took it.
+ *
+ * There is no way to get this right from the image alone. What decides a good
+ * tile is how many spines are in it, and that is a fact about the shelf, not
+ * about the file: 50 megapixels of a full bookcase wants eight tiles, and 12
+ * megapixels of three books wants one. Four times the pixels, thirty times the
+ * books. So this errs towards leaving the photograph whole and expects to be
+ * overridden.
+ */
+export function suggestGrid(width, height) {
+  const megapixels = (width * height) / 1e6
+  if (megapixels < WHOLE_BELOW_MEGAPIXELS) return { cols: 1, rows: 1 }
+
+  const wanted = Math.min(MAX_TILES, Math.max(2, Math.round(megapixels / MEGAPIXELS_PER_TILE)))
+  // Rows are decided first and kept as few as the shape allows, because the two
+  // cuts are not equally costly. Books stand upright, so a vertical cut crosses
+  // a spine's width and the overlap covers it, while a horizontal cut runs
+  // straight through the title and leaves half of it in each tile.
+  const aspect = width / height
+  const rows = Math.max(1, Math.round(Math.sqrt(wanted / aspect)))
+  const cols = Math.max(1, Math.ceil(wanted / rows))
+  return { cols, rows }
+}
 
 /**
  * Where each tile is cut from, given a photograph's size.
@@ -61,9 +98,12 @@ export function tileBoxes(width, height, cols = 4, rows = 2) {
  * device, which on a phone also means not waiting for fifty megapixels to
  * cross a network.
  */
-export async function tileImage(file, { cols = 4, rows = 2, quality = 0.92 } = {}) {
+export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
   const bitmap = await createImageBitmap(file)
-  const boxes = tileBoxes(bitmap.width, bitmap.height, cols, rows)
+  const suggested = suggestGrid(bitmap.width, bitmap.height)
+  const across = cols ?? suggested.cols
+  const down = rows ?? suggested.rows
+  const boxes = tileBoxes(bitmap.width, bitmap.height, across, down)
   const tiles = []
 
   for (const spec of boxes) {
@@ -83,7 +123,13 @@ export async function tileImage(file, { cols = 4, rows = 2, quality = 0.92 } = {
   }
 
   bitmap.close?.()
-  return { photo: file.name, photoSize: [bitmap.width, bitmap.height], tiles }
+  return {
+    photo: file.name,
+    photoSize: [bitmap.width, bitmap.height],
+    grid: { cols: across, rows: down },
+    suggested,
+    tiles,
+  }
 }
 
 export class TranscriptionError extends Error {}
