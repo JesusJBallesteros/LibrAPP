@@ -63,19 +63,9 @@ you do use it, you choose which service and pay for it directly.
 
 ## Language
 
-LibrAPP speaks **English** and **Spanish**. The selector is at the top of the
-opening page, and the choice is remembered.
+LibrAPP is available in **English** and **Spanish**.
 
-It is a real translation rather than the browser's translate button, for three
-reasons. An installed app has no browser chrome, so there is no menu to
-translate from — and the people most likely to want another language are
-exactly the ones who installed it. Page translators rewrite the page underneath
-the app, which then loses track of what it drew. And a page translator would
-translate your books along with the interface: titles, authors and genres are
-data, and *La Odisea* must not silently become *The Odyssey* in your own
-catalog.
-
-Adding a language means adding one file next to
+Adding a language:  add one file next to
 [`web/src/i18n/en.js`](web/src/i18n/en.js) and listing it in
 [`web/src/i18n/index.jsx`](web/src/i18n/index.jsx). Any key you leave out falls
 back to English, so a partial translation still works.
@@ -86,7 +76,7 @@ back to English, so a partial translation still works.
 
 | Engine | Browsers | Everything works? |
 |---|---|---|
-| **Chromium** | Chrome, Edge, **Brave**, Opera, Vivaldi, Arc, **Comet**, Samsung Internet | Yes |
+| **Chromium** | Chrome, Edge, Brave, Opera, Vivaldi, Arc, Comet Samsung Internet | Yes |
 | **Gecko** | Firefox 113+ | Yes, except saving to a folder and installing as an app |
 | **WebKit** | Safari 16.4+, all iOS browsers | Yes, except saving to a folder; install via Add to Home Screen |
 
@@ -141,17 +131,7 @@ Internet Explorer and browsers older than the versions above are not supported.
 
 You do not have to install anything —
 [the app](https://jesusjballesteros.github.io/LibrAPP/) runs in the browser. But
-installing gives it its own icon and window, and makes offline use reliable.
-
-### On a phone or tablet
-
-Open [LibrAPP](https://jesusjballesteros.github.io/LibrAPP/) in Chrome and
-choose **Install app** (or **Add to Home screen**) from the browser menu.
-
-### On a desktop
-
-Open [LibrAPP](https://jesusjballesteros.github.io/LibrAPP/) in Chrome or Edge
-and click the **install icon** in the address bar.
+installing gives it its own icon and window, and makes offline use reliable. In compatible browsers, choose **Install app** (or **Add to Home screen**) from the browser menu or in the address bar.
 
 ### Running your own copy
 
