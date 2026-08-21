@@ -426,9 +426,9 @@ your library, sources and corrections are stored elsewhere and are not touched.
 
 LibrAPP was written by one person working with an AI assistant, over a series of
 sessions. Most of the code was typed by the model; every decision about what to
-build was mine. The app states this on its **About** page too, under *AI use*.
+build was human made.
 
-- **Jesús J. Ballesteros** conceived the app and decided every step of it — what
+- **Jesús J. Ballesteros** (I) conceived the app and decided every step of it — what
   to build next, which of the proposed approaches to take, what to leave out,
   and when to stop. I supplied everything it was tested against: my own shelves,
   my own exports, my own devices. I reviewed the results and corrected them.
@@ -438,7 +438,7 @@ build was mine. The app states this on its **About** page too, under *AI use*.
 - **A few early testers** used it and said what did not work. More than one
   thing here exists because of that.
 
-The review was not a formality. The assistant got things wrong — it once
+The human review was not a formality. The assistant got things wrong — it once
 reported that a cut-off title had been repaired when it had not, and it chose a
 way of splitting photographs that fell apart on a close-up of three books. Both
 were caught by checking the output against the actual shelf. That is why the app
