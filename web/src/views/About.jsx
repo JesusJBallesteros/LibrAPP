@@ -20,7 +20,7 @@ const CV = 'https://jesusjballesteros.github.io/'
 const GITHUB = 'https://github.com/JesusJBallesteros'
 const REPO = 'https://github.com/JesusJBallesteros/LibrAPP'
 const ISSUES = 'https://github.com/JesusJBallesteros/LibrAPP/issues'
-const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0/'
+const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0'
 
 // Everything that ships inside the built app, with the terms it ships under.
 // Attribution is a condition of both MIT and Apache-2.0, so this list is an
