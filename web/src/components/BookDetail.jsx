@@ -1,24 +1,10 @@
 import { useEffect } from 'react'
-import { READ_LABEL, byline, readState } from '../lib.js'
-
-// What each flag means, in the reader's terms rather than the builder's.
-const FLAG_TEXT = {
-  title_clipped: 'the title is cut off — no source had it whole',
-  illegible_spine: 'the spine could not be read properly',
-  no_personal_author: 'no named author: a reference work, anthology or anonymous text',
-  no_genre: 'no genre recorded yet',
-  placeholder: 'a stand-in, not a real title — re-photograph this one',
-  series_not_expanded: 'stands for several volumes no source lists individually',
-  corrected: 'you corrected this entry by hand',
-}
-
-const CONFIDENCE_TEXT = {
-  high: 'from a machine-readable source, checked against its own count',
-  medium: 'transcribed by eye or by model',
-  low: 'a guess',
-}
+import { byline, readState } from '../lib.js'
+import { useT } from '../i18n/index.jsx'
 
 export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy }) {
+  const { t } = useT()
+
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -27,27 +13,31 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
   const state = readState(book)
   const rows = [
-    ['Series', book.series && `${book.series}${book.series_index ? ` · vol. ${book.series_index}` : ''}`],
-    ['Formats', (book.formats || []).join(' + ')],
-    ['Read', READ_LABEL[state]],
-    ['Acquired', book.acquired_on],
-    ['Publisher', book.publisher],
-    ['Genre', book.genre],
-    ['Where', book.location],
-    ['Collections', book.collections],
-    ['Devices', book.devices],
-    ['Sources', (book.sources || []).join(', ')],
+    [
+      t('book.series'),
+      book.series &&
+        `${book.series}${book.series_index ? ` · ${t('book.volume')} ${book.series_index}` : ''}`,
+    ],
+    [t('book.formats'), (book.formats || []).map((f) => t('format.' + f)).join(' + ')],
+    [t('book.read'), t(`read.${state}`)],
+    [t('book.acquired'), book.acquired_on],
+    [t('book.publisher'), book.publisher],
+    [t('book.genre'), book.genre],
+    [t('book.where'), book.location],
+    [t('book.collections'), book.collections],
+    [t('book.devices'), book.devices],
+    [t('book.sources'), (book.sources || []).join(', ')],
   ].filter(([, value]) => value !== null && value !== undefined && value !== '')
 
   return (
     <div className="detail-backdrop" onClick={onClose}>
       <aside className="detail" onClick={(e) => e.stopPropagation()}>
         <div className="spread" style={{ marginBottom: 10 }}>
-          <span className={`pill ${state}`}>{READ_LABEL[state]}</span>
+          <span className={`pill ${state}`}>{t(`read.${state}`)}</span>
           <span className="row" style={{ gap: 6 }}>
             {onEdit && (
               <button className="btn small" onClick={() => onEdit(book)} disabled={busy}>
-                Edit
+                {t('common.edit')}
               </button>
             )}
             {onRemove && (
@@ -57,11 +47,11 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
                 disabled={busy}
                 style={{ borderColor: 'color-mix(in srgb, var(--bad) 50%, transparent)', color: 'var(--bad)' }}
               >
-                Remove
+                {t('common.remove')}
               </button>
             )}
             <button className="btn small" onClick={onClose}>
-              Close
+              {t('common.close')}
             </button>
           </span>
         </div>
@@ -78,29 +68,28 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           ))}
         </dl>
 
-        {state === 'unknown' && (
-          <p className="tiny faint" style={{ marginTop: 14 }}>
-            Nothing has ever recorded whether this was read. That is not the same as unread, so it
-            is left blank rather than guessed.
-          </p>
-        )}
+        {state === 'unknown' && <p className="tiny faint" style={{ marginTop: 14 }}>{t('book.unknownNote')}</p>}
 
         {book.overridden && (
           <div className="notice" style={{ marginTop: 14 }}>
             <p className="tiny">
-              <strong>Corrected by hand{book.overridden.at ? ` on ${book.overridden.at}` : ''}.</strong>{' '}
-              {book.overridden.fields.join(', ')} — overriding what the sources say.
+              <strong>
+                {book.overridden.at
+                  ? t('book.correctedOn', { date: book.overridden.at })
+                  : t('book.corrected')}
+              </strong>{' '}
+              {t('book.correctedFields', { fields: book.overridden.fields.join(', ') })}
               {book.overridden.why ? ` ${book.overridden.why}` : ''}
             </p>
             <p className="tiny" style={{ marginTop: 6 }}>
-              Before:{' '}
+              {t('book.before')}{' '}
               {book.overridden.fields
                 .map((f) => `${f} = ${JSON.stringify(book.overridden.was[f])}`)
                 .join(' · ')}
             </p>
             {onRevert && (
               <button className="btn small" style={{ marginTop: 8 }} onClick={() => onRevert(book)} disabled={busy}>
-                Undo this correction
+                {t('book.undoCorrection')}
               </button>
             )}
           </div>
@@ -108,17 +97,17 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
         {book.notes && (
           <p className="tiny muted" style={{ marginTop: 14 }}>
-            <strong>Noted when read:</strong> {book.notes}
+            <strong>{t('book.notedWhenRead')}</strong> {book.notes}
           </p>
         )}
 
         {(book.tags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>Tags</h4>
+            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>{t('book.tags')}</h4>
             <div className="row" style={{ gap: 5 }}>
-              {book.tags.map((t) => (
-                <span className="pill" key={`${t.kind}-${t.key}`}>
-                  {t.value}
+              {book.tags.map((tag) => (
+                <span className="pill" key={`${tag.kind}-${tag.key}`}>
+                  {tag.value}
                 </span>
               ))}
             </div>
@@ -127,17 +116,22 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
         {(book.flags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>Worth knowing</h4>
+            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>
+              {t('book.worthKnowing')}
+            </h4>
             <ul className="tiny muted" style={{ margin: 0, paddingLeft: 18 }}>
-              {book.flags.map((f) => (
-                <li key={f}>{FLAG_TEXT[f] || f}</li>
+              {book.flags.map((flag) => (
+                // A flag with no translation shows its own name: better a raw
+                // word than a blank line where a warning should be.
+                <li key={flag}>{t(`flag.${flag}`) === `flag.${flag}` ? flag : t(`flag.${flag}`)}</li>
               ))}
             </ul>
           </>
         )}
 
         <p className="tiny faint" style={{ marginTop: 18 }}>
-          Confidence <strong>{book.confidence}</strong> — {CONFIDENCE_TEXT[book.confidence]}.
+          {t('book.confidence')} <strong>{t(`confidence.${book.confidence}`)}</strong> —{' '}
+          {t(`confidence.${book.confidence}.why`)}
         </p>
       </aside>
     </div>

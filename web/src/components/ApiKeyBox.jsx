@@ -11,6 +11,7 @@ import {
   setActive,
 } from '../ai/key.js'
 import { PROVIDERS, providerById } from '../ai/providers.js'
+import { useT } from '../i18n/index.jsx'
 
 /**
  * The one place a service is chosen and a key is entered, and the one place
@@ -24,7 +25,8 @@ import { PROVIDERS, providerById } from '../ai/providers.js'
  * Switching a key off is separate from deleting it, because they answer
  * different questions — "not now" and "not ever".
  */
-export default function ApiKeyBox({ what = 'this', onChange }) {
+export default function ApiKeyBox({ what, onChange }) {
+  const { t } = useT()
   const [choice, setChoice] = useState(null)
   const [stocked, setStocked] = useState([])
   const [draft, setDraft] = useState('')
@@ -66,11 +68,9 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
   const save = () =>
     run(async () => {
       const key = draft.trim()
-      if (!key) throw new Error('Paste a key first.')
+      if (!key) throw new Error(t('key.pasteFirst'))
       if (!looksLikeKey(provider.id, key)) {
-        throw new Error(
-          `That does not look like a key for ${provider.label} — they look like ${provider.keyHint}.`,
-        )
+        throw new Error(t('key.wrongShape', { service: provider.label, hint: provider.keyHint }))
       }
       await saveKey(provider.id, key)
       setDraft('')
@@ -89,13 +89,13 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
   return (
     <div className="card" style={{ background: 'var(--paper-sunk)', boxShadow: 'none' }}>
       <div className="spread">
-        <h3 style={{ margin: 0 }}>AI service</h3>
+        <h3 style={{ margin: 0 }}>{t('key.title')}</h3>
         <span className={`pill ${state === 'active' ? 'read' : state === 'off' ? 'unread' : 'unknown'}`}>
           {state === 'active'
-            ? 'key stored · in use'
+            ? t('key.inUse')
             : state === 'off'
-              ? 'key stored · switched off'
-              : 'no key stored'}
+              ? t('key.switchedOff')
+              : t('key.absent')}
         </span>
       </div>
 
@@ -107,7 +107,7 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
 
       <div className="row" style={{ marginTop: 10, alignItems: 'flex-end' }}>
         <label className="tiny muted" style={{ display: 'grid', gap: 4, flex: '1 1 240px', minWidth: 0 }}>
-          Service
+          {t('key.service')}
           <select
             value={provider.id}
             disabled={busy}
@@ -117,19 +117,19 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
             {PROVIDERS.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.label}
-                {stocked.includes(p.id) ? ' · key stored' : ''}
+                {stocked.includes(p.id) ? ` · ${t('key.stored')}` : ''}
               </option>
             ))}
           </select>
         </label>
 
         <label className="tiny muted" style={{ display: 'grid', gap: 4, flex: '1 1 200px', minWidth: 0 }}>
-          Model
+          {t('key.model')}
           <input
             list={`models-${provider.id}`}
             value={choice.model}
             disabled={busy}
-            placeholder={provider.defaultModel || 'the model name your service uses'}
+            placeholder={provider.defaultModel || t('key.modelPlaceholder')}
             onChange={(e) => setChoice({ ...choice, model: e.target.value })}
             onBlur={(e) => run(() => rememberForProvider(provider.id, { model: e.target.value.trim() }))}
             spellCheck="false"
@@ -150,7 +150,7 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
           className="tiny muted"
           style={{ display: 'grid', gap: 4, marginTop: 10, minWidth: 0 }}
         >
-          Address
+          {t('key.address')}
           <input
             value={choice.baseUrl}
             disabled={busy}
@@ -160,24 +160,19 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
             spellCheck="false"
             style={field}
           />
-          <span className="faint">
-            Anything that speaks the OpenAI chat interface — Groq, Mistral, DeepSeek, Together, or a
-            server on your own machine. Give the address ending in <code>/v1</code>. A local server
-            has to be configured to accept requests from this page before a browser may reach it.
-          </span>
+          <span className="faint">{t('key.addressNote')}</span>
         </label>
       )}
 
       {state === 'absent' ? (
         <>
           <p className="tiny muted" style={{ marginTop: 10 }}>
-            Optional. Without a key, {what} still works — LibrAPP prepares everything for you to
-            paste into an AI session yourself. With one, it can do it here.
+            {t('key.optional', { what: what || t('key.thisFeature') })}
             {provider.keysAt && (
               <>
                 {' '}
                 <a href={provider.keysAt} target="_blank" rel="noreferrer">
-                  Where to get a key
+                  {t('key.whereToGet')}
                 </a>
                 .
               </>
@@ -192,26 +187,22 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
               placeholder={provider.keyHint}
               autoComplete="off"
               spellCheck="false"
-              aria-label={`API key for ${provider.label}`}
+              aria-label={t('key.fieldLabel', { service: provider.label })}
               style={{ ...field, flex: '1 1 260px' }}
             />
             <button className="btn primary" onClick={save} disabled={busy}>
-              Save key
+              {t('key.save')}
             </button>
           </div>
           <p className="tiny faint" style={{ marginTop: 8 }}>
-            Kept in this browser's storage on this device, sent only to {where}, and never written
-            into your catalog or an export. Anything running on this page could read it, so use a key
-            scoped to its own project or workspace, with a spend limit.
+            {t('key.privacy', { where })}
           </p>
         </>
       ) : (
         <>
           <p className="tiny muted" style={{ marginTop: 10 }}>
             <code>{choice.masked}</code>{' '}
-            {state === 'active'
-              ? `— LibrAPP may send requests to ${where} to read spines and answer questions.`
-              : '— stored, but LibrAPP will not use it. The copy-and-paste route still works.'}
+            {state === 'active' ? t('key.activeNote', { where }) : t('key.offNote')}
           </p>
           <div className="row" style={{ marginTop: 10 }}>
             <button
@@ -219,7 +210,7 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
               disabled={busy}
               onClick={() => run(() => setActive(provider.id, state !== 'active'))}
             >
-              {state === 'active' ? 'Switch off' : 'Switch on'}
+              {state === 'active' ? t('key.switchOff') : t('key.switchOn')}
             </button>
             <button
               className="btn"
@@ -227,13 +218,11 @@ export default function ApiKeyBox({ what = 'this', onChange }) {
               onClick={() => run(() => deleteKey(provider.id))}
               style={{ borderColor: 'color-mix(in srgb, var(--bad) 50%, transparent)', color: 'var(--bad)' }}
             >
-              Delete
+              {t('key.delete')}
             </button>
           </div>
           <p className="tiny faint" style={{ marginTop: 8 }}>
-            Switching off keeps the key for later without letting the app spend anything. Deleting
-            removes it from this device. Each service keeps its own key, so switching between them
-            costs nothing.
+            {t('key.storedNote')}
           </p>
         </>
       )}

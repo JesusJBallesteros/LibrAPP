@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react'
 import BookDetail from '../components/BookDetail.jsx'
 import BookEditor from '../components/BookEditor.jsx'
 import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
-import { READ_LABEL, authorNames, byline, fold, readState, sortName, uniqueSorted } from '../lib.js'
+import { authorNames, byline, fold, readState, sortName, uniqueSorted } from '../lib.js'
+import { useT } from '../i18n/index.jsx'
 
-const GROUPINGS = [
-  { id: 'title', label: 'Title' },
-  { id: 'author', label: 'Author' },
-  { id: 'series', label: 'Series' },
-]
+const GROUPINGS = ['title', 'author', 'series']
+
+// The bucket books with no series fall into. Kept as a fixed key rather than a
+// translated one, so grouping does not reshuffle itself when the language does.
+const STANDALONE = 'Standalone'
 
 const SORTS = {
   title: (a, b) => a._title.localeCompare(b._title),
@@ -18,6 +19,7 @@ const SORTS = {
 }
 
 export default function Catalog({ catalog, onGo, lib }) {
+  const { t, language } = useT()
   const [q, setQ] = useState('')
   const [read, setRead] = useState('all')
   const [format, setFormat] = useState('all')
@@ -64,7 +66,7 @@ export default function Catalog({ catalog, onGo, lib }) {
       const key =
         group === 'author'
           ? book._byline
-          : book.series || 'Standalone'
+          : book.series || STANDALONE
       if (!buckets.has(key)) buckets.set(key, [])
       buckets.get(key).push(book)
     }
@@ -75,7 +77,7 @@ export default function Catalog({ catalog, onGo, lib }) {
       }
       // Standalones are not a series; they belong after every real one.
       entries.sort((a, b) =>
-        a[0] === 'Standalone' ? 1 : b[0] === 'Standalone' ? -1 : a[0].localeCompare(b[0]),
+        a[0] === STANDALONE ? 1 : b[0] === STANDALONE ? -1 : a[0].localeCompare(b[0]),
       )
     }
     return entries.map(([key, books]) => ({ key, books }))
@@ -85,21 +87,18 @@ export default function Catalog({ catalog, onGo, lib }) {
     return (
       <div className="view">
         <header>
-          <h2>No catalog yet</h2>
-          <p>
-            Nothing has been ingested. Start with a photograph of a shelf, or with a list you
-            already keep — either one on its own is enough to build a catalog.
-          </p>
+          <h2>{t('catalog.empty.title')}</h2>
+          <p>{t('catalog.empty.body')}</p>
         </header>
         <div className="row">
           <button className="btn primary" onClick={() => onGo('shelf')}>
-            Read a shelf photograph
+            {t('catalog.empty.shelf')}
           </button>
           <button className="btn" onClick={() => onGo('list')}>
-            Upload a list
+            {t('catalog.empty.list')}
           </button>
           <button className="btn" onClick={() => setEditing('new')}>
-            Type a book in
+            {t('catalog.typeIn')}
           </button>
         </div>
         {editing === 'new' && (
@@ -124,18 +123,27 @@ export default function Catalog({ catalog, onGo, lib }) {
     <div className="view">
       <header className="spread">
         <div>
-          <h2>Catalog</h2>
+          <h2>{t('nav.catalog')}</h2>
           <p className="tiny muted">
             {shown.length === prepared.length
-              ? `${prepared.length} books`
-              : `${shown.length} of ${prepared.length} books`}
-            {catalog.generated_at && ` · built ${new Date(catalog.generated_at).toLocaleString()}`}
-            {catalog.counts?.corrected ? ` · ${catalog.counts.corrected} corrected` : ''}
-            {catalog.counts?.removed ? ` · ${catalog.counts.removed} removed` : ''}
+              ? t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
+                  total: prepared.length,
+                })
+              : t('catalog.countSome', { shown: shown.length, total: prepared.length })}
+            {catalog.generated_at &&
+              ` · ${t('catalog.builtAt', {
+                when: new Date(catalog.generated_at).toLocaleString(language),
+              })}`}
+            {catalog.counts?.corrected
+              ? ` · ${t('catalog.correctedCount', { n: catalog.counts.corrected })}`
+              : ''}
+            {catalog.counts?.removed
+              ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
+              : ''}
           </p>
         </div>
         <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
-          Type a book in
+          {t('catalog.typeIn')}
         </button>
       </header>
 
@@ -147,42 +155,42 @@ export default function Catalog({ catalog, onGo, lib }) {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search titles, authors, series, tags…"
-            aria-label="Search the catalog"
+            placeholder={t('catalog.searchPlaceholder')}
+            aria-label={t('catalog.searchLabel')}
           />
           {q && (
-            <button className="clear" onClick={() => setQ('')} aria-label="Clear search">
+            <button className="clear" onClick={() => setQ('')} aria-label={t('catalog.clearSearch')}>
               ✕
             </button>
           )}
         </div>
 
-        <div className="segmented" role="group" aria-label="Group by">
+        <div className="segmented" role="group" aria-label={t('catalog.groupBy')}>
           {GROUPINGS.map((g) => (
-            <button key={g.id} aria-pressed={group === g.id} onClick={() => setGroup(g.id)}>
-              {g.label}
+            <button key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>
+              {t(`catalog.group.${g}`)}
             </button>
           ))}
         </div>
 
         <label className="field">
-          Read
+          {t('book.read')}
           <select value={read} onChange={(e) => setRead(e.target.value)}>
-            <option value="all">any</option>
-            <option value="read">read</option>
-            <option value="unread">unread</option>
-            <option value="unknown">not recorded</option>
+            <option value="all">{t('catalog.any')}</option>
+            <option value="read">{t('read.read')}</option>
+            <option value="unread">{t('read.unread')}</option>
+            <option value="unknown">{t('read.unknown')}</option>
           </select>
         </label>
 
         {formats.length > 1 && (
           <label className="field">
-            Format
+            {t('catalog.format')}
             <select value={format} onChange={(e) => setFormat(e.target.value)}>
-              <option value="all">any</option>
+              <option value="all">{t('catalog.any')}</option>
               {formats.map((f) => (
                 <option key={f} value={f}>
-                  {f}
+                  {t(`format.${f}`)}
                 </option>
               ))}
             </select>
@@ -191,9 +199,9 @@ export default function Catalog({ catalog, onGo, lib }) {
 
         {sources.length > 1 && (
           <label className="field">
-            Source
+            {t('catalog.source')}
             <select value={source} onChange={(e) => setSource(e.target.value)}>
-              <option value="all">any</option>
+              <option value="all">{t('catalog.any')}</option>
               {sources.map((s) => (
                 <option key={s} value={s}>
                   {s}
@@ -204,19 +212,30 @@ export default function Catalog({ catalog, onGo, lib }) {
         )}
 
         <label className="field">
-          Sort
+          {t('catalog.sort')}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="title">title</option>
-            <option value="author">author</option>
-            <option value="acquired">newest first</option>
-            <option value="oldest">oldest first</option>
+            <option value="title">{t('catalog.sort.title')}</option>
+            <option value="author">{t('catalog.sort.author')}</option>
+            <option value="acquired">{t('catalog.sort.newest')}</option>
+            <option value="oldest">{t('catalog.sort.oldest')}</option>
           </select>
         </label>
       </div>
 
       {shown.length === 0 ? (
         <div className="empty">
-          Nothing matches. <button className="btn link" onClick={() => { setQ(''); setRead('all'); setFormat('all'); setSource('all') }}>Clear the filters</button>
+          {t('catalog.noMatch')}{' '}
+          <button
+            className="btn link"
+            onClick={() => {
+              setQ('')
+              setRead('all')
+              setFormat('all')
+              setSource('all')
+            }}
+          >
+            {t('catalog.clearFilters')}
+          </button>
         </div>
       ) : (
         <div className="results">
@@ -224,7 +243,8 @@ export default function Catalog({ catalog, onGo, lib }) {
             <div key={key || '_'}>
               {key && (
                 <div className="group-head">
-                  {key} <span className="faint">· {books.length}</span>
+                  {key === STANDALONE ? t('catalog.standalone') : key}{' '}
+                  <span className="faint">· {books.length}</span>
                 </div>
               )}
               {books.map((book) => (
@@ -245,10 +265,10 @@ export default function Catalog({ catalog, onGo, lib }) {
                   <span className="meta">
                     {(book.formats || []).map((f) => (
                       <span className="pill" key={f}>
-                        {f}
+                        {t(`format.${f}`)}
                       </span>
                     ))}
-                    <span className={`pill ${readState(book)}`}>{READ_LABEL[readState(book)]}</span>
+                    <span className={`pill ${readState(book)}`}>{t(`read.${readState(book)}`)}</span>
                     {book.acquired_on && <span className="faint tiny">{book.acquired_on.slice(0, 4)}</span>}
                   </span>
                 </button>

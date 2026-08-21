@@ -10,27 +10,18 @@ import { actualCost, ask as askModel, dollars, pricesForChoice } from '../ai/mod
 import { providerById } from '../ai/providers.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
+import { useT } from '../i18n/index.jsx'
 
+// The prompt text itself is not translated: it is the instruction sent to a
+// model, and it lives in prompts/ where anyone can edit it. What is translated
+// is how the two are offered here.
 const ASKS = [
-  {
-    id: 'synopsis',
-    text: synopsisPrompt,
-    label: 'Synopsis',
-    placeholder: 'Which book? It does not have to be one you own.',
-    blurb:
-      'Describes a book to someone whose shelf is in front of you — what it argues, what it is reacting against, and how it stands against books you already have.',
-  },
-  {
-    id: 'recommend',
-    text: recommendPrompt,
-    label: 'Recommendation',
-    placeholder: 'Anything to steer it? "something for a long flight", or leave blank.',
-    blurb:
-      'Two or three books, never more, chosen against where your reading is going rather than where it has been — and it checks the unread pile before suggesting a purchase.',
-  },
+  { id: 'synopsis', text: synopsisPrompt },
+  { id: 'recommend', text: recommendPrompt },
 ]
 
 export default function Desk({ catalog }) {
+  const { t } = useT()
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
   const [copied, setCopied] = useState(null)
@@ -91,17 +82,18 @@ export default function Desk({ catalog }) {
     }
   }
 
-  if (!catalog) {
-    // Naming the service on the button matters: the answer is about to be paid
+  // Naming the service on the button matters: the answer is about to be paid
   // for by whoever's key is switched on, and they should see whose it is.
   const serviceName = keyStatus ? providerById(keyStatus.provider).label.split(' - ')[0] : ''
-  const askLabel = serviceName && serviceName.length <= 20 ? `Ask ${serviceName}` : 'Ask for me'
+  const askLabel =
+    serviceName && serviceName.length <= 20 ? t('desk.askService', { service: serviceName }) : t('desk.askForMe')
 
-  return (
+  if (!catalog) {
+    return (
       <div className="view">
         <header>
-          <h2>LibrAPPrian's desk</h2>
-          <p>Nothing to work with yet — build a catalog first.</p>
+          <h2>{t('nav.desk')}</h2>
+          <p>{t('desk.nothingYet')}</p>
         </header>
       </div>
     )
@@ -110,21 +102,17 @@ export default function Desk({ catalog }) {
   return (
     <div className="view">
       <header>
-        <h2>LibrAPPrian's desk</h2>
-        <p>
-          Where the catalog stops being a list and starts being an argument. Everything on the left
-          is computed locally. The right-hand side prepares a question for a model — your shelf is
-          what makes the answer yours rather than generic.
-        </p>
+        <h2>{t('nav.desk')}</h2>
+        <p>{t('desk.intro')}</p>
       </header>
 
       <div className="desk-grid">
         <div>
           <div className="card">
             <div className="spread">
-              <h3 style={{ margin: 0 }}>Bought, and never opened</h3>
+              <h3 style={{ margin: 0 }}>{t('desk.neverOpened')}</h3>
               <label className="field">
-                waiting at least
+                {t('desk.waitingAtLeast')}
                 <select
                   value={minYears}
                   onChange={(e) => {
@@ -134,7 +122,7 @@ export default function Desk({ catalog }) {
                 >
                   {[1, 2, 3, 5, 8].map((y) => (
                     <option key={y} value={y}>
-                      {y} year{y > 1 ? 's' : ''}
+                      {t(y > 1 ? 'desk.years' : 'desk.year', { n: y })}
                     </option>
                   ))}
                 </select>
@@ -142,14 +130,11 @@ export default function Desk({ catalog }) {
             </div>
 
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>
-              Ordered by how long they have waited, weighted by how much you evidently wanted them
-              at the time. Only books <em>known</em> to be unread appear — {catalog.counts.read_unknown}{' '}
-              books have no reading record at all, and guessing would bury this list under books you
-              already finished.
+              {t('desk.neverOpenedNote', { unknown: catalog.counts.read_unknown })}
             </p>
 
             {stale.length === 0 ? (
-              <p className="muted">Nothing has waited that long.</p>
+              <p className="muted">{t('desk.nothingWaited')}</p>
             ) : (
               (showAllStale ? stale : stale.slice(0, 5)).map((row) => (
                 <div className="forgotten-item spread" key={row.book.id}>
@@ -159,7 +144,7 @@ export default function Desk({ catalog }) {
                     <span className="tiny muted">{byline(row.book, authors)}</span>
                     {intentWhy(row) && <div className="why">{intentWhy(row)}</div>}
                   </span>
-                  <span className="waited">{row.age.toFixed(1)} yr</span>
+                  <span className="waited">{t('desk.yearsShort', { n: row.age.toFixed(1) })}</span>
                 </div>
               ))
             )}
@@ -170,34 +155,34 @@ export default function Desk({ catalog }) {
                 style={{ marginTop: 12 }}
                 onClick={() => setShowAllStale((shown) => !shown)}
               >
-                {showAllStale ? 'Show only the first five' : `Show all ${stale.length}`}
+                {showAllStale ? t('desk.showFive') : t('desk.showAll', { n: stale.length })}
               </button>
             )}
           </div>
 
           <div className="card">
-            <h3>What the collection is made of</h3>
+            <h3>{t('desk.madeOf')}</h3>
             <GenrePie books={catalog.books} />
           </div>
         </div>
 
         <div>
           <div className="card">
-            <h3>Ask</h3>
+            <h3>{t('desk.ask')}</h3>
             <div className="segmented" style={{ marginBottom: 10 }}>
               {ASKS.map((a) => (
                 <button key={a.id} aria-pressed={ask === a.id} onClick={() => setAsk(a.id)}>
-                  {a.label}
+                  {t(`desk.${a.id}`)}
                 </button>
               ))}
             </div>
-            <p className="tiny muted">{chosen.blurb}</p>
+            <p className="tiny muted">{t(`desk.${chosen.id}.blurb`)}</p>
 
             <textarea
               className="compose"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder={chosen.placeholder}
+              placeholder={t(`desk.${chosen.id}.placeholder`)}
               style={{ marginTop: 10 }}
             />
 
@@ -208,7 +193,7 @@ export default function Desk({ catalog }) {
                   disabled={!assembled || asking}
                   onClick={askClaude}
                 >
-                  {asking ? 'thinking…' : askLabel}
+                  {asking ? t('desk.thinking') : askLabel}
                 </button>
               )}
               <button
@@ -216,10 +201,10 @@ export default function Desk({ catalog }) {
                 disabled={!assembled}
                 onClick={() => flash('all', assembled)}
               >
-                {copied === 'all' ? 'Copied' : 'Copy the whole request'}
+                {copied === 'all' ? t('common.copied') : t('desk.copyRequest')}
               </button>
               <button className="btn" disabled={!context} onClick={() => flash('ctx', context)}>
-                {copied === 'ctx' ? 'Copied' : 'Copy just the profile'}
+                {copied === 'ctx' ? t('common.copied') : t('desk.copyProfile')}
               </button>
             </div>
 
@@ -232,9 +217,13 @@ export default function Desk({ catalog }) {
             {(answer || asking) && (
               <div style={{ marginTop: 14 }}>
                 <div className="spread">
-                  <strong className="tiny">Answer</strong>
+                  <strong className="tiny">{t('desk.answer')}</strong>
                   <span className="tiny faint">
-                    {asking ? 'streaming…' : spent !== null ? `cost ${dollars(spent)}` : ''}
+                    {asking
+                      ? t('desk.streaming')
+                      : spent !== null
+                        ? t('shelf.cost', { amount: dollars(spent) })
+                        : ''}
                   </span>
                 </div>
                 <pre className="snippet" style={{ marginTop: 8, whiteSpace: 'pre-wrap', maxHeight: 420 }}>
@@ -242,22 +231,20 @@ export default function Desk({ catalog }) {
                 </pre>
                 {!asking && answer && (
                   <button className="btn small" style={{ marginTop: 8 }} onClick={() => flash('answer', answer)}>
-                    {copied === 'answer' ? 'Copied' : 'Copy the answer'}
+                    {copied === 'answer' ? t('common.copied') : t('desk.copyAnswer')}
                   </button>
                 )}
               </div>
             )}
 
             <div style={{ marginTop: 16 }}>
-              <ApiKeyBox what="the desk" onChange={setKeyStatus} />
+              <ApiKeyBox what={t('desk.whatItIsFor')} onChange={setKeyStatus} />
             </div>
 
             <div className="notice" style={{ marginTop: 14 }}>
               <p className="tiny">
-                {keyStatus?.state === 'active'
-                  ? 'With a key, LibrAPP asks on your behalf. Without one it assembles the request for you to paste into any AI session — the same instructions, the same profile, the same question.'
-                  : 'LibrAPP assembles the instructions, your reading profile and your question into one block — paste it into any AI session you already use. Add a key below and it can ask for you instead.'}{' '}
-                The prompts live in <code>prompts/</code> as plain text, so you can edit how it asks.
+                {keyStatus?.state === 'active' ? t('desk.withKey') : t('desk.withoutKey')}{' '}
+                {t('desk.promptsNote')}
               </p>
             </div>
           </div>
@@ -265,14 +252,12 @@ export default function Desk({ catalog }) {
           {context && (
             <div className="card">
               <div className="spread">
-                <h3 style={{ margin: 0 }}>Your reading profile</h3>
-                <span className="tiny faint">{context.length.toLocaleString()} characters</span>
+                <h3 style={{ margin: 0 }}>{t('desk.profile')}</h3>
+                <span className="tiny faint">
+                  {t('desk.characters', { n: context.length.toLocaleString() })}
+                </span>
               </div>
-              <p className="tiny muted" style={{ marginTop: 6 }}>
-                Deliberately not the whole catalog — a few hundred titles crowd out the question.
-                This is the shape of the collection and how it has moved, with enough named books to
-                argue from.
-              </p>
+              <p className="tiny muted" style={{ marginTop: 6 }}>{t('desk.profileNote')}</p>
               <pre className="snippet" style={{ marginTop: 10, maxHeight: 300 }}>
                 {context}
               </pre>

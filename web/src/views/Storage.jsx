@@ -3,15 +3,12 @@ import DropZone from '../components/DropZone.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
 import { checkCapabilities } from '../store/capabilities.js'
-
-const KINDS = {
-  folder: 'a folder you chose — plain files you can open, back up or commit',
-  browser: 'browser storage — private to LibrAPP, and only leaves by export',
-}
+import { useT } from '../i18n/index.jsx'
 
 const mb = (bytes) => `${(bytes / 1e6).toFixed(1)} MB`
 
 export default function Storage({ lib, focus }) {
+  const { t } = useT()
   const [estimate, setEstimate] = useState(null)
   const [note, setNote] = useState(null)
   const [persisted, setPersisted] = useState(null)
@@ -38,10 +35,23 @@ export default function Storage({ lib, focus }) {
     a.download = `librapp-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
-    setNote(`Exported ${bundle.sources.length} source(s).`)
+    setNote(t('storage.exported', { n: bundle.sources.length }))
   }
 
   const capabilities = checkCapabilities()
+
+  /**
+    * A capability's own wording, translated where a translation exists.
+    *
+    * The checks carry English text of their own so the module stands alone.
+    * A check added later without a translation should read in English rather
+    * than showing the name of a missing key.
+    */
+  const cap = (id, part, fallback) => {
+    const key = `cap.${id}.${part}`
+    const value = t(key)
+    return value === key ? fallback : value
+  }
 
   const review = lib.catalog?.review || {}
   const removed = review.removed_by_hand || []
@@ -53,7 +63,7 @@ export default function Storage({ lib, focus }) {
     lib.run(async (library) => {
       await library.writeOverrides(clearOverride(await library.readOverrides(), id))
       await library.rebuild()
-      setNote(`Correction to ${title || id} undone.`)
+      setNote(t('storage.undone', { what: title || id }))
     })
 
   /**
@@ -70,7 +80,7 @@ export default function Storage({ lib, focus }) {
         setRemoved(overrides, { id: entry.id, title: entry.title, authors: entry.authors }, false),
       )
       await library.rebuild()
-      setNote(`${entry.title || entry.id} restored.`)
+      setNote(t('storage.restored', { what: entry.title || entry.id }))
     })
 
   /**
@@ -88,28 +98,21 @@ export default function Storage({ lib, focus }) {
       try {
         bundle = JSON.parse(text)
       } catch {
-        throw new Error(
-          `${file.name} is not readable as JSON. It may have been renamed, or downloaded only in part.`,
-        )
+        throw new Error(t('error.notJson', { name: file.name }))
       }
       if (bundle?.librapp_bundle !== 1) {
-        throw new Error(
-          `${file.name} is not a LibrAPP export. Choose the file you exported from ` +
-            'Library → Export on the other device.',
-        )
+        throw new Error(t('error.notAnExport', { name: file.name }))
       }
       const written = await library.importBundle(bundle)
       await library.rebuild()
-      setNote(`Imported ${written} source(s) and rebuilt.`)
+      setNote(t('storage.imported', { n: written }))
     })
 
   return (
     <div className="view">
       <header>
-        <h2>Library</h2>
-        <p>
-          Where your catalog lives, what it was built from, and how to move it to another device.
-        </p>
+        <h2>{t('nav.library')}</h2>
+        <p>{t('storage.intro')}</p>
       </header>
 
       {note && (
@@ -119,59 +122,59 @@ export default function Storage({ lib, focus }) {
       )}
 
       <div className="card">
-        <h3>Storage</h3>
-        <p className="muted tiny">{KINDS[lib.library?.kind] || 'unknown'}</p>
+        <h3>{t('storage.where')}</h3>
+        <p className="muted tiny">
+          {lib.library?.kind ? t(`storage.kind.${lib.library.kind}`) : t('storage.kind.unknown')}
+        </p>
         {estimate?.quota ? (
           <p className="tiny faint" style={{ marginTop: 8 }}>
-            Using {mb(estimate.usage)} of about {mb(estimate.quota)} the browser allows this app.
+            {t('storage.using', { used: mb(estimate.usage), quota: mb(estimate.quota) })}
           </p>
         ) : null}
         {lib.library?.kind === 'browser' && persisted === false && (
           <div className="notice bad" style={{ marginTop: 12 }}>
             <p className="tiny">
-              <strong>This storage is not marked persistent.</strong> The browser may clear it if
-              the device runs short of space, and your library would go with it. Installing LibrAPP
-              usually earns persistence; until then, keep an export.
+              <strong>{t('storage.notPersistent')}</strong> {t('storage.notPersistentBody')}
             </p>
             <button
               className="btn small"
               style={{ marginTop: 8 }}
               onClick={async () => setPersisted(await requestPersistence())}
             >
-              Ask for persistent storage
+              {t('storage.askPersistent')}
             </button>
           </div>
         )}
         {lib.library?.kind === 'browser' && persisted === true && (
           <p className="tiny" style={{ color: 'var(--good)', marginTop: 10 }}>
-            Marked persistent — the browser will not clear it to reclaim space.
+            {t('storage.persistent')}
           </p>
         )}
 
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn" onClick={lib.forget}>
-            Use a different location
+            {t('storage.elsewhere')}
           </button>
         </div>
         <p className="tiny faint" style={{ marginTop: 8 }}>
-          This forgets where the library is; it does not delete anything.
+          {t('storage.forgetNote')}
         </p>
       </div>
 
       <div className="card">
-        <h3>Sources</h3>
+        <h3>{t('storage.sources')}</h3>
         {lib.sources.length === 0 ? (
-          <p className="muted">Nothing ingested yet.</p>
+          <p className="muted">{t('storage.noSources')}</p>
         ) : (
           <div className="table-scroll">
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
             <thead>
               <tr style={{ textAlign: 'left', color: 'var(--ink-faint)' }}>
-                <th style={{ padding: '4px 0' }}>name</th>
-                <th>kind</th>
-                <th>from</th>
-                <th>trust</th>
-                <th style={{ textAlign: 'right' }}>records</th>
+                <th style={{ padding: '4px 0' }}>{t('storage.col.name')}</th>
+                <th>{t('storage.col.kind')}</th>
+                <th>{t('storage.col.from')}</th>
+                <th>{t('storage.col.trust')}</th>
+                <th style={{ textAlign: 'right' }}>{t('storage.col.records')}</th>
                 <th />
               </tr>
             </thead>
@@ -181,7 +184,9 @@ export default function Storage({ lib, focus }) {
                   <td style={{ padding: '6px 0' }}>{s.source?.name || s.file}</td>
                   <td className="muted">{s.source?.kind || '—'}</td>
                   <td className="faint">{s.error ? <span style={{ color: 'var(--bad)' }}>{s.error}</span> : s.source?.origin}</td>
-                  <td className="muted">{s.source?.confidence || '—'}</td>
+                  <td className="muted">
+                    {s.source?.confidence ? t(`confidence.${s.source.confidence}`) : '—'}
+                  </td>
                   <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                     {s.records?.length ?? '—'}
                   </td>
@@ -194,11 +199,11 @@ export default function Storage({ lib, focus }) {
                           await library.deleteSource(s.file)
                           const left = await library.sourceNames()
                           if (left.length) await library.rebuild()
-                          setNote(`Removed ${s.file}.`)
+                          setNote(t('storage.sourceRemoved', { name: s.file }))
                         })
                       }
                     >
-                      Remove
+                      {t('common.remove')}
                     </button>
                   </td>
                 </tr>
@@ -208,39 +213,39 @@ export default function Storage({ lib, focus }) {
           </div>
         )}
         <p className="tiny faint" style={{ marginTop: 10 }}>
-          Every source stays as its ingester wrote it. Rebuilding merges all of them, so removing
-          one and rebuilding is how an import is undone.
+          {t('storage.sourcesNote')}
         </p>
       </div>
 
       <div className="card">
         <div className="spread">
-          <h3 style={{ margin: 0 }}>Your browser</h3>
+          <h3 style={{ margin: 0 }}>{t('storage.browser')}</h3>
           <span className={`pill ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'flag'}`}>
             {capabilities.complete
-              ? 'everything supported'
+              ? t('storage.allSupported')
               : capabilities.usable
-                ? `${capabilities.missingOptional.length} feature(s) unavailable`
-                : 'not supported'}
+                ? t('storage.someMissing', { n: capabilities.missingOptional.length })
+                : t('storage.notSupported')}
           </span>
         </div>
         <p className="muted tiny" style={{ marginTop: 8 }}>
-          Checked by trying each feature, not by reading the browser's name — so this is what your
-          browser can actually do, whichever one it is.
+          {t('storage.browserNote')}
         </p>
 
         <div style={{ marginTop: 12 }}>
           {capabilities.checks.map((c) => (
             <div className="forgotten-item spread" key={c.id}>
               <span>
-                <span className="title" style={{ font: '500 14px/1.3 var(--sans)' }}>{c.label}</span>
+                <span className="title" style={{ font: '500 14px/1.3 var(--sans)' }}>
+                  {cap(c.id, 'label', c.label)}
+                </span>
                 <div className="why">
-                  {c.needed}
-                  {!c.ok && c.fix ? ` — ${c.fix}` : ''}
+                  {cap(c.id, 'needed', c.needed)}
+                  {!c.ok && c.fix ? ` — ${cap(c.id, 'fix', c.fix)}` : ''}
                 </div>
               </span>
               <span className={`pill ${c.ok ? 'read' : c.required ? 'flag' : 'unread'}`}>
-                {c.ok ? 'yes' : c.required ? 'missing' : 'no'}
+                {c.ok ? t('storage.yes') : c.required ? t('storage.missing') : t('storage.no')}
               </span>
             </div>
           ))}
@@ -248,29 +253,22 @@ export default function Storage({ lib, focus }) {
 
         {!capabilities.usable && (
           <div className="notice bad" style={{ marginTop: 12 }}>
-            <p className="tiny">
-              LibrAPP cannot run properly in this browser. Try a current version of Chrome, Edge,
-              Brave, Firefox or Safari.
-            </p>
+            <p className="tiny">{t('storage.cannotRun')}</p>
           </div>
         )}
       </div>
 
       <div className="card">
-        <h3>Corrections you have made</h3>
-        <p className="muted tiny">
-          Kept in <code>overrides.json</code>, apart from your sources and applied after every
-          rebuild. Removing a book cannot delete it — the next rebuild reads the same sources and
-          would put it back — so a removal is recorded here instead, and can be undone.
-        </p>
+        <h3>{t('storage.corrections')}</h3>
+        <p className="muted tiny">{t('storage.correctionsNote')}</p>
 
         {!removed.length && !corrected.length && !orphaned.length && (
-          <p className="muted" style={{ marginTop: 10 }}>Nothing corrected yet.</p>
+          <p className="muted" style={{ marginTop: 10 }}>{t('storage.noCorrections')}</p>
         )}
 
         {removed.length > 0 && (
           <div style={{ marginTop: 12 }}>
-            <strong className="tiny">Removed ({removed.length})</strong>
+            <strong className="tiny">{t('storage.removedGroup', { n: removed.length })}</strong>
             {removed.map((r) => (
               <div className="forgotten-item spread" key={r.id}>
                 <span>
@@ -278,7 +276,7 @@ export default function Storage({ lib, focus }) {
                   {r.why && <div className="why">{r.why}</div>}
                 </span>
                 <button className="btn small" disabled={lib.busy} onClick={() => restore(r)}>
-                  Restore
+                  {t('common.restore')}
                 </button>
               </div>
             ))}
@@ -287,15 +285,15 @@ export default function Storage({ lib, focus }) {
 
         {corrected.length > 0 && (
           <div style={{ marginTop: 14 }}>
-            <strong className="tiny">Edited ({corrected.length})</strong>
+            <strong className="tiny">{t('storage.editedGroup', { n: corrected.length })}</strong>
             {corrected.map((c) => (
               <div className="forgotten-item spread" key={c.id}>
                 <span>
                   <span className="title">{c.title}</span>
-                  <div className="why">changed {c.fields.join(', ')}</div>
+                  <div className="why">{t('storage.changed', { fields: c.fields.join(', ') })}</div>
                 </span>
                 <button className="btn small" disabled={lib.busy} onClick={() => undo(c.id, c.title)}>
-                  Undo
+                  {t('common.undo')}
                 </button>
               </div>
             ))}
@@ -305,19 +303,20 @@ export default function Storage({ lib, focus }) {
         {orphaned.length > 0 && (
           <div className="notice bad" style={{ marginTop: 14 }}>
             <p className="tiny">
-              <strong>{orphaned.length} correction(s) no longer match any book.</strong> An entry is
-              identified by its author and title, so this happens when a better source supplies a
-              fuller title and the identity changes. They are listed rather than dropped, because
-              silence would look like the correction had stopped mattering.
+              <strong>{t('storage.orphaned', { n: orphaned.length })}</strong>{' '}
+              {t('storage.orphanedNote')}
             </p>
             {orphaned.map((o) => (
               <div className="forgotten-item spread" key={o.id}>
                 <span>
                   <span className="title">{o.title || o.id}</span>
-                  <div className="why">{o.removed ? 'was removed' : 'was edited'}{o.at ? ` on ${o.at}` : ''}</div>
+                  <div className="why">
+                    {o.removed ? t('storage.wasRemoved') : t('storage.wasEdited')}
+                    {o.at ? ` · ${o.at}` : ''}
+                  </div>
                 </span>
                 <button className="btn small" disabled={lib.busy} onClick={() => undo(o.id, o.title)}>
-                  Forget it
+                  {t('storage.forgetIt')}
                 </button>
               </div>
             ))}
@@ -326,21 +325,18 @@ export default function Storage({ lib, focus }) {
       </div>
 
       <div className="card" id="import-box">
-        <h3>Move this library elsewhere</h3>
-        <p className="muted tiny">
-          An export holds the sources, not the catalog. The catalog is rebuilt from them on the
-          other side, so the two copies cannot drift into disagreeing about which is current.
-        </p>
+        <h3>{t('storage.move')}</h3>
+        <p className="muted tiny">{t('storage.moveNote')}</p>
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn primary" onClick={exportBundle} disabled={!lib.sources.length}>
-            Export
+            {t('common.export')}
           </button>
         </div>
         <div style={{ marginTop: 14 }}>
           <DropZone
             glyph="📥"
-            title="Import an export"
-            hint="choose the .json file you exported — it is added, then rebuilt"
+            title={t('storage.importTitle')}
+            hint={t('storage.importHint')}
             disabled={lib.busy}
             onFile={importBundle}
           />

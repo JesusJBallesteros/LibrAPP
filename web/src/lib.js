@@ -15,12 +15,6 @@ export const fold = (s) =>
 export const readState = (book) =>
   book.read === true ? 'read' : book.read === false ? 'unread' : 'unknown'
 
-export const READ_LABEL = {
-  read: 'read',
-  unread: 'unread',
-  unknown: 'not recorded',
-}
-
 export function authorNames(catalog) {
   const byId = new Map()
   for (const a of catalog?.authors || []) byId.set(a.id, a)

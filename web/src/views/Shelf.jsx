@@ -11,6 +11,7 @@ import {
   readShelf,
 } from '../ai/model.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
+import { useT } from '../i18n/index.jsx'
 
 /**
  * Reading a shelf is the one step a parser cannot do, so this view is honest
@@ -21,6 +22,7 @@ import promptText from '../../../prompts/ingest-shelf.md?raw'
  * the browser and never crosses a network, which matters most on a phone.
  */
 export default function Shelf({ lib }) {
+  const { t } = useT()
   const [photo, setPhoto] = useState(null)
   const [tiles, setTiles] = useState(null)
   const [working, setWorking] = useState(false)
@@ -40,7 +42,7 @@ export default function Shelf({ lib }) {
     try {
       // Object URLs from the previous cut are useless now and would otherwise
       // hold on to a copy of every tile for as long as the page lives.
-      tiles?.tiles.forEach((t) => URL.revokeObjectURL(t.url))
+      tiles?.tiles.forEach((tile) => URL.revokeObjectURL(tile.url))
       setTiles(await tileImage(file, grid))
     } catch (err) {
       setError(err.message)
@@ -143,18 +145,14 @@ export default function Shelf({ lib }) {
     ? ''
     : estimate.dollars !== null
       ? dollars(estimate.dollars)
-      : `about ${Math.round(estimate.inputTokens / 1000)}k tokens in, at your rate`
+      : t('shelf.tokensOnly', { k: Math.round(estimate.inputTokens / 1000) })
   const spent = proposed ? actualCost(proposed.usage, prices) : null
 
   return (
     <div className="view">
       <header>
-        <h2>Shelf picture</h2>
-        <p>
-          Photograph a shelf straight on, at your camera's full resolution. This matters more than
-          anything else here: a whole bookcase at one megapixel is unreadable, and the same shelf at
-          fifty is not.
-        </p>
+        <h2>{t('nav.shelf')}</h2>
+        <p>{t('shelf.intro')}</p>
       </header>
 
       {error && (
@@ -164,61 +162,55 @@ export default function Shelf({ lib }) {
       )}
 
       <div className="card">
-        <h3>1 · The photograph</h3>
+        <h3>{t('shelf.step1')}</h3>
         <DropZone
           glyph="📷"
-          title="Take or choose a photograph"
-          hint="JPEG or PNG · nothing is uploaded"
+          title={t('shelf.dropPhoto')}
+          hint={t('shelf.dropPhotoHint')}
           accept="image/*"
           disabled={working}
           onFile={onPhoto}
         />
-        {working && <p className="tiny faint" style={{ marginTop: 10 }}>Cutting it into tiles…</p>}
+        {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('shelf.cutting')}</p>}
       </div>
 
-      <ApiKeyBox what="reading a shelf" onChange={setKeyStatus} />
+      <ApiKeyBox what={t('shelf.whatItIsFor')} onChange={setKeyStatus} />
 
       {tiles && (
         <>
           <div className="card">
             <div className="spread">
-              <h3 style={{ margin: 0 }}>2 · Read the spines</h3>
+              <h3 style={{ margin: 0 }}>{t('shelf.step2')}</h3>
               <span className="tiny faint">
-                {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} · {tiles.tiles.length} tiles
+                {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} ·{' '}
+                {t('shelf.tileCount', { n: tiles.tiles.length })}
               </span>
             </div>
-            <p className="muted tiny" style={{ marginTop: 8 }}>
-              Tiles are cut at native resolution and overlap, so a book on a seam is whole in one of
-              them. Give them to a model along with the instructions below, and have it write the
-              transcription.
-            </p>
+            <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.tilesNote')}</p>
 
             <div className="card" style={{ marginTop: 12, boxShadow: 'none', background: 'var(--paper-sunk)' }}>
               <div className="spread">
                 <strong className="tiny">
-                  Grid · {tiles.grid.cols} across × {tiles.grid.rows} down
+                  {t('shelf.grid', { cols: tiles.grid.cols, rows: tiles.grid.rows })}
                 </strong>
                 <span className="row" style={{ gap: 6 }}>
                   <button className="btn small" disabled={working} onClick={() => regrid(-1, 0)}>
-                    − across
+                    {t('shelf.lessAcross')}
                   </button>
                   <button className="btn small" disabled={working} onClick={() => regrid(1, 0)}>
-                    + across
+                    {t('shelf.moreAcross')}
                   </button>
                   <button className="btn small" disabled={working} onClick={() => regrid(0, -1)}>
-                    − down
+                    {t('shelf.lessDown')}
                   </button>
                   <button className="btn small" disabled={working} onClick={() => regrid(0, 1)}>
-                    + down
+                    {t('shelf.moreDown')}
                   </button>
                 </span>
               </div>
               <p className="tiny faint" style={{ margin: '8px 0 0' }}>
-                Aim for tiles holding a handful of <em>whole</em> spines, with the title readable
-                top to bottom. No setting suits every shelf: a wide bookcase wants several tiles
-                across, and a close-up of three books wants one and nothing more.{' '}
-                <strong>Adding rows is what splits a title in half</strong>, so add those only when
-                the photograph really shows shelves stacked above one another.
+                {t('shelf.gridNote')}{' '}
+                <strong>{t('shelf.gridWarning')}</strong> {t('shelf.gridWarningTail')}
               </p>
               {(tiles.grid.cols !== tiles.suggested.cols || tiles.grid.rows !== tiles.suggested.rows) && (
                 <button
@@ -226,7 +218,10 @@ export default function Shelf({ lib }) {
                   style={{ marginTop: 6, padding: 0 }}
                   onClick={() => cut(photo, tiles.suggested)}
                 >
-                  back to the suggested {tiles.suggested.cols}×{tiles.suggested.rows}
+                  {t('shelf.backToSuggested', {
+                    cols: tiles.suggested.cols,
+                    rows: tiles.suggested.rows,
+                  })}
                 </button>
               )}
             </div>
@@ -234,24 +229,24 @@ export default function Shelf({ lib }) {
             {keyStatus?.state === 'active' && (
               <div className="row" style={{ marginTop: 12 }}>
                 <button className="btn primary" onClick={readWithKey} disabled={reading || lib.busy}>
-                  {reading ? 'reading the spines…' : 'Read these tiles for me'}
+                  {reading ? t('shelf.reading') : t('shelf.readForMe')}
                 </button>
                 <span className="tiny faint">
-                  {tiles.tiles.length} tile(s) · {estimateLabel} · you approve the result before
-                  anything is imported
+                  {t('shelf.tileCount', { n: tiles.tiles.length })} · {estimateLabel} ·{' '}
+                  {t('shelf.youApprove')}
                 </span>
               </div>
             )}
 
             <div className="row" style={{ marginTop: 10 }}>
               <button className="btn small" onClick={() => flash('prompt', promptText)}>
-                {copied === 'prompt' ? 'Copied' : 'Copy the instructions'}
+                {copied === 'prompt' ? t('common.copied') : t('shelf.copyInstructions')}
               </button>
               <button className="btn small" onClick={() => setShowPrompt((s) => !s)}>
-                {showPrompt ? 'Hide them' : 'Read them'}
+                {showPrompt ? t('shelf.hideThem') : t('shelf.readThem')}
               </button>
               <button className="btn small" onClick={() => tiles.tiles.forEach(saveTile)}>
-                Save all tiles
+                {t('shelf.saveAll')}
               </button>
             </div>
 
@@ -262,15 +257,19 @@ export default function Shelf({ lib }) {
             )}
 
             <div className="tiles" style={{ marginTop: 14 }}>
-              {tiles.tiles.map((t) => (
-                <figure key={t.tile}>
-                  <img src={t.url} alt={`Tile row ${t.row}, column ${t.column}`} loading="lazy" />
+              {tiles.tiles.map((tile) => (
+                <figure key={tile.tile}>
+                  <img
+                    src={tile.url}
+                    alt={t('shelf.tileAlt', { row: tile.row, column: tile.column })}
+                    loading="lazy"
+                  />
                   <figcaption className="spread">
                     <span>
-                      r{t.row}c{t.column}
+                      r{tile.row}c{tile.column}
                     </span>
-                    <button className="btn small" onClick={() => saveTile(t)}>
-                      Save
+                    <button className="btn small" onClick={() => saveTile(tile)}>
+                      {t('common.save')}
                     </button>
                   </figcaption>
                 </figure>
@@ -281,22 +280,19 @@ export default function Shelf({ lib }) {
           {proposed && (
             <div className="card">
               <div className="spread">
-                <h3 style={{ margin: 0 }}>3 · Check what it read</h3>
+                <h3 style={{ margin: 0 }}>{t('shelf.step3')}</h3>
                 <span className="tiny faint">
-                  {proposed.counted} book(s)
-                  {spent !== null && ` · cost ${dollars(spent)}`}
+                  {t('shelf.bookCount', { n: proposed.counted })}
+                  {spent !== null && ` · ${t('shelf.cost', { amount: dollars(spent) })}`}
                 </span>
               </div>
-              <p className="muted tiny" style={{ marginTop: 8 }}>
-                Nothing has been imported yet. A model reading a spine can be wrong in a way the
-                catalog cannot detect later, so this is the moment to look. Anything marked
-                uncertain is worth checking against the tiles above.
-              </p>
+              <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.checkNote')}</p>
 
               {(proposed.transcription.shelves || []).map((shelf, i) => (
                 <div key={i} style={{ marginTop: 12 }}>
                   <div className="group-head" style={{ position: 'static' }}>
-                    {shelf.location || 'unplaced'} <span className="faint">· {shelf.books?.length || 0}</span>
+                    {shelf.location || t('shelf.unplaced')}{' '}
+                    <span className="faint">· {shelf.books?.length || 0}</span>
                   </div>
                   {(shelf.books || []).map((book, j) => (
                     <div className="forgotten-item spread" key={j}>
@@ -310,7 +306,7 @@ export default function Shelf({ lib }) {
                         {book.notes && <div className="why">{book.notes}</div>}
                       </span>
                       <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
-                        {book.confidence}
+                        {t(`confidence.${book.confidence}`)}
                       </span>
                     </div>
                   ))}
@@ -319,27 +315,22 @@ export default function Shelf({ lib }) {
 
               <div className="row" style={{ marginTop: 14 }}>
                 <button className="btn primary" onClick={acceptProposed} disabled={lib.busy}>
-                  Import these {proposed.counted} books
+                  {t('shelf.importThese', { n: proposed.counted })}
                 </button>
                 <button className="btn" onClick={() => setProposed(null)} disabled={lib.busy}>
-                  Discard
+                  {t('shelf.discard')}
                 </button>
               </div>
             </div>
           )}
 
           <div className="card">
-            <h3>{proposed ? '4' : '3'} · Bring a transcription back yourself</h3>
-            <p className="muted tiny">
-              The route that needs no key: read the tiles in any AI session with the instructions
-              above, and drop the JSON here. The import refuses a file with an untitled book or an
-              unknown confidence value — a bad read should stop here rather than turn up in your
-              catalog later.
-            </p>
+            <h3>{t('shelf.stepBring', { n: proposed ? 4 : 3 })}</h3>
+            <p className="muted tiny">{t('shelf.bringNote')}</p>
             <DropZone
               glyph="📄"
-              title="Drop the transcription"
-              hint="the JSON file the model wrote"
+              title={t('shelf.dropTranscription')}
+              hint={t('shelf.dropTranscriptionHint')}
               disabled={lib.busy}
               onFile={onTranscription}
             />
@@ -351,13 +342,14 @@ export default function Shelf({ lib }) {
         <div className="notice good">
           <p>
             <strong>
-              {result.count} books read from the photograph
-              {result.stats.uncertain_spines ? `, ${result.stats.uncertain_spines} spine(s) uncertain` : ''}.
+              {t('shelf.result', { n: result.count })}
+              {result.stats.uncertain_spines
+                ? ` · ${t('shelf.uncertain', { n: result.stats.uncertain_spines })}`
+                : ''}
             </strong>
           </p>
           <p className="tiny">
-            The catalog now holds {result.counts.books} books. A photograph cannot see a purchase
-            date or whether you read something, so those stay unknown until another source says.
+            {t('list.nowHolds', { n: result.counts.books })} {t('shelf.resultNote')}
           </p>
         </div>
       )}

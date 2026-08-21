@@ -1,3 +1,4 @@
+import { useT } from '../i18n/index.jsx'
 /**
  * What the collection is made of.
  *
@@ -50,9 +51,13 @@ export function summarise(books, { share = NAMED_SHARE, maxNamed = MAX_NAMED } =
     named.push({ label: value, count: n })
     return { slices: withShare(named, total), total, distinct: ordered.length }
   }
-  if (rest > 0) named.push({ label: 'other', count: rest, isOther: true, covers: restCount })
+  if (rest > 0) named.push({ label: OTHER, count: rest, isOther: true, covers: restCount })
   return { slices: withShare(named, total), total, distinct: ordered.length }
 }
+
+// The catch-all slice. A fixed marker rather than a translated word, so the
+// chart does not gain or lose a category when the language changes.
+const OTHER = '\u0000other'
 
 const withShare = (slices, total) =>
   slices.map((s, i) => ({ ...s, share: s.count / total, slot: i + 1 }))
@@ -75,12 +80,13 @@ function arc(cx, cy, r, from, to) {
 const percent = (share) => (share < 0.005 ? '<1%' : `${Math.round(share * 100)}%`)
 
 export default function GenrePie({ books, size = 168 }) {
+  const { t } = useT()
   const { slices, total, distinct } = summarise(books)
   const other = slices.find((s) => s.isOther)
   const named = slices.filter((s) => !s.isOther)
 
   if (!slices.length) {
-    return <p className="muted tiny">No genres recorded yet.</p>
+    return <p className="muted tiny">{t('pie.noGenres')}</p>
   }
 
   const r = size / 2 - 2
@@ -117,7 +123,8 @@ export default function GenrePie({ books, size = 168 }) {
             strokeLinejoin="round"
           >
             <title>
-              {slice.label}: {slice.count} ({percent(slice.share)})
+              {slice.isOther ? t('pie.other') : slice.label}: {slice.count} (
+              {percent(slice.share)})
             </title>
           </path>
         ))}
@@ -128,8 +135,10 @@ export default function GenrePie({ books, size = 168 }) {
           <li key={slice.label}>
             <span className="swatch" style={{ background: `var(--series-${slice.slot})` }} aria-hidden="true" />
             <span className="pie-label">
-              {slice.label}
-              {slice.isOther && <span className="faint"> · {slice.covers} more</span>}
+              {slice.isOther ? t('pie.other') : slice.label}
+              {slice.isOther && (
+                <span className="faint"> · {t('pie.more', { n: slice.covers })}</span>
+              )}
             </span>
             <span className="pie-value">
               {slice.count} <span className="faint">{percent(slice.share)}</span>
@@ -140,11 +149,12 @@ export default function GenrePie({ books, size = 168 }) {
 
       {other && (
         <p className="tiny faint pie-note">
-          The {named.length} largest genres cover{' '}
-          {Math.round(named.reduce((sum, s) => sum + s.share, 0) * 100)}% of tagged books. The other{' '}
-          {other.covers} labels are each too small to chart
-          {other.share > 0.5 && ' — genre tags come from your sources and are not a controlled list, so they fragment'}
-          .
+          {t('pie.note', {
+            named: named.length,
+            share: Math.round(named.reduce((sum, s) => sum + s.share, 0) * 100),
+            rest: other.covers,
+          })}
+          {other.share > 0.5 && ` — ${t('pie.fragmented')}`}
         </p>
       )}
     </div>

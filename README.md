@@ -15,11 +15,14 @@ filter and browse. You can also import a spreadsheet, a CSV, or a store export
 
 Your books stay on your device. There is no account, no server and no sync.
 
+The interface is available in English and Spanish, chosen on the opening page.
+
 ---
 
 ## Contents
 
 - [What it does](#what-it-does)
+- [Language](#language)
 - [Browser support](#browser-support)
 - [Install](#install)
 - [Adding your books](#adding-your-books)
@@ -27,7 +30,7 @@ Your books stay on your device. There is no account, no server and no sync.
 - [Corrections](#corrections)
 - [The desk](#the-desk)
 - [Where your library lives](#where-your-library-lives)
-- [Optional API key](#optional-api-key)
+- [Optional AI key](#optional-ai-key)
 - [Command-line tools](#command-line-tools)
 - [Development](#development)
 - [Licence](#licence)
@@ -46,7 +49,8 @@ Your books stay on your device. There is no account, no server and no sync.
 
 Only two steps involve AI: reading spines off a photograph, and asking
 questions. Everything else — importing, merging, searching, filtering — is
-plain code running locally. You can use LibrAPP without any AI at all.
+plain code running locally. You can use LibrAPP without any AI at all, and when
+you do use it, you choose which service and pay for it directly.
 
 ### Why it might suit you
 
@@ -54,6 +58,27 @@ plain code running locally. You can use LibrAPP without any AI at all.
 - **Works offline.** The catalog is a file on your device, not a web service.
 - **Reads what you already have.** Most catalogs make you type everything in.
 - **Your data is plain JSON.** Readable, transferable and always yours.
+
+---
+
+## Language
+
+LibrAPP speaks **English** and **Spanish**. The selector is at the top of the
+opening page, and the choice is remembered.
+
+It is a real translation rather than the browser's translate button, for three
+reasons. An installed app has no browser chrome, so there is no menu to
+translate from — and the people most likely to want another language are
+exactly the ones who installed it. Page translators rewrite the page underneath
+the app, which then loses track of what it drew. And a page translator would
+translate your books along with the interface: titles, authors and genres are
+data, and *La Odisea* must not silently become *The Odyssey* in your own
+catalog.
+
+Adding a language means adding one file next to
+[`web/src/i18n/en.js`](web/src/i18n/en.js) and listing it in
+[`web/src/i18n/index.jsx`](web/src/i18n/index.jsx). Any key you leave out falls
+back to English, so a partial translation still works.
 
 ---
 
@@ -143,6 +168,11 @@ Requirements: Node 20+ to build. Nothing to run it.
 
 ## Adding your books
 
+The opening page asks what you have rather than asking for your storage: a
+photograph, a list, a catalog exported from another device, or a catalog
+already here. Whichever you choose, it sets up storage on the way if you have
+not chosen any yet.
+
 You need at least one source. Any one of these is enough on its own.
 
 ### A photograph of a shelf
@@ -155,7 +185,7 @@ Photograph the shelf straight on at your camera's **full resolution**.
    with the **across** and **down** buttons if the default does not suit your
    shelf.
 3. Read the tiles:
-   - With an [API key](#optional-api-key): press **Read these tiles for me**.
+   - With an [AI key](#optional-ai-key): press **Read these tiles for me**.
    - Without one: press **Copy the instructions**, save the tiles, and give
      both to any AI assistant. Bring back the JSON it writes.
 4. Check what it read, then import.
@@ -274,7 +304,7 @@ of your reading (what the collection contains, how it has changed over the
 years, which authors dominate, what is waiting unread) and sends it with your
 question, so the answer is about your shelf rather than books in general.
 
-With an API key it asks directly. Without one it assembles the whole request
+With an AI key it asks directly. Without one it assembles the whole request
 for you to paste into any AI assistant.
 
 The book you ask about does not have to be one you own.
@@ -312,6 +342,12 @@ This is a copy, not a sync. Changes on one device do not appear on the other.
 
 ### Backups
 
+To move a catalog between devices, use **Export** in the **Library** tab and
+bring the file to the other device — either through the same tab, or from
+*I have a catalog from another device* on the opening page. The file is judged
+by what is in it rather than by what your file picker calls it, so a phone that
+labels a downloaded `.json` as something else does not hide it from you.
+
 If you chose a folder, back it up like any other folder. If you use browser
 storage, export periodically — browsers can clear their own storage when a
 device runs short of space. LibrAPP warns you if your storage is not marked
@@ -319,37 +355,60 @@ persistent.
 
 ---
 
-## Optional API key
+## Optional AI key
 
 LibrAPP works with no key. A key only lets it do two things itself instead of
 preparing them for you: reading spines from a photograph, and answering
 questions on the desk.
 
-The key box is in **Shelf picture** and on the **desk**, and always shows one of
-three states:
+### Which service
+
+You choose. The key box lists:
+
+| Service | Get a key at | Notes |
+|---|---|---|
+| **Anthropic** — Claude | [console.anthropic.com](https://console.anthropic.com/settings/keys) | prices shown in dollars |
+| **OpenAI** | [platform.openai.com](https://platform.openai.com/api-keys) | |
+| **Google** — Gemini | [aistudio.google.com](https://aistudio.google.com/apikey) | |
+| **OpenRouter** | [openrouter.ai](https://openrouter.ai/keys) | many models behind one key |
+| **Anything else** | — | any address that speaks the OpenAI chat interface |
+
+That last row covers Groq, Mistral, DeepSeek, Together, and a model running on
+your own machine: give the address ending in `/v1` and the model name. A local
+server has to be configured to accept requests from the page before a browser
+is allowed to talk to it.
+
+The model is a free text field with suggestions, so a model newer than this
+README still works. Each service keeps its own key — trying a second one does
+not cost you the first, and switching back needs no pasting.
+
+### The three states
+
+The key box is in **Shelf picture** and on the **desk**, and always shows one of:
 
 | | |
 |---|---|
 | **no key stored** | LibrAPP prepares requests for you to paste elsewhere |
-| **stored · in use** | LibrAPP may read spines and answer questions |
-| **stored · switched off** | the key is kept but not used |
+| **key stored · in use** | LibrAPP may read spines and answer questions |
+| **key stored · switched off** | the key is kept but not used |
 
 Switching off keeps the key for later. Deleting removes it from the device.
 
-**Cost.** Reading a full 50-megapixel shelf costs roughly 28 cents. A close-up
-of a few books costs under three. LibrAPP shows an estimate before spending and
-the actual cost afterwards.
+**Cost.** Where a model's published rate has been checked, LibrAPP shows an
+estimate in dollars before spending and the real cost afterwards — reading a
+full 50-megapixel shelf with Claude Opus costs roughly 28 cents, a close-up of a
+few books under three. Where the rate has not been checked, it shows the token
+count instead and leaves the arithmetic to you, rather than printing a guessed
+price with a dollar sign in front of it.
 
 **Security.** A key stored in a browser can be read by anything running on the
-page. Use a key scoped to its own workspace with a spend limit. The key is sent
-only to the API, is never written into your catalog, and is never included in an
-export.
+page. Use a key scoped to its own project or workspace, with a spend limit. The
+key is sent only to its own service, is never written into your catalog, and is
+never included in an export.
 
 **Review.** Books read from a photograph are shown for your approval before
 they enter the catalog, with each entry's confidence beside it. A model reading
 a spine can be wrong in ways nothing downstream can detect.
-
-Get a key from the [Anthropic Console](https://console.anthropic.com/).
 
 ---
 
