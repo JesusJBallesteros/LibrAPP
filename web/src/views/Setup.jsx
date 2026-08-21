@@ -1,16 +1,20 @@
+import { useT } from '../i18n/index.jsx'
+
 /**
- * Where the library lives — the first thing the app has to settle, and the one
- * decision it should not make quietly on someone's behalf.
+ * Where the catalog lives.
+ *
+ * Reached when something needs storage and none has been chosen, rather than
+ * as the app's opening demand — so by the time this appears, the reason for
+ * asking is already obvious.
  */
-export default function Setup({ canPickFolder, onFolder, onBrowser, error }) {
+export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, error }) {
+  const { t } = useT()
+
   return (
     <div className="view" style={{ maxWidth: 640 }}>
       <header>
-        <h2>Where should your library live?</h2>
-        <p>
-          LibrAPP keeps your catalog on this device and sends it nowhere. It only needs to know
-          where to put it.
-        </p>
+        <h2>{t('setup.title')}</h2>
+        <p>{t('setup.intro')}</p>
       </header>
 
       {error && (
@@ -21,47 +25,37 @@ export default function Setup({ canPickFolder, onFolder, onBrowser, error }) {
 
       {canPickFolder ? (
         <div className="card">
-          <h3>A folder you choose</h3>
-          <p className="muted tiny">
-            Plain JSON files you can open, back up, or keep in a private repository. LibrAPP writes{' '}
-            <code>sources/</code> and <code>catalog.json</code> there and nothing else. The
-            command-line tools read the same folder.
-          </p>
+          <h3>{t('setup.folder.title')}</h3>
+          <p className="muted tiny">{t('setup.folder.body')}</p>
           <button className="btn primary" onClick={onFolder} style={{ marginTop: 12 }}>
-            Choose a folder
+            {t('setup.folder.action')}
           </button>
         </div>
       ) : (
         <div className="notice">
-          <p className="tiny">
-            This browser has no folder picker — on a phone that is normal. Browser storage below
-            works the same way from the app's side; the difference is that the files are not
-            visible outside it, so moving a library between devices means exporting and importing
-            it.
-          </p>
+          <p className="tiny">{t('setup.noPicker')}</p>
         </div>
       )}
 
       <div className="card">
-        <h3>Browser storage</h3>
-        <p className="muted tiny">
-          Managed by the browser and private to LibrAPP. Nothing to choose and nothing to
-          configure, but the files are not visible to anything else — export is how a copy leaves
-          the device.
-        </p>
+        <h3>{t('setup.browser.title')}</h3>
+        <p className="muted tiny">{t('setup.browser.body')}</p>
         <button
           className={canPickFolder ? 'btn' : 'btn primary'}
           onClick={onBrowser}
           style={{ marginTop: 12 }}
         >
-          Use browser storage
+          {t('setup.browser.action')}
         </button>
       </div>
 
-      <p className="tiny faint">
-        Either can be changed later, and a library can be exported from one and imported into the
-        other.
-      </p>
+      <p className="tiny faint">{t('setup.either')}</p>
+
+      {onBack && (
+        <button className="btn" onClick={onBack} style={{ marginTop: 14 }}>
+          ← {t('nav.home')}
+        </button>
+      )}
     </div>
   )
 }

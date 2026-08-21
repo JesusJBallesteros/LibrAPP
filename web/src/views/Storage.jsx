@@ -11,7 +11,7 @@ const KINDS = {
 
 const mb = (bytes) => `${(bytes / 1e6).toFixed(1)} MB`
 
-export default function Storage({ lib }) {
+export default function Storage({ lib, focus }) {
   const [estimate, setEstimate] = useState(null)
   const [note, setNote] = useState(null)
   const [persisted, setPersisted] = useState(null)
@@ -20,6 +20,14 @@ export default function Storage({ lib }) {
     storageEstimate().then(setEstimate).catch(() => {})
     navigator.storage?.persisted?.().then(setPersisted).catch(() => {})
   }, [lib.sources])
+
+  // Arriving here from "I have a catalog from another device" should land on
+  // the import box, not the top of a long page.
+  useEffect(() => {
+    if (focus !== 'import') return
+    const box = document.getElementById('import-box')
+    box?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [focus])
 
   const exportBundle = async () => {
     const bundle = await lib.library.exportBundle()
@@ -65,9 +73,32 @@ export default function Storage({ lib }) {
       setNote(`${entry.title || entry.id} restored.`)
     })
 
+  /**
+    * Import a catalog exported elsewhere.
+    *
+    * The file is judged by what is in it, never by what the picker calls it.
+    * Android reports a downloaded .json as application/octet-stream often
+    * enough that filtering on type hides the very file the person came to
+    * choose — so nothing is filtered, and a wrong file is explained instead.
+    */
   const importBundle = (file) =>
     lib.run(async (library) => {
-      const written = await library.importBundle(JSON.parse(await file.text()))
+      const text = await file.text()
+      let bundle
+      try {
+        bundle = JSON.parse(text)
+      } catch {
+        throw new Error(
+          `${file.name} is not readable as JSON. It may have been renamed, or downloaded only in part.`,
+        )
+      }
+      if (bundle?.librapp_bundle !== 1) {
+        throw new Error(
+          `${file.name} is not a LibrAPP export. Choose the file you exported from ` +
+            'Library → Export on the other device.',
+        )
+      }
+      const written = await library.importBundle(bundle)
       await library.rebuild()
       setNote(`Imported ${written} source(s) and rebuilt.`)
     })
@@ -294,7 +325,7 @@ export default function Storage({ lib }) {
         )}
       </div>
 
-      <div className="card">
+      <div className="card" id="import-box">
         <h3>Move this library elsewhere</h3>
         <p className="muted tiny">
           An export holds the sources, not the catalog. The catalog is rebuilt from them on the
@@ -309,8 +340,7 @@ export default function Storage({ lib }) {
           <DropZone
             glyph="📥"
             title="Import an export"
-            hint="adds its sources to this library, then rebuilds"
-            accept=".json,application/json"
+            hint="choose the .json file you exported — it is added, then rebuilt"
             disabled={lib.busy}
             onFile={importBundle}
           />

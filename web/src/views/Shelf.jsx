@@ -3,8 +3,13 @@ import DropZone from '../components/DropZone.jsx'
 import { loadTranscription, tileImage } from '../ingest/shelf.js'
 import { copyText } from '../lib.js'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
-import { usableKey } from '../ai/key.js'
-import { actualCost, dollars, estimateShelfCost, readShelf } from '../ai/claude.js'
+import {
+  actualCost,
+  dollars,
+  estimateShelfCost,
+  pricesForChoice,
+  readShelf,
+} from '../ai/model.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 
 /**
@@ -23,7 +28,9 @@ export default function Shelf({ lib }) {
   const [result, setResult] = useState(null)
   const [copied, setCopied] = useState(null)
   const [showPrompt, setShowPrompt] = useState(false)
-  const [keyStatus, setKeyStatus] = useState('absent')
+  // What the key box last reported: which service, which model, and whether
+  // the app is allowed to use it. Null until the box has read its own state.
+  const [keyStatus, setKeyStatus] = useState(null)
   const [reading, setReading] = useState(false)
   const [proposed, setProposed] = useState(null)
 
@@ -60,10 +67,7 @@ export default function Shelf({ lib }) {
     setError(null)
     setReading(true)
     try {
-      const apiKey = await usableKey()
-      if (!apiKey) throw new Error('No key is switched on.')
       const { transcription, usage } = await readShelf({
-        apiKey,
         tiles: tiles.tiles,
         photo: tiles.photo,
         instructions: promptText,
@@ -129,6 +133,18 @@ export default function Shelf({ lib }) {
     a.download = tile.tile
     a.click()
   }
+
+  // Cost is shown where it is spent. Some services publish a rate this app has
+  // checked and some do not, so what can be said varies: a figure where one is
+  // known, the token count where it is not, and never a number that was guessed.
+  const prices = pricesForChoice(keyStatus)
+  const estimate = tiles ? estimateShelfCost(tiles.tiles, prices) : null
+  const estimateLabel = !estimate
+    ? ''
+    : estimate.dollars !== null
+      ? dollars(estimate.dollars)
+      : `about ${Math.round(estimate.inputTokens / 1000)}k tokens in, at your rate`
+  const spent = proposed ? actualCost(proposed.usage, prices) : null
 
   return (
     <div className="view">
@@ -215,14 +231,13 @@ export default function Shelf({ lib }) {
               )}
             </div>
 
-            {keyStatus === 'active' && (
+            {keyStatus?.state === 'active' && (
               <div className="row" style={{ marginTop: 12 }}>
                 <button className="btn primary" onClick={readWithKey} disabled={reading || lib.busy}>
                   {reading ? 'reading the spines…' : 'Read these tiles for me'}
                 </button>
                 <span className="tiny faint">
-                  {tiles.tiles.length} tile(s) ·{' '}
-                  {dollars(estimateShelfCost(tiles.tiles).dollars)} · you approve the result before
+                  {tiles.tiles.length} tile(s) · {estimateLabel} · you approve the result before
                   anything is imported
                 </span>
               </div>
@@ -269,8 +284,7 @@ export default function Shelf({ lib }) {
                 <h3 style={{ margin: 0 }}>3 · Check what it read</h3>
                 <span className="tiny faint">
                   {proposed.counted} book(s)
-                  {actualCost(proposed.usage) !== null &&
-                    ` · cost ${dollars(actualCost(proposed.usage))}`}
+                  {spent !== null && ` · cost ${dollars(spent)}`}
                 </span>
               </div>
               <p className="muted tiny" style={{ marginTop: 8 }}>
@@ -326,7 +340,6 @@ export default function Shelf({ lib }) {
               glyph="📄"
               title="Drop the transcription"
               hint="the JSON file the model wrote"
-              accept=".json,application/json"
               disabled={lib.busy}
               onFile={onTranscription}
             />

@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useLibrary } from './store/useLibrary.js'
+import { checkCapabilities } from './store/capabilities.js'
+import { useT } from './i18n/index.jsx'
+import Landing from './views/Landing.jsx'
 import Catalog from './views/Catalog.jsx'
 import Shelf from './views/Shelf.jsx'
 import ListImport from './views/ListImport.jsx'
@@ -8,51 +11,96 @@ import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 
 const VIEWS = [
-  { id: 'catalog', glyph: '📖', label: 'Catalog', hint: 'everything you own' },
-  { id: 'shelf', glyph: '📷', label: 'Shelf picture', hint: 'read a photograph' },
-  { id: 'list', glyph: '📋', label: 'Upload list', hint: 'a file you already keep' },
-  { id: 'desk', glyph: '🕮', label: "LibrAPPrian's desk", hint: 'ask about it' },
-  { id: 'storage', glyph: '🗄', label: 'Library', hint: 'where it lives' },
+  { id: 'home', glyph: '✦' },
+  { id: 'catalog', glyph: '📖' },
+  { id: 'shelf', glyph: '📷' },
+  { id: 'list', glyph: '📋' },
+  { id: 'desk', glyph: '🕮' },
+  { id: 'storage', glyph: '🗄' },
 ]
 
+const NAV_KEY = {
+  home: 'home', catalog: 'catalog', shelf: 'shelf',
+  list: 'list', desk: 'desk', storage: 'library',
+}
+
 export default function App() {
-  const [view, setView] = useState('catalog')
+  const { t } = useT()
   const lib = useLibrary()
+  const [view, setView] = useState('home')
+  const [focus, setFocus] = useState(null)
+  // Where to return to once storage exists. Each route asks for storage at the
+  // point it needs it, rather than the app demanding it at the door.
+  const [pendingView, setPendingView] = useState(null)
   const counts = lib.catalog?.counts
+  const capabilities = checkCapabilities()
+
+  /** Go to a view, stopping for the storage question only if it is unanswered. */
+  const go = useCallback(
+    (next, wanted = null) => {
+      setFocus(wanted)
+      if (next !== 'home' && lib.status !== 'ready') {
+        setPendingView(next)
+        return
+      }
+      setPendingView(null)
+      setView(next)
+    },
+    [lib.status],
+  )
 
   if (lib.status === 'opening') {
-    return <div className="loading">Opening your library…</div>
+    return <div className="loading">{t('common.opening')}</div>
   }
 
   if (lib.status === 'permit') {
     return (
       <div className="view" style={{ maxWidth: 560 }}>
         <header>
-          <h2>Reopen your library</h2>
-          <p>
-            The browser needs you to confirm access to the folder again. It asks once per session,
-            and there is nothing LibrAPP can do to skip it.
-          </p>
+          <h2>{t('permit.title')}</h2>
+          <p>{t('permit.body')}</p>
         </header>
         <div className="row">
           <button className="btn primary" onClick={lib.grantPermission}>
-            Open the folder
+            {t('permit.open')}
           </button>
           <button className="btn" onClick={lib.forget}>
-            Choose somewhere else
+            {t('permit.elsewhere')}
           </button>
         </div>
       </div>
     )
   }
 
-  if (lib.status === 'choose') {
+  // Storage was needed by whatever the person just chose to do. Once it exists,
+  // carry on to where they were going.
+  if (lib.status === 'choose' && pendingView) {
     return (
       <Setup
         canPickFolder={lib.canPickFolder}
-        onFolder={lib.useFolder}
-        onBrowser={lib.useBrowserStorage}
+        onFolder={async () => {
+          await lib.useFolder()
+          setView(pendingView)
+          setPendingView(null)
+        }}
+        onBrowser={async () => {
+          await lib.useBrowserStorage()
+          setView(pendingView)
+          setPendingView(null)
+        }}
+        onBack={() => setPendingView(null)}
         error={lib.error}
+      />
+    )
+  }
+
+  if (view === 'home' || lib.status !== 'ready') {
+    return (
+      <Landing
+        onGo={go}
+        hasCatalog={Boolean(counts?.books)}
+        bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
+        browserUsable={capabilities.usable}
       />
     )
   }
@@ -60,20 +108,25 @@ export default function App() {
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand">
+        <button className="brand brand-button" onClick={() => setView('home')}>
           <h1>
             Libr<em>APP</em>
           </h1>
-          <p>your shelf, catalogued</p>
-        </div>
+          <p>{t('app.strapline')}</p>
+        </button>
 
         <nav className="nav">
           {VIEWS.map((v) => (
-            <button key={v.id} onClick={() => setView(v.id)} aria-current={view === v.id} title={v.hint}>
+            <button
+              key={v.id}
+              onClick={() => go(v.id)}
+              aria-current={view === v.id}
+              title={t(`nav.${NAV_KEY[v.id]}.hint`)}
+            >
               <span className="glyph" aria-hidden="true">
                 {v.glyph}
               </span>
-              {v.label}
+              {t(`nav.${NAV_KEY[v.id]}`)}
             </button>
           ))}
         </nav>
@@ -81,23 +134,23 @@ export default function App() {
         <div className="sidebar-foot">
           {counts ? (
             <dl>
-              <dt>books</dt>
+              <dt>{t('sidebar.books')}</dt>
               <dd>{counts.books}</dd>
-              <dt>authors</dt>
+              <dt>{t('sidebar.authors')}</dt>
               <dd>{counts.authors}</dd>
-              <dt>read</dt>
+              <dt>{t('sidebar.read')}</dt>
               <dd>{counts.read}</dd>
-              <dt>unread</dt>
+              <dt>{t('sidebar.unread')}</dt>
               <dd>{counts.unread}</dd>
-              <dt>not recorded</dt>
+              <dt>{t('sidebar.notRecorded')}</dt>
               <dd>{counts.read_unknown}</dd>
             </dl>
           ) : (
-            <p style={{ padding: '0 8px' }}>No catalog yet.</p>
+            <p style={{ padding: '0 8px' }}>{t('sidebar.noCatalog')}</p>
           )}
           <div style={{ padding: '0 8px' }}>
             <button className="btn small" onClick={lib.rebuild} disabled={lib.busy || !lib.sources.length}>
-              {lib.busy ? 'working…' : 'Rebuild catalog'}
+              {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
             </button>
           </div>
         </div>
@@ -111,14 +164,14 @@ export default function App() {
                 <strong>{lib.error}</strong>
               </p>
               <button className="btn small" style={{ marginTop: 8 }} onClick={() => lib.setError(null)}>
-                Dismiss
+                {t('common.dismiss')}
               </button>
             </div>
           </div>
         )}
 
         {view === 'catalog' ? (
-          <Catalog catalog={lib.catalog} onGo={setView} lib={lib} />
+          <Catalog catalog={lib.catalog} onGo={go} lib={lib} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} />
         ) : view === 'list' ? (
@@ -126,7 +179,7 @@ export default function App() {
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} />
         ) : (
-          <Storage lib={lib} />
+          <Storage lib={lib} focus={focus} />
         )}
       </main>
     </div>

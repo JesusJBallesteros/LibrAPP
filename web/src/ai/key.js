@@ -1,4 +1,5 @@
-// Where the API key lives, and the three states it can be in.
+// Which service the app may use, whose key it uses, and the three states a key
+// can be in.
 //
 // LibrAPP works with no key at all — every ingester, the whole catalog and the
 // desk's prompt composer run without one. A key only buys the app permission to
@@ -9,61 +10,152 @@
 // questions. Switching a key off keeps it for later without letting the app
 // spend anything; deleting it removes it entirely.
 //
-//   absent    no key has been given
+//   absent    no key has been given for the chosen service
 //   active    a key is stored and the app may use it
 //   off       a key is stored and the app must not use it
 //
-// The key is kept in this origin's IndexedDB, next to the pointer to your
-// library. It is sent to api.anthropic.com and nowhere else. It is never
-// logged, never written into a source file, and never included in an export.
+// Keys are kept one per service, so trying a second provider does not cost you
+// the first one, and switching back does not mean pasting anything again. They
+// live in this origin's IndexedDB, next to the pointer to your library. A key is
+// sent to its own service and nowhere else. It is never logged, never written
+// into a source file, and never included in an export.
 
 import { idbDelete, idbGet, idbSet } from '../store/idb.js'
+import { PROVIDERS, providerById } from './providers.js'
 
-const KEY = 'anthropic-key'
+const CHOICE = 'ai-choice'
+const keyFor = (providerId) => `ai-key:${providerId}`
+
+// Before there was a choice to make, there was one key under one name.
+const LEGACY = 'anthropic-key'
+
+/** Which service and model to use. Anthropic by default, because it was first. */
+export async function readChoice() {
+  const stored = await idbGet(CHOICE).catch(() => null)
+  const provider = providerById(stored?.provider)
+  return {
+    provider: provider.id,
+    model: stored?.model || provider.defaultModel,
+    baseUrl: (provider.editableBaseUrl ? stored?.baseUrl : provider.baseUrl) || provider.baseUrl || '',
+  }
+}
+
+export async function saveChoice(next) {
+  const current = await readChoice()
+  await idbSet(CHOICE, { ...current, ...next })
+}
+
+/** Moving to a service you have not used before should offer that service's model. */
+export async function chooseProvider(providerId) {
+  const provider = providerById(providerId)
+  const stored = await idbGet(CHOICE).catch(() => null)
+  const remembered = stored?.perProvider?.[provider.id]
+  await idbSet(CHOICE, {
+    ...(stored || {}),
+    provider: provider.id,
+    model: remembered?.model || provider.defaultModel,
+    baseUrl: remembered?.baseUrl || provider.baseUrl || '',
+  })
+}
+
+/** Remember this service's model and address, so going back and forth is free. */
+export async function rememberForProvider(providerId, patch) {
+  const stored = (await idbGet(CHOICE).catch(() => null)) || {}
+  const perProvider = { ...(stored.perProvider || {}) }
+  perProvider[providerId] = { ...(perProvider[providerId] || {}), ...patch }
+  await idbSet(CHOICE, { ...stored, ...patch, perProvider })
+}
 
 /** A rough shape check, so an obvious paste error is caught before a request. */
-export const looksLikeKey = (value) => /^sk-ant-[\w-]{20,}$/.test((value || '').trim())
+export const looksLikeKey = (providerId, value) =>
+  providerById(providerId).keyPattern.test((value || '').trim())
 
 /** Enough of the key to recognise it, never enough to use it. */
 export function maskKey(value) {
   const key = (value || '').trim()
   if (key.length < 12) return '••••'
-  return `${key.slice(0, 11)}…${key.slice(-4)}`
+  return `${key.slice(0, 8)}…${key.slice(-4)}`
 }
 
-/** `{ key, active, savedAt }`, or null when none has been stored. */
-export async function readKey() {
+/** `{ key, active, savedAt }` for one service, or null when none has been stored. */
+export async function readKey(providerId) {
   try {
-    const stored = await idbGet(KEY)
-    return stored?.key ? stored : null
+    const stored = await idbGet(keyFor(providerId))
+    if (stored?.key) return stored
+    if (providerId !== 'anthropic') return null
+    // The single key from before providers existed still belongs to Anthropic.
+    const legacy = await idbGet(LEGACY)
+    if (!legacy?.key) return null
+    await idbSet(keyFor('anthropic'), legacy)
+    await idbDelete(LEGACY)
+    return legacy
   } catch {
     return null
   }
 }
 
-/** The state the interface should show: 'absent' | 'active' | 'off'. */
+/** The state the interface should show, for the service currently chosen. */
 export async function keyState() {
-  const stored = await readKey()
-  if (!stored) return { state: 'absent', masked: null }
-  return { state: stored.active ? 'active' : 'off', masked: maskKey(stored.key) }
+  const choice = await readChoice()
+  const stored = await readKey(choice.provider)
+  return {
+    ...choice,
+    state: !stored ? 'absent' : stored.active ? 'active' : 'off',
+    masked: stored ? maskKey(stored.key) : null,
+  }
 }
 
-/** The key to use for a request, or null if there is none or it is switched off. */
-export async function usableKey() {
-  const stored = await readKey()
-  return stored?.active ? stored.key : null
+/**
+ * Everything a request needs, or null if the app is not allowed to make one.
+ *
+ * A service reached at an address you typed yourself may legitimately want no
+ * key — a model running on your own machine has nobody to bill.
+ */
+export async function usableConfig() {
+  const choice = await readChoice()
+  const provider = providerById(choice.provider)
+  const stored = await readKey(provider.id)
+  const apiKey = stored?.active ? stored.key : null
+  if (!apiKey && !provider.optionalKey) return null
+  if (!choice.model) return null
+  if (provider.editableBaseUrl && !choice.baseUrl) return null
+  return {
+    provider,
+    apiKey,
+    model: choice.model,
+    baseUrl: choice.baseUrl || provider.baseUrl || '',
+    host: provider.host || hostOf(choice.baseUrl),
+  }
 }
 
-export async function saveKey(value) {
+export function hostOf(url) {
+  try {
+    return new URL(url).host
+  } catch {
+    return url || 'that service'
+  }
+}
+
+export async function saveKey(providerId, value) {
   const key = (value || '').trim()
   if (!key) throw new Error('No key given.')
-  await idbSet(KEY, { key, active: true, savedAt: new Date().toISOString() })
+  await idbSet(keyFor(providerId), { key, active: true, savedAt: new Date().toISOString() })
 }
 
-export async function setActive(active) {
-  const stored = await readKey()
+export async function setActive(providerId, active) {
+  const stored = await readKey(providerId)
   if (!stored) return
-  await idbSet(KEY, { ...stored, active: Boolean(active) })
+  await idbSet(keyFor(providerId), { ...stored, active: Boolean(active) })
 }
 
-export const deleteKey = () => idbDelete(KEY)
+export const deleteKey = (providerId) => idbDelete(keyFor(providerId))
+
+/** Which services already hold a key, so the picker can say so. */
+export async function providersWithKeys() {
+  const found = []
+  for (const provider of PROVIDERS) {
+    const stored = await readKey(provider.id)
+    if (stored) found.push(provider.id)
+  }
+  return found
+}

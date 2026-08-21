@@ -76,6 +76,66 @@ body {
 
 button, input, select, textarea { font: inherit; color: inherit; }
 
+/* -------------------------------------------------------------- landing -- */
+
+.landing { min-height: 100vh; background: var(--paper); padding: 5vh 18px 60px; }
+.landing-inner { max-width: 760px; margin: 0 auto; }
+
+.landing-head { margin-bottom: 22px; }
+.landing-brand { font: 600 40px/1 var(--serif); margin: 0; letter-spacing: .01em; }
+.landing-brand em { font-style: normal; color: var(--accent); }
+.landing-lang { flex: 0 0 auto; gap: 7px; }
+.landing-lang select { border: 1px solid var(--rule-strong); background: var(--paper-raised); border-radius: 7px; padding: 6px 9px; }
+
+.landing-tagline { font: 500 19px/1.4 var(--serif); margin: 16px 0 0; max-width: 34ch; }
+.landing-intro { margin: 12px 0 0; color: var(--ink-soft); max-width: 62ch; }
+
+.landing-facts { display: grid; gap: 14px; margin-bottom: 26px; }
+@media (min-width: 720px) { .landing-facts { grid-template-columns: 1fr 1fr; align-items: start; } }
+
+.landing-needs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.landing-needs li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
+.landing-needs .glyph { font-size: 14px; line-height: 1.5; }
+
+.landing-start h2 { font: 600 20px/1.3 var(--serif); margin: 0 0 4px; }
+.landing-options { display: grid; gap: 9px; margin-top: 14px; }
+
+.landing-option {
+  display: grid;
+  grid-template-columns: 26px 1fr 18px;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  cursor: pointer;
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.landing-option:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
+.landing-option:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.landing-option .glyph { font-size: 19px; text-align: center; }
+.landing-option-text { display: grid; gap: 2px; min-width: 0; }
+.landing-option-text strong { font-weight: 600; }
+.landing-option-go { color: var(--ink-faint); font-size: 17px; }
+
+.landing-foot { margin-top: 30px; }
+.landing-foot a { color: var(--accent); }
+
+.brand-button {
+  border: 0;
+  background: none;
+  padding: 0 8px;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  width: 100%;
+}
+.brand-button:hover h1 { color: var(--accent); }
+
 /* ---------------------------------------------------------------- shell -- */
 
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }

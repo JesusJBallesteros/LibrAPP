@@ -3,10 +3,11 @@ import { authorNames, byline, copyText, forgotten, intentWhy } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
 import GenrePie from '../components/GenrePie.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
-import { usableKey } from '../ai/key.js'
+
 // Imported under another name: `ask` is already the state holding which
 // prompt is selected, and the local binding silently shadows the import.
-import { actualCost, ask as askModel, dollars } from '../ai/claude.js'
+import { actualCost, ask as askModel, dollars, pricesForChoice } from '../ai/model.js'
+import { providerById } from '../ai/providers.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
 
@@ -35,7 +36,9 @@ export default function Desk({ catalog }) {
   const [copied, setCopied] = useState(null)
   const [minYears, setMinYears] = useState(2)
   const [showAllStale, setShowAllStale] = useState(false)
-  const [keyStatus, setKeyStatus] = useState('absent')
+  // What the key box last reported: which service, which model, and whether
+  // the app is allowed to use it. Null until the box has read its own state.
+  const [keyStatus, setKeyStatus] = useState(null)
   const [answer, setAnswer] = useState('')
   const [asking, setAsking] = useState(false)
   const [spent, setSpent] = useState(null)
@@ -67,16 +70,13 @@ export default function Desk({ catalog }) {
     setSpent(null)
     setAsking(true)
     try {
-      const apiKey = await usableKey()
-      if (!apiKey) throw new Error('No key is switched on.')
       // The same block the copy button produces, so both routes ask the same
       // question of the same model.
       const { usage } = await askModel({
-        apiKey,
         request: assembled,
         onText: (chunk) => setAnswer((prior) => prior + chunk),
       })
-      setSpent(actualCost(usage))
+      setSpent(actualCost(usage, pricesForChoice(keyStatus)))
     } catch (err) {
       setAskError(err.message)
     } finally {
@@ -92,7 +92,12 @@ export default function Desk({ catalog }) {
   }
 
   if (!catalog) {
-    return (
+    // Naming the service on the button matters: the answer is about to be paid
+  // for by whoever's key is switched on, and they should see whose it is.
+  const serviceName = keyStatus ? providerById(keyStatus.provider).label.split(' - ')[0] : ''
+  const askLabel = serviceName && serviceName.length <= 20 ? `Ask ${serviceName}` : 'Ask for me'
+
+  return (
       <div className="view">
         <header>
           <h2>LibrAPPrian's desk</h2>
@@ -197,17 +202,17 @@ export default function Desk({ catalog }) {
             />
 
             <div className="row" style={{ marginTop: 10 }}>
-              {keyStatus === 'active' && (
+              {keyStatus?.state === 'active' && (
                 <button
                   className="btn primary"
                   disabled={!assembled || asking}
                   onClick={askClaude}
                 >
-                  {asking ? 'thinking…' : 'Ask Claude'}
+                  {asking ? 'thinking…' : askLabel}
                 </button>
               )}
               <button
-                className={keyStatus === 'active' ? 'btn' : 'btn primary'}
+                className={keyStatus?.state === 'active' ? 'btn' : 'btn primary'}
                 disabled={!assembled}
                 onClick={() => flash('all', assembled)}
               >
@@ -249,7 +254,7 @@ export default function Desk({ catalog }) {
 
             <div className="notice" style={{ marginTop: 14 }}>
               <p className="tiny">
-                {keyStatus === 'active'
+                {keyStatus?.state === 'active'
                   ? 'With a key, LibrAPP asks on your behalf. Without one it assembles the request for you to paste into any AI session — the same instructions, the same profile, the same question.'
                   : 'LibrAPP assembles the instructions, your reading profile and your question into one block — paste it into any AI session you already use. Add a key below and it can ask for you instead.'}{' '}
                 The prompts live in <code>prompts/</code> as plain text, so you can edit how it asks.
