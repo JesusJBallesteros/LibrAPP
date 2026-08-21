@@ -1,5 +1,9 @@
 # LibrAPP
 
+[![Tests](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/tests.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/tests.yml)
+[![Deploy](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml)
+[![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20NC%201.0.0-blue)](LICENSE.md)
+
 ### Create your full book catalog from a picture of your shelf.
 
 ## → [**Open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/) ←
@@ -32,6 +36,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [Where your library lives](#where-your-library-lives)
 - [Optional AI key](#optional-ai-key)
 - [About, privacy and version](#about-privacy-and-version)
+- [How this was built](#how-this-was-built)
 - [Command-line tools](#command-line-tools)
 - [Development](#development)
 - [Licence](#licence)
@@ -417,6 +422,35 @@ your library, sources and corrections are stored elsewhere and are not touched.
 
 ---
 
+## How this was built
+
+LibrAPP was written by one person working with an AI assistant, over a series of
+sessions. Most of the code was typed by the model; every decision about what to
+build was mine. The app states this on its **About** page too, under *AI use*.
+
+- **Jesús J. Ballesteros** conceived the app and decided every step of it — what
+  to build next, which of the proposed approaches to take, what to leave out,
+  and when to stop. I supplied everything it was tested against: my own shelves,
+  my own exports, my own devices. I reviewed the results and corrected them.
+- **Claude**, an AI assistant, proposed approaches when asked and occasionally
+  when not, wrote the code and the documentation, and carried out the changes I
+  decided on.
+- **A few early testers** used it and said what did not work. More than one
+  thing here exists because of that.
+
+The review was not a formality. The assistant got things wrong — it once
+reported that a cut-off title had been repaired when it had not, and it chose a
+way of splitting photographs that fell apart on a close-up of three books. Both
+were caught by checking the output against the actual shelf. That is why the app
+shows you what a model read and waits for you to approve it, rather than
+importing it quietly.
+
+None of this touches the contents of your catalog. No entry is invented, every
+book comes from a source you provided, and the AI features are optional and off
+until you add a key.
+
+---
+
 ## Command-line tools
 
 Everything LibrAPP imports is also available as Python scripts in
@@ -450,7 +484,31 @@ cd web
 npm install
 npm run dev      # development server
 npm run build    # production build into web/dist
+npm test         # the test suite
+npm run test:watch
 ```
+
+### Tests
+
+The suite covers the parts where being wrong is both easy and quiet:
+
+| | |
+|---|---|
+| `tests/build.test.js` | merging — one book from several sources, and which source wins a disagreement |
+| `tests/overrides.test.js` | corrections, and that a removal survives a rebuild |
+| `tests/records.test.js` | the source contract, and everything it refuses |
+| `tests/ingest.test.js` | spreadsheet, CSV and XML reading, tiling geometry, transcription validation |
+| `tests/matching.test.js` | title and author matching, the heuristics that decide identity |
+| `tests/providers.test.js` | the AI registry, the schema in all three dialects, and cost arithmetic |
+| `tests/i18n.test.js` | that both languages define the same keys with the same placeholders |
+
+They are deliberately about behaviour rather than implementation: a test that
+pins how merging works today would have to be rewritten every time merging
+improves, and would catch nothing worth catching.
+
+There are no browser tests. Everything here runs in Node against pure functions;
+the interface is checked by hand, and the deploy checks that the built app can
+actually be installed.
 
 The app has no backend. Everything runs in the browser: PDFs are read with
 pdf.js, spreadsheets with a small zip reader, photographs are tiled on a canvas.
@@ -460,6 +518,7 @@ web/src/core/      matching, merging and the catalog format
 web/src/ingest/    one module per kind of source
 web/src/store/     where a library lives on disk
 web/src/views/     the interface
+web/tests/         the test suite
 tools/librapp/     the Python command-line tools
 prompts/           AI prompts, as plain text
 docs/              the catalog format

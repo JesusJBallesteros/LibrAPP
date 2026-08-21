@@ -120,6 +120,9 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
             <button className="btn link tiny" onClick={() => onGo('about', 'what')}>
               {t('foot.about')}
             </button>
+            <button className="btn link tiny" onClick={() => onGo('about', 'ai')}>
+              {t('foot.ai')}
+            </button>
             <button className="btn link tiny" onClick={() => onGo('about', 'privacy')}>
               {t('foot.privacy')}
             </button>

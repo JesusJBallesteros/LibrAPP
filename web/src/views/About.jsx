@@ -86,6 +86,25 @@ export default function About({ onBack, focus }) {
           </p>
         </section>
 
+        <section className="card" id="about-ai">
+          <h3>{t('about.ai')}</h3>
+          <p className="muted tiny">{t('about.aiBody')}</p>
+          <ul className="landing-needs" style={{ marginTop: 10 }}>
+            {['author', 'assistant', 'testers'].map((id) => (
+              <li key={id}>
+                <span className="glyph" aria-hidden="true">
+                  ·
+                </span>
+                <span className="tiny muted">
+                  <strong>{t(`about.ai.${id}`)}</strong> {t(`about.ai.${id}.did`)}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="muted tiny" style={{ marginTop: 10 }}>{t('about.aiReview')}</p>
+          <p className="tiny faint" style={{ marginTop: 10 }}>{t('about.aiNotYourBooks')}</p>
+        </section>
+
         <section className="card" id="about-privacy">
           <h3>{t('about.privacy')}</h3>
           <p className="muted tiny">{t('about.privacyBody')}</p>

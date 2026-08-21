@@ -45,6 +45,12 @@ jobs:
         working-directory: web
         run: npm ci
 
+      - name: Test
+        working-directory: web
+        # The published app is the one people install. Whatever the tests catch,
+        # they catch it before that and not after.
+        run: npm test
+
       - name: Build
         working-directory: web
         # vite.config.js sets `base: './'`, so the build works unchanged under

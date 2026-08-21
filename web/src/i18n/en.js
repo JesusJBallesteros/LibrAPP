@@ -522,4 +522,24 @@ export default {
   'version.refresh': 'Fetch a fresh copy',
   'version.safe':
     'This discards only the app. Your library, your sources and your corrections are not stored here and are not touched.',
+
+  // -- how it was made ------------------------------------------------------
+  'foot.ai': 'AI use',
+
+  'about.ai': 'AI, and how this was built',
+  'about.aiBody':
+    'LibrAPP was written by one person working with an AI assistant, over a series of sessions. Most of the code was typed by the model. Every decision about what to build was the person’s. Saying which is which seems better than leaving it to be guessed:',
+  'about.ai.author': 'Jesús J. Ballesteros',
+  'about.ai.author.did':
+    'conceived the app and decided every step of it — what to build next, which of the proposed approaches to take, what to leave out, and when to stop. He supplied everything it was tested against: his own shelves, his own exports, his own devices. He reviewed the results, and corrected them.',
+  'about.ai.assistant': 'Claude, an AI assistant',
+  'about.ai.assistant.did':
+    'proposed approaches when asked and occasionally when not, wrote the code and the documentation, and carried out the changes he decided on.',
+  'about.ai.testers': 'A few early testers',
+  'about.ai.testers.did':
+    'used it and said what did not work. More than one thing here exists because of that.',
+  'about.aiReview':
+    'The review was not a formality. The assistant got things wrong — it once reported that a cut-off title had been repaired when it had not, and it chose a way of splitting photographs that fell apart on a close-up of three books. Both were caught by someone checking the output against the actual shelf. That experience is why this app shows you what a model read and waits for you to approve it, rather than importing it quietly.',
+  'about.aiNotYourBooks':
+    'All of that is about how the program was written. It has nothing to do with the contents of your catalog: no entry is invented, every book comes from a source you provided, and the AI features inside the app are optional, off until you add a key, and always show you the result before anything is kept.',
 }

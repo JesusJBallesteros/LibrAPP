@@ -530,4 +530,24 @@ export default {
   'version.refresh': 'Traer una copia nueva',
   'version.safe':
     'Esto descarta solo la app. Tu biblioteca, tus fuentes y tus correcciones no se guardan aquí y no se tocan.',
+
+  // -- cómo se ha hecho -----------------------------------------------------
+  'foot.ai': 'Uso de IA',
+
+  'about.ai': 'La IA, y cómo se construyó esto',
+  'about.aiBody':
+    'LibrAPP la ha escrito una persona trabajando con un asistente de IA, a lo largo de varias sesiones. La mayor parte del código lo tecleó el modelo. Todas las decisiones sobre qué construir fueron de la persona. Parece mejor decir qué es cada cosa que dejarlo a la imaginación:',
+  'about.ai.author': 'Jesús J. Ballesteros',
+  'about.ai.author.did':
+    'concibió la app y decidió cada paso: qué construir a continuación, cuál de los caminos propuestos tomar, qué dejar fuera y cuándo parar. Puso todo aquello con lo que se probó: sus propias estanterías, sus propios extractos, sus propios dispositivos. Revisó los resultados y los corrigió.',
+  'about.ai.assistant': 'Claude, un asistente de IA',
+  'about.ai.assistant.did':
+    'propuso enfoques cuando se le pedía y alguna vez sin que se le pidiera, escribió el código y la documentación, y llevó a cabo los cambios que él decidía.',
+  'about.ai.testers': 'Unos primeros probadores',
+  'about.ai.testers.did':
+    'la usaron y dijeron qué no funcionaba. Más de una cosa de aquí existe por eso.',
+  'about.aiReview':
+    'La revisión no fue un trámite. El asistente se equivocó: una vez dio por reparado un título cortado que seguía cortado, y eligió una forma de partir las fotos que se deshacía con un primer plano de tres libros. Las dos cosas las detectó alguien contrastando el resultado con la estantería real. Esa experiencia es la razón de que esta app te enseñe lo que ha leído un modelo y espere a que lo apruebes, en vez de importarlo sin decir nada.',
+  'about.aiNotYourBooks':
+    'Todo eso va de cómo se escribió el programa. No tiene nada que ver con el contenido de tu catálogo: no se inventa ninguna entrada, cada libro viene de una fuente que tú has dado, y las funciones de IA dentro de la app son opcionales, están apagadas hasta que añades una clave, y siempre te enseñan el resultado antes de guardar nada.',
 }
