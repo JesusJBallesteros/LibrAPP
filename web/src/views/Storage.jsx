@@ -4,11 +4,12 @@ import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
 import { checkCapabilities } from '../store/capabilities.js'
 import { useT } from '../i18n/index.jsx'
+import { BUILT, buildLabel, reloadFresh } from '../version.js'
 
 const mb = (bytes) => `${(bytes / 1e6).toFixed(1)} MB`
 
 export default function Storage({ lib, focus }) {
-  const { t } = useT()
+  const { t, language } = useT()
   const [estimate, setEstimate] = useState(null)
   const [note, setNote] = useState(null)
   const [persisted, setPersisted] = useState(null)
@@ -322,6 +323,25 @@ export default function Storage({ lib, focus }) {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="card">
+        <div className="spread">
+          <h3 style={{ margin: 0 }}>{t('version.title')}</h3>
+          <span className="tiny faint" style={{ fontFamily: 'var(--mono)' }}>{buildLabel()}</span>
+        </div>
+        <p className="muted tiny" style={{ marginTop: 8 }}>
+          {BUILT ? t('version.built', { when: new Date(BUILT).toLocaleString(language) }) : ''}{' '}
+          {t('version.body')}
+        </p>
+        <div className="row" style={{ marginTop: 12 }}>
+          <button className="btn" onClick={reloadFresh}>
+            {t('version.refresh')}
+          </button>
+        </div>
+        <p className="tiny faint" style={{ marginTop: 8 }}>
+          {t('version.safe')}
+        </p>
       </div>
 
       <div className="card" id="import-box">

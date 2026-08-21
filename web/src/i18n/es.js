@@ -462,4 +462,72 @@ export default {
   'key.delete': 'Borrar',
   'key.storedNote':
     'Desactivarla la conserva para más adelante sin dejar que la app gaste nada. Borrarla la quita de este dispositivo. Cada servicio guarda su propia clave, así que cambiar de uno a otro no cuesta nada.',
+
+  // -- el pie de página y lo que hay detrás ----------------------------------
+  'foot.about': 'Acerca de',
+  'foot.privacy': 'Privacidad',
+  'foot.licence': 'Licencia',
+  'foot.source': 'Código fuente',
+  'foot.report': 'Informar de un problema',
+
+  'about.title': 'Sobre esta app y sobre quién la escribió.',
+  'about.back': 'Volver',
+
+  'about.what': 'Qué es LibrAPP',
+  'about.whatBody':
+    'Un catálogo de libros que construyes con lo que ya tienes: una foto de una estantería, una hoja de cálculo tuya, el extracto de una tienda, o las tres cosas a la vez. El mismo libro que llega por varias vías acaba siendo una entrada y no tres.',
+  'about.whatBody2':
+    'No es una red social, ni un registro de lecturas, ni una tienda. Nadie más puede ver tus estanterías, y no hay nadie que pudiera verlas: LibrAPP no tiene servidor. Dos pasos pueden usar un servicio de IA si le das una clave — leer los lomos de una foto y responder preguntas sobre tu colección — y los dos funcionan también sin ella.',
+
+  'about.who': 'Quién la escribió',
+  'about.whoBody':
+    'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías. Se te está pidiendo que fotografíes tus libros y, si quieres las funciones con IA, que pegues una clave en esta página; parece justo decir claramente de quién es este trabajo y dónde comprobarlo.',
+  'about.cv': 'Su web y su CV',
+  'about.github': 'Su GitHub',
+  'about.repo': 'Este proyecto en GitHub',
+  'about.noWarranty':
+    'Esto es un proyecto personal que se regala. No lleva garantía ni promesa de soporte, y puede cambiar o dejar de actualizarse. Guarda una exportación de todo lo que te importaría perder.',
+
+  'about.privacy': 'Privacidad',
+  'about.privacyBody':
+    'Breve, porque hay poco que contar. LibrAPP es una página que se ejecuta entera en tu navegador, y esto es todo:',
+  'about.privacy.account':
+    'Sin cuenta, sin registro, sin perfil. No hay dónde iniciar sesión.',
+  'about.privacy.device':
+    'Tu catálogo se escribe en este dispositivo: una carpeta que elijas o el almacenamiento que el navegador guarda para esta app. Nunca se sube a ninguna parte.',
+  'about.privacy.key':
+    'Si das una clave de IA, se queda en este navegador y solo se envía al servicio que hayas elegido. Nunca se escribe en tu catálogo ni se incluye en una exportación. Las fotos se cortan en piezas aquí mismo; solo salen las piezas, y solo cuando tú lo pides.',
+  'about.privacy.cookies':
+    'Sin cookies, sin analítica, sin rastreadores, sin peticiones a terceros. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
+  'about.privacy.offline':
+    'Una vez cargada funciona sin ninguna conexión, que es la prueba más sencilla de que no se está enviando nada a ninguna parte.',
+  'about.privacyCheck': 'No hace falta que te fies de nada de esto: el código es público.',
+  'about.readSource': 'Léelo',
+
+  'about.licence': 'Licencia',
+  'about.licenceBody':
+    'LibrAPP se puede usar, leer, modificar y compartir libremente para cualquier fin que no sea comercial. Venderla, o montar sobre ella un servicio de pago, requiere permiso previo. Los términos completos:',
+  'about.licenceName': 'PolyForm Noncommercial 1.0.0',
+  'about.attributions': 'Construida con',
+  'about.attributionsBody':
+    'Esto es trabajo de otras personas, incluido en la app y usado según sus propios términos:',
+
+  'about.contact': 'Cómo contactar',
+  'about.contactBody':
+    'No hay formulario de contacto, porque no hay servidor que lo reciba. Todo lo que tenga que ver con la app — un fallo, algo confuso, una idea — va en GitHub, donde queda público y no se pierde. Lo demás puede ir por los datos de contacto de mi propia web.',
+  'about.reportProblem': 'Informar de un problema',
+  'about.contactMe': 'Contactar conmigo',
+
+  'about.version': 'Versión {build}',
+  'about.updateNote':
+    'la pestaña Biblioteca puede forzar una copia nueva si esto parece anticuado',
+
+  // -- versión, en la pestaña Biblioteca ------------------------------------
+  'version.title': 'Versión',
+  'version.built': 'Compilada el {when}.',
+  'version.body':
+    'LibrAPP guarda una copia de sí misma en este dispositivo para poder abrirse sin conexión. Esa copia suele reemplazarse sola en la siguiente visita. Si parece atascada en una versión antigua, tírala y trae la actual.',
+  'version.refresh': 'Traer una copia nueva',
+  'version.safe':
+    'Esto descarta solo la app. Tu biblioteca, tus fuentes y tus correcciones no se guardan aquí y no se tocan.',
 }

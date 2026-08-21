@@ -31,6 +31,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [The desk](#the-desk)
 - [Where your library lives](#where-your-library-lives)
 - [Optional AI key](#optional-ai-key)
+- [About, privacy and version](#about-privacy-and-version)
 - [Command-line tools](#command-line-tools)
 - [Development](#development)
 - [Licence](#licence)
@@ -392,6 +393,30 @@ a spine can be wrong in ways nothing downstream can detect.
 
 ---
 
+## About, privacy and version
+
+The opening page has a footer: **About · Privacy · Licence · Source code ·
+Report a problem**. They all lead to one page, each landing on its own section,
+reachable from the sidebar once you are inside.
+
+There is no contact form, because there is no server to receive one. Anything
+about the app goes to
+[GitHub Issues](https://github.com/JesusJBallesteros/LibrAPP/issues), where it
+is public and does not get lost; anything else goes through the contact details
+on [my own site](https://jesusjballesteros.github.io/).
+
+There is no cookie banner either, because there are no cookies, no analytics and
+no third-party requests. The only things remembered about you are which language
+you chose and where your library is.
+
+**Version.** The **Library** tab shows which build you are running, when it was
+made, and a button that throws the cached copy away and fetches the current one.
+An installed app keeps a copy of itself so it can open offline, and that copy can
+occasionally be older than what is published. The button discards only the app —
+your library, sources and corrections are stored elsewhere and are not touched.
+
+---
+
 ## Command-line tools
 
 Everything LibrAPP imports is also available as Python scripts in
@@ -460,5 +485,6 @@ for a business, [open an
 issue](https://github.com/JesusJBallesteros/LibrAPP/issues) to ask.
 
 Note that this is a source-available licence, not an OSI-approved open source
-one. LibrAPP's own dependencies (React, pdf.js, and others) remain under their
-own MIT and Apache-2.0 terms.
+one. LibrAPP's own dependencies remain under their own terms: React, Zod and the
+Anthropic SDK under MIT, pdf.js under Apache-2.0. The app lists them itself, on
+its **About** page.

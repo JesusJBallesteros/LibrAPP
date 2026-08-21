@@ -3,6 +3,7 @@ import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
 import Landing from './views/Landing.jsx'
+import About from './views/About.jsx'
 import Catalog from './views/Catalog.jsx'
 import Shelf from './views/Shelf.jsx'
 import ListImport from './views/ListImport.jsx'
@@ -29,6 +30,9 @@ export default function App() {
   const lib = useLibrary()
   const [view, setView] = useState('home')
   const [focus, setFocus] = useState(null)
+  // Where About was opened from, so leaving it returns you there rather than
+  // to the front page you may not have been on.
+  const [before, setBefore] = useState('home')
   // Where to return to once storage exists. Each route asks for storage at the
   // point it needs it, rather than the app demanding it at the door.
   const [pendingView, setPendingView] = useState(null)
@@ -39,6 +43,13 @@ export default function App() {
   const go = useCallback(
     (next, wanted = null) => {
       setFocus(wanted)
+      // About is a document, not a workspace: it needs no storage, and asking
+      // for storage before showing someone the licence would be absurd.
+      if (next === 'about') {
+        setBefore((current) => (view === 'about' ? current : view))
+        setView('about')
+        return
+      }
       if (next !== 'home' && lib.status !== 'ready') {
         setPendingView(next)
         return
@@ -46,11 +57,17 @@ export default function App() {
       setPendingView(null)
       setView(next)
     },
-    [lib.status],
+    [lib.status, view],
   )
 
   if (lib.status === 'opening') {
     return <div className="loading">{t('common.opening')}</div>
+  }
+
+  // Before every other check: About must be readable in whatever state the
+  // app is in, including the very first visit.
+  if (view === 'about') {
+    return <About focus={focus} onBack={() => setView(before)} />
   }
 
   if (lib.status === 'permit') {
@@ -151,6 +168,11 @@ export default function App() {
           <div style={{ padding: '0 8px' }}>
             <button className="btn small" onClick={lib.rebuild} disabled={lib.busy || !lib.sources.length}>
               {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
+            </button>
+          </div>
+          <div className="sidebar-links">
+            <button className="btn link tiny" onClick={() => go('about')}>
+              {t('foot.about')}
             </button>
           </div>
         </div>

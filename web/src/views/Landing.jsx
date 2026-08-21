@@ -115,14 +115,28 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
         </section>
 
         <footer className="landing-foot">
-          <a
-            href="https://github.com/JesusJBallesteros/LibrAPP"
-            target="_blank"
-            rel="noreferrer"
-            className="tiny"
-          >
-            {t('landing.learnMore')}
-          </a>
+          {/* One page behind four links: each lands on its own section. */}
+          <nav className="foot-links tiny">
+            <button className="btn link tiny" onClick={() => onGo('about', 'what')}>
+              {t('foot.about')}
+            </button>
+            <button className="btn link tiny" onClick={() => onGo('about', 'privacy')}>
+              {t('foot.privacy')}
+            </button>
+            <button className="btn link tiny" onClick={() => onGo('about', 'licence')}>
+              {t('foot.licence')}
+            </button>
+            <a href="https://github.com/JesusJBallesteros/LibrAPP" target="_blank" rel="noreferrer">
+              {t('foot.source')}
+            </a>
+            <a
+              href="https://github.com/JesusJBallesteros/LibrAPP/issues"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t('foot.report')}
+            </a>
+          </nav>
         </footer>
       </div>
     </div>

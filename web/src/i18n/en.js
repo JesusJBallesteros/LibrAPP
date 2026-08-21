@@ -455,4 +455,71 @@ export default {
   'key.delete': 'Delete',
   'key.storedNote':
     'Switching off keeps the key for later without letting the app spend anything. Deleting removes it from this device. Each service keeps its own key, so switching between them costs nothing.',
+
+  // -- the footer, and the page behind it -----------------------------------
+  'foot.about': 'About',
+  'foot.privacy': 'Privacy',
+  'foot.licence': 'Licence',
+  'foot.source': 'Source code',
+  'foot.report': 'Report a problem',
+
+  'about.title': 'About this app, and who wrote it.',
+  'about.back': 'Back',
+
+  'about.what': 'What LibrAPP is',
+  'about.whatBody':
+    'A book catalog you build from what you already have: a photograph of a shelf, a spreadsheet you keep, an export from a store, or all three at once. The same book arriving from several places becomes one entry rather than three.',
+  'about.whatBody2':
+    'It is not a social network, a reading tracker or a shop. Nobody else can see your shelves, and there is nobody to see them: LibrAPP has no server. Two steps can use an AI service if you give it a key — reading spines off a photograph, and answering questions about your collection — and both work without one.',
+
+  'about.who': 'Who wrote it',
+  'about.whoBody':
+    'LibrAPP is written by Jesús J. Ballesteros, and it started as a way to catalog his own shelves. You are being asked to photograph your books and, if you want the AI parts, to paste a key into this page — so it seems fair to say plainly whose work this is and where to check it.',
+  'about.cv': 'His site and CV',
+  'about.github': 'His GitHub',
+  'about.repo': 'This project on GitHub',
+  'about.noWarranty':
+    'This is a personal project given away for free. It comes with no warranty and no promise of support, and it may change or stop being updated. Keep an export of anything you would mind losing.',
+
+  'about.privacy': 'Privacy',
+  'about.privacyBody':
+    'Short, because there is little to say. LibrAPP is a page that runs entirely in your browser, and this is the whole of it:',
+  'about.privacy.account':
+    'No account, no sign-up, no profile. There is nothing to log in to.',
+  'about.privacy.device':
+    'Your catalog is written to this device — a folder you chose, or storage the browser keeps for this app. It is never uploaded.',
+  'about.privacy.key':
+    'If you provide an AI key, it stays in this browser and is sent only to the service you chose. It is never written into your catalog and never included in an export. Photographs are cut into tiles here; only the tiles go, and only when you ask.',
+  'about.privacy.cookies':
+    'No cookies, no analytics, no trackers, no third-party requests. The only thing remembered about you is which language you picked and where your library is.',
+  'about.privacy.offline':
+    'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
+  'about.privacyCheck': 'You do not have to take any of that on trust — the code is public.',
+  'about.readSource': 'Read it',
+
+  'about.licence': 'Licence',
+  'about.licenceBody':
+    'LibrAPP is free to use, read, modify and share for anything that is not commercial. Selling it, or building a paid service on it, needs permission first. The full terms:',
+  'about.licenceName': 'PolyForm Noncommercial 1.0.0',
+  'about.attributions': 'Built with',
+  'about.attributionsBody':
+    'These are other people’s work, included in the app and used under their own terms:',
+
+  'about.contact': 'Getting in touch',
+  'about.contactBody':
+    'There is no contact form, because there is no server to receive one. Anything about the app itself — a bug, something confusing, an idea — belongs on GitHub, where it is public and does not get lost. Anything else can go through the contact details on my own site.',
+  'about.reportProblem': 'Report a problem',
+  'about.contactMe': 'Contact me',
+
+  'about.version': 'Version {build}',
+  'about.updateNote': 'the Library tab can force a fresh copy if this looks out of date',
+
+  // -- version, in the library tab ------------------------------------------
+  'version.title': 'Version',
+  'version.built': 'Built {when}.',
+  'version.body':
+    'LibrAPP keeps a copy of itself on this device so it opens without a network. That copy usually replaces itself on the next visit. If it seems stuck on an older version, throw it away and fetch the current one.',
+  'version.refresh': 'Fetch a fresh copy',
+  'version.safe':
+    'This discards only the app. Your library, your sources and your corrections are not stored here and are not touched.',
 }

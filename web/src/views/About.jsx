@@ -1,0 +1,151 @@
+import { useEffect } from 'react'
+import { useT } from '../i18n/index.jsx'
+import { buildLabel } from '../version.js'
+
+/**
+ * One page rather than four.
+ *
+ * The usual footer wants About, Privacy, Licence and Contact as separate
+ * destinations. For an app with no account, no server and nothing sold, that
+ * would be four thin pages saying "not applicable" in four different ways. They
+ * are sections here instead, and the footer links land on the right one.
+ *
+ * The About section is not vanity. LibrAPP asks people to photograph their
+ * possessions and to paste an API key into a web page; the honest answer to
+ * "why should I trust this?" is a named person with a public trail, which does
+ * more work than any policy document.
+ */
+
+const CV = 'https://jesusjballesteros.github.io/'
+const GITHUB = 'https://github.com/JesusJBallesteros'
+const REPO = 'https://github.com/JesusJBallesteros/LibrAPP'
+const ISSUES = 'https://github.com/JesusJBallesteros/LibrAPP/issues'
+const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0/'
+
+// Everything that ships inside the built app, with the terms it ships under.
+// Attribution is a condition of both MIT and Apache-2.0, so this list is an
+// obligation rather than a courtesy — it is checked against package.json when
+// a dependency changes.
+const BUNDLED = [
+  { name: 'React', licence: 'MIT', url: 'https://github.com/facebook/react' },
+  { name: 'pdf.js', licence: 'Apache-2.0', url: 'https://github.com/mozilla/pdf.js' },
+  { name: 'Zod', licence: 'MIT', url: 'https://github.com/colinhacks/zod' },
+  {
+    name: 'Anthropic SDK',
+    licence: 'MIT',
+    url: 'https://github.com/anthropics/anthropic-sdk-typescript',
+  },
+]
+
+const Out = ({ href, children }) => (
+  <a href={href} target="_blank" rel="noreferrer">
+    {children}
+  </a>
+)
+
+export default function About({ onBack, focus }) {
+  const { t } = useT()
+
+  // Arriving from a footer link should land on the section that link named.
+  useEffect(() => {
+    if (!focus) return
+    document.getElementById(`about-${focus}`)?.scrollIntoView({ block: 'start' })
+  }, [focus])
+
+  return (
+    <div className="landing">
+      <div className="landing-inner">
+        <header className="landing-head">
+          <div className="spread">
+            <h1 className="landing-brand">
+              Libr<em>APP</em>
+            </h1>
+            <button className="btn" onClick={onBack}>
+              ← {t('about.back')}
+            </button>
+          </div>
+          <p className="landing-tagline">{t('about.title')}</p>
+        </header>
+
+        <section className="card" id="about-what">
+          <h3>{t('about.what')}</h3>
+          <p className="muted tiny">{t('about.whatBody')}</p>
+          <p className="muted tiny">{t('about.whatBody2')}</p>
+        </section>
+
+        <section className="card" id="about-who">
+          <h3>{t('about.who')}</h3>
+          <p className="muted tiny">{t('about.whoBody')}</p>
+          <div className="row" style={{ marginTop: 10 }}>
+            <Out href={CV}>{t('about.cv')}</Out>
+            <Out href={GITHUB}>{t('about.github')}</Out>
+            <Out href={REPO}>{t('about.repo')}</Out>
+          </div>
+          <p className="tiny faint" style={{ marginTop: 10 }}>
+            {t('about.noWarranty')}
+          </p>
+        </section>
+
+        <section className="card" id="about-privacy">
+          <h3>{t('about.privacy')}</h3>
+          <p className="muted tiny">{t('about.privacyBody')}</p>
+          <ul className="landing-needs" style={{ marginTop: 10 }}>
+            {['account', 'device', 'key', 'cookies', 'offline'].map((id) => (
+              <li key={id}>
+                <span className="glyph" aria-hidden="true">
+                  ·
+                </span>
+                <span className="tiny muted">{t(`about.privacy.${id}`)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="tiny faint" style={{ marginTop: 10 }}>
+            {t('about.privacyCheck')} <Out href={REPO}>{t('about.readSource')}</Out>.
+          </p>
+        </section>
+
+        <section className="card" id="about-licence">
+          <h3>{t('about.licence')}</h3>
+          <p className="muted tiny">{t('about.licenceBody')}</p>
+          <p className="tiny" style={{ marginTop: 8 }}>
+            <Out href={LICENCE}>{t('about.licenceName')}</Out>
+          </p>
+
+          <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>
+            {t('about.attributions')}
+          </h4>
+          <p className="tiny faint" style={{ margin: 0 }}>
+            {t('about.attributionsBody')}
+          </p>
+          <ul className="landing-needs" style={{ marginTop: 10 }}>
+            {BUNDLED.map((dep) => (
+              <li key={dep.name}>
+                <span className="glyph" aria-hidden="true">
+                  ·
+                </span>
+                <span className="tiny muted">
+                  <Out href={dep.url}>{dep.name}</Out> — {dep.licence}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="card" id="about-contact">
+          <h3>{t('about.contact')}</h3>
+          <p className="muted tiny">{t('about.contactBody')}</p>
+          <div className="row" style={{ marginTop: 10 }}>
+            <Out href={ISSUES}>{t('about.reportProblem')}</Out>
+            <Out href={CV}>{t('about.contactMe')}</Out>
+          </div>
+        </section>
+
+        <footer className="landing-foot">
+          <p className="tiny faint" style={{ margin: 0 }}>
+            {t('about.version', { build: buildLabel() })} · {t('about.updateNote')}
+          </p>
+        </footer>
+      </div>
+    </div>
+  )
+}

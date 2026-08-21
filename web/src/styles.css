@@ -136,6 +136,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .brand-button:hover h1 { color: var(--accent); }
 
+.foot-links { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; }
+.foot-links a,
+.foot-links .btn.link { color: var(--accent); font-size: 12.5px; }
+
+.sidebar-links { padding: 10px 8px 0; margin-top: 8px; border-top: 1px solid var(--rule); }
+.sidebar-links .btn.link { color: var(--ink-faint); padding: 0; }
+.sidebar-links .btn.link:hover { color: var(--accent); }
+
+/* About reuses the landing shell; its cards want a little more room to read. */
+.landing section.card { margin-bottom: 14px; }
+.landing section.card p + p { margin-top: 9px; }
+
 /* ---------------------------------------------------------------- shell -- */
 
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
