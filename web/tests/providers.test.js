@@ -2,6 +2,11 @@
 // somebody else's API. Nothing here makes a request; what is checked is that the
 // registry is internally consistent, that the schema a model is handed says the
 // same thing in all three dialects, and that a price is never invented.
+//
+// A note on keyPattern: it is a hint, not a gate — the key box lets a person
+// save a key it does not recognise. So a pattern being wrong is a nuisance
+// rather than a lockout, and these tests hold it to catching obvious rubbish
+// rather than to knowing every shape a service will ever issue.
 
 import { describe, expect, it } from 'vitest'
 import {
@@ -41,7 +46,7 @@ describe('the registry', () => {
     },
   )
 
-  it('has key patterns that accept their own example and reject each other', () => {
+  it('has key patterns that accept their own example', () => {
     const anthropic = providerById('anthropic')
     const openai = providerById('openai')
     expect(anthropic.keyPattern.test('sk-ant-api03-aaaaaaaaaaaaaaaaaaaaaaaa')).toBe(true)
@@ -50,6 +55,26 @@ describe('the registry', () => {
     // happen is the reverse.
     expect(anthropic.keyPattern.test('sk-aaaaaaaaaaaaaaaaaaaaaaaaaaaa')).toBe(false)
     expect(openai.keyPattern.test('not-a-key')).toBe(false)
+  })
+
+  describe('Google, which has issued two shapes of key', () => {
+    const google = providerById('google')
+
+    it('accepts the older Standard key beginning AIza', () => {
+      expect(google.keyPattern.test('AIzaSyA1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r')).toBe(true)
+    })
+
+    it('accepts the newer Auth key beginning AQ., dots and all', () => {
+      // The bug this test exists for: the pattern was built out of \w, which
+      // does not include a dot, so every new Gemini key was refused before a
+      // request was ever made.
+      expect(google.keyPattern.test('AQ.Ab8RN6JJmHwZq3tVx7Yn2Kd9Lf4Gs1Pc0Wu5Er6Ty8Ui3Oa')).toBe(true)
+    })
+
+    it('still turns away something that is plainly not a key', () => {
+      expect(google.keyPattern.test('hello')).toBe(false)
+      expect(google.keyPattern.test('')).toBe(false)
+    })
   })
 
   it('falls back to a real provider when asked for one that does not exist', () => {

@@ -30,6 +30,9 @@ export default function ApiKeyBox({ what, onChange }) {
   const [choice, setChoice] = useState(null)
   const [stocked, setStocked] = useState([])
   const [draft, setDraft] = useState('')
+  // Set once a key of an unfamiliar shape has been offered and warned about.
+  // The second press saves it: the shape check must not be the last word.
+  const [unfamiliar, setUnfamiliar] = useState(false)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
@@ -69,11 +72,13 @@ export default function ApiKeyBox({ what, onChange }) {
     run(async () => {
       const key = draft.trim()
       if (!key) throw new Error(t('key.pasteFirst'))
-      if (!looksLikeKey(provider.id, key)) {
+      if (!looksLikeKey(provider.id, key) && !unfamiliar) {
+        setUnfamiliar(true)
         throw new Error(t('key.wrongShape', { service: provider.label, hint: provider.keyHint }))
       }
       await saveKey(provider.id, key)
       setDraft('')
+      setUnfamiliar(false)
     })
 
   const field = {
@@ -111,7 +116,10 @@ export default function ApiKeyBox({ what, onChange }) {
           <select
             value={provider.id}
             disabled={busy}
-            onChange={(e) => run(() => chooseProvider(e.target.value))}
+            onChange={(e) => {
+              setUnfamiliar(false)
+              run(() => chooseProvider(e.target.value))
+            }}
             style={{ ...field, fontFamily: 'inherit' }}
           >
             {PROVIDERS.map((p) => (
@@ -182,7 +190,10 @@ export default function ApiKeyBox({ what, onChange }) {
             <input
               type="password"
               value={draft}
-              onChange={(e) => setDraft(e.target.value)}
+              onChange={(e) => {
+                setDraft(e.target.value)
+                setUnfamiliar(false)
+              }}
               onKeyDown={(e) => e.key === 'Enter' && save()}
               placeholder={provider.keyHint}
               autoComplete="off"
@@ -191,7 +202,7 @@ export default function ApiKeyBox({ what, onChange }) {
               style={{ ...field, flex: '1 1 260px' }}
             />
             <button className="btn primary" onClick={save} disabled={busy}>
-              {t('key.save')}
+              {unfamiliar ? t('key.saveAnyway') : t('key.save')}
             </button>
           </div>
           <p className="tiny faint" style={{ marginTop: 8 }}>

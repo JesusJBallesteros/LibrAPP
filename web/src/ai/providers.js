@@ -100,6 +100,13 @@ export function toGeminiSchema(node) {
 /**
  * The services LibrAPP knows how to reach.
  *
+ * `keyPattern` is a hint, never a gate. It exists to catch a paste that went
+ * obviously wrong before a request is spent, and the interface lets a person
+ * overrule it — because a service can change its key format overnight, as
+ * Google did when Gemini moved from AIza to AQ. keys, and a pattern that has
+ * gone stale must never be the reason someone cannot use a key that works.
+ * Being wrong the other way costs one refused request, which says so plainly.
+ *
  * `models` are suggestions, not a fence -- every provider lets you type a model
  * name it does not list, because the list here goes stale and your account does
  * not. `prices` is filled in only where it has been checked; where it is absent
@@ -112,7 +119,7 @@ export const PROVIDERS = [
     label: 'Anthropic - Claude',
     family: 'anthropic',
     keysAt: 'https://console.anthropic.com/settings/keys',
-    keyHint: 'sk-ant-...',
+    keyHint: 'sk-ant-…',
     keyPattern: /^sk-ant-[\w-]{20,}$/,
     host: 'api.anthropic.com',
     defaultModel: 'claude-opus-5',
@@ -128,7 +135,7 @@ export const PROVIDERS = [
     family: 'openai',
     baseUrl: 'https://api.openai.com/v1',
     keysAt: 'https://platform.openai.com/api-keys',
-    keyHint: 'sk-...',
+    keyHint: 'sk-…',
     keyPattern: /^sk-[\w-]{20,}$/,
     host: 'api.openai.com',
     defaultModel: 'gpt-5',
@@ -140,8 +147,12 @@ export const PROVIDERS = [
     family: 'google',
     baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
     keysAt: 'https://aistudio.google.com/apikey',
-    keyHint: 'AIza...',
-    keyPattern: /^[\w-]{30,}$/,
+    keyHint: 'AIza… or AQ.…',
+    // Google issues two shapes: the older Standard keys beginning AIza, and the
+    // newer Auth keys beginning AQ. which contain dots. Matching on either
+    // prefix would only postpone this, so the check is a length sanity test on
+    // an opaque credential and nothing more.
+    keyPattern: /^[\w.-]{30,}$/,
     host: 'generativelanguage.googleapis.com',
     defaultModel: 'gemini-2.5-pro',
     models: [{ id: 'gemini-2.5-pro' }, { id: 'gemini-2.5-flash' }],
@@ -152,7 +163,7 @@ export const PROVIDERS = [
     family: 'openai',
     baseUrl: 'https://openrouter.ai/api/v1',
     keysAt: 'https://openrouter.ai/keys',
-    keyHint: 'sk-or-...',
+    keyHint: 'sk-or-…',
     keyPattern: /^sk-or-[\w-]{20,}$/,
     host: 'openrouter.ai',
     defaultModel: 'anthropic/claude-sonnet-4.5',

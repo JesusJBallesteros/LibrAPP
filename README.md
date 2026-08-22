@@ -355,7 +355,7 @@ You choose. The key box lists:
 |---|---|---|
 | **Anthropic** — Claude | [console.anthropic.com](https://console.anthropic.com/settings/keys) | prices shown in dollars |
 | **OpenAI** | [platform.openai.com](https://platform.openai.com/api-keys) | |
-| **Google** — Gemini | [aistudio.google.com](https://aistudio.google.com/apikey) | |
+| **Google** — Gemini | [aistudio.google.com](https://aistudio.google.com/apikey) | both the older `AIza…` and the newer `AQ.…` keys work |
 | **OpenRouter** | [openrouter.ai](https://openrouter.ai/keys) | many models behind one key |
 | **Anything else** | — | any address that speaks the OpenAI chat interface |
 
@@ -367,6 +367,12 @@ is allowed to talk to it.
 The model is a free text field with suggestions, so a model newer than this
 README still works. Each service keeps its own key — trying a second one does
 not cost you the first, and switching back needs no pasting.
+
+LibrAPP checks the shape of a key before saving it, but only as a warning: if it
+does not recognise what you pasted it says so and lets you save it on a second
+press. A key is an opaque credential and services change their formats — Gemini
+moved from `AIza…` to `AQ.…` keys — so a stale guess here must never be the
+reason a working key is refused.
 
 ### The three states
 

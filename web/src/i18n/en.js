@@ -445,7 +445,8 @@ export default {
   'key.fieldLabel': 'API key for {service}',
   'key.save': 'Save key',
   'key.pasteFirst': 'Paste a key first.',
-  'key.wrongShape': 'That does not look like a key for {service} — they look like {hint}.',
+  'key.wrongShape':
+    'That does not look like a key for {service}, whose keys usually look like {hint}. If you are sure it is right, press again to save it — a service can change the shape of its keys at any time.',
   'key.privacy':
     'Kept in this browser’s storage on this device, sent only to {where}, and never written into your catalog or an export. Anything running on this page could read it, so use a key scoped to its own project or workspace, with a spend limit.',
   'key.activeNote': '— LibrAPP may send requests to {where} to read spines and answer questions.',
@@ -542,4 +543,6 @@ export default {
     'The review was not a formality. The assistant got things wrong — it once reported that a cut-off title had been repaired when it had not, and it chose a way of splitting photographs that fell apart on a close-up of three books. Both were caught by someone checking the output against the actual shelf. That experience is why this app shows you what a model read and waits for you to approve it, rather than importing it quietly.',
   'about.aiNotYourBooks':
     'All of that is about how the program was written. It has nothing to do with the contents of your catalog: no entry is invented, every book comes from a source you provided, and the AI features inside the app are optional, off until you add a key, and always show you the result before anything is kept.',
+
+  'key.saveAnyway': 'Save it anyway',
 }

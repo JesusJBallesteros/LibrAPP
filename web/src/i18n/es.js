@@ -450,7 +450,8 @@ export default {
   'key.fieldLabel': 'Clave de API para {service}',
   'key.save': 'Guardar la clave',
   'key.pasteFirst': 'Pega antes una clave.',
-  'key.wrongShape': 'Eso no parece una clave de {service}: las suyas se parecen a {hint}.',
+  'key.wrongShape':
+    'Eso no parece una clave de {service}, cuyas claves suelen parecerse a {hint}. Si estás seguro de que es correcta, pulsa otra vez para guardarla: un servicio puede cambiar la forma de sus claves en cualquier momento.',
   'key.privacy':
     'Se guarda en el almacenamiento de este navegador, en este dispositivo; se envía solo a {where} y nunca se escribe en tu catálogo ni en una exportación. Cualquier cosa que se ejecute en esta página podría leerla, así que usa una clave limitada a su propio proyecto o espacio, con un límite de gasto.',
   'key.activeNote':
@@ -550,4 +551,6 @@ export default {
     'La revisión no fue un trámite. El asistente se equivocó: una vez dio por reparado un título cortado que seguía cortado, y eligió una forma de partir las fotos que se deshacía con un primer plano de tres libros. Las dos cosas las detectó alguien contrastando el resultado con la estantería real. Esa experiencia es la razón de que esta app te enseñe lo que ha leído un modelo y espere a que lo apruebes, en vez de importarlo sin decir nada.',
   'about.aiNotYourBooks':
     'Todo eso va de cómo se escribió el programa. No tiene nada que ver con el contenido de tu catálogo: no se inventa ninguna entrada, cada libro viene de una fuente que tú has dado, y las funciones de IA dentro de la app son opcionales, están apagadas hasta que añades una clave, y siempre te enseñan el resultado antes de guardar nada.',
+
+  'key.saveAnyway': 'Guardarla de todos modos',
 }
