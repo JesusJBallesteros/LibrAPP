@@ -34,9 +34,11 @@ function Row({ label, hint, children }) {
   )
 }
 
-const toForm = (book, names) => ({
+export const toForm = (book, names) => ({
   title: book?.title || '',
-  authors: book ? (book.authors || []).map((id) => names?.get(id) || id).join(', ') : '',
+  authors: book
+    ? (book.authors || []).map((id) => names?.get(id)?.display_name || id).join(', ')
+    : '',
   series: book?.series || '',
   series_index: book?.series_index ?? '',
   genre: book?.genre || '',
@@ -179,6 +181,13 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
           <Row label={t('editor.authors')} hint={t('editor.authorsHint')}>
             <input style={field} value={form.authors} onChange={set('authors')} />
           </Row>
+          {editing && !form.authors.trim() && (
+            <p className="tiny faint" style={{ margin: '-6px 0 11px' }}>
+              {book.author_label
+                ? t('editor.noPersonalAuthor', { label: book.author_label })
+                : t('editor.noAuthorRecorded')}
+            </p>
+          )}
 
           <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
             <div style={{ flex: '2 1 160px' }}>

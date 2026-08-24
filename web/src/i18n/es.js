@@ -574,7 +574,7 @@ export default {
   'landing.next.title': 'Y luego preg\u00fantale',
   'landing.next.body':
     'Un cat\u00e1logo es un punto de partida, no el final. El escritorio usa tus estanter\u00edas como contexto: qu\u00e9 leer a continuaci\u00f3n y por qu\u00e9, qu\u00e9 te falta de un autor que has ido reuniendo a medias, qu\u00e9 hilos recorren lo que tienes, una lista para un vuelo largo o para el verano. Responde sobre tus libros, no sobre los libros en general.',
-  'landing.next.action': 'Abrir el escritorio',
+  'landing.next.action': 'Abrir BibliotecAPPri@',
   'landing.next.empty': 'Estar\u00e1 listo en cuanto haya libros aqu\u00ed.',
   'desk.estimateNote': 'una estimaci\u00f3n. Lo que ha costado de verdad aparece con la respuesta.',
 
@@ -644,4 +644,9 @@ export default {
   'shelf.noCover':
     'No se ofrecen im\u00e1genes de cubierta. Un modelo solo puede devolver un enlace, y descargarlo dir\u00eda a quien aloje la imagen qu\u00e9 libros tienes.',
   'shelf.recalledCount': '{n} libro(s) traen alg\u00fan dato recordado',
+
+  'editor.noPersonalAuthor':
+    'Sin autor con nombre. Las fuentes lo describen como \u00ab{label}\u00bb, que es una descripci\u00f3n y no una persona, as\u00ed que no aparece arriba.',
+  'editor.noAuthorRecorded':
+    'Sin autor anotado. D\u00e9jalo en blanco si la obra es an\u00f3nima o corporativa, o escribe uno.',
 }

@@ -567,7 +567,7 @@ export default {
   'landing.next.title': 'Then ask it things',
   'landing.next.body':
     'A catalog is a starting point, not the end of it. The desk uses your shelves as context: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through what you own, a list for a long flight or a summer. It answers about your books rather than books in general.',
-  'landing.next.action': 'Open the desk',
+  'landing.next.action': 'Open the LibrAPPrian’s desk',
   'landing.next.empty': 'Ready as soon as there are books here.',
   'desk.estimateNote': 'an estimate. What it actually cost appears with the answer.',
 
@@ -636,4 +636,9 @@ export default {
   'shelf.noCover':
     'Cover images are not offered. A model can only return a link, and fetching one would tell whoever hosts the image which books you own.',
   'shelf.recalledCount': '{n} book(s) carry a recalled detail',
+
+  'editor.noPersonalAuthor':
+    'No named author. The sources describe this as \u201c{label}\u201d, which is a description rather than a person, so it is not filled in above.',
+  'editor.noAuthorRecorded':
+    'No author recorded. Leave this blank for an anonymous or corporate work, or type one in.',
 }
