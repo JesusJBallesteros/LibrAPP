@@ -123,6 +123,24 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-option-go { color: var(--ink-faint); font-size: 17px; }
 
 .landing-foot { margin-top: 30px; }
+
+/* A wide screen. Below this the single column is right, and on About it stays
+   right at every width, which is why these rules need .landing-home. */
+@media (min-width: 1000px) {
+  .landing-home { max-width: 1120px; }
+  .landing-home .landing-brand { font-size: 52px; }
+  .landing-home .landing-tagline { font-size: 23px; max-width: 42ch; }
+  .landing-home .landing-intro { font-size: 16px; }
+  .landing-home .landing-head { margin-bottom: 30px; }
+  .landing-home .landing-facts { gap: 18px; margin-bottom: 34px; }
+  .landing-home .landing-start h2 { font-size: 23px; }
+  .landing-home .landing-options { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .landing-home .landing-option { padding: 17px 19px; }
+  /* Five options do not halve. The last one is the way out of the setting-up
+     and into the catalog, so it takes the full width and reads as a step on
+     its own rather than as a fifth of a kind. */
+  .landing-home .landing-option:last-child { grid-column: 1 / -1; }
+}
 .landing-foot a { color: var(--accent); }
 
 .brand-button {

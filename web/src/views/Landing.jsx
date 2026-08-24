@@ -25,7 +25,7 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
 
   return (
     <div className="landing">
-      <div className="landing-inner">
+      <div className="landing-inner landing-home">
         <header className="landing-head">
           <div className="spread" style={{ alignItems: 'flex-start', gap: 16 }}>
             <h1 className="landing-brand">
