@@ -94,7 +94,14 @@ export async function readKey(providerId) {
   }
 }
 
-/** The state the interface should show, for the service currently chosen. */
+/**
+  * The state the interface should show, for the service currently chosen.
+  *
+  * `usable` is the question a view actually wants answered: may the app make a
+  * request right now. It is not the same as holding a key. A model running on
+  * your own machine has nobody to bill and needs none, and gating a button on a
+  * stored key would put that service permanently out of reach.
+  */
 export async function keyState() {
   const choice = await readChoice()
   const stored = await readKey(choice.provider)
@@ -102,6 +109,7 @@ export async function keyState() {
     ...choice,
     state: !stored ? 'absent' : stored.active ? 'active' : 'off',
     masked: stored ? maskKey(stored.key) : null,
+    usable: Boolean(await usableConfig()),
   }
 }
 

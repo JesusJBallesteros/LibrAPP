@@ -38,6 +38,7 @@ const Transcription = z.object({
 
 /** Turn an SDK error into something worth showing a person. */
 function explain(error) {
+  if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return error
   if (error instanceof Anthropic.AuthenticationError) {
     return new KeyRejected(
       'That key was rejected. Check it was copied whole, and that it is still active.',
@@ -83,15 +84,18 @@ export const anthropic = {
     return content
   },
 
-  async readShelf({ apiKey, model, content }) {
+  async readShelf({ apiKey, model, content, signal }) {
     try {
-      const response = await clientFor(apiKey).messages.parse({
-        model,
-        max_tokens: 16000,
-        thinking: { type: 'adaptive' },
-        messages: [{ role: 'user', content }],
-        output_config: { format: zodOutputFormat(Transcription) },
-      })
+      const response = await clientFor(apiKey).messages.parse(
+        {
+          model,
+          max_tokens: 16000,
+          thinking: { type: 'adaptive' },
+          messages: [{ role: 'user', content }],
+          output_config: { format: zodOutputFormat(Transcription) },
+        },
+        { signal },
+      )
       if (response.stop_reason === 'refusal') {
         throw new Error('The model declined to answer this request.')
       }

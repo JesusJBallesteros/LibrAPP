@@ -555,4 +555,20 @@ export default {
   'key.saveAnyway': 'Guardarla de todos modos',
 
   'list.savedAs': 'Guardado como {name}.',
+
+  'shelf.dropTile': 'Descartar',
+  'shelf.keepTile': 'Recuperar',
+  'shelf.droppedTag': 'descartada',
+  'shelf.discardHint':
+    'Descarta cualquier pieza que no tenga ning\u00fan lomo legible: una pared, una l\u00e1mpara, el borde de una alfombra. Las piezas descartadas no se env\u00edan ni se pagan.',
+  'shelf.tileCountKept': '{kept} de {total} piezas',
+  'shelf.noneKept': 'Est\u00e1n descartadas todas las piezas, as\u00ed que no hay nada que leer. Deja al menos una.',
+  'shelf.stop': 'Detener',
+  'shelf.stopped': 'Detenido antes de que llegara una respuesta.',
+  'shelf.timedOut':
+    'Sin respuesta despu\u00e9s de {minutes} minutos, as\u00ed que se ha abandonado la petici\u00f3n. El servicio puede estar saturado o no ser accesible desde esta p\u00e1gina.',
+  'shelf.failed': 'La lectura ha fallado.',
+  'shelf.failedUnknown': 'Ha fallado sin decir por qu\u00e9.',
+  'shelf.copyFailure': 'Copiar este mensaje',
+  'shelf.usingService': 'Servicio: {service} \u00b7 modelo: {model}',
 }

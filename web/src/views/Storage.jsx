@@ -24,7 +24,8 @@ export default function Storage({ lib, focus }) {
   useEffect(() => {
     if (focus !== 'import') return
     const box = document.getElementById('import-box')
-    box?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    // Instant, for the reason given in Shelf.jsx.
+    box?.scrollIntoView({ block: 'center' })
   }, [focus])
 
   const exportBundle = async () => {

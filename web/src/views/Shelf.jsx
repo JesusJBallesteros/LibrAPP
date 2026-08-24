@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { loadTranscription, tileImage } from '../ingest/shelf.js'
 import { stemOf } from '../store/library.js'
@@ -11,6 +11,7 @@ import {
   pricesForChoice,
   readShelf,
 } from '../ai/model.js'
+import { providerById } from '../ai/providers.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 import { useT } from '../i18n/index.jsx'
 
@@ -22,6 +23,12 @@ import { useT } from '../i18n/index.jsx'
  * Everything happens on the device. A fifty-megapixel photograph is cut up in
  * the browser and never crosses a network, which matters most on a phone.
  */
+
+// How long to wait for a reply before giving up. Nothing else bounds this: a
+// request that never answers would otherwise leave the button saying "reading"
+// for as long as the page stays open, which is indistinguishable from a button
+// that does nothing at all.
+const READ_TIMEOUT_MS = 4 * 60 * 1000
 export default function Shelf({ lib }) {
   const { t } = useT()
   const [photo, setPhoto] = useState(null)
@@ -36,9 +43,26 @@ export default function Shelf({ lib }) {
   const [keyStatus, setKeyStatus] = useState(null)
   const [reading, setReading] = useState(false)
   const [proposed, setProposed] = useState(null)
+  // Tiles the person has set aside. A photograph often yields one holding a
+  // window, a lamp or the edge of a rug, and paying a vision model to read it
+  // is waste. Keyed by tile name, which is unique within a cut.
+  const [dropped, setDropped] = useState(() => new Set())
+  // Kept apart from `error` above, which belongs to the photograph. A failure
+  // to read has to appear beside the button that caused it: shown at the top of
+  // the page it is below the fold on a phone, and looks like nothing happened.
+  const [readError, setReadError] = useState(null)
+  const failure = useRef(null)
+  const inFlight = useRef(null)
+
+  // What will actually be sent, and paid for.
+  const kept = tiles ? tiles.tiles.filter((tile) => !dropped.has(tile.tile)) : []
 
   const cut = async (file, grid) => {
     setError(null)
+    setReadError(null)
+    // Tile names are positions in a grid, so they mean something different
+    // after a recut. Carrying the old set over would discard the wrong tiles.
+    setDropped(new Set())
     setWorking(true)
     try {
       // Object URLs from the previous cut are useless now and would otherwise
@@ -66,20 +90,40 @@ export default function Shelf({ lib }) {
    * call should not automate the trust. A model reading a spine can be wrong in
    * a way nothing downstream can detect, so a person still sees the list.
    */
+  /** Something a person can read, whatever was thrown. */
+  const describeFailure = (err) => {
+    if (err?.name === 'TimeoutError') {
+      return t('shelf.timedOut', { minutes: Math.round(READ_TIMEOUT_MS / 60000) })
+    }
+    if (err?.name === 'AbortError') return t('shelf.stopped')
+    // An empty notice is worse than none: it looks like the same silence the
+    // person was already complaining about.
+    return String(err?.message || err || '').trim() || t('shelf.failedUnknown')
+  }
+
   const readWithKey = async () => {
-    setError(null)
+    setReadError(null)
     setReading(true)
+    const controller = new AbortController()
+    inFlight.current = controller
+    const timer = setTimeout(
+      () => controller.abort(new DOMException('read timed out', 'TimeoutError')),
+      READ_TIMEOUT_MS,
+    )
     try {
       const { transcription, usage } = await readShelf({
-        tiles: tiles.tiles,
+        tiles: kept,
         photo: tiles.photo,
         instructions: promptText,
+        signal: controller.signal,
       })
       const counted = (transcription.shelves || []).reduce((n, s) => n + (s.books?.length || 0), 0)
       setProposed({ transcription, usage, counted })
     } catch (err) {
-      setError(err.message)
+      setReadError(describeFailure(err))
     } finally {
+      clearTimeout(timer)
+      inFlight.current = null
       setReading(false)
     }
   }
@@ -127,6 +171,16 @@ export default function Shelf({ lib }) {
       setResult({ count: records.length, stats, counts: catalog.counts })
     })
 
+  // A failure that renders off-screen is the bug being fixed here, so put it
+  // in view rather than trusting that it is near enough.
+  //
+  // Not smooth: smooth scrolling is driven by the compositor and is skipped
+  // outright when the page is not being composited, which is measurable in a
+  // backgrounded tab. A message the person has to see cannot depend on that.
+  useEffect(() => {
+    if (readError) failure.current?.scrollIntoView({ block: 'center' })
+  }, [readError])
+
   const flash = async (key, text) => {
     if (await copyText(text)) {
       setCopied(key)
@@ -141,11 +195,28 @@ export default function Shelf({ lib }) {
     a.click()
   }
 
+  const toggleTile = (tile) =>
+    setDropped((current) => {
+      const next = new Set(current)
+      if (next.has(tile.tile)) next.delete(tile.tile)
+      else next.add(tile.tile)
+      return next
+    })
+
+  // Which service the request will go to, shown with a failure so a report
+  // says what was being used rather than only what went wrong.
+  const serviceLine = keyStatus
+    ? t('shelf.usingService', {
+        service: providerById(keyStatus.provider).label,
+        model: keyStatus.model,
+      })
+    : ''
+
   // Cost is shown where it is spent. Some services publish a rate this app has
   // checked and some do not, so what can be said varies: a figure where one is
   // known, the token count where it is not, and never a number that was guessed.
   const prices = pricesForChoice(keyStatus)
-  const estimate = tiles ? estimateShelfCost(tiles.tiles, prices) : null
+  const estimate = tiles ? estimateShelfCost(kept, prices) : null
   const estimateLabel = !estimate
     ? ''
     : estimate.dollars !== null
@@ -231,16 +302,58 @@ export default function Shelf({ lib }) {
               )}
             </div>
 
-            {keyStatus?.state === 'active' && (
-              <div className="row" style={{ marginTop: 12 }}>
-                <button className="btn primary" onClick={readWithKey} disabled={reading || lib.busy}>
-                  {reading ? t('shelf.reading') : t('shelf.readForMe')}
-                </button>
-                <span className="tiny faint">
-                  {t('shelf.tileCount', { n: tiles.tiles.length })} · {estimateLabel} ·{' '}
-                  {t('shelf.youApprove')}
-                </span>
-              </div>
+            {keyStatus?.usable && (
+              <>
+                <div className="row" style={{ marginTop: 12 }}>
+                  <button
+                    className="btn primary"
+                    onClick={readWithKey}
+                    disabled={reading || lib.busy || !kept.length}
+                  >
+                    {reading ? t('shelf.reading') : t('shelf.readForMe')}
+                  </button>
+                  {reading && (
+                    <button className="btn" onClick={() => inFlight.current?.abort()}>
+                      {t('shelf.stop')}
+                    </button>
+                  )}
+                  <span className="tiny faint">
+                    {kept.length === tiles.tiles.length
+                      ? t('shelf.tileCount', { n: kept.length })
+                      : t('shelf.tileCountKept', {
+                          kept: kept.length,
+                          total: tiles.tiles.length,
+                        })}{' '}
+                    · {estimateLabel} · {t('shelf.youApprove')}
+                  </span>
+                </div>
+
+                {!kept.length && (
+                  <p className="tiny faint" style={{ marginTop: 8 }}>
+                    {t('shelf.noneKept')}
+                  </p>
+                )}
+
+                {readError && (
+                  <div className="notice bad" style={{ marginTop: 12 }} ref={failure}>
+                    <p className="tiny">
+                      <strong>{t('shelf.failed')}</strong> {readError}
+                    </p>
+                    {serviceLine && (
+                      <p className="tiny faint" style={{ marginTop: 6 }}>
+                        {serviceLine}
+                      </p>
+                    )}
+                    <button
+                      className="btn small"
+                      style={{ marginTop: 8 }}
+                      onClick={() => flash('failure', `${readError}\n${serviceLine}`)}
+                    >
+                      {copied === 'failure' ? t('common.copied') : t('shelf.copyFailure')}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             <div className="row" style={{ marginTop: 10 }}>
@@ -250,7 +363,11 @@ export default function Shelf({ lib }) {
               <button className="btn small" onClick={() => setShowPrompt((s) => !s)}>
                 {showPrompt ? t('shelf.hideThem') : t('shelf.readThem')}
               </button>
-              <button className="btn small" onClick={() => tiles.tiles.forEach(saveTile)}>
+              <button
+                className="btn small"
+                onClick={() => kept.forEach(saveTile)}
+                disabled={!kept.length}
+              >
                 {t('shelf.saveAll')}
               </button>
             </div>
@@ -261,24 +378,41 @@ export default function Shelf({ lib }) {
               </pre>
             )}
 
-            <div className="tiles" style={{ marginTop: 14 }}>
-              {tiles.tiles.map((tile) => (
-                <figure key={tile.tile}>
-                  <img
-                    src={tile.url}
-                    alt={t('shelf.tileAlt', { row: tile.row, column: tile.column })}
-                    loading="lazy"
-                  />
-                  <figcaption className="spread">
-                    <span>
-                      r{tile.row}c{tile.column}
-                    </span>
-                    <button className="btn small" onClick={() => saveTile(tile)}>
-                      {t('common.save')}
-                    </button>
-                  </figcaption>
-                </figure>
-              ))}
+            <p className="tiny faint" style={{ margin: '14px 0 0' }}>
+              {t('shelf.discardHint')}
+            </p>
+
+            <div className="tiles" style={{ marginTop: 10 }}>
+              {tiles.tiles.map((tile) => {
+                const isDropped = dropped.has(tile.tile)
+                return (
+                  <figure key={tile.tile} className={isDropped ? 'dropped' : undefined}>
+                    <img
+                      src={tile.url}
+                      alt={t('shelf.tileAlt', { row: tile.row, column: tile.column })}
+                      loading="lazy"
+                    />
+                    <figcaption className="spread">
+                      <span>
+                        r{tile.row}c{tile.column}
+                        {isDropped && <span className="faint"> · {t('shelf.droppedTag')}</span>}
+                      </span>
+                      <span className="row" style={{ gap: 5 }}>
+                        <button
+                          className="btn small"
+                          aria-pressed={isDropped}
+                          onClick={() => toggleTile(tile)}
+                        >
+                          {isDropped ? t('shelf.keepTile') : t('shelf.dropTile')}
+                        </button>
+                        <button className="btn small" onClick={() => saveTile(tile)}>
+                          {t('common.save')}
+                        </button>
+                      </span>
+                    </figcaption>
+                  </figure>
+                )
+              })}
             </div>
           </div>
 

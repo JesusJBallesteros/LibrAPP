@@ -547,4 +547,20 @@ export default {
   'key.saveAnyway': 'Save it anyway',
 
   'list.savedAs': 'Saved as {name}.',
+
+  'shelf.dropTile': 'Discard',
+  'shelf.keepTile': 'Keep',
+  'shelf.droppedTag': 'discarded',
+  'shelf.discardHint':
+    'Discard any tile that holds no readable spine \u2014 a wall, a lamp, the edge of a rug. Discarded tiles are not sent and not paid for.',
+  'shelf.tileCountKept': '{kept} of {total} tiles',
+  'shelf.noneKept': 'Every tile is discarded, so there is nothing to read. Keep at least one.',
+  'shelf.stop': 'Stop',
+  'shelf.stopped': 'Stopped before a reply arrived.',
+  'shelf.timedOut':
+    'No reply after {minutes} minutes, so the request was given up. The service may be busy, or unreachable from this page.',
+  'shelf.failed': 'The read failed.',
+  'shelf.failedUnknown': 'It failed without saying why.',
+  'shelf.copyFailure': 'Copy this message',
+  'shelf.usingService': 'Service: {service} \u00b7 model: {model}',
 }

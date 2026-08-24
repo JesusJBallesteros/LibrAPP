@@ -81,7 +81,7 @@ async function chosen() {
  * whether it read the spines correctly, and that is why the result is shown for
  * review rather than imported straight away.
  */
-export async function readShelf({ tiles, photo, instructions }) {
+export async function readShelf({ tiles, photo, instructions, signal }) {
   const { adapter, provider, apiKey, model, baseUrl, host } = await chosen()
   const withData = []
   for (const tile of tiles) {
@@ -94,7 +94,7 @@ export async function readShelf({ tiles, photo, instructions }) {
     `one book: record it once. Group books by the shelf they stand on.\n` +
     `Reply only with the transcription, in the format required.`
   const content = adapter.shelfContent({ tiles: withData, tail })
-  return adapter.readShelf({ provider, apiKey, model, baseUrl, host, content })
+  return adapter.readShelf({ provider, apiKey, model, baseUrl, host, content, signal })
 }
 
 /**

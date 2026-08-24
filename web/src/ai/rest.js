@@ -123,9 +123,10 @@ export const openai = {
     return content
   },
 
-  async readShelf({ provider, baseUrl, apiKey, model, content, host }) {
+  async readShelf({ provider, baseUrl, apiKey, model, content, host, signal }) {
     const response = await post(`${baseUrl}/chat/completions`, {
       headers: apiKey ? { authorization: `Bearer ${apiKey}` } : {},
+      signal,
       host,
       body: {
         model,
@@ -198,9 +199,10 @@ export const google = {
     return parts
   },
 
-  async readShelf({ baseUrl, apiKey, model, content, host }) {
+  async readShelf({ baseUrl, apiKey, model, content, host, signal }) {
     const response = await post(`${baseUrl}/models/${model}:generateContent`, {
       headers: { 'x-goog-api-key': apiKey },
+      signal,
       host,
       body: {
         contents: [{ role: 'user', parts: content }],

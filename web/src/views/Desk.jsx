@@ -187,7 +187,7 @@ export default function Desk({ catalog }) {
             />
 
             <div className="row" style={{ marginTop: 10 }}>
-              {keyStatus?.state === 'active' && (
+              {keyStatus?.usable && (
                 <button
                   className="btn primary"
                   disabled={!assembled || asking}
@@ -197,7 +197,7 @@ export default function Desk({ catalog }) {
                 </button>
               )}
               <button
-                className={keyStatus?.state === 'active' ? 'btn' : 'btn primary'}
+                className={keyStatus?.usable ? 'btn' : 'btn primary'}
                 disabled={!assembled}
                 onClick={() => flash('all', assembled)}
               >
@@ -243,7 +243,7 @@ export default function Desk({ catalog }) {
 
             <div className="notice" style={{ marginTop: 14 }}>
               <p className="tiny">
-                {keyStatus?.state === 'active' ? t('desk.withKey') : t('desk.withoutKey')}{' '}
+                {keyStatus?.usable ? t('desk.withKey') : t('desk.withoutKey')}{' '}
                 {t('desk.promptsNote')}
               </p>
             </div>

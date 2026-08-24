@@ -148,6 +148,11 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing section.card { margin-bottom: 14px; }
 .landing section.card p + p { margin-top: 9px; }
 
+.tiles figure.dropped { opacity: .42; }
+.tiles figure.dropped img { filter: grayscale(1); }
+.tiles figure.dropped figcaption { text-decoration: line-through; }
+.tiles figure.dropped .btn { text-decoration: none; }
+
 /* ---------------------------------------------------------------- shell -- */
 
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
