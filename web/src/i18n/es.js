@@ -5,9 +5,9 @@
 
 export default {
   // -- landing ------------------------------------------------------------
-  'landing.tagline': 'Crea el catálogo completo de tus libros a partir de una foto de tu estantería.',
+  'landing.tagline': 'Cataloga todos tus libros con sólo una foto de tu estantería.',
   'landing.intro':
-    'Fotografía una estantería y LibrAPP lee los lomos para crear un catálogo que puedes buscar, filtrar y consultar. También puedes traer una hoja de cálculo, la exportación de una tienda o un catálogo que hicieras en otro dispositivo, y combinarlo todo sin duplicados.',
+    'Fotografía una estantería y LibrAPP leerá los lomos para crear un catálogo que puedes consultar y editar. También puedes subir una tabla, una lista en PDF o un catálogo desde otro dispositivo, y combinarlo todo sin duplicados.',
   'landing.privacy.title': 'Tus libros se quedan contigo',
   'landing.privacy.body':
     'No hay cuenta ni servidor. Tu catálogo se guarda en este dispositivo y no se sube nada. Una vez cargada, LibrAPP funciona sin conexión.',
@@ -25,12 +25,12 @@ export default {
   'landing.option.storage.hint': 'Configúralo primero, antes de añadir libros.',
   'landing.option.photo': 'Tengo una foto de mi estantería',
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
-  'landing.option.list': 'Tengo una lista de los libros que tengo',
-  'landing.option.list.hint': 'Una hoja de cálculo, un CSV, un XML o la exportación de una tienda en PDF.',
+  'landing.option.list': 'Ya tengo una lista de mis libros',
+  'landing.option.list.hint': 'Una hoja de cálculo, un CSV, un XML o una lista en PDF.',
   'landing.option.import': 'Tengo un catálogo de otro dispositivo',
   'landing.option.import.hint': 'Trae el archivo que exportaste desde LibrAPP en otro sitio.',
   'landing.option.browse': 'Quiero ver mi catálogo',
-  'landing.option.browse.hint': 'Ir directamente a los libros que ya tienes aquí.',
+  'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.empty': 'Aquí todavía no hay nada: empieza por una de las opciones de arriba.',
 
   'landing.language': 'Idioma',
@@ -44,7 +44,7 @@ export default {
   'nav.catalog': 'Catálogo',
   'nav.shelf': 'Foto de estantería',
   'nav.list': 'Subir lista',
-  'nav.desk': 'La mesa del LibrAPPrio',
+  'nav.desk': 'BibliotecAPPri@',
   'nav.library': 'Biblioteca',
   'nav.home.hint': 'la página de bienvenida',
   'nav.catalog.hint': 'todo lo que tienes',
@@ -85,7 +85,7 @@ export default {
   'setup.folder.action': 'Elegir una carpeta',
   'setup.browser.title': 'Almacenamiento del navegador',
   'setup.browser.body':
-    'Nada que elegir ni configurar, pero los archivos no son visibles para otras aplicaciones: una exportación es la forma de sacar una copia de este dispositivo.',
+    'Nada que elegir ni configurar, pero los archivos no son visibles para otras aplicaciones: exportar es la forma de sacar una copia de este dispositivo.',
   'setup.browser.action': 'Usar el almacenamiento del navegador',
   'setup.noPicker':
     'Este navegador no tiene selector de carpetas, lo cual es normal en un móvil. El almacenamiento del navegador funciona igual desde dentro de la aplicación.',
@@ -106,7 +106,7 @@ export default {
   // -- un libro -------------------------------------------------------------
   'read.read': 'leído',
   'read.unread': 'sin leer',
-  'read.unknown': 'sin constancia',
+  'read.unknown': 'no consta',
 
   'book.series': 'Serie',
   'book.volume': 'vol.',
@@ -123,8 +123,7 @@ export default {
   'book.worthKnowing': 'Conviene saber',
   'book.confidence': 'Confianza',
   'book.notedWhenRead': 'Anotado al leerlo:',
-  'book.unknownNote':
-    'Nadie ha dejado constancia de si lo leíste. Eso no es lo mismo que no haberlo leído, así que se deja en blanco en vez de suponerlo.',
+  'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
   'book.correctedOn': 'Corregido a mano el {date}.',
   'book.correctedFields': '{fields} — por encima de lo que dicen las fuentes.',
@@ -152,12 +151,12 @@ export default {
   'format.audio': 'audiolibro',
 
   'list.intro':
-    'Una hoja de cálculo, un CSV, un catálogo en XML o un extracto de tienda en PDF. Las columnas se reconocen por su nombre en varios idiomas, así que una hoja con Autor / Título / Género funciona igual que una con author / title / genre. Todo se lee en este dispositivo.',
+    'Una hoja de cálculo, un CSV, un catálogo en XML o una lista en PDF. Las columnas se reconocen por su nombre en varios idiomas, así que una hoja con Autor / Título / Género funciona igual que una con author / title / genre. Todo se lee en este dispositivo.',
   'list.drop': 'Suelta aquí una lista',
   'list.reading': 'Leyéndola…',
   'list.whatIsIn': '¿Qué hay en {name}?',
   'list.manyLists':
-    'Este archivo contiene más de una lista. Elige la de los libros que de verdad tienes: importar una lista de deseos como si fuera tu biblioteca es el error que merece una pregunta más.',
+    'Este archivo contiene más de una lista. Elige la de los libros que de verdad tienes.',
   'list.whichList': 'Qué lista',
   'list.callIt': 'Llámala',
   'list.theseAre': 'Son',
@@ -174,7 +173,7 @@ export default {
   // -- catálogo -------------------------------------------------------------
   'catalog.empty.title': 'Todavía no hay catálogo',
   'catalog.empty.body':
-    'Aún no se ha incorporado nada. Empieza por una foto de una estantería o por una lista que ya tengas: cualquiera de las dos, por sí sola, basta para construir un catálogo.',
+    'Aún no se ha incorporado nada. Empieza por una foto de una estantería o por una lista que ya tengas: cualquiera de las dos basta para construir un catálogo.',
   'catalog.empty.shelf': 'Leer una foto de la estantería',
   'catalog.empty.list': 'Subir una lista',
   'catalog.typeIn': 'Escribir un libro',
@@ -199,9 +198,9 @@ export default {
   'catalog.sort.author': 'autor',
   'catalog.sort.newest': 'más recientes primero',
   'catalog.sort.oldest': 'más antiguos primero',
-  'catalog.noMatch': 'No hay nada que coincida.',
+  'catalog.noMatch': 'No hay coincidencias.',
   'catalog.clearFilters': 'Quitar los filtros',
-  'catalog.standalone': 'Sueltos',
+  'catalog.standalone': 'Sin serie',
 
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':
@@ -287,7 +286,7 @@ export default {
     'Una entrada se identifica por su autor y su título, así que esto ocurre cuando una fuente mejor aporta un título más completo y cambia la identidad. Se listan en vez de descartarse, porque el silencio parecería decir que la corrección ha dejado de importar.',
   'storage.wasRemoved': 'fue retirado',
   'storage.wasEdited': 'fue editado',
-  'storage.forgetIt': 'Olvidarla',
+  'storage.forgetIt': 'Olvidar',
   'storage.undone': 'Corrección de {what} deshecha.',
   'storage.restored': '{what} restaurado.',
 
@@ -295,7 +294,7 @@ export default {
   'storage.moveNote':
     'Una exportación contiene las fuentes, no el catálogo. El catálogo se reconstruye a partir de ellas al otro lado, de modo que las dos copias no pueden acabar discrepando sobre cuál es la buena.',
   'storage.exported': '{n} fuente(s) exportadas.',
-  'storage.importTitle': 'Importar una exportación',
+  'storage.importTitle': 'Importar',
   'storage.importHint': 'elige el archivo .json que exportaste; se añade y se reconstruye',
   'storage.imported': '{n} fuente(s) importadas y catalogo reconstruido.',
 
@@ -303,48 +302,47 @@ export default {
   'common.copied': 'Copiado',
   'common.save': 'Guardar',
 
-  'shelf.intro':
-    'Fotografía la estantería de frente y a la resolución máxima de tu cámara. Esto importa más que ninguna otra cosa: una librería entera a un megapíxel es ilegible, y esa misma estantería a cincuenta no lo es.',
+  'shelf.intro': 'Fotografía la estantería de frente a una resolución alta.',
   'shelf.whatItIsFor': 'leer una estantería',
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Haz o elige una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
-  'shelf.cutting': 'Cortándola en piezas…',
+  'shelf.cutting': 'Creando cuadrícula…',
   'shelf.step2': '2 · Leer los lomos',
   'shelf.tileCount': '{n} pieza(s)',
   'shelf.tilesNote':
-    'Las piezas se cortan a resolución nativa y se solapan, de modo que un libro que cae en una junta aparece entero en alguna de ellas. Pasáselas a un modelo junto con las instrucciones de abajo y pidele que escriba la transcripción.',
+    'La cuadrícula se corta a resolución nativa y se solapa, de modo que un libro que cae en una junta aparece entero en alguna de ellas. Pásaselas a un modelo junto con las instrucciones de abajo y pídele que escriba la transcripción.',
   'shelf.grid': 'Rejilla · {cols} de ancho × {rows} de alto',
-  'shelf.lessAcross': '− ancho',
-  'shelf.moreAcross': '+ ancho',
-  'shelf.lessDown': '− alto',
-  'shelf.moreDown': '+ alto',
+  'shelf.lessAcross': '- columnas',
+  'shelf.moreAcross': '+ columnas',
+  'shelf.lessDown': '- filas',
+  'shelf.moreDown': '+ filas',
   'shelf.gridNote':
-    'Busca piezas con unos pocos lomos enteros y el título legible de arriba abajo. Ningún ajuste vale para todas las estanterías: una librería ancha pide varias piezas a lo ancho, y un primer plano de tres libros pide una y nada más.',
-  'shelf.gridWarning': 'Añadir filas es lo que parte un título por la mitad',
+    'Trata de tener unos pocos lomos enteros y el título legible. Ningún ajuste vale para todas las estanterías: una ancha pide más columnas a lo ancho, y un primer plano de tres libros pide una y nada más.',
+  'shelf.gridWarning': 'Añadir filas puede cortar un título por la mitad',
   'shelf.gridWarningTail':
     ', así que añádelas solo cuando la foto muestre de verdad baldas una encima de otra.',
   'shelf.backToSuggested': 'volver a la sugerida de {cols}×{rows}',
   'shelf.reading': 'leyendo los lomos…',
-  'shelf.readForMe': 'Lee estas piezas por mí',
+  'shelf.readForMe': 'Lee estas fotos por mí',
   'shelf.tokensOnly': 'unos {k}k tokens de entrada, a tu tarifa',
   'shelf.youApprove': 'apruebas el resultado antes de que se importe nada',
   'shelf.copyInstructions': 'Copiar las instrucciones',
   'shelf.hideThem': 'Ocultarlas',
   'shelf.readThem': 'Leerlas',
-  'shelf.saveAll': 'Guardar todas las piezas',
+  'shelf.saveAll': 'Guardar la cuadrícula',
   'shelf.tileAlt': 'Pieza fila {row}, columna {column}',
   'shelf.step3': '3 · Comprueba lo que ha leído',
   'shelf.bookCount': '{n} libro(s)',
   'shelf.cost': 'coste {amount}',
   'shelf.checkNote':
-    'Todavía no se ha importado nada. Un modelo leyendo un lomo puede equivocarse de una forma que el catálogo ya no podrá detectar después, así que este es el momento de mirar. Lo marcado como dudoso merece un contraste con las piezas de arriba.',
+    'Todavía no se ha importado nada. Un modelo leyendo un lomo puede equivocarse de una forma que el catálogo ya no podrá detectar después, así que este es el momento de mirar. Lo marcado como dudoso merece un contraste con las fotos de arriba.',
   'shelf.unplaced': 'sin ubicar',
   'shelf.importThese': 'Importar estos {n} libros',
   'shelf.discard': 'Descartar',
   'shelf.stepBring': '{n} · Trae tú la transcripción',
   'shelf.bringNote':
-    'La vía que no necesita clave: lee las piezas en cualquier sesión de IA con las instrucciones de arriba y suelta aquí el JSON. La importación rechaza un archivo con un libro sin título o con un valor de confianza desconocido: una mala lectura debe pararse aquí y no aparecer luego en tu catálogo.',
+    'Aquí no necesitas claves: añade las fotos junto con las instrucciones de arriba en cualquier sesión de IA, y trae aquí el resultado (.JSON). La importación rechaza un archivo con un libro sin título o con un valor de confianza desconocido.',
   'shelf.dropTranscription': 'Suelta aquí la transcripción',
   'shelf.dropTranscriptionHint': 'el archivo JSON que escribió el modelo',
   'shelf.result': '{n} libros leídos de la foto.',
@@ -355,14 +353,14 @@ export default {
   // -- el escritorio --------------------------------------------------------
   'desk.nothingYet': 'Aún no hay con qué trabajar: construye primero un catálogo.',
   'desk.intro':
-    'Donde el catálogo deja de ser una lista y empieza a ser un argumento. Todo lo de la izquierda se calcula aquí mismo. La derecha prepara una pregunta para un modelo: tu estantería es lo que hace que la respuesta sea tuya y no genérica.',
+    'Donde tu catálogo deja de ser simplemente una lista y empieza a ser un recurso. A la derecha se prepara una pregunta para un modelo de IA: tu catálogo es lo que hace que la respuesta sea tuya y no genérica.',
   'desk.neverOpened': 'Comprados y nunca abiertos',
   'desk.waitingAtLeast': 'esperando al menos',
   'desk.year': '{n} año',
   'desk.years': '{n} años',
   'desk.yearsShort': '{n} años',
   'desk.neverOpenedNote':
-    'Ordenados por lo que llevan esperando, ponderado por las ganas que tenías de ellos entonces. Solo aparecen los libros de los que consta que no has leído: {unknown} libros no tienen ninguna constancia de lectura, y suponerla enterraría esta lista bajo libros que ya terminaste.',
+    'Ordenados por lo que llevan esperando, ponderado por las ganas que tenías de ellos entonces. Solo aparecen los libros de los que consta que no has leído: {unknown} libros no tienen ninguna constancia de lectura.',
   'desk.nothingWaited': 'Nada lleva esperando tanto tiempo.',
   'desk.showFive': 'Ver solo los cinco primeros',
   'desk.showAll': 'Ver los {n}',
@@ -396,7 +394,7 @@ export default {
   'desk.profile': 'Tu perfil de lectura',
   'desk.characters': '{n} caracteres',
   'desk.profileNote':
-    'A propósito no es el catálogo entero: unos cientos de títulos ahogan la pregunta. Esto es la forma de la colección y cómo se ha movido, con suficientes libros con nombre como para argumentar.',
+    'No usa tu catálogo entero a propósito: cientos de títulos ahogarían la pregunta. Esto es la forma de la colección y cómo se ha movido, con suficientes libros con nombre como para argumentar.',
 
   // -- escribir un libro, corregir otro -------------------------------------
   'editor.add': 'Añadir un libro',
@@ -411,7 +409,7 @@ export default {
   'editor.volume': 'Volumen',
   'editor.readHint': 'en blanco significa que nadie lo anotó',
   'editor.where': 'Dónde está',
-  'editor.whereHint': 'una balda, una habitación, una caja en el trastero',
+  'editor.whereHint': 'un estante, una habitación, una caja',
   'editor.notes': 'Notas',
   'editor.saveCorrection': 'Guardar la corrección',
   'editor.addBook': 'Añadir el libro',
@@ -487,7 +485,7 @@ export default {
   'about.github': 'Su GitHub',
   'about.repo': 'Este proyecto en GitHub',
   'about.noWarranty':
-    'Esto es un proyecto personal que se regala. No lleva garantía ni promesa de soporte, y puede cambiar o dejar de actualizarse. Guarda una exportación de todo lo que te importaría perder.',
+    'Esto es un proyecto personal que se ofrece de manera gratuita. No lleva garantía ni promesa de soporte, y puede cambiar o dejar de actualizarse. Guarda una exportación de todo lo que te importaría perder.',
 
   'about.privacy': 'Privacidad',
   'about.privacyBody':

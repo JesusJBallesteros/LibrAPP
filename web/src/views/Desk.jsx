@@ -21,7 +21,7 @@ const ASKS = [
 ]
 
 export default function Desk({ catalog }) {
-  const { t } = useT()
+  const { t, language } = useT()
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
   const [copied, setCopied] = useState(null)
@@ -144,7 +144,14 @@ export default function Desk({ catalog }) {
                     <span className="tiny muted">{byline(row.book, authors)}</span>
                     {intentWhy(row) && <div className="why">{intentWhy(row)}</div>}
                   </span>
-                  <span className="waited">{t('desk.yearsShort', { n: row.age.toFixed(1) })}</span>
+                  <span className="waited">
+                    {t('desk.yearsShort', {
+                      n: row.age.toLocaleString(language, {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1,
+                      }),
+                    })}
+                  </span>
                 </div>
               ))
             )}
