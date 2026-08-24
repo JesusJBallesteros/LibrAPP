@@ -88,7 +88,7 @@ export default {
     'Nada que elegir ni configurar, pero los archivos no son visibles para otras aplicaciones: exportar es la forma de sacar una copia de este dispositivo.',
   'setup.browser.action': 'Usar el almacenamiento del navegador',
   'setup.noPicker':
-    'Este navegador no tiene selector de carpetas, lo cual es normal en un móvil. El almacenamiento del navegador funciona igual desde dentro de la aplicación.',
+    'Este navegador no puede seleccionar carpetas, es normal en un móvil. El almacenamiento del navegador funciona igual desde dentro de la aplicación.',
   'setup.either': 'Puedes cambiarlo más adelante, y mover un catálogo de uno a otro.',
 
   'permit.title': 'Vuelve a abrir tu catálogo',
@@ -265,7 +265,7 @@ export default {
   'cap.unzip.fix':
     'Las importaciones de CSV, XML y PDF siguen funcionando. Necesita Firefox 113 o Safari 16.4 y posteriores.',
   'cap.canvas.label': 'Lienzo fuera de pantalla',
-  'cap.canvas.needed': 'cortar una foto en piezas legibles',
+  'cap.canvas.needed': 'dividir una foto en recortes legibles',
   'cap.canvas.fix': 'Sin esto, importa tus libros desde una lista en vez de desde una foto.',
   'cap.bitmap.label': 'Decodificación de imágenes',
   'cap.bitmap.needed': 'abrir la foto que elijas',
@@ -307,12 +307,12 @@ export default {
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Haz o elige una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
-  'shelf.cutting': 'Creando cuadrícula…',
+  'shelf.cutting': 'Recortando las fotos…',
   'shelf.step2': '2 · Leer los lomos',
-  'shelf.tileCount': '{n} pieza(s)',
+  'shelf.tileCount': '{n} foto(s)',
   'shelf.tilesNote':
-    'La cuadrícula se corta a resolución nativa y se solapa, de modo que un libro que cae en una junta aparece entero en alguna de ellas. Pásaselas a un modelo junto con las instrucciones de abajo y pídele que escriba la transcripción.',
-  'shelf.grid': 'Rejilla · {cols} de ancho × {rows} de alto',
+    'Las fotos se recortan a resolución nativa y se solapan, de modo que un libro que cae en una junta aparece entero en alguna de ellas. Pásaselas a un modelo junto con las instrucciones de abajo y pídele que escriba la transcripción.',
+  'shelf.grid': 'Cuadrícula · {cols} × {rows}',
   'shelf.lessAcross': '- columnas',
   'shelf.moreAcross': '+ columnas',
   'shelf.lessDown': '- filas',
@@ -330,8 +330,8 @@ export default {
   'shelf.copyInstructions': 'Copiar las instrucciones',
   'shelf.hideThem': 'Ocultarlas',
   'shelf.readThem': 'Leerlas',
-  'shelf.saveAll': 'Guardar la cuadrícula',
-  'shelf.tileAlt': 'Pieza fila {row}, columna {column}',
+  'shelf.saveAll': 'Guardar todas las fotos',
+  'shelf.tileAlt': 'Foto fila {row}, columna {column}',
   'shelf.step3': '3 · Comprueba lo que ha leído',
   'shelf.bookCount': '{n} libro(s)',
   'shelf.cost': 'coste {amount}',
@@ -495,7 +495,7 @@ export default {
   'about.privacy.device':
     'Tu catálogo se escribe en este dispositivo: una carpeta que elijas o el almacenamiento que el navegador guarda para esta app. Nunca se sube a ninguna parte.',
   'about.privacy.key':
-    'Si das una clave de IA, se queda en este navegador y solo se envía al servicio que hayas elegido. Nunca se escribe en tu catálogo ni se incluye en una exportación. Las fotos se cortan en piezas aquí mismo; solo salen las piezas, y solo cuando tú lo pides.',
+    'Si das una clave de IA, se queda en este navegador y solo se envía al servicio que hayas elegido. Nunca se escribe en tu catálogo ni se incluye en una exportación. Las fotos se recortan en este mismo dispositivo; solo salen los recortes, y solo cuando tú lo pides.',
   'about.privacy.cookies':
     'Sin cookies, sin analítica, sin rastreadores, sin peticiones a terceros. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
   'about.privacy.offline':
@@ -558,9 +558,10 @@ export default {
   'shelf.keepTile': 'Recuperar',
   'shelf.droppedTag': 'descartada',
   'shelf.discardHint':
-    'Descarta cualquier pieza que no tenga ning\u00fan lomo legible: una pared, una l\u00e1mpara, el borde de una alfombra. Las piezas descartadas no se env\u00edan ni se pagan.',
-  'shelf.tileCountKept': '{kept} de {total} piezas',
-  'shelf.noneKept': 'Est\u00e1n descartadas todas las piezas, as\u00ed que no hay nada que leer. Deja al menos una.',
+    'Descarta cualquier foto que no tenga ningún lomo legible: una pared, una lámpara, el borde de una alfombra. Las fotos descartadas no se envían ni se pagan.',
+  'shelf.tileCountKept': '{kept} de {total} fotos',
+  'shelf.noneKept':
+    'Están descartadas todas las fotos, así que no hay nada que leer. Deja al menos una.',
   'shelf.stop': 'Detener',
   'shelf.stopped': 'Detenido antes de que llegara una respuesta.',
   'shelf.timedOut':
