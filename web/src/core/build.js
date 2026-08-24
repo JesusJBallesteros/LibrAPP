@@ -1,16 +1,16 @@
-// Port of tools/librapp/build_catalog.py — merge any number of sources into one
+// Port of tools/librapp/build_catalog.py. Merges any number of sources into one
 // catalog.
 //
 // Records describing the same book are clustered across sources and become one
 // entry owning every format it was found in. Where sources disagree, the more
-// reliable one wins on matters of fact — a store export knows the acquisition
-// date, a photograph cannot — while judgements like genre are taken from
-// whoever troubled to make one.
+// reliable source wins on matters of fact: a store export knows the acquisition
+// date and a photograph cannot. Judgements such as genre are taken from
+// whichever source recorded one.
 //
-// Ordering is deliberate everywhere it appears. The Python original sorts by
-// code point and relies on stable sorts and on `max` returning the first of
-// equals; this does the same, so the two implementations produce byte-identical
-// catalogs and can be diffed against each other.
+// Ordering is fixed everywhere it appears. The Python original sorts by code
+// point and relies on stable sorts and on `max` returning the first of equals.
+// This does the same, so both implementations produce byte-identical catalogs
+// and can be diffed against each other.
 
 import { byCodePoint, rank } from './records.js'
 import {
@@ -29,9 +29,8 @@ import {
   tokenKey,
 } from './textmatch.js'
 
-// A title that stands in for a book nobody could identify — what an earlier,
-// worse photograph leaves behind. Worth keeping so the gap stays visible, but
-// never worth trusting.
+// A title standing in for a book nobody could identify, left behind by an
+// earlier and worse photograph. Kept so the gap stays visible, never trusted.
 const PLACEHOLDER = /^\s*\[.*\]\s*$|not legible|partly legible|illegible/iu
 
 const sortedUnique = (values) => [...new Set(values)].sort(byCodePoint)
@@ -78,8 +77,8 @@ class AuthorIndex {
       }
       this.byTokens.set(key, entry)
     }
-    // 'Pratchett, Terry' beside 'Terry Pratchett' is one spelling written two
-    // ways, not an alias. Only different wording is recorded.
+    // 'Pratchett, Terry' and 'Terry Pratchett' are one spelling in two orders,
+    // so only genuinely different wording is recorded as an alias.
     if (display !== entry.display_name && !entry.aliases.includes(display)) {
       entry.aliases.push(display)
     }
@@ -109,12 +108,11 @@ class AuthorIndex {
    * Fold together spellings of one author that the sources disagree on.
    *
    * A name whose tokens are a less complete spelling of exactly one other
-   * author is the same person: 'Plato' for 'Platon', 'Lovecraft, H. P.' whose
-   * initials are dropped, against 'Howard Phillips Lovecraft'.
+   * author is the same person: 'Plato' for 'Platon', or 'Lovecraft, H. P.'
+   * against 'Howard Phillips Lovecraft'.
    *
-   * Ambiguity is never resolved by guessing: a name matching two or more
-   * candidates is left alone, because 'Shelley' beside both Mary and Percy is a
-   * real question rather than a merge.
+   * A name matching two or more candidates is left alone. 'Shelley' can be
+   * Mary or Percy, and merging would pick one at random.
    */
   mergeVariants() {
     const entries = [...this.byTokens.values()]
@@ -197,16 +195,16 @@ class Cluster {
   /**
    * How well a record fits this cluster, 0 if it cannot.
    *
-   * Authors must agree before titles are compared at all: a title score alone
-   * would happily merge two different books in the same series.
+   * Authors must agree before titles are compared. A title score on its own
+   * merges two different books in the same series.
    */
   score(record) {
     if (this.sources().has(record._source)) return 0.0 // one source's rows are distinct books
     const candidateKeys = new Set()
     for (const name of record.authors) for (const k of indexKeys(name)) candidateKeys.add(k)
 
-    // Neither side naming an author is not agreement, so the title has to carry
-    // the match by itself and is held to a far higher standard.
+    // Neither side naming an author is not agreement. The title has to carry
+    // the match alone, and is held to a higher standard.
     const uncredited = candidateKeys.size === 0 || this.keys.size === 0
     if (!uncredited) {
       let shares = false
@@ -222,7 +220,7 @@ class Cluster {
 
 /**
  * Group every record across every source into one cluster per book.
- * Sources are visited most-reliable first, so a cluster is founded on the best
+ * Sources are visited most-reliable first, so a cluster starts from the best
  * evidence available and weaker sources attach to it.
  */
 function clusterRecords(sources) {
@@ -258,8 +256,8 @@ function clusterRecords(sources) {
 /**
  * What collapsed rows can tell the volumes they stand for, keyed by author.
  *
- * An author may have more than one — Pratchett has Discworld and the Long Earth
- * — so each keeps its own entry and the volume chooses between them.
+ * An author may have more than one. Pratchett has Discworld and the Long
+ * Earth, so each keeps its own entry and the volume chooses between them.
  */
 function collapsedIndex(collapsed) {
   const out = new Map()
@@ -289,9 +287,9 @@ function collapsedIndex(collapsed) {
 /**
  * Which of an author's collapsed rows, if any, stands for this book.
  *
- * A row that names the book wins. Where none does, a lone row is still worth
- * inheriting a genre from — one series, one judgement — but several rows are
- * not, because picking between them would be a guess.
+ * A row that names the book wins. Where none does, a lone row still supplies a
+ * genre, since one series carries one judgement. Several rows do not, because
+ * picking between them would be a guess.
  */
 function inheritedFrom(candidates, title) {
   if (!candidates || !candidates.length) return null
@@ -310,8 +308,8 @@ function inheritedFrom(candidates, title) {
  * The fullest title anyone recorded.
  *
  * A clipped title is a prefix of the true one, so a longer unclipped title from
- * any source repairs it — which is how a spreadsheet fixes what a store page
- * cut off mid-word.
+ * any source repairs it. A spreadsheet can therefore fix what a store page cut
+ * off mid-word.
  */
 function pickTitle(cluster) {
   const whole = cluster.records.filter((r) => !r.title_clipped)
@@ -322,8 +320,8 @@ function pickTitle(cluster) {
 /**
  * Freeform genre and keyword strings as typed tags.
  *
- * The vocabulary is not controlled — sources mix levels of abstraction badly —
- * so the kind is recorded and normalisation left to a later pass that can see
+ * The vocabulary is not controlled and sources mix levels of abstraction, so
+ * the kind is recorded and normalisation is left to a later pass that can see
  * the whole distribution.
  */
 export function splitTags(genre, keywords) {
@@ -451,10 +449,10 @@ export function build(sources) {
 
   const books = clusters.map((c) => buildEntry(c, collapsed, authors, ids))
 
-  // A collapsed row whose volumes no source lists individually would vanish
-  // otherwise, which is how a list-only build silently loses a whole series.
-  // A row counts as expanded only when the catalog holds a book the row
-  // actually names — merely sharing an author is not enough.
+  // A collapsed row whose volumes no source lists individually would otherwise
+  // vanish, and a list-only build would lose a whole series without saying so.
+  // A row counts as expanded only when the catalog holds a book the row names.
+  // Sharing an author is not enough.
   const byAuthor = new Map()
   for (const book of books) {
     for (const aid of book.authors) {
@@ -475,8 +473,8 @@ export function build(sources) {
       const words = titleHead(b.title).split(' ').filter(Boolean)
       return words.length >= 2 && listed.includes(words.slice(0, 4).join(' '))
     })
-    // A row that names no volumes at all — a placeholder for spines nobody
-    // could read — is answered by any book from that author appearing.
+    // A row naming no volumes at all is a placeholder for spines nobody could
+    // read, and any book from that author appearing answers it.
     if (!expanded && siblings.length && PLACEHOLDER.test(record.title)) expanded = true
     if (expanded) continue
 

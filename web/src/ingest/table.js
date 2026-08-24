@@ -1,4 +1,4 @@
-// Port of tools/librapp/parse_table.py — read a list of books from a
+// Port of tools/librapp/parse_table.py. Reads a list of books from a
 // spreadsheet, CSV or XML file.
 //
 // This is the path for a catalog kept by hand, in whatever shape it was kept.
@@ -6,8 +6,8 @@
 // a sheet headed `Autor / Título / Género` works as well as
 // `author / title / genre`.
 //
-// Rows standing for several volumes at once — a whole series squeezed into one
-// cell — are marked `collapsed` rather than silently treated as one book.
+// A row standing for several volumes at once, such as a whole series in one
+// cell, is marked `collapsed` rather than treated as a single book.
 
 import { clean, creditsAndLabel, stripAccents } from '../core/textmatch.js'
 import { findAll, parseXml, textOf } from './xml.js'
@@ -32,8 +32,8 @@ export const COLUMNS = {
 const TRUE_WORDS = new Set(['y', 'yes', 'true', '1', 'x', 'si', 'sí', 'leido', 'leído', 'read', 'ja', 'gelesen'])
 const FALSE_WORDS = new Set(['n', 'no', 'false', '0', '', 'unread', 'pendiente', 'nein', 'ungelesen'])
 
-// What a format or provenance cell may say. A row can name more than one, which
-// is how a hand-kept list records a book owned both on paper and on a device.
+// What a format or provenance cell may say. A row can name more than one, so a
+// hand-kept list can record a book owned both on paper and on a device.
 const FORMAT_WORDS = {
   ebook: 'ebook', 'e book': 'ebook', ebooks: 'ebook', kindle: 'ebook',
   digital: 'ebook', epub: 'ebook', mobi: 'ebook',
@@ -74,8 +74,8 @@ export function parseDate(value) {
 
 /**
  * Which formats a cell names, if any. Handles a provenance column as well as a
- * format one: a list recording where a book came from ('shelf', 'kindle',
- * 'shelf,kindle') is saying what it owns and in what form.
+ * format one, since a list recording where a book came from ('shelf', 'kindle',
+ * 'shelf,kindle') is also recording the form it is owned in.
  */
 export function parseFormats(value) {
   const found = []
@@ -195,8 +195,8 @@ export async function readXlsx(bytes, sheet) {
 /**
  * Read a nested XML catalog, using child element names as columns.
  *
- * A file may hold more than one list — books owned beside books merely wanted —
- * so each row remembers the named group it came from, and the caller decides
+ * A file may hold more than one list, such as books owned beside books wanted,
+ * so each row remembers the named group it came from and the caller decides
  * which groups to keep.
  */
 export function readXml(text) {

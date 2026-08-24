@@ -1,9 +1,8 @@
 // A very small key-value store on IndexedDB.
 //
-// Needed for one thing: remembering the folder you chose, so the app opens your
-// library again next time instead of asking. A directory handle survives being
-// put in IndexedDB and nowhere else — it cannot be stringified — which is why
-// this exists rather than localStorage.
+// Needed for one thing: remembering the chosen folder, so the app reopens the
+// same library next time instead of asking. A directory handle cannot be
+// stringified and survives only in IndexedDB, which rules out localStorage.
 
 const DB_NAME = 'librapp'
 const STORE = 'kv'

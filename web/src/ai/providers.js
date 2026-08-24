@@ -1,35 +1,30 @@
 // Which AI service the app talks to, and how.
 //
-// LibrAPP started against Anthropic because that is what the author had a key
-// for, and for a while the two were wired together. They are not the same
-// thing: "read these spines" and "answer this about my catalog" are ordinary
-// requests that several services can serve, and the person paying for one
-// should not have to buy another.
-//
-// So there is a small registry here. Every provider offers the same two jobs
-// and returns the same two shapes; everything above this file -- the shelf
-// reader, the desk, the key box -- asks for a job and never asks who did it.
+// LibrAPP was wired directly to Anthropic at first. Reading spines and
+// answering a question about a catalog are ordinary requests that several
+// services can serve, so the wiring is now a registry. Every provider offers
+// the same two jobs and returns the same two shapes, and everything above this
+// file asks for a job without naming a service.
 //
 // Three families cover the field:
 //
-//   anthropic  the official SDK, kept because its structured-output path is
-//              already proven here and its errors are worth translating well
-//   openai     the /chat/completions shape, which OpenAI, OpenRouter, Groq,
-//              Mistral, DeepSeek, xAI, LM Studio and llama.cpp all speak --
-//              one adapter, several base URLs, plus a free slot for any
-//              address you like
-//   google     Gemini, which is close enough to be worth its own adapter and
-//              different enough to need one
+//   anthropic  the official SDK, kept for its structured-output path and its
+//              typed errors
+//   openai     the /chat/completions shape, spoken by OpenAI, OpenRouter, Groq,
+//              Mistral, DeepSeek, xAI, LM Studio and llama.cpp. One adapter,
+//              several base URLs, and a free slot for any other address
+//   google     Gemini, close enough to share the shape and different enough to
+//              need its own adapter
 //
 // A browser can only reach a service that allows cross-origin requests. The
-// hosted ones here do. A server on your own machine usually has to be told to,
-// and the error says so when it happens.
+// hosted ones here do. A local server usually has to be configured to, and the
+// error says so when it happens.
 
 /**
  * What a transcription must look like, in plain JSON Schema.
  *
  * The Anthropic path builds this from zod; the others need the schema itself.
- * One definition, so a change cannot land on one provider and not the rest.
+ * One definition, so a change cannot reach one provider and miss the others.
  */
 export const TRANSCRIPTION_SCHEMA = {
   type: 'object',
@@ -100,18 +95,16 @@ export function toGeminiSchema(node) {
 /**
  * The services LibrAPP knows how to reach.
  *
- * `keyPattern` is a hint, never a gate. It exists to catch a paste that went
- * obviously wrong before a request is spent, and the interface lets a person
- * overrule it — because a service can change its key format overnight, as
- * Google did when Gemini moved from AIza to AQ. keys, and a pattern that has
- * gone stale must never be the reason someone cannot use a key that works.
- * Being wrong the other way costs one refused request, which says so plainly.
+ * `keyPattern` is a hint and not a gate, and the key box lets it be overruled.
+ * A service can change its key format overnight, as Google did when Gemini
+ * moved from AIza to AQ. keys, and a stale pattern must not stop a working key
+ * from being used. A pattern that is too loose costs one refused request, which
+ * explains itself.
  *
- * `models` are suggestions, not a fence -- every provider lets you type a model
- * name it does not list, because the list here goes stale and your account does
- * not. `prices` is filled in only where it has been checked; where it is absent
- * the estimate shows tokens and tells you to look up your own rate, rather than
- * inventing a number and putting a dollar sign in front of it.
+ * `models` are suggestions. Every provider accepts a model name it does not
+ * list, because this list goes stale and an account does not. `prices` is
+ * filled in only where the rate has been checked. Where it is absent the
+ * estimate shows tokens instead of a figure.
  */
 export const PROVIDERS = [
   {
@@ -190,7 +183,7 @@ export const PROVIDERS = [
 
 export const providerById = (id) => PROVIDERS.find((p) => p.id === id) || PROVIDERS[0]
 
-/** The published rate for a model, if it has been checked. Absent means: do not guess. */
+/** The published rate for a model where it has been checked, otherwise null. */
 export function pricesFor(providerId, modelId) {
   const model = providerById(providerId).models.find((m) => m.id === modelId)
   return model?.prices || null

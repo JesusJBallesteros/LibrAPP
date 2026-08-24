@@ -80,9 +80,9 @@ export class Library {
    * which is what `addManualRecord` relies on. Anything ingesting a file the
    * person chose should ask `nameFor` first.
    *
-   * Ingested files are kept exactly as their ingester produced them: a source
-   * is evidence, and evidence that gets edited stops being evidence. Anything
-   * you want to change about a book belongs in the override layer instead.
+   * Ingested files are kept exactly as their ingester produced them. A source
+   * is evidence, and edited evidence is no longer evidence, so any change to a
+   * book belongs in the override layer.
    */
   async putSource({ name, kind, origin, format, confidence, records, stats }) {
     const payload = makeSource({ name, kind, origin, format, confidence, records, stats })
@@ -165,9 +165,9 @@ export class Library {
     // Ordered by name, so a rebuild is reproducible: source order decides which
     // record supplies a book's credit when two are equally reliable.
     sources.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0))
-    // Built first, corrected second. The merge never sees the corrections, so
-    // a correction cannot quietly change how two sources are reconciled — it
-    // only changes what the finished entry says.
+    // Built first, corrected second. The merge never sees the corrections, so a
+    // correction cannot change how two sources are reconciled. It changes only
+    // what the finished entry says.
     const catalog = applyOverrides(build(sources), await this.readOverrides())
     await this.backend.writeText(CATALOG, JSON.stringify(catalog, null, 2))
     return catalog

@@ -1,10 +1,9 @@
 // Which build this is, and how to get a newer one.
 //
-// A service worker is what lets LibrAPP open with no network, and the price is
-// that the copy running in front of you can be older than the one published.
-// It usually replaces itself quietly on the next visit. When it does not, the
-// person needs a way to say so that does not involve explaining browser caches
-// to them.
+// A service worker is what lets LibrAPP open with no network. The cost is that
+// the running copy can be older than the published one. It usually replaces
+// itself on the next visit, and when it does not, there has to be a way to
+// force it that does not involve explaining browser caches.
 
 /** Stamped in at build time by vite.config.js. */
 export const VERSION = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : '0.0.0'
@@ -17,9 +16,9 @@ export const buildLabel = () => (COMMIT === 'unknown' ? VERSION : `${VERSION} ·
 /**
  * Throw away the cached copy of the app and load a fresh one.
  *
- * Only the app is discarded. Your library is not cached here and never was: it
- * lives in a folder you chose or in the origin's private file system, neither
- * of which this touches.
+ * Only the app is discarded. The library is not cached here and never was. It
+ * lives in a chosen folder or in the origin's private file system, neither of
+ * which this touches.
  */
 export async function reloadFresh() {
   try {

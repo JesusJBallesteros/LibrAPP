@@ -3,13 +3,12 @@
 //
 // The browser has DOMParser and Node does not, so using it would mean the
 // parity harness tested something other than what ships. This is small enough
-// to own, and being the same code in both places is worth more than the lines
-// it costs.
+// to maintain here, and it is the same code in both places.
 //
 // It handles elements, attributes, text, comments, CDATA, the five predefined
 // entities and numeric character references. It does not handle DTDs,
-// namespaces beyond keeping the prefix in the name, or entity declarations —
-// none of which appear in a spreadsheet or in a catalog anyone writes by hand.
+// namespaces beyond keeping the prefix in the name, or entity declarations,
+// none of which appear in a spreadsheet or a hand-written catalog.
 
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" }
 

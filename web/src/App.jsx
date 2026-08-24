@@ -30,8 +30,8 @@ export default function App() {
   const lib = useLibrary()
   const [view, setView] = useState('home')
   const [focus, setFocus] = useState(null)
-  // Where About was opened from, so leaving it returns you there rather than
-  // to the front page you may not have been on.
+  // Where About was opened from, so leaving it returns to that view rather
+  // than to the front page.
   const [before, setBefore] = useState('home')
   // Where to return to once storage exists. Each route asks for storage at the
   // point it needs it, rather than the app demanding it at the door.
@@ -43,8 +43,8 @@ export default function App() {
   const go = useCallback(
     (next, wanted = null) => {
       setFocus(wanted)
-      // About is a document, not a workspace: it needs no storage, and asking
-      // for storage before showing someone the licence would be absurd.
+      // About needs no storage, so it must not be routed through the storage
+      // question the way the working views are.
       if (next === 'about') {
         setBefore((current) => (view === 'about' ? current : view))
         setView('about')

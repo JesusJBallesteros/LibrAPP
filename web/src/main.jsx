@@ -13,9 +13,9 @@ createRoot(document.getElementById('root')).render(
 )
 
 // Registering the service worker is what lets the browser offer to install
-// LibrAPP, and what keeps it working with no network. It is deliberately not
-// awaited: the app must run whether or not this succeeds, and it fails on
-// plain http, which is exactly how the dev server is served.
+// LibrAPP, and what keeps it working with no network. It is not awaited: the
+// app has to run whether or not this succeeds, and it fails on plain http,
+// which is how the dev server is served.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker

@@ -1,14 +1,14 @@
 // Where a library lives, and the two ways it can live there.
 //
-// On a desktop the File System Access API lets you point LibrAPP at a real
-// folder. The files are yours: readable with a text editor, backed up by
-// whatever backs up that folder, committable to a private repository. That is
-// the honest arrangement for a catalog described as local.
+// On a desktop the File System Access API can point LibrAPP at a real folder.
+// Those files are readable with a text editor, backed up by whatever backs up
+// that folder, and committable to a private repository, which is what a catalog
+// described as local should mean.
 //
 // Android Chrome has no folder picker. It does have the origin private file
-// system, which gives the same file semantics in browser-managed storage — real
-// enough to work, but invisible outside the app, so that path leans on export
-// and import to move a library between devices.
+// system, which gives the same file semantics in browser-managed storage. Those
+// files are invisible outside the app, so that path relies on export and import
+// to move a library between devices.
 //
 // Both back ends expose the same four operations, so nothing above this file
 // knows which one it is talking to.
@@ -19,8 +19,8 @@ const HANDLE_KEY = 'library-directory'
 const KIND_KEY = 'library-kind'
 
 // Which back end was chosen last time. Without this the app asks again on every
-// launch — and on a phone, where browser storage is the only option, there is
-// nothing else to ask about.
+// launch, and on a phone, where browser storage is the only option, there is
+// nothing to ask about.
 export const rememberKind = (kind) => idbSet(KIND_KEY, kind)
 export const recallKind = () => idbGet(KIND_KEY).catch(() => null)
 

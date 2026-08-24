@@ -71,9 +71,8 @@ export default function Storage({ lib, focus }) {
   /**
    * Bring a removed book back without discarding anything else about it.
    *
-   * A book can be both edited and removed, and undoing the removal should not
-   * quietly undo the edit as well — that is a second decision the person did
-   * not make.
+   * A book can be both edited and removed. Undoing the removal must not undo
+   * the edit as well, which is a second decision nobody made.
    */
   const restore = (entry) =>
     lib.run(async (library) => {
@@ -90,8 +89,8 @@ export default function Storage({ lib, focus }) {
     *
     * The file is judged by what is in it, never by what the picker calls it.
     * Android reports a downloaded .json as application/octet-stream often
-    * enough that filtering on type hides the very file the person came to
-    * choose — so nothing is filtered, and a wrong file is explained instead.
+    * enough that filtering on type hides the file the person came to choose.
+    * Nothing is filtered, and a wrong file is explained instead.
     */
   const importBundle = (file) =>
     lib.run(async (library) => {

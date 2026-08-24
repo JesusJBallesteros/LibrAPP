@@ -24,8 +24,7 @@ const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0'
 
 // Everything that ships inside the built app, with the terms it ships under.
 // Attribution is a condition of both MIT and Apache-2.0, so this list is an
-// obligation rather than a courtesy — it is checked against package.json when
-// a dependency changes.
+// obligation. Check it against package.json when a dependency changes.
 const BUNDLED = [
   { name: 'React', licence: 'MIT', url: 'https://github.com/facebook/react' },
   { name: 'pdf.js', licence: 'Apache-2.0', url: 'https://github.com/mozilla/pdf.js' },

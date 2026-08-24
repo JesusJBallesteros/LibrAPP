@@ -91,9 +91,9 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
    * Only what actually changed.
    *
    * Recording every field would pin each one to its current value, so a better
-   * source could never improve the entry again — and a correction that says it
-   * changed eleven fields when it changed two is unreadable. An unchanged form
-   * saves nothing at all.
+   * source could never improve the entry again. A correction claiming eleven
+   * changed fields when two changed is also unreadable. An unchanged form saves
+   * nothing.
    */
   const changedOnly = (next) => {
     const current = toForm(book, authorNames)

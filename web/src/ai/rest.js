@@ -1,8 +1,8 @@
 // The two provider families that are reached with plain fetch.
 //
 // Neither needs an SDK. Both are a POST with a JSON body, and both can stream
-// their answer as server-sent events, so the code below is mostly about saying
-// the same thing twice in two dialects and handing back one shape.
+// their answer as server-sent events, so most of what follows is the same
+// request expressed twice and normalised to one shape.
 //
 // The shape everything above expects:
 //
@@ -11,8 +11,8 @@
 //   usage     -> { input_tokens, output_tokens }
 //
 // Errors are turned into sentences a person can act on. A browser cannot tell
-// "the server refused the origin" apart from "there is no server" — both arrive
-// as a bare TypeError — so that one message has to cover both.
+// "the server refused the origin" apart from "there is no server", since both
+// arrive as a bare TypeError, so one message has to cover both.
 
 import { TRANSCRIPTION_SCHEMA, toGeminiSchema } from './providers.js'
 

@@ -2,7 +2,7 @@
 // same book or the same person.
 //
 // Two differences between Python and JavaScript regular expressions matter
-// here, and both are silent if you get them wrong:
+// here, and both fail silently:
 //
 //   * Python's `\w` and `\b` are Unicode-aware. JavaScript's are ASCII-only, so
 //     /\bclasica\b/ behaves one way and /\bclásica\b/ another. Every word
@@ -45,9 +45,9 @@ const EDITORIAL =
 // 'Straße' and 'STRASSE' stop being the same word, and a Greek title ending in
 // a final sigma stops matching the same title written with a medial one.
 //
-// Only the cases that can plausibly appear in a book catalogue are listed —
-// German, Greek, and the Latin ligatures. The ligatures matter even though
-// NFKC resolves them, because slugify() folds without normalising first.
+// Only the cases that can appear in a book catalogue are listed: German, Greek
+// and the Latin ligatures. The ligatures are needed even though NFKC resolves
+// them, because slugify() folds without normalising first.
 const CASEFOLD_SPECIALS = new Map([
   ['ß', 'ss'], // ß
   ['ẞ', 'ss'], // ẞ
@@ -130,8 +130,8 @@ export function splitCredits(name) {
 /**
  * Keys a name is filed under when looking for candidate matches. Includes a
  * five-character prefix of every token, so spellings differing only in their
- * tail — 'Platon' against 'Plato' — still meet. Loose indexing is safe: it only
- * proposes candidates, and the title comparison decides.
+ * tail still meet: 'Platon' against 'Plato'. Loose indexing is safe here
+ * because it only proposes candidates, and the title comparison decides.
  */
 export function indexKeys(name) {
   const keys = new Set()
@@ -156,9 +156,9 @@ export const similar = ratio
 /**
  * How strongly two titles denote the same book.
  *
- * Containment matters more than edit distance: one source routinely holds a
- * longer form of the other — a subtitle, an edition line, a series note — which
- * wrecks a plain ratio while being near-proof of identity.
+ * Containment counts for more than edit distance. One source routinely holds a
+ * longer form of the other, such as a subtitle, an edition line or a series
+ * note, which wrecks a plain ratio while being strong evidence of identity.
  */
 export function titleScore(a, b) {
   if (!a || !b) return 0.0
@@ -208,7 +208,7 @@ export function detectSeries(title) {
  *
  * Hand-kept lists put more than a name in that column: a stand-in for an
  * anonymous work, the editors of an edition, a real name behind a pen name.
- * Left alone these become authors called '[Varios] (eds. Meyer' — which then
+ * Left alone these become authors called '[Varios] (eds. Meyer', which then
  * merge with real people and corrupt the author list.
  *
  * Returns [people, label].
@@ -226,8 +226,8 @@ export function creditsAndLabel(field) {
 
   const people = []
   for (const editorial of text.matchAll(EDITORIAL)) {
-    // Inside an editorial credit a comma separates people, not surname from
-    // forename, so it is safe to split on here and nowhere else.
+    // Inside an editorial credit a comma separates people rather than surname
+    // from forename, so splitting on it is safe here and nowhere else.
     for (const p of editorial.groups.who.split(/,|\s+&\s+|;/u)) {
       if (p.trim()) people.push(p.trim())
     }

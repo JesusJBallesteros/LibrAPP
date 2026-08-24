@@ -117,8 +117,8 @@ describe('XML', () => {
   })
 
   it('imports only the section asked for', () => {
-    // Importing a wishlist as your library is the mistake worth one extra
-    // question, and the reason sections are surfaced at all.
+    // Importing a wishlist as a library is the mistake sections exist to
+    // prevent.
     const mine = rowsToRecords(readXml(XML), 'Library')
     expect(mine.map((r) => r.title)).toEqual(['Dune'])
   })

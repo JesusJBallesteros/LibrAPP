@@ -1,10 +1,10 @@
-// Port of tools/librapp/records.py — the contract between ingesting a source
-// and building the catalog.
+// Port of tools/librapp/records.py. The contract between ingesting a source and
+// building the catalog.
 //
-// Every ingester produces this shape and the builder reads nothing else, which
-// is what lets a catalog be built from a photograph alone, a list alone, or any
+// Every ingester produces this shape and the builder reads nothing else, so a
+// catalog can be built from a photograph alone, a list alone, or any
 // combination. In the browser there are no file paths, so `read` takes an
-// already-parsed object; everything else is the same.
+// already-parsed object. Everything else is the same.
 
 import { clean } from './textmatch.js'
 
@@ -119,9 +119,9 @@ export function readSource(payload, label = 'source') {
   const records = (payload.records || []).map((raw) => {
     const r = normalise(raw)
     if (!r.formats.length) r.formats = [meta.format]
-    // A record may lower its own confidence — one illegible spine among many
-    // clear ones — but never raise it above its source. However cleanly a model
-    // read a photograph, it is still reading a photograph.
+    // A record may lower its own confidence, as one illegible spine among many
+    // clear ones does, but never raise it above its source. However cleanly a
+    // model read a photograph, it was still reading a photograph.
     const own = r.confidence || meta.confidence
     r.confidence = rank(own) <= rank(meta.confidence) ? own : meta.confidence
     r._source = meta.name

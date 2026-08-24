@@ -1,7 +1,7 @@
-// Port of tools/librapp/parse_kindle.py — read an Amazon 'Manage Your Content
+// Port of tools/librapp/parse_kindle.py. Reads an Amazon 'Manage Your Content
 // and Devices' print-to-PDF.
 //
-// The page renders one block per item:
+// The page renders one block per item, where 'Your Content' is the list:
 //
 //     <title, possibly wrapped over several lines, possibly UI-truncated>
 //     <author[, author][, publisher]>
@@ -22,8 +22,8 @@
 //     'Ale'). The document is therefore flattened into one continuous line
 //     stream first.
 //   * Titles are clipped by the web UI to a fixed pixel width, mid-word and
-//     with no ellipsis. Nothing here can recover them; they are flagged for the
-//     merge, which repairs them from any source that has them whole.
+//     with no ellipsis. Nothing here can recover them, so they are flagged for
+//     the merge, which repairs them from any source holding them whole.
 //
 // Blocks are delimited by the 'More actions' line closing every record. Within
 // a block, 'Acquired on' is the anchor: the only line guaranteed present and
@@ -56,7 +56,7 @@ const PUA_RE = /[-]/gu
 const WORD_RE = /\p{L}{3,}/u
 
 // Where the page stops drawing a title. Text reaching this edge was cut off by
-// the browser rather than ending there — see the note on `lineStream`.
+// the browser rather than ending there. See the note on `lineStream`.
 const CLIP_EDGE = 411
 
 // …except that a title can also happen to fill the box exactly. A cut lands

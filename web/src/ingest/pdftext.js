@@ -3,8 +3,8 @@
 // The parser downstream depends on line *order*: a record's title sits above
 // its author, which sits above its 'Acquired on' line, and records split across
 // a page break are stitched back together by reading the document as one
-// stream. PyMuPDF gave that order for free, and pdf.js turns out to agree —
-// but it does not agree about where a line *ends*.
+// stream. PyMuPDF gave that order for free and pdf.js agrees, but the two
+// disagree about where a line ends.
 //
 // pdf.js marks end-of-line on the text item that closes a run in the content
 // stream, and the page puts a book's title and the buttons beside it in the
@@ -21,9 +21,9 @@
 const BASELINE_TOLERANCE = 1.5
 
 // Items on one baseline are joined only while they nearly touch. pdf.js splits
-// a word wherever the font changes — a ligature comes through as its own item,
-// so 'La sociedad de la descon' 'fi' 'anza' is three of them, at a gap of zero
-// — while separate controls on the same row sit six points apart or more.
+// a word wherever the font changes. A ligature arrives as its own item, so
+// 'La sociedad de la descon' 'fi' 'anza' is three of them at a gap of zero,
+// while separate controls on the same row sit six points apart or more.
 // Measured on this document the two populations do not overlap: joins happen at
 // 0 to 2.33 points, and the nearest thing that must not join is 6.
 const JOIN_GAP = 4

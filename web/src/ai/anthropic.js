@@ -1,16 +1,14 @@
 // Anthropic, through the official SDK.
 //
 // The other providers are reached with plain fetch, and this one could be too.
-// It keeps the SDK because two things here are worth having: `messages.parse`
-// with a zod schema, which is the sturdiest of the structured-output paths, and
-// typed errors, which turn a status code into a sentence naming what to do.
+// It keeps the SDK for two things: `messages.parse` with a zod schema, and
+// typed errors that carry enough detail to translate into a useful message.
 //
-// The SDK refuses to run in a browser unless you say `dangerouslyAllowBrowser`,
-// and the name is fair: a key held in a browser is readable by anything running
-// on this origin. LibrAPP accepts that trade knowingly and narrowly — the key is
-// optional, it is yours, it stays on your device, and the app works without it.
-// A workspace-scoped key with a spend limit bounds the worst case to a small
-// bill rather than an open tap.
+// The SDK requires `dangerouslyAllowBrowser` to run in a browser. The name is
+// accurate: a key held in a browser is readable by anything running on this
+// origin. The trade is bounded here because the key is optional, stored only on
+// the user's device, and every feature that uses it has a keyless path. A
+// workspace-scoped key with a spend limit caps the worst case.
 
 import Anthropic from '@anthropic-ai/sdk'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
@@ -36,7 +34,7 @@ const Transcription = z.object({
   shelves: z.array(Shelf),
 })
 
-/** Turn an SDK error into something worth showing a person. */
+/** Turn an SDK error into a message a person can act on. */
 function explain(error) {
   if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return error
   if (error instanceof Anthropic.AuthenticationError) {
@@ -64,8 +62,7 @@ function explain(error) {
 const clientFor = (apiKey) =>
   new Anthropic({
     apiKey,
-    // See the note at the top of this file. The key is the user's own, stored
-    // on their device, and every feature that uses it has a keyless path.
+    // See the note at the top of this file.
     dangerouslyAllowBrowser: true,
   })
 

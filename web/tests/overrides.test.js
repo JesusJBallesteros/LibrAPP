@@ -1,8 +1,8 @@
-// Corrections are the one place a person overrules the sources, and the one
-// place where being wrong is unrecoverable if it is not auditable. Removing a
-// book cannot delete it — the next rebuild reads the same sources and would put
-// it back — so removal is a tombstone, and a tombstone that stops working looks
-// exactly like a book returning from the dead.
+// Corrections are where a person overrules the sources, and a wrong correction
+// is unrecoverable unless it can be audited. Removing a book cannot delete it,
+// because the next rebuild reads the same sources and puts it back, so removal
+// is a tombstone. A tombstone that stops working looks like a book reappearing
+// on its own.
 
 import { describe, expect, it } from 'vitest'
 import { makeSource, readSource } from '../src/core/records.js'

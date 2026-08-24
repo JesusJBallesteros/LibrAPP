@@ -2,8 +2,8 @@
 // does them.
 //
 // Everything above this file asks for a job. It does not name a service, hold a
-// key, or know which dialect is spoken on the other side — that is settled here,
-// from whatever the person chose in the key box.
+// key, or know which dialect is spoken on the other side. That is settled here,
+// from the choice made in the key box.
 
 import { anthropic } from './anthropic.js'
 import { google, openai } from './rest.js'
@@ -14,8 +14,8 @@ const ADAPTERS = { anthropic, openai, google }
 
 /**
  * A vision model sees an image as 28×28 patches, so a tile costs roughly
- * ⌈width/28⌉ × ⌈height/28⌉ tokens. Worth showing: it is the whole reason tiles
- * are 1250px wide rather than the full photograph.
+ * ⌈width/28⌉ × ⌈height/28⌉ tokens. That arithmetic is why tiles are 1250px wide
+ * rather than the full photograph.
  */
 export const visualTokens = (width, height) => Math.ceil(width / 28) * Math.ceil(height / 28)
 
@@ -92,11 +92,11 @@ async function chosen() {
 /**
  * Read the spines off a set of tiles.
  *
- * Images go before the instructions and each is labelled, which is what vision
- * guidance asks for. The reply is constrained to the transcription schema, so
- * "it wrote prose instead of JSON" stops being a failure mode — what remains is
- * whether it read the spines correctly, and that is why the result is shown for
- * review rather than imported straight away.
+ * Images go before the instructions and each is labelled, following vision
+ * guidance. The reply is constrained to the transcription schema, so prose in
+ * place of JSON is no longer a failure mode. What remains is whether the spines
+ * were read correctly, so the result is shown for review rather than imported
+ * directly.
  */
 export async function readShelf({ tiles, photo, instructions, signal }) {
   const { adapter, provider, apiKey, model, baseUrl, host } = await chosen()

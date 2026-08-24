@@ -2,15 +2,14 @@ import { useT } from '../i18n/index.jsx'
 /**
  * What the collection is made of.
  *
- * Part-to-whole at a glance, which is the one job a pie does well — and only
- * because the slices are kept few. Genres are named until they account for
- * roughly four fifths of the collection and everything after that becomes a
- * single "other", so the chart never grows a long tail of slivers nobody can
- * tell apart.
+ * Part-to-whole at a glance, which a pie does well only while the slices stay
+ * few. Genres are named until they account for roughly four fifths of the
+ * collection, and everything after that becomes a single "other", so the chart
+ * does not grow a tail of indistinguishable slivers.
  *
  * The tag vocabulary is uncontrolled, so a real catalog has well over a hundred
- * genre labels, most used once. Showing them all would be a rainbow that says
- * nothing; showing the few that carry the collection says something.
+ * genre labels, most used once. Charting the few that carry the collection
+ * conveys more than charting all of them.
  *
  * Colours come from a categorical palette validated for colour-vision
  * deficiency against this app's own surfaces in both themes. Every slice is
@@ -64,8 +63,8 @@ const withShare = (slices, total) =>
 
 /** A slice's outline, as an SVG path. */
 function arc(cx, cy, r, from, to) {
-  // A slice covering the whole circle cannot be drawn as an arc — its start and
-  // end points are the same — so it becomes two half circles.
+  // A slice covering the whole circle cannot be drawn as an arc, because its
+  // start and end points coincide, so it becomes two half circles.
   if (to - from >= Math.PI * 2 - 1e-6) {
     return `M ${cx - r} ${cy} A ${r} ${r} 0 1 1 ${cx + r} ${cy} A ${r} ${r} 0 1 1 ${cx - r} ${cy} Z`
   }

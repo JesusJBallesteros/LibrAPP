@@ -1,19 +1,18 @@
 // Translation.
 //
-// Why not leave this to the browser's own translate feature? Three reasons, in
-// order of how badly each one bites:
+// The browser's own translate feature is not used here, for three reasons:
 //
 //   1. An installed app has no browser chrome, so there is no menu to translate
 //      from. The people most likely to want another language are exactly the
 //      ones who installed it.
 //   2. Page translators rewrite the DOM underneath React, which then tries to
 //      remove nodes that are no longer where it left them. It crashes.
-//   3. It would translate the books too — titles, authors, genres are data, not
-//      interface, and "La Odisea" must not become "The Odyssey" in someone's
-//      catalog.
+//   3. It would translate the books too. Titles, authors and genres are data
+//      rather than interface, and "La Odisea" must not become "The Odyssey" in
+//      someone's catalog.
 //
-// So the interface carries its own strings. Book data is never passed through
-// here.
+// The interface therefore carries its own strings. Book data is never passed
+// through here.
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import en from './en.js'

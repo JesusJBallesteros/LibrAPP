@@ -9,8 +9,8 @@ const { version } = JSON.parse(readFileSync(new URL('./package.json', import.met
  * Which commit this build came from.
  *
  * Stamped in rather than fetched, because the built app has no server to ask.
- * A build from a tarball or a shallow checkout has no git at all, and that is
- * not a build failure — it just means the commit is unknown.
+ * A build from a tarball or a shallow checkout has no git at all. That is not a
+ * build failure; the commit is simply unknown.
  */
 function commit() {
   try {
@@ -23,8 +23,8 @@ function commit() {
 }
 
 // The interface is served by tools/librapp/serve.py in normal use, so the build
-// lands in web/dist where that server looks for it. During development Vite
-// serves the page itself and forwards /api to the Python server.
+// lands in web/dist where that server looks for it. In development Vite serves
+// the page itself and forwards /api to the Python server.
 export default defineConfig({
   plugins: [react()],
   base: './',

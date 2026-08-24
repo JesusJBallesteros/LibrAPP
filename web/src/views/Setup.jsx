@@ -4,8 +4,8 @@ import { useT } from '../i18n/index.jsx'
  * Where the catalog lives.
  *
  * Reached when something needs storage and none has been chosen, rather than
- * as the app's opening demand — so by the time this appears, the reason for
- * asking is already obvious.
+ * at startup, so the reason for asking is already established by the time this
+ * appears.
  */
 export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, error }) {
   const { t } = useT()

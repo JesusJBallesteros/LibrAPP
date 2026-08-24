@@ -1,33 +1,32 @@
-// Port of tools/librapp/parse_shelf.py — turn a photograph of a shelf into
+// Port of tools/librapp/parse_shelf.py. Turns a photograph of a shelf into
 // source records.
 //
-// Reading spines is the one step that needs a model rather than a parser, so it
-// happens in two halves with a file in between: this cuts the photograph into
-// tiles a model can actually read, and later validates the transcription that
-// comes back. Splitting it keeps the model's output somewhere it can be read,
-// corrected and re-imported, instead of vanishing into a pipeline.
+// Reading spines needs a model rather than a parser, so it happens in two
+// halves with a file in between. This cuts the photograph into tiles a model
+// can read, and later validates the transcription that comes back. Keeping the
+// halves apart leaves the model's output somewhere it can be inspected,
+// corrected and re-imported.
 //
-// Whole-shelf photographs defeat vision models: a spine is a few dozen pixels
-// wide in a picture scaled to fit a context window. Tiling at native resolution
-// is what makes the text legible, so a crop is never scaled up and only scaled
-// down to the width a model can take.
+// Whole-shelf photographs defeat vision models, because a spine is a few dozen
+// pixels wide once the picture is scaled to fit a context window. Tiling at
+// native resolution keeps the text legible, so a crop is never scaled up and
+// is scaled down only to the width a model accepts.
 
 import { clean } from '../core/textmatch.js'
 import { CONFIDENCE } from '../core/records.js'
 
 // Wider than this and a model downsamples the tile anyway; narrower and spine
-// text stops being legible. Chosen to leave a crop of ~2000px near 1:1.
+// text stops being legible. Chosen to leave a crop of about 2000px near 1:1.
 export const TILE_WIDTH = 1250
 
 // How much neighbouring tiles overlap, as a fraction. A book on the seam is
-// then whole in one of them rather than split down the middle in both. Wide
-// enough to cover a spine's width on a normal shelf shot; a close-up where one
-// spine spans a third of the frame needs fewer tiles, not more overlap.
+// then whole in one of them instead of halved in both. Wide enough to cover a
+// spine on a normal shelf shot. A close-up where one spine spans a third of the
+// frame is served by fewer tiles rather than by more overlap.
 export const OVERLAP = 0.12
 
-// Below this, a photograph is left whole. It is not that the pixels could not
-// be divided — it is that a picture this size cannot hold enough books to need
-// it, and cutting one up does far more harm than leaving it alone.
+// Below this, a photograph is left whole. A picture this size cannot hold
+// enough books to need dividing, and cutting one up costs more than it gains.
 const WHOLE_BELOW_MEGAPIXELS = 20
 
 // Roughly how many megapixels of original per tile, above that threshold.
@@ -38,22 +37,21 @@ const MAX_TILES = 12
 /**
  * A starting grid for a photograph, to be adjusted by whoever took it.
  *
- * There is no way to get this right from the image alone. What decides a good
- * tile is how many spines are in it, and that is a fact about the shelf, not
- * about the file: 50 megapixels of a full bookcase wants eight tiles, and 12
- * megapixels of three books wants one. Four times the pixels, thirty times the
- * books. So this errs towards leaving the photograph whole and expects to be
- * overridden.
+ * The image alone does not determine this. What makes a good tile is how many
+ * spines are in it, which is a fact about the shelf rather than about the file:
+ * 50 megapixels of a full bookcase wants eight tiles, 12 megapixels of three
+ * books wants one. Four times the pixels, thirty times the books. This errs
+ * towards leaving the photograph whole and expects to be overridden.
  */
 export function suggestGrid(width, height) {
   const megapixels = (width * height) / 1e6
   if (megapixels < WHOLE_BELOW_MEGAPIXELS) return { cols: 1, rows: 1 }
 
   const wanted = Math.min(MAX_TILES, Math.max(2, Math.round(megapixels / MEGAPIXELS_PER_TILE)))
-  // Rows are decided first and kept as few as the shape allows, because the two
-  // cuts are not equally costly. Books stand upright, so a vertical cut crosses
-  // a spine's width and the overlap covers it, while a horizontal cut runs
-  // straight through the title and leaves half of it in each tile.
+  // Rows are decided first and kept as few as the shape allows, because the
+  // two cuts differ in cost. Books stand upright, so a vertical cut crosses a
+  // spine's width and the overlap covers it, while a horizontal cut runs
+  // through the title and leaves half of it in each tile.
   const aspect = width / height
   const rows = Math.max(1, Math.round(Math.sqrt(wanted / aspect)))
   const cols = Math.max(1, Math.ceil(wanted / rows))
@@ -63,7 +61,7 @@ export function suggestGrid(width, height) {
 /**
  * Where each tile is cut from, given a photograph's size.
  *
- * Kept apart from any drawing so the geometry can be checked without pixels —
+ * Kept apart from any drawing so the geometry can be checked without pixels,
  * and so it matches the Python original exactly, truncation included.
  */
 export function tileBoxes(width, height, cols = 4, rows = 2) {
@@ -93,10 +91,10 @@ export function tileBoxes(width, height, cols = 4, rows = 2) {
 /**
  * Cut a photograph into tiles, in the browser.
  *
- * Takes anything createImageBitmap accepts — a File straight from a camera —
- * and gives back blobs. Nothing is uploaded: the photograph never leaves the
- * device, which on a phone also means not waiting for fifty megapixels to
- * cross a network.
+ * Takes anything createImageBitmap accepts, including a File straight from a
+ * camera, and returns blobs. Nothing is uploaded. The photograph never leaves
+ * the device, which on a phone also avoids sending fifty megapixels over a
+ * network.
  */
 export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
   const bitmap = await createImageBitmap(file)
@@ -138,13 +136,11 @@ export class TranscriptionError extends Error {}
  * Validate a transcription and turn it into source records.
  *
  * A shelf photograph yields a title, usually an author, sometimes a publisher,
- * and nothing else: no acquisition date, no read flag. Saying so plainly is the
- * point — a book that appears only here is one the catalog knows it cannot
- * date.
+ * and nothing else. No acquisition date, no read flag. A book appearing only
+ * here is one the catalog records as undateable.
  *
- * This refuses a file with an untitled book or an unknown confidence value,
- * which is deliberate: a bad read should stop here rather than turn up in the
- * catalog later.
+ * A file with an untitled book or an unknown confidence value is refused, so
+ * that a bad read stops here rather than reaching the catalog.
  */
 export function loadTranscription(payload) {
   const groups = payload?.shelves

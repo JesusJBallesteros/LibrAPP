@@ -3,13 +3,12 @@ import { LANGUAGES, useT } from '../i18n/index.jsx'
 /**
  * The front door.
  *
- * The app used to open by demanding access to storage, which is a strange first
- * thing to ask a stranger. This says what LibrAPP is, what it needs, and then
- * offers the five things someone might actually have arrived wanting to do.
+ * The app used to open by asking for access to storage. This says what LibrAPP
+ * is, what it needs, and then offers the five things someone may have arrived
+ * wanting to do.
  *
  * Storage is still required before anything can be saved, but it is no longer
- * the opening question — each route sets it up when it is needed, at a point
- * where the reason for asking is obvious.
+ * the opening question. Each route sets it up at the point where it is needed.
  */
 
 const OPTIONS = [

@@ -1,10 +1,9 @@
 // What this browser can actually do.
 //
-// LibrAPP is a static site, so it runs in whatever browser it is opened in —
+// LibrAPP is a static site, so it runs in whatever browser it is opened in:
 // Chrome, Edge, Brave, Opera, Vivaldi, Arc, Comet, Samsung Internet, Firefox,
-// Safari, and things that do not exist yet. Rather than publish a table of
-// browser names that is out of date the day it is written, the app checks what
-// is in front of it and says so.
+// Safari, and browsers that do not exist yet. A table of browser names would be
+// out of date the day it was written, so the app tests what is in front of it.
 //
 // Every check is a real feature test, not a look at the user agent: a browser
 // that reports itself as Chrome may still have an API switched off by a
@@ -22,9 +21,8 @@ const test = (fn) => {
  * One row per capability, in the order they matter.
  *
  * `required` marks the ones without which LibrAPP cannot work at all. The rest
- * each disable one feature and are reported as such, because a browser that
- * cannot save to a folder is not a broken browser — it is a browser that will
- * use its own storage instead.
+ * each disable one feature and are reported as such. A browser that cannot save
+ * to a folder is not broken; it uses its own storage instead.
  */
 export function checkCapabilities() {
   const checks = [
@@ -117,7 +115,8 @@ export function checkCapabilities() {
 /**
  * Whether the library can survive the browser reclaiming space.
  *
- * Separate from the checks above because it is not a capability but a state,
+ * Separate from the checks above because it reports a state rather than a
+ * capability,
  * and one that some privacy settings change without warning: a browser told to
  * clear site data on exit will take a library kept in its own storage with it.
  */

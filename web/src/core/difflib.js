@@ -1,12 +1,12 @@
 // A faithful port of the part of Python's difflib that LibrAPP depends on.
 //
 // Every matching threshold in the merge was tuned against CPython's
-// SequenceMatcher.ratio(). "Close enough" is not good enough here: a similarity
-// that reads 0.61 where Python read 0.63 does not fail loudly, it just stops
-// merging a book with itself, and the catalog quietly grows duplicates.
+// SequenceMatcher.ratio(). An approximation is not enough: a similarity reading
+// 0.61 where Python read 0.63 raises no error, it stops merging a book with
+// itself, and the catalog grows duplicates.
 //
-// So this follows CPython's algorithm step for step, including the autojunk
-// heuristic — which does fire in practice, because a collapsed series row can
+// This follows CPython's algorithm step for step, including the autojunk
+// heuristic, which does fire in practice because a collapsed series row can
 // carry an 800-character title.
 //
 // Reference: CPython Lib/difflib.py, class SequenceMatcher.
@@ -38,7 +38,7 @@ function chainB(b, autojunk) {
 /**
  * The longest matching block in a[alo:ahi] against b[blo:bhi].
  *
- * Returns [i, j, size] — the same triple CPython returns, chosen by the same
+ * Returns [i, j, size], the same triple CPython returns, chosen by the same
  * tie-breaking rule (earliest in a, then earliest in b).
  */
 function findLongestMatch(a, b, b2j, bjunk, alo, ahi, blo, bhi) {
@@ -67,7 +67,7 @@ function findLongestMatch(a, b, b2j, bjunk, alo, ahi, blo, bhi) {
   }
 
   // Extend past elements that are equal but were excluded as junk, then past
-  // junk elements themselves — both loops exactly as CPython orders them.
+  // junk elements themselves. Both loops run in CPython's order.
   while (
     besti > alo &&
     bestj > blo &&
@@ -129,8 +129,8 @@ function matchedCount(a, b, autojunk = true) {
  * CPython's SequenceMatcher(None, a, b).ratio().
  *
  * Compares by code point, matching Python 3's treatment of strings as
- * sequences of characters rather than UTF-16 units — an accented letter must
- * count once, not twice.
+ * sequences of characters rather than UTF-16 units, so an accented letter
+ * counts once.
  */
 export function ratio(a, b) {
   const total = [...a]

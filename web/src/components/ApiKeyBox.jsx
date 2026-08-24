@@ -17,13 +17,12 @@ import { useT } from '../i18n/index.jsx'
  * The one place a service is chosen and a key is entered, and the one place
  * their state is visible.
  *
- * Deliberately explicit, and deliberately the same component wherever an
- * AI-powered feature appears: if the app can spend your money, you should be
- * able to see that at the moment you are about to use it, not buried in a
- * settings page you visited once.
+ * The same component appears wherever an AI feature does, so the fact that the
+ * app can spend money is visible at the moment of using it rather than in a
+ * settings page.
  *
- * Switching a key off is separate from deleting it, because they answer
- * different questions — "not now" and "not ever".
+ * Switching a key off is separate from deleting it. They answer different
+ * questions: "not now" and "not ever".
  */
 export default function ApiKeyBox({ what, onChange }) {
   const { t } = useT()
@@ -31,7 +30,7 @@ export default function ApiKeyBox({ what, onChange }) {
   const [stocked, setStocked] = useState([])
   const [draft, setDraft] = useState('')
   // Set once a key of an unfamiliar shape has been offered and warned about.
-  // The second press saves it: the shape check must not be the last word.
+  // The second press saves it, so the shape check is not the last word.
   const [unfamiliar, setUnfamiliar] = useState(false)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)

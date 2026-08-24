@@ -2,12 +2,12 @@
 // never quietly destroy an earlier one.
 //
 // The name of a source is the name of its file, so two imports agreeing on a
-// name are one file, and the second wins. That was the bug reported as "any new
-// shelf photo analysis overwrites a previous catalog" — every photograph was
-// called `shelf`.
+// name are one file and the second wins. That was the bug reported as "any new
+// shelf photo analysis overwrites a previous catalog", where every photograph
+// was called `shelf`.
 //
-// The backend below is a Map. The real ones are a folder you picked and the
-// origin's private file system; neither adds anything these tests are about.
+// The backend below is a Map. The real ones are a chosen folder and the origin's
+// private file system, and neither affects what these tests cover.
 
 import { beforeEach, describe, expect, it } from 'vitest'
 import { Library, safeName, stemOf } from '../src/store/library.js'

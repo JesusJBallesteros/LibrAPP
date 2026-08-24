@@ -1,10 +1,10 @@
 # Publish the app to GitHub Pages.
 #
-# Only the interface is published — the code, and nothing else. A library lives
-# on the device that made it: `sources/` and `data/private/` are gitignored and
-# have nothing to do with this build. Serving the app from a URL is what makes
-# it installable on a phone, because Android requires HTTPS for a service
-# worker and localhost on a laptop is not reachable from one.
+# Only the interface is published. A library lives on the device that made it:
+# `sources/` and `data/private/` are gitignored and take no part in this build.
+# Serving the app from a URL is what makes it installable on a phone, because
+# Android requires HTTPS for a service worker and cannot reach a laptop's
+# localhost.
 
 name: Deploy the app to Pages
 

@@ -1,24 +1,21 @@
 // Corrections that outrank every source.
 //
 // The catalog is rebuilt from its sources every time, so a change written into
-// catalog.json is gone on the next rebuild. Corrections therefore live in their
-// own file and are applied *after* the merge, never mixed into it. Three
-// reasons that separation is worth the indirection:
+// catalog.json is gone on the next rebuild. Corrections live in their own file
+// and are applied after the merge, never mixed into it, for three reasons:
 //
 //   1. A rebuild regenerates the catalog and would discard anything in it.
-//   2. An override is a different kind of claim from a source record — it is a
-//      person overruling the evidence, and that distinction should survive.
-//   3. It stays reviewable: one small file answers "what have I changed by
-//      hand?"
+//   2. An override is a different kind of claim from a source record. It is a
+//      person overruling the evidence, and that distinction survives.
+//   3. One small file records what has been changed by hand.
 //
-// Removal is the awkward one. Deleting an entry deletes nothing, because the
-// next rebuild reads the same sources and puts it back, so removal is recorded
-// as a suppression instead. The key is the entry id — a slug of author and
-// title — which changes if a better source later supplies a fuller title. An
-// override keyed on id alone would therefore stop working exactly when the
-// catalog improves, so each one also stores the title and authors it was made
-// against, and anything that no longer resolves is reported rather than
-// silently ignored.
+// Removal needs more care. Deleting an entry removes nothing, because the next
+// rebuild reads the same sources and puts it back, so removal is recorded as a
+// suppression. The key is the entry id, a slug of author and title, which
+// changes when a better source supplies a fuller title. An override keyed on id
+// alone would stop working at exactly that point, so each one also stores the
+// title and authors it was made against, and anything that no longer resolves
+// is reported rather than dropped.
 
 import { authorTokens, fold, slugify, tokenKey } from './textmatch.js'
 
@@ -147,9 +144,9 @@ function resolveAuthors(names, authors) {
  * Apply corrections to a freshly built catalog.
  *
  * Returns a new catalog. Every corrected entry says so and carries what the
- * sources had said, because a correction that becomes indistinguishable from
- * source data cannot be audited or undone — and the whole catalog is built on
- * being able to see where a value came from.
+ * sources had said. A correction indistinguishable from source data could
+ * neither be audited nor undone, and the catalog depends on every value having
+ * a traceable origin.
  */
 export function applyOverrides(catalog, overrides) {
   const entries = overrides?.entries || {}

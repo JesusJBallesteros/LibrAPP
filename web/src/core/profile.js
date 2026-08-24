@@ -1,9 +1,9 @@
-// Port of `query.py context` — a compact picture of a reader, for handing to a
+// Port of `query.py context`. A compact picture of a reader, for sending to a
 // model alongside one of the prompts.
 //
-// Deliberately not the whole catalog: a few hundred titles crowd out the
-// question being asked. What a recommender needs is the shape of the collection
-// and how it has moved, plus enough named books to argue from.
+// Not the whole catalog, because a few hundred titles crowd out the question
+// being asked. A recommender needs the shape of the collection, how it has
+// moved, and enough named books to argue from.
 
 const YEAR_MS = 365.25 * 24 * 3600 * 1000
 

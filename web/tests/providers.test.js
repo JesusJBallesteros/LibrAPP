@@ -1,12 +1,12 @@
-// The provider registry is the one place a mistake costs somebody real money at
-// somebody else's API. Nothing here makes a request; what is checked is that the
-// registry is internally consistent, that the schema a model is handed says the
-// same thing in all three dialects, and that a price is never invented.
+// A mistake in the provider registry costs real money at somebody else's API.
+// Nothing here makes a request. What is checked is that the registry is
+// internally consistent, that the schema handed to a model says the same thing
+// in all three dialects, and that no price is invented.
 //
-// A note on keyPattern: it is a hint, not a gate — the key box lets a person
-// save a key it does not recognise. So a pattern being wrong is a nuisance
-// rather than a lockout, and these tests hold it to catching obvious rubbish
-// rather than to knowing every shape a service will ever issue.
+// keyPattern is a hint and not a gate, since the key box can save a key it does
+// not recognise. A wrong pattern is therefore a nuisance and not a lockout, so
+// these tests hold it to catching obvious rubbish rather than to knowing every
+// shape a service will ever issue.
 
 import { describe, expect, it } from 'vitest'
 import {

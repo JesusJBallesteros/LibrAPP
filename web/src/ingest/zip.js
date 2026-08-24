@@ -1,9 +1,9 @@
 // Reading the handful of files inside an .xlsx.
 //
-// A spreadsheet is a zip of XML. Rather than take on a zip library to read four
+// A spreadsheet is a zip of XML. Rather than add a zip library to read four
 // small entries, this walks the archive's central directory and inflates with
-// DecompressionStream, which the browser and Node both provide — so nothing has
-// to be bundled and nothing has to be kept up to date.
+// DecompressionStream, which the browser and Node both provide, so nothing is
+// bundled and nothing needs updating.
 //
 // Only what an .xlsx actually uses is supported: stored and deflated entries.
 // Encryption, spanning and zip64 are not, and say so rather than misbehaving.

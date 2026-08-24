@@ -1,7 +1,6 @@
-// A translation goes wrong quietly. A missing key shows the key, a stray
-// placeholder shows {name} to a reader, and neither throws — so nothing tells
-// you until someone screenshots it. These checks are the thing standing between
-// that and a release.
+// A translation fails quietly. A missing key renders the key, a stray
+// placeholder renders {name}, and neither throws, so nothing reports it until
+// someone notices on screen. These checks catch both before a release.
 
 import { describe, expect, it } from 'vitest'
 import en from '../src/i18n/en.js'

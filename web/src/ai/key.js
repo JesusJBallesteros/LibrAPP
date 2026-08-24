@@ -1,10 +1,10 @@
 // Which service the app may use, whose key it uses, and the three states a key
 // can be in.
 //
-// LibrAPP works with no key at all — every ingester, the whole catalog and the
-// desk's prompt composer run without one. A key only buys the app permission to
-// read your shelf photographs and answer your questions itself, instead of
-// handing you tiles and text to paste elsewhere.
+// LibrAPP works with no key at all. Every ingester, the whole catalog and the
+// desk's prompt composer run without one. A key lets the app read shelf
+// photographs and answer questions itself instead of preparing tiles and text
+// to be pasted elsewhere.
 //
 // Three states rather than two, because "stored" and "in use" are different
 // questions. Switching a key off keeps it for later without letting the app
@@ -14,11 +14,11 @@
 //   active    a key is stored and the app may use it
 //   off       a key is stored and the app must not use it
 //
-// Keys are kept one per service, so trying a second provider does not cost you
-// the first one, and switching back does not mean pasting anything again. They
-// live in this origin's IndexedDB, next to the pointer to your library. A key is
-// sent to its own service and nowhere else. It is never logged, never written
-// into a source file, and never included in an export.
+// Keys are kept one per service, so trying a second provider does not discard
+// the first, and switching back needs no pasting. They live in this origin's
+// IndexedDB, next to the pointer to the library. A key is sent to its own
+// service and nowhere else. It is never logged, never written into a source
+// file, and never included in an export.
 
 import { idbDelete, idbGet, idbSet } from '../store/idb.js'
 import { PROVIDERS, providerById } from './providers.js'
@@ -45,7 +45,7 @@ export async function saveChoice(next) {
   await idbSet(CHOICE, { ...current, ...next })
 }
 
-/** Moving to a service you have not used before should offer that service's model. */
+/** Moving to an unused service offers that service's own default model. */
 export async function chooseProvider(providerId) {
   const provider = providerById(providerId)
   const stored = await idbGet(CHOICE).catch(() => null)
@@ -58,7 +58,7 @@ export async function chooseProvider(providerId) {
   })
 }
 
-/** Remember this service's model and address, so going back and forth is free. */
+/** Remember this service's model and address, so switching back needs no retyping. */
 export async function rememberForProvider(providerId, patch) {
   const stored = (await idbGet(CHOICE).catch(() => null)) || {}
   const perProvider = { ...(stored.perProvider || {}) }
@@ -97,10 +97,10 @@ export async function readKey(providerId) {
 /**
   * The state the interface should show, for the service currently chosen.
   *
-  * `usable` is the question a view actually wants answered: may the app make a
-  * request right now. It is not the same as holding a key. A model running on
-  * your own machine has nobody to bill and needs none, and gating a button on a
-  * stored key would put that service permanently out of reach.
+  * `usable` answers the question a view asks: may the app make a request now.
+  * That is not the same as holding a key. A model running on the user's own
+  * machine has nobody to bill and needs none, so gating a button on a stored
+  * key would put that service permanently out of reach.
   */
 export async function keyState() {
   const choice = await readChoice()
@@ -116,8 +116,8 @@ export async function keyState() {
 /**
  * Everything a request needs, or null if the app is not allowed to make one.
  *
- * A service reached at an address you typed yourself may legitimately want no
- * key — a model running on your own machine has nobody to bill.
+ * A service at a hand-typed address may legitimately want no key, since a model
+ * running on the user's own machine has nobody to bill.
  */
 export async function usableConfig() {
   const choice = await readChoice()
