@@ -4,6 +4,9 @@ sources/
 # The real catalog, built from those inputs.
 data/private/
 
+# The spanish translation review.
+docs/spanish-review.md
+
 # ---- Python ----
 __pycache__/
 *.py[cod]
