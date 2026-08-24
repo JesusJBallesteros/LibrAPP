@@ -553,4 +553,6 @@ export default {
     'Todo eso va de cómo se escribió el programa. No tiene nada que ver con el contenido de tu catálogo: no se inventa ninguna entrada, cada libro viene de una fuente que tú has dado, y las funciones de IA dentro de la app son opcionales, están apagadas hasta que añades una clave, y siempre te enseñan el resultado antes de guardar nada.',
 
   'key.saveAnyway': 'Guardarla de todos modos',
+
+  'list.savedAs': 'Guardado como {name}.',
 }

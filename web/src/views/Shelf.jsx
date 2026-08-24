@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { loadTranscription, tileImage } from '../ingest/shelf.js'
+import { stemOf } from '../store/library.js'
 import { copyText } from '../lib.js'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 import {
@@ -86,10 +87,13 @@ export default function Shelf({ lib }) {
   const acceptProposed = () =>
     lib.run(async (library) => {
       const { records, stats } = loadTranscription(proposed.transcription)
+      // Named after the photograph, so a second shelf does not overwrite the
+      // first and re-reading the same one still replaces it.
+      const origin = stats.photo || tiles.photo
       await library.putSource({
-        name: 'shelf',
+        name: await library.nameFor(`shelf-${stemOf(origin)}`, origin),
         kind: 'photo',
-        origin: stats.photo || tiles.photo,
+        origin,
         format: 'physical',
         confidence: 'medium',
         records,
@@ -109,10 +113,11 @@ export default function Shelf({ lib }) {
   const onTranscription = (file) =>
     lib.run(async (library) => {
       const { records, stats } = loadTranscription(JSON.parse(await file.text()))
+      const origin = stats.photo || file.name
       await library.putSource({
-        name: 'shelf',
+        name: await library.nameFor(`shelf-${stemOf(origin)}`, origin),
         kind: 'photo',
-        origin: stats.photo || file.name,
+        origin,
         format: 'physical',
         confidence: 'medium',
         records,

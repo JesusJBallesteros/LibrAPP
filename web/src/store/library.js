@@ -47,7 +47,38 @@ export class Library {
   }
 
   /**
-   * Store one source.
+   * A source name that will not quietly destroy an earlier import.
+   *
+   * The name is the filename, so two imports that share one are the same file
+   * and the second replaces the first. That is right when a photograph is read
+   * again after adjusting the grid, and wrong when a second shelf is
+   * photographed. The two cases are told apart by `origin`: same origin means
+   * the same material and replacing it is a correction, a different origin
+   * means different material and gets a name of its own.
+   */
+  async nameFor(base, origin) {
+    const wanted = safeName(base)
+    const taken = new Map(
+      (await this.readSources()).map((s) => [
+        s.file.replace(/\.json$/, ''),
+        s.source?.origin ?? null,
+      ]),
+    )
+    const free = (candidate) => !taken.has(candidate) || taken.get(candidate) === origin
+    if (free(wanted)) return wanted
+    for (let n = 2; n <= 99; n++) {
+      const candidate = safeName(`${wanted}-${n}`)
+      if (free(candidate)) return candidate
+    }
+    return safeName(`${wanted}-${Date.now().toString(36)}`)
+  }
+
+  /**
+   * Store one source, at exactly the name given.
+   *
+   * This writes where it is told and will overwrite a source of the same name,
+   * which is what `addManualRecord` relies on. Anything ingesting a file the
+   * person chose should ask `nameFor` first.
    *
    * Ingested files are kept exactly as their ingester produced them: a source
    * is evidence, and evidence that gets edited stops being evidence. Anything
@@ -185,6 +216,12 @@ export class Library {
 }
 
 /** Keep a source name to something that is safe as a file name. */
+/** A filename without its extension, for naming a source after its material. */
+export const stemOf = (filename) =>
+  String(filename || '')
+    .replace(/\.[^.]+$/, '')
+    .slice(0, 32)
+
 export function safeName(name) {
   const cleaned = String(name || '')
     .replace(/[^\w.-]+/g, '-')

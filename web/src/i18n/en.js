@@ -545,4 +545,6 @@ export default {
     'All of that is about how the program was written. It has nothing to do with the contents of your catalog: no entry is invented, every book comes from a source you provided, and the AI features inside the app are optional, off until you add a key, and always show you the result before anything is kept.',
 
   'key.saveAnyway': 'Save it anyway',
+
+  'list.savedAs': 'Saved as {name}.',
 }
