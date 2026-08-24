@@ -4,12 +4,13 @@
 [![Deploy](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml)
 [![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20NC%201.0.0-blue)](LICENSE.md)
 
-### Create your full book catalog from a picture of your shelf.
+### Your full library catalog and your own personal librarian, at hand.
 
 ## → [**Open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/) ←
 
-No account, no signup, nothing to install first. Works offline once loaded, and
-installs as an app on Windows, Linux and Android.
+Build the catalog from a photograph of your shelves, then ask it about your own
+books. No account, no signup, nothing to install first. Works offline once
+loaded, and installs as an app on Windows, Linux and Android.
 
 ---
 
@@ -37,6 +38,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [Adding your books](#adding-your-books)
 - [Using the catalog](#using-the-catalog)
 - [Corrections](#corrections)
+- [Lending and borrowing](#lending-and-borrowing)
 - [The desk](#the-desk)
 - [Where your library lives](#where-your-library-lives)
 - [Optional AI key](#optional-ai-key)
@@ -57,6 +59,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 | **Browse** | search, filter and group offline — no network, no waiting |
 | **Correct** | edit or remove any entry; corrections outlast every rebuild |
 | **Ask** | recommendations, synopses and reading lists, with your own shelves as the context |
+| **Track** | who has the book you lent, and whose book you are still holding |
 
 Two steps use AI: reading spines off a photograph, and asking the desk a
 question. Both work without a key, by preparing the request for you to paste into
@@ -186,8 +189,36 @@ Photograph the shelf straight on at your camera's **full resolution**.
 4. Check what it read, then import.
 
 Aim for tiles showing a handful of whole spines with the title readable top to
-bottom. Adding **rows** splits titles in half — only do it when the photo
+bottom. Adding **rows** splits titles in half, so only do that when the photo
 really shows shelves stacked above one another.
+
+Any tile holding no readable spine, such as a wall or a lamp, can be
+**discarded** before the read. Discarded tiles are not sent, not saved and not
+counted in the cost.
+
+### Asking for more than the titles
+
+Under the tiles is a checklist of things to request beyond the titles, and it
+divides into two kinds that are not interchangeable.
+
+**Read from the photograph** — publisher, edition, the language on the cover,
+series and volume. These are printed on the spine, so the model is transcribing
+and the answer is evidence of the same kind as the title itself.
+
+**Recalled by the model** — a short abstract, the year first published, a reader
+rating, the original language. **None of this is in your photograph.** The model
+produces it from what it was trained on, so it can be confidently wrong about a
+real book. LibrAPP marks every book carrying such a field, shows the mark on the
+book, and counts them before you import. The mark comes from which fields are
+actually present, so a model cannot report a recalled abstract as something it
+read.
+
+Ticked boxes apply to both routes: the request sent with a key and the text the
+copy button produces are the same string.
+
+Cover images are not offered. A model replying with JSON can only return a link,
+and fetching one would put a network request into an app that makes none, and
+would tell whoever hosts that image which books you own.
 
 A photograph shows a title, usually an author, sometimes a publisher. It cannot
 show when you bought a book or whether you read it, so those stay blank until
@@ -279,9 +310,33 @@ made**, where removals can be restored and edits undone.
 
 ---
 
+## Lending and borrowing
+
+Open a book, choose **Edit**, and record who has it under *Away from the shelf*.
+Two states, and a book can only be in one of them:
+
+- **Lent to** somebody. The book is yours and it is not here.
+- **Borrowed from** somebody. The book is here and it is not yours.
+
+The date is optional, because it is the part people forget. A loan with no date
+is kept and simply sorts last.
+
+The catalog gains a **Where** filter for books on the shelf, lent out or
+borrowed, and rows carry a pill for each. The desk lists what is away and how
+long it has been gone, and the reader profile names those books, so a
+recommendation does not suggest something that is currently at a friend's house.
+
+Loans are stored with your [corrections](#corrections), which means they survive
+every rebuild and travel with an export.
+
+---
+
 ## The desk
 
-The **LibrAPPrian's desk** is where the catalog stops being a list.
+The **LibrAPPrian's desk** is the half of LibrAPP that a spreadsheet cannot do.
+A catalog tells you what you own. The desk reads the shape of it and answers
+from that, which is why the answers are about your books rather than books in
+general.
 
 **Bought, and never opened** — books you own and have not read, ordered by how
 long they have waited and weighted by how much you evidently wanted them at the
@@ -289,18 +344,40 @@ time: filing a book into a collection, or putting it on several devices, is a
 record of intent that a purchase date alone is not. Only books *known* to be
 unread appear.
 
+**Away from the shelf** — what you lent and to whom, what you borrowed and from
+whom, and how long each has been gone. See
+[Lending and borrowing](#lending-and-borrowing).
+
 **What the collection is made of** — the largest genres as a share of the
 whole, with the long tail grouped as *other*. Genre labels come from your
 sources and are not a controlled list, so the chart says how much of the
 collection the named genres actually cover.
 
-**Ask** — a synopsis of any book, or a recommendation. LibrAPP builds a profile
-of your reading (what the collection contains, how it has changed over the
-years, which authors dominate, what is waiting unread) and sends it with your
-question, so the answer is about your shelf rather than books in general.
+**What it keeps coming back to** — a cloud of the keywords used by more than one
+book, drawn larger the more often they appear. Pick a word to open the catalog
+filtered to it.
 
-With an AI key it asks directly. Without one it assembles the whole request
-for you to paste into any AI assistant.
+**Ask** — this is the part worth coming back for. LibrAPP builds a profile of
+your reading: what the collection contains, how it has changed over the years,
+which authors dominate, what is waiting unread, and which books are currently
+out of the house. It sends that with your question.
+
+Things it is good at:
+
+- **What next.** A recommendation weighed against where your reading is going
+  rather than where it has been, and checked against your unread pile before it
+  suggests buying anything.
+- **Filling a gap.** Which books by an author you have collected unevenly are
+  missing, and which of them to read first.
+- **A synopsis.** Of any book, including one you do not own, described to
+  somebody whose shelf is already known.
+- **A thread.** What connects the books you keep buying, which is often not what
+  you would have said.
+- **A list.** For a long flight, a summer, a subject you are about to start.
+
+With an AI key it asks directly and shows the cost before sending and the real
+figure afterwards. Without a key it assembles the whole request for you to paste
+into any AI session. Both routes ask exactly the same question.
 
 The book you ask about does not have to be one you own.
 

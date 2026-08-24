@@ -6,7 +6,7 @@
 
 export default {
   // -- landing ------------------------------------------------------------
-  'landing.tagline': 'Create your full book catalog from a picture of your shelf.',
+  'landing.tagline': 'Your full library catalog and your own personal librarian, at hand.',
   'landing.intro':
     'Photograph a shelf and LibrAPP reads the spines into a catalog you can search, filter and browse. You can also bring in a spreadsheet, a store export, or a catalog you built on another device — and combine them all without duplicates.',
   'landing.privacy.title': 'Your books stay with you',
@@ -464,14 +464,14 @@ export default {
   'foot.source': 'Source code',
   'foot.report': 'Report a problem',
 
-  'about.title': 'About this app, and who wrote it.',
+  'about.title': 'Your full library catalog and your own personal librarian, at hand.',
   'about.back': 'Back',
 
   'about.what': 'What LibrAPP is',
   'about.whatBody':
-    'A book catalog you build from what you already have: a photograph of a shelf, a spreadsheet you keep, an export from a store, or all three at once. The same book arriving from several places becomes one entry rather than three.',
+    'Two halves. A book catalog you build from what you already have: a photograph of a shelf, a spreadsheet you keep, an export from a store, or all three at once. The same book arriving from several places becomes one entry rather than three.',
   'about.whatBody2':
-    'It is not a social network, a reading tracker or a shop. Nobody else can see your shelves, and there is nobody to see them: LibrAPP has no server. Two steps can use an AI service if you give it a key — reading spines off a photograph, and answering questions about your collection — and both work without one.',
+    'And a librarian who has read your shelves. The desk answers about what you own: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through the collection, a list for a long flight. It is not a social network, a reading tracker or a shop. Nobody else can see your shelves, and there is nobody to see them, because LibrAPP has no server. Two steps can use an AI service if you give it a key, and both work without one.',
 
   'about.who': 'Who wrote it',
   'about.whoBody':

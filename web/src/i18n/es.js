@@ -5,7 +5,7 @@
 
 export default {
   // -- landing ------------------------------------------------------------
-  'landing.tagline': 'Cataloga todos tus libros con sólo una foto de tu estantería.',
+  'landing.tagline': 'Todo tu catálogo y tu bibliotecario personal, a mano.',
   'landing.intro':
     'Fotografía una estantería y LibrAPP leerá los lomos para crear un catálogo que puedes consultar y editar. También puedes subir una tabla, una lista en PDF o un catálogo desde otro dispositivo, y combinarlo todo sin duplicados.',
   'landing.privacy.title': 'Tus libros se quedan contigo',
@@ -469,14 +469,14 @@ export default {
   'foot.source': 'Código fuente',
   'foot.report': 'Informar de un problema',
 
-  'about.title': 'Sobre esta app y sobre quién la escribió.',
+  'about.title': 'Todo tu catálogo y tu bibliotecario personal, a mano.',
   'about.back': 'Volver',
 
   'about.what': 'Qué es LibrAPP',
   'about.whatBody':
-    'Un catálogo de libros que construyes con lo que ya tienes: una foto de una estantería, una hoja de cálculo tuya, el extracto de una tienda, o las tres cosas a la vez. El mismo libro que llega por varias vías acaba siendo una entrada y no tres.',
+    'Dos mitades. Un catálogo de libros que construyes con lo que ya tienes: una foto de una estantería, una hoja de cálculo tuya, el extracto de una tienda, o las tres cosas a la vez. El mismo libro que llega por varias vías acaba siendo una entrada y no tres.',
   'about.whatBody2':
-    'No es una red social, ni un registro de lecturas, ni una tienda. Nadie más puede ver tus estanterías, y no hay nadie que pudiera verlas: LibrAPP no tiene servidor. Dos pasos pueden usar un servicio de IA si le das una clave — leer los lomos de una foto y responder preguntas sobre tu colección — y los dos funcionan también sin ella.',
+    'Y un bibliotecario que se ha leído tus estanterías. El escritorio responde sobre lo que tienes: qué leer a continuación y por qué, qué te falta de un autor que has ido reuniendo a medias, qué hilos recorren la colección, una lista para un vuelo largo. No es una red social, ni un registro de lecturas, ni una tienda. Nadie más puede ver tus estanterías, y no hay nadie que pudiera verlas, porque LibrAPP no tiene servidor. Dos pasos pueden usar un servicio de IA si le das una clave, y los dos funcionan también sin ella.',
 
   'about.who': 'Quién la escribió',
   'about.whoBody':

@@ -1,7 +1,7 @@
 {
-  "name": "LibrAPP — your book catalog from a photo",
+  "name": "LibrAPP: your catalog and your librarian",
   "short_name": "LibrAPP",
-  "description": "Create your full book catalog from a picture of your shelf. Works offline; your books stay on your device.",
+  "description": "Your full library catalog and your own personal librarian, at hand. Works offline; your books stay on your device.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

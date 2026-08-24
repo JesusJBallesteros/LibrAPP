@@ -51,7 +51,23 @@ of input a matter of writing one more ingester.
 | `sources` | string[] | names of the source files this entry was seen in |
 | `confidence` | string | `high`, `medium`, `low` |
 | `location` | string? | where it physically sits, when a photograph said |
+| `lent_to` | string? | who has the book, when it was lent out |
+| `lent_on` | date? | ISO date; `null` where the loan was recorded without one |
+| `borrowed_from` | string? | who the book belongs to, when it is not yours |
+| `borrowed_on` | date? | ISO date; `null` where the loan was recorded without one |
+| `abstract` | string? | recalled by a model, never read from a photograph |
+| `published_year` | int? | recalled by a model |
+| `rating` | number? | recalled by a model, out of 5 |
+| `original_language` | string? | recalled by a model |
 | `flags` | string[] | see below |
+
+`lent_to` and `borrowed_from` are mutually exclusive: a lent book is owned and
+away, a borrowed one is not owned. They are written by the corrections layer
+rather than by any ingester, since no source can know them.
+
+The four recalled fields are only ever filled in when the shelf checklist asked
+for them. They are not present in the photograph, and every book carrying one is
+flagged `recalled_details`.
 
 ### `read` is three-valued
 
@@ -83,6 +99,8 @@ title, which is forced to `low` however it arrived.
 | `no_genre` | no genre judgement exists for this book yet |
 | `placeholder` | the title is a stand-in (`[spine partly legible]`), not a title |
 | `series_not_expanded` | a row standing for several volumes that no source lists individually |
+| `recalled_details` | one or more fields here were recalled by a model, not read from the photograph |
+| `corrected` | a field here was set by hand and overrides the sources |
 
 ## `authors[]`
 

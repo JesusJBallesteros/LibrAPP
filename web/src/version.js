@@ -10,7 +10,7 @@ export const VERSION = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__ : '
 export const COMMIT = typeof __APP_COMMIT__ === 'string' ? __APP_COMMIT__ : 'unknown'
 export const BUILT = typeof __APP_BUILT__ === 'string' ? __APP_BUILT__ : null
 
-/** `0.9.0 · a8aa66d`, or just the version where the commit is not known. */
+/** `1.0.0 · a8aa66d`, or just the version where the commit is not known. */
 export const buildLabel = () => (COMMIT === 'unknown' ? VERSION : `${VERSION} · ${COMMIT}`)
 
 /**
