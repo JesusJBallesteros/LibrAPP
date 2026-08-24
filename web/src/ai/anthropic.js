@@ -24,6 +24,12 @@ const Book = z.object({
   series_index: z.number().int().nullable(),
   confidence: z.enum(['high', 'medium', 'low']),
   notes: z.string().nullable().describe('anything a person should check: partial text, odd script'),
+  // Recalled rather than read, and only when asked for. See ai/extras.js.
+  abstract: z.string().nullable(),
+  published_year: z.number().int().nullable(),
+  rating: z.number().nullable(),
+  original_language: z.string().nullable(),
+  flags: z.array(z.string()),
 })
 const Shelf = z.object({
   location: z.string().describe('where on the shelf, e.g. "top shelf, left"'),

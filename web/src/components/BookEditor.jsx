@@ -42,6 +42,10 @@ const toForm = (book, names) => ({
   genre: book?.genre || '',
   read: book?.read === true ? 'read' : book?.read === false ? 'unread' : 'unknown',
   acquired_on: book?.acquired_on || '',
+  lent_to: book?.lent_to || '',
+  lent_on: book?.lent_on || '',
+  borrowed_from: book?.borrowed_from || '',
+  borrowed_on: book?.borrowed_on || '',
   publisher: book?.publisher || '',
   location: book?.location || '',
   notes: book?.notes || '',
@@ -66,9 +70,12 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
   const collect = () => {
     const title = form.title.trim()
     if (!title) throw new Error(t('editor.needTitle'))
-    if (form.acquired_on && !/^\d{4}-\d{2}-\d{2}$/.test(form.acquired_on)) {
-      throw new Error(t('editor.badDate'))
+    for (const key of ['acquired_on', 'lent_on', 'borrowed_on']) {
+      if (form[key] && !/^\d{4}-\d{2}-\d{2}$/.test(form[key])) throw new Error(t('editor.badDate'))
     }
+    // A book cannot be lent out and borrowed at the same time: one is owned and
+    // away, the other is not owned at all.
+    if (form.lent_to.trim() && form.borrowed_from.trim()) throw new Error(t('editor.bothLoans'))
     const index = String(form.series_index).trim()
     if (index && !/^\d+$/.test(index)) throw new Error(t('editor.badVolume'))
 
@@ -80,6 +87,10 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
       genre: form.genre.trim() || null,
       read: form.read === 'read' ? true : form.read === 'unread' ? false : null,
       acquired_on: form.acquired_on.trim() || null,
+      lent_to: form.lent_to.trim() || null,
+      lent_on: form.lent_to.trim() ? form.lent_on.trim() || null : null,
+      borrowed_from: form.borrowed_from.trim() || null,
+      borrowed_on: form.borrowed_from.trim() ? form.borrowed_on.trim() || null : null,
       publisher: form.publisher.trim() || null,
       location: form.location.trim() || null,
       notes: form.notes.trim() || null,
@@ -209,6 +220,49 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
           <Row label={t('editor.where')} hint={t('editor.whereHint')}>
             <input style={field} value={form.location} onChange={set('location')} />
           </Row>
+          <h4 style={{ margin: '18px 0 10px', font: '600 13px var(--sans)' }}>
+            {t('editor.whereIsIt')}
+          </h4>
+          <p className="tiny faint" style={{ margin: '0 0 11px' }}>{t('editor.loanHint')}</p>
+
+          <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
+            <div style={{ flex: '2 1 150px' }}>
+              <Row label={t('editor.lentTo')}>
+                <input style={field} value={form.lent_to} onChange={set('lent_to')} />
+              </Row>
+            </div>
+            <div style={{ flex: '1 1 120px' }}>
+              <Row label={t('editor.lentOn')} hint="YYYY-MM-DD">
+                <input
+                  style={field}
+                  value={form.lent_on}
+                  onChange={set('lent_on')}
+                  disabled={!form.lent_to.trim()}
+                  placeholder="2026-03-14"
+                />
+              </Row>
+            </div>
+          </div>
+
+          <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
+            <div style={{ flex: '2 1 150px' }}>
+              <Row label={t('editor.borrowedFrom')}>
+                <input style={field} value={form.borrowed_from} onChange={set('borrowed_from')} />
+              </Row>
+            </div>
+            <div style={{ flex: '1 1 120px' }}>
+              <Row label={t('editor.borrowedOn')} hint="YYYY-MM-DD">
+                <input
+                  style={field}
+                  value={form.borrowed_on}
+                  onChange={set('borrowed_on')}
+                  disabled={!form.borrowed_from.trim()}
+                  placeholder="2026-03-14"
+                />
+              </Row>
+            </div>
+          </div>
+
           <Row label={t('editor.notes')}>
             <textarea style={{ ...field, minHeight: 62, resize: 'vertical' }} value={form.notes} onChange={set('notes')} />
           </Row>

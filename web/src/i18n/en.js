@@ -570,4 +570,70 @@ export default {
   'landing.next.action': 'Open the desk',
   'landing.next.empty': 'Ready as soon as there are books here.',
   'desk.estimateNote': 'an estimate. What it actually cost appears with the answer.',
+
+  // -- lent and borrowed ----------------------------------------------------
+  'book.lentTo': 'Lent to',
+  'book.borrowedFrom': 'Borrowed from',
+
+  'editor.whereIsIt': 'Away from the shelf',
+  'editor.loanHint':
+    'Only one of these applies at a time. A book you lent is still yours; a book you borrowed is not.',
+  'editor.lentTo': 'Lent to',
+  'editor.lentOn': 'Lent on',
+  'editor.borrowedFrom': 'Borrowed from',
+  'editor.borrowedOn': 'Borrowed on',
+  'editor.bothLoans': 'A book cannot be lent out and borrowed at the same time.',
+
+  'catalog.whereIs': 'Where',
+  'catalog.atHome': 'on the shelf',
+  'catalog.lentOut': 'lent out',
+  'catalog.borrowed': 'borrowed',
+
+  'desk.away': 'Away from the shelf',
+  'desk.awayNote':
+    'Books that are not where they should be. Recorded by hand, one entry at a time, since nothing else can know.',
+  'desk.lentGroup': 'Lent out ({n})',
+  'desk.borrowedGroup': 'Borrowed and still here ({n})',
+  'desk.nothingAway': 'Nothing is out of the house.',
+  'desk.withWhom': 'with {who}',
+  'desk.fromWhom': 'from {who}',
+  'desk.sinceUnknown': 'no date recorded',
+
+  // -- the word cloud -------------------------------------------------------
+  'desk.themes': 'What it keeps coming back to',
+  'desk.themesNote':
+    'Keywords used by more than one book, drawn larger the more often they appear. Pick one to see those books.',
+  'cloud.none': 'No keyword is used by more than one book yet.',
+  'cloud.count': 'used by {n} books',
+  'cloud.label': '{word}, used by {n} books',
+  'cloud.note': 'Showing {drawn} of {distinct} keywords. The rest are used once each.',
+  'catalog.taggedWith': 'tagged {tag}',
+
+  // -- extras a model can be asked for --------------------------------------
+  'book.abstract': 'Abstract:',
+  'book.published': 'First published',
+  'book.rating': 'Rating',
+  'book.originalLanguage': 'Originally in',
+  'flag.recalled_details':
+    'some details here were recalled by a model, not read from the photograph',
+
+  'shelf.extras': 'Ask for more than the titles',
+  'shelf.extrasNote':
+    'Each of these adds to what the model is asked for, on both routes, and to what the request costs.',
+  'shelf.extras.read': 'Read from the photograph',
+  'shelf.extras.recalled': 'Recalled by the model',
+  'shelf.extras.recalledWarning':
+    'These are not in your photograph. The model produces them from what it was trained on, so they can be wrong about a real book. Anything filled in this way is marked on the book and counted as lower confidence.',
+  'shelf.extra.publisher': 'Publisher or imprint',
+  'shelf.extra.edition': 'Edition or printing',
+  'shelf.extra.language': 'Language on the cover',
+  'shelf.extra.series': 'Series and volume number',
+  'shelf.extra.duplicates': 'Merge a book showing in two tiles',
+  'shelf.extra.abstract': 'A short abstract',
+  'shelf.extra.published': 'Year first published',
+  'shelf.extra.rating': 'A general reader rating',
+  'shelf.extra.original': 'Original language and whether this is a translation',
+  'shelf.noCover':
+    'Cover images are not offered. A model can only return a link, and fetching one would tell whoever hosts the image which books you own.',
+  'shelf.recalledCount': '{n} book(s) carry a recalled detail',
 }

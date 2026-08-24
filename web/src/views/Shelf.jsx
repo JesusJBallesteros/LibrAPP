@@ -12,6 +12,8 @@ import {
   readShelf,
 } from '../ai/model.js'
 import { providerById } from '../ai/providers.js'
+import { EXTRAS, extrasPrompt } from '../ai/extras.js'
+import { idbGet, idbSet } from '../store/idb.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 import { useT } from '../i18n/index.jsx'
 
@@ -47,12 +49,32 @@ export default function Shelf({ lib }) {
   // window, a lamp or the edge of a rug, and paying a vision model to read it
   // is waste. Keyed by tile name, which is unique within a cut.
   const [dropped, setDropped] = useState(() => new Set())
+  // What to ask for beyond the titles. A preference rather than a per-photo
+  // choice, so it is remembered between photographs and between sessions.
+  const [extras, setExtras] = useState([])
   // Kept apart from `error` above, which belongs to the photograph. A failure
   // to read has to appear beside the button that caused it: shown at the top of
   // the page it is below the fold on a phone, and looks like nothing happened.
   const [readError, setReadError] = useState(null)
   const failure = useRef(null)
   const inFlight = useRef(null)
+
+  useEffect(() => {
+    idbGet('shelf-extras')
+      .then((saved) => Array.isArray(saved) && setExtras(saved))
+      .catch(() => {})
+  }, [])
+
+  const toggleExtra = (id) =>
+    setExtras((current) => {
+      const next = current.includes(id) ? current.filter((each) => each !== id) : [...current, id]
+      idbSet('shelf-extras', next).catch(() => {})
+      return next
+    })
+
+  // One request text, used by the keyed route and by the copy button. If these
+  // ever diverge, the keyless route silently stops asking for what was ticked.
+  const instructions = promptText + extrasPrompt(extras)
 
   // What will actually be sent, and paid for.
   const kept = tiles ? tiles.tiles.filter((tile) => !dropped.has(tile.tile)) : []
@@ -114,11 +136,14 @@ export default function Shelf({ lib }) {
       const { transcription, usage } = await readShelf({
         tiles: kept,
         photo: tiles.photo,
-        instructions: promptText,
+        instructions,
         signal: controller.signal,
       })
-      const counted = (transcription.shelves || []).reduce((n, s) => n + (s.books?.length || 0), 0)
-      setProposed({ transcription, usage, counted })
+      const books = (transcription.shelves || []).flatMap((s) => s.books || [])
+      const recalled = books.filter(
+        (b) => b.abstract != null || b.published_year != null || b.rating != null,
+      ).length
+      setProposed({ transcription, usage, counted: books.length, recalled })
     } catch (err) {
       setReadError(describeFailure(err))
     } finally {
@@ -302,6 +327,39 @@ export default function Shelf({ lib }) {
               )}
             </div>
 
+            <div
+              className="card"
+              style={{ marginTop: 12, boxShadow: 'none', background: 'var(--paper-sunk)' }}
+            >
+              <strong className="tiny">{t('shelf.extras')}</strong>
+              <p className="tiny faint" style={{ margin: '6px 0 10px' }}>{t('shelf.extrasNote')}</p>
+
+              {['read', 'recalled'].map((kind) => (
+                <div key={kind} style={{ marginTop: kind === 'recalled' ? 14 : 0 }}>
+                  <span className="tiny muted">{t(`shelf.extras.${kind}`)}</span>
+                  {kind === 'recalled' && (
+                    <p className="tiny faint" style={{ margin: '4px 0 0' }}>
+                      {t('shelf.extras.recalledWarning')}
+                    </p>
+                  )}
+                  <div style={{ marginTop: 6 }}>
+                    {EXTRAS.filter((extra) => extra.kind === kind).map((extra) => (
+                      <label key={extra.id} className="check">
+                        <input
+                          type="checkbox"
+                          checked={extras.includes(extra.id)}
+                          onChange={() => toggleExtra(extra.id)}
+                        />
+                        <span className="tiny">{t(`shelf.extra.${extra.id}`)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <p className="tiny faint" style={{ margin: '12px 0 0' }}>{t('shelf.noCover')}</p>
+            </div>
+
             {keyStatus?.usable && (
               <>
                 <div className="row" style={{ marginTop: 12 }}>
@@ -357,7 +415,7 @@ export default function Shelf({ lib }) {
             )}
 
             <div className="row" style={{ marginTop: 10 }}>
-              <button className="btn small" onClick={() => flash('prompt', promptText)}>
+              <button className="btn small" onClick={() => flash('prompt', instructions)}>
                 {copied === 'prompt' ? t('common.copied') : t('shelf.copyInstructions')}
               </button>
               <button className="btn small" onClick={() => setShowPrompt((s) => !s)}>
@@ -374,7 +432,7 @@ export default function Shelf({ lib }) {
 
             {showPrompt && (
               <pre className="snippet" style={{ marginTop: 12, maxHeight: 320 }}>
-                {promptText}
+                {instructions}
               </pre>
             )}
 
@@ -422,6 +480,8 @@ export default function Shelf({ lib }) {
                 <h3 style={{ margin: 0 }}>{t('shelf.step3')}</h3>
                 <span className="tiny faint">
                   {t('shelf.bookCount', { n: proposed.counted })}
+                  {proposed.recalled > 0 &&
+                    ` · ${t('shelf.recalledCount', { n: proposed.recalled })}`}
                   {spent !== null && ` · ${t('shelf.cost', { amount: dollars(spent) })}`}
                 </span>
               </div>

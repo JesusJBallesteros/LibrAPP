@@ -71,6 +71,31 @@ export function intentWhy({ book }) {
   return bits.join(', ')
 }
 
+/** A book that is out of the house, or null. */
+export const lentOut = (book) =>
+  book?.lent_to ? { who: book.lent_to, since: book.lent_on ?? null } : null
+
+/** A book that belongs to somebody else, or null. */
+export const borrowed = (book) =>
+  book?.borrowed_from ? { who: book.borrowed_from, since: book.borrowed_on ?? null } : null
+
+/**
+ * Books away from their shelf, longest gone first.
+ *
+ * Undated loans sort last rather than being dropped. Knowing a book is with
+ * someone matters even when the date was never recorded.
+ */
+export function onLoan(books, kind = 'lent') {
+  const read = kind === 'lent' ? lentOut : borrowed
+  return books
+    .map((book) => {
+      const loan = read(book)
+      return loan && { book, who: loan.who, age: yearsSince(loan.since) }
+    })
+    .filter(Boolean)
+    .sort((a, b) => (b.age ?? -1) - (a.age ?? -1))
+}
+
 export const uniqueSorted = (values) => [...new Set(values.filter(Boolean))].sort()
 
 export async function copyText(text) {

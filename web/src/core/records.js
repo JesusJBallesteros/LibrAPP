@@ -44,6 +44,19 @@ export const RECORD_FIELDS = {
   listed_volumes: null,
   flags: [],
   notes: null,
+  // Where a book is, when it is not on its shelf. A book lent out is still
+  // owned; a book borrowed is not owned at all, and the catalog says so rather
+  // than quietly counting it as part of the collection.
+  // Recalled by a model rather than read off a spine, when the extras
+  // checklist asked for them. Every book carrying one is flagged.
+  abstract: null,
+  published_year: null,
+  rating: null,
+  original_language: null,
+  lent_to: null,
+  lent_on: null,
+  borrowed_from: null,
+  borrowed_on: null,
 }
 
 export class SourceError extends Error {}

@@ -53,6 +53,11 @@ export const TRANSCRIPTION_SCHEMA = {
                 'series_index',
                 'confidence',
                 'notes',
+                'abstract',
+                'published_year',
+                'rating',
+                'original_language',
+                'flags',
               ],
               properties: {
                 title: {
@@ -65,6 +70,13 @@ export const TRANSCRIPTION_SCHEMA = {
                 series_index: { type: ['integer', 'null'] },
                 confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
                 notes: { type: ['string', 'null'] },
+                // Only filled in when the extras checklist asked for them, and
+                // recalled rather than read. See ai/extras.js.
+                abstract: { type: ['string', 'null'] },
+                published_year: { type: ['integer', 'null'] },
+                rating: { type: ['number', 'null'] },
+                original_language: { type: ['string', 'null'] },
+                flags: { type: 'array', items: { type: 'string' } },
               },
             },
           },

@@ -21,7 +21,19 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
     [t('book.formats'), (book.formats || []).map((f) => t('format.' + f)).join(' + ')],
     [t('book.read'), t(`read.${state}`)],
     [t('book.acquired'), book.acquired_on],
+    [
+      t('book.lentTo'),
+      book.lent_to && (book.lent_on ? `${book.lent_to} (${book.lent_on})` : book.lent_to),
+    ],
+    [
+      t('book.borrowedFrom'),
+      book.borrowed_from &&
+        (book.borrowed_on ? `${book.borrowed_from} (${book.borrowed_on})` : book.borrowed_from),
+    ],
     [t('book.publisher'), book.publisher],
+    [t('book.published'), book.published_year],
+    [t('book.rating'), book.rating],
+    [t('book.originalLanguage'), book.original_language],
     [t('book.genre'), book.genre],
     [t('book.where'), book.location],
     [t('book.collections'), book.collections],
@@ -93,6 +105,12 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
               </button>
             )}
           </div>
+        )}
+
+        {book.abstract && (
+          <p className="tiny muted" style={{ marginTop: 14 }}>
+            <strong>{t('book.abstract')}</strong> {book.abstract}
+          </p>
         )}
 
         {book.notes && (

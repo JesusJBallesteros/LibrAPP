@@ -577,4 +577,71 @@ export default {
   'landing.next.action': 'Abrir el escritorio',
   'landing.next.empty': 'Estar\u00e1 listo en cuanto haya libros aqu\u00ed.',
   'desk.estimateNote': 'una estimaci\u00f3n. Lo que ha costado de verdad aparece con la respuesta.',
+
+  // -- prestados y tomados prestados ----------------------------------------
+  'book.lentTo': 'Prestado a',
+  'book.borrowedFrom': 'Tomado prestado de',
+
+  'editor.whereIsIt': 'Fuera de la estanter\u00eda',
+  'editor.loanHint':
+    'Solo se aplica uno de los dos a la vez. Un libro que prestas sigue siendo tuyo; uno que te prestan, no.',
+  'editor.lentTo': 'Prestado a',
+  'editor.lentOn': 'Prestado el',
+  'editor.borrowedFrom': 'Tomado prestado de',
+  'editor.borrowedOn': 'Tomado prestado el',
+  'editor.bothLoans': 'Un libro no puede estar prestado y tomado prestado a la vez.',
+
+  'catalog.whereIs': 'D\u00f3nde',
+  'catalog.atHome': 'en la estanter\u00eda',
+  'catalog.lentOut': 'prestado',
+  'catalog.borrowed': 'de otra persona',
+
+  'desk.away': 'Fuera de la estanter\u00eda',
+  'desk.awayNote':
+    'Libros que no est\u00e1n donde deber\u00edan. Se anotan a mano, uno a uno, porque no hay otra forma de saberlo.',
+  'desk.lentGroup': 'Prestados ({n})',
+  'desk.borrowedGroup': 'Prestados a ti y todav\u00eda aqu\u00ed ({n})',
+  'desk.nothingAway': 'No hay ning\u00fan libro fuera de casa.',
+  'desk.withWhom': 'con {who}',
+  'desk.fromWhom': 'de {who}',
+  'desk.sinceUnknown': 'sin fecha anotada',
+
+  // -- la nube de palabras --------------------------------------------------
+  'desk.themes': 'A lo que vuelve una y otra vez',
+  'desk.themesNote':
+    'Palabras clave usadas por m\u00e1s de un libro, m\u00e1s grandes cuanto m\u00e1s aparecen. Elige una para ver esos libros.',
+  'cloud.none': 'Todav\u00eda no hay ninguna palabra clave usada por m\u00e1s de un libro.',
+  'cloud.count': 'la usan {n} libros',
+  'cloud.label': '{word}, la usan {n} libros',
+  'cloud.note':
+    'Se muestran {drawn} de {distinct} palabras clave. Las dem\u00e1s aparecen una sola vez.',
+  'catalog.taggedWith': 'etiquetado {tag}',
+
+  // -- extras que se le pueden pedir al modelo ------------------------------
+  'book.abstract': 'Resumen:',
+  'book.published': 'Publicado por primera vez',
+  'book.rating': 'Valoraci\u00f3n',
+  'book.originalLanguage': 'Idioma original',
+  'flag.recalled_details':
+    'algunos datos de aqu\u00ed los ha recordado un modelo, no se han le\u00eddo de la foto',
+
+  'shelf.extras': 'Pedir algo m\u00e1s que los t\u00edtulos',
+  'shelf.extrasNote':
+    'Cada opci\u00f3n a\u00f1ade algo a lo que se le pide al modelo, por las dos v\u00edas, y a lo que cuesta la petici\u00f3n.',
+  'shelf.extras.read': 'Le\u00eddo de la foto',
+  'shelf.extras.recalled': 'Recordado por el modelo',
+  'shelf.extras.recalledWarning':
+    'Esto no est\u00e1 en tu foto. El modelo lo produce a partir de lo que ha aprendido, as\u00ed que puede equivocarse sobre un libro real. Todo lo que se rellene as\u00ed queda marcado en el libro y cuenta como menos fiable.',
+  'shelf.extra.publisher': 'Editorial o sello',
+  'shelf.extra.edition': 'Edici\u00f3n o impresi\u00f3n',
+  'shelf.extra.language': 'Idioma de la cubierta',
+  'shelf.extra.series': 'Serie y n\u00famero de volumen',
+  'shelf.extra.duplicates': 'Unir un libro que sale en dos fotos',
+  'shelf.extra.abstract': 'Un resumen breve',
+  'shelf.extra.published': 'A\u00f1o de la primera publicaci\u00f3n',
+  'shelf.extra.rating': 'Una valoraci\u00f3n general de lectores',
+  'shelf.extra.original': 'Idioma original y si esto es una traducci\u00f3n',
+  'shelf.noCover':
+    'No se ofrecen im\u00e1genes de cubierta. Un modelo solo puede devolver un enlace, y descargarlo dir\u00eda a quien aloje la imagen qu\u00e9 libros tienes.',
+  'shelf.recalledCount': '{n} libro(s) traen alg\u00fan dato recordado',
 }

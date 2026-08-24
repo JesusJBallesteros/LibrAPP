@@ -33,8 +33,9 @@ const tagValues = (books, kind) =>
 /**
  * The reader profile, as markdown.
  *
- * Reproduces the command-line output line for line, so a profile assembled in
- * the app and one assembled in a terminal are the same document.
+ * Follows the command-line output section for section, with one exception. The
+ * loans section has no command-line counterpart, because lending is recorded in
+ * the override layer and the Python tools do not read that layer.
  */
 export function readerProfile(catalog, { recentYears = 2, now = Date.now() } = {}) {
   const books = catalog.books || []
@@ -103,6 +104,23 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now() } = {
     .slice(0, 15)
   for (const [age, book] of stale) {
     out.push(`- ${describe(book, names)} — bought ${Math.round(age)} years ago`)
+  }
+
+  // A recommendation should not suggest a book that is at a friend's house, and
+  // a borrowed book is somebody else's regardless of what the shelf looks like.
+  const lent = books.filter((b) => b.lent_to)
+  const borrowedIn = books.filter((b) => b.borrowed_from)
+  if (lent.length || borrowedIn.length) {
+    out.push('')
+    out.push('## Not on the shelf right now', '')
+    for (const book of lent) {
+      const when = book.lent_on ? ` on ${book.lent_on}` : ''
+      out.push(`- ${describe(book, names)}: lent to ${book.lent_to}${when}`)
+    }
+    for (const book of borrowedIn) {
+      const when = book.borrowed_on ? ` on ${book.borrowed_on}` : ''
+      out.push(`- ${describe(book, names)}: borrowed from ${book.borrowed_from}${when}`)
+    }
   }
 
   return out.join('\n') + '\n'

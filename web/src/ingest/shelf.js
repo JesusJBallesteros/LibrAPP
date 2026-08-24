@@ -130,6 +130,11 @@ export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
   }
 }
 
+// Which fields a model may only have recalled, and the flag that says so.
+// Kept next to the checklist that asks for them.
+const RECALLED_FIELDS = ['abstract', 'published_year', 'rating', 'original_language']
+const RECALLED_FLAG = 'recalled_details'
+
 export class TranscriptionError extends Error {}
 
 /**
@@ -152,6 +157,7 @@ export function loadTranscription(payload) {
 
   const records = []
   let uncertain = 0
+  let recalledBooks = 0
   for (const group of groups) {
     const location = clean(String(group?.location ?? ''))
     for (const book of group?.books || []) {
@@ -162,6 +168,12 @@ export function loadTranscription(payload) {
         throw new TranscriptionError(`unknown confidence ${JSON.stringify(confidence)} for ${title}`)
       }
       if (confidence === 'low') uncertain++
+
+      // A model can claim a field was recalled, or forget to. Neither is
+      // trusted: the flag is derived from which recalled fields are actually
+      // present, so the catalog cannot be told a recalled abstract was read.
+      const recalled = RECALLED_FIELDS.filter((field) => book[field] != null)
+      if (recalled.length) recalledBooks += 1
 
       records.push({
         title,
@@ -174,13 +186,25 @@ export function loadTranscription(payload) {
         location: location || null,
         confidence,
         notes: book.notes ? clean(String(book.notes)) : null,
-        flags: confidence === 'low' ? ['illegible_spine'] : [],
+        abstract: book.abstract ? clean(String(book.abstract)) : null,
+        published_year: Number.isInteger(book.published_year) ? book.published_year : null,
+        rating: typeof book.rating === 'number' ? book.rating : null,
+        original_language: book.original_language ? clean(String(book.original_language)) : null,
+        flags: [
+          ...(confidence === 'low' ? ['illegible_spine'] : []),
+          ...(recalled.length ? [RECALLED_FLAG] : []),
+        ],
       })
     }
   }
 
   return {
     records,
-    stats: { photo: payload.photo ?? null, shelves: groups.length, uncertain_spines: uncertain },
+    stats: {
+      photo: payload.photo ?? null,
+      shelves: groups.length,
+      uncertain_spines: uncertain,
+      recalled_details: recalledBooks,
+    },
   }
 }

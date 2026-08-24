@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
-import { authorNames, byline, copyText, forgotten, intentWhy } from '../lib.js'
+import { authorNames, byline, copyText, forgotten, intentWhy, onLoan } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
 import GenrePie from '../components/GenrePie.jsx'
+import WordCloud from '../components/WordCloud.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
 // Imported under another name: `ask` is already the state holding which
@@ -26,7 +27,7 @@ const ASKS = [
   { id: 'recommend', text: recommendPrompt },
 ]
 
-export default function Desk({ catalog }) {
+export default function Desk({ catalog, onGo }) {
   const { t, language } = useT()
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
@@ -43,6 +44,8 @@ export default function Desk({ catalog }) {
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
+  const lent = useMemo(() => onLoan(catalog?.books || [], 'lent'), [catalog])
+  const borrowedIn = useMemo(() => onLoan(catalog?.books || [], 'borrowed'), [catalog])
 
   // Built here rather than fetched: the profile is a view of the catalog
   // already in hand, and computing it locally is what lets the desk work with
@@ -182,8 +185,57 @@ export default function Desk({ catalog }) {
           </div>
 
           <div className="card">
+            <h3>{t('desk.away')}</h3>
+            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.awayNote')}</p>
+
+            {!lent.length && !borrowedIn.length && (
+              <p className="muted">{t('desk.nothingAway')}</p>
+            )}
+
+            {[
+              ['desk.lentGroup', lent, 'desk.withWhom'],
+              ['desk.borrowedGroup', borrowedIn, 'desk.fromWhom'],
+            ].map(([heading, rows, whoKey]) =>
+              rows.length ? (
+                <div key={heading} style={{ marginTop: 10 }}>
+                  <strong className="tiny">{t(heading, { n: rows.length })}</strong>
+                  {rows.map((row) => (
+                    <div className="forgotten-item spread" key={row.book.id}>
+                      <span>
+                        <span className="title">{row.book.title}</span>
+                        <br />
+                        <span className="tiny muted">{byline(row.book, authors)}</span>
+                        <div className="why">{t(whoKey, { who: row.who })}</div>
+                      </span>
+                      <span className="waited">
+                        {row.age === null
+                          ? t('desk.sinceUnknown')
+                          : t('desk.yearsShort', {
+                              n: row.age.toLocaleString(language, {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1,
+                              }),
+                            })}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : null,
+            )}
+          </div>
+
+          <div className="card">
             <h3>{t('desk.madeOf')}</h3>
             <GenrePie books={catalog.books} />
+          </div>
+
+          <div className="card">
+            <h3>{t('desk.themes')}</h3>
+            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.themesNote')}</p>
+            <WordCloud
+              books={catalog.books}
+              onPick={(word) => onGo?.('catalog', { tag: word.key, label: word.value })}
+            />
           </div>
         </div>
 

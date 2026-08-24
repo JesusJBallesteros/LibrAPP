@@ -1,8 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import BookDetail from '../components/BookDetail.jsx'
 import BookEditor from '../components/BookEditor.jsx'
 import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
-import { authorNames, byline, fold, readState, sortName, uniqueSorted } from '../lib.js'
+import {
+  authorNames,
+  borrowed,
+  byline,
+  fold,
+  lentOut,
+  readState,
+  sortName,
+  uniqueSorted,
+} from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 
 const GROUPINGS = ['title', 'author', 'series']
@@ -18,18 +27,26 @@ const SORTS = {
   oldest: (a, b) => (a.acquired_on || '￿').localeCompare(b.acquired_on || '￿'),
 }
 
-export default function Catalog({ catalog, onGo, lib }) {
+export default function Catalog({ catalog, onGo, lib, focus }) {
   const { t, language } = useT()
   const [q, setQ] = useState('')
   const [read, setRead] = useState('all')
   const [format, setFormat] = useState('all')
   const [source, setSource] = useState('all')
+  const [loan, setLoan] = useState('all')
+  // Set when the desk sends a word here. Matched against tag keys, which are
+  // already folded, so it is exact rather than a substring search.
+  const [tag, setTag] = useState(null)
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)
   const [editing, setEditing] = useState(null) // an existing book, or 'new'
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
+
+  useEffect(() => {
+    if (focus?.tag) setTag({ key: focus.tag, label: focus.label ?? focus.tag })
+  }, [focus])
 
   const prepared = useMemo(() => {
     if (!catalog) return []
@@ -54,10 +71,14 @@ export default function Catalog({ catalog, onGo, lib }) {
       if (read !== 'all' && readState(b) !== read) return false
       if (format !== 'all' && !(b.formats || []).includes(format)) return false
       if (source !== 'all' && !(b.sources || []).includes(source)) return false
+      if (loan === 'lent' && !lentOut(b)) return false
+      if (loan === 'borrowed' && !borrowed(b)) return false
+      if (loan === 'home' && (lentOut(b) || borrowed(b))) return false
+      if (tag && !(b.tags || []).some((each) => each.key === tag.key)) return false
       return true
     })
     return out.sort(SORTS[sort])
-  }, [prepared, q, read, format, source, sort])
+  }, [prepared, q, read, format, source, loan, tag, sort])
 
   const groups = useMemo(() => {
     if (group === 'title') return [{ key: null, books: shown }]
@@ -211,6 +232,22 @@ export default function Catalog({ catalog, onGo, lib }) {
           </label>
         )}
 
+        {tag && (
+          <button className="btn small" onClick={() => setTag(null)}>
+            {t('catalog.taggedWith', { tag: tag.label })} ×
+          </button>
+        )}
+
+        <label className="field">
+          {t('catalog.whereIs')}
+          <select value={loan} onChange={(e) => setLoan(e.target.value)}>
+            <option value="all">{t('catalog.any')}</option>
+            <option value="home">{t('catalog.atHome')}</option>
+            <option value="lent">{t('catalog.lentOut')}</option>
+            <option value="borrowed">{t('catalog.borrowed')}</option>
+          </select>
+        </label>
+
         <label className="field">
           {t('catalog.sort')}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -232,6 +269,8 @@ export default function Catalog({ catalog, onGo, lib }) {
               setRead('all')
               setFormat('all')
               setSource('all')
+              setLoan('all')
+              setTag(null)
             }}
           >
             {t('catalog.clearFilters')}
@@ -269,6 +308,8 @@ export default function Catalog({ catalog, onGo, lib }) {
                       </span>
                     ))}
                     <span className={`pill ${readState(book)}`}>{t(`read.${readState(book)}`)}</span>
+                    {lentOut(book) && <span className="pill flag">{t('catalog.lentOut')}</span>}
+                    {borrowed(book) && <span className="pill unread">{t('catalog.borrowed')}</span>}
                     {book.acquired_on && <span className="faint tiny">{book.acquired_on.slice(0, 4)}</span>}
                   </span>
                 </button>

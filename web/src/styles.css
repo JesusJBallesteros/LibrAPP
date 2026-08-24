@@ -182,6 +182,22 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tiles figure.dropped figcaption { text-decoration: line-through; }
 .tiles figure.dropped .btn { text-decoration: none; }
 
+.word-cloud { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.word-cloud .word {
+  border: 0;
+  background: none;
+  padding: 2px 3px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--serif);
+  line-height: 1.25;
+}
+.word-cloud .word:hover { background: var(--accent-soft); text-decoration: underline; }
+.word-cloud .word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.check { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
+.check input { accent-color: var(--accent); }
+
 /* ---------------------------------------------------------------- shell -- */
 
 .shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }

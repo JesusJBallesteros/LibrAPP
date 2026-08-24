@@ -193,13 +193,13 @@ export default function App() {
         )}
 
         {view === 'catalog' ? (
-          <Catalog catalog={lib.catalog} onGo={go} lib={lib} />
+          <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} />
         ) : view === 'list' ? (
           <ListImport lib={lib} />
         ) : view === 'desk' ? (
-          <Desk catalog={lib.catalog} />
+          <Desk catalog={lib.catalog} onGo={go} />
         ) : (
           <Storage lib={lib} focus={focus} />
         )}

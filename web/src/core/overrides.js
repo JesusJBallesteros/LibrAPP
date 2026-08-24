@@ -34,6 +34,13 @@ export const EDITABLE = [
   'publisher',
   'notes',
   'formats',
+  // Not corrections to a source, but facts only the owner knows. They live here
+  // because this is the layer that survives a rebuild, and because a source
+  // file records what was ingested and is never written back to.
+  'lent_to',
+  'lent_on',
+  'borrowed_from',
+  'borrowed_on',
 ]
 
 export const emptyOverrides = () => ({ librapp_overrides: OVERRIDES_VERSION, entries: {} })
