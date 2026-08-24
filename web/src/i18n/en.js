@@ -18,7 +18,7 @@ export default {
   'landing.needs.source':
     'At least one source of books: a photograph, a list you already keep, or a catalog exported from another device.',
   'landing.needs.ai':
-    'Reading spines from a photograph needs an AI assistant. You can paste the tiles into any assistant yourself, or give LibrAPP a key so it can do it. Everything else works without AI.',
+    'An AI service, for two of the steps: reading the spines off a photograph, and asking the desk about your books. Both work without a key, by preparing the request for you to paste into any AI session yourself. Everything else runs here with no AI at all.',
   'landing.start': 'Where would you like to start?',
   'landing.start.hint': 'Any of these will set up your storage if you have not chosen it yet.',
 
@@ -563,4 +563,11 @@ export default {
   'shelf.failedUnknown': 'It failed without saying why.',
   'shelf.copyFailure': 'Copy this message',
   'shelf.usingService': 'Service: {service} \u00b7 model: {model}',
+
+  'landing.next.title': 'Then ask it things',
+  'landing.next.body':
+    'A catalog is a starting point, not the end of it. The desk uses your shelves as context: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through what you own, a list for a long flight or a summer. It answers about your books rather than books in general.',
+  'landing.next.action': 'Open the desk',
+  'landing.next.empty': 'Ready as soon as there are books here.',
+  'desk.estimateNote': 'an estimate. What it actually cost appears with the answer.',
 }

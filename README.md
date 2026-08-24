@@ -14,8 +14,13 @@ installs as an app on Windows, Linux and Android.
 ---
 
 Photograph a shelf and LibrAPP reads the spines into a catalog you can search,
-filter and browse. You can also import a spreadsheet, a CSV, or a store export
-— and combine all of them into one catalog with no duplicates.
+filter and browse. You can also import a spreadsheet, a CSV, or a store export,
+and combine all of them into one catalog with no duplicates.
+
+Then ask it things. The **[LibrAPPrian's desk](#the-desk)** takes your own
+shelves as context: what to read next and why, which books by an author you have
+collected unevenly are missing, what threads run through what you own, a list for
+a long flight. The answers are about your books rather than books in general.
 
 Your books stay on your device. There is no account, no server and no sync.
 
@@ -51,12 +56,14 @@ The interface is available in English and Spanish, chosen on the opening page.
 | **Merge** | the same book from several sources becomes one entry, not duplicates |
 | **Browse** | search, filter and group offline — no network, no waiting |
 | **Correct** | edit or remove any entry; corrections outlast every rebuild |
-| **Ask** | recommendations and synopses, using your catalog as context |
+| **Ask** | recommendations, synopses and reading lists, with your own shelves as the context |
 
-Only two steps involve AI: reading spines off a photograph, and asking
-questions. Everything else — importing, merging, searching, filtering — is
-plain code running locally. You can use LibrAPP without any AI at all, and when
-you do use it, you choose which service and pay for it directly.
+Two steps use AI: reading spines off a photograph, and asking the desk a
+question. Both work without a key, by preparing the request for you to paste into
+any AI session yourself, and both show what a request will cost before it is
+sent. Everything else, meaning importing, merging, searching and filtering, is
+plain code running locally. You choose which service to use and pay for it
+directly.
 
 ### Why it might suit you
 
@@ -64,6 +71,8 @@ you do use it, you choose which service and pay for it directly.
 - **Works offline.** The catalog is a file on your device, not a web service.
 - **Reads what you already have.** Most catalogs make you type everything in.
 - **Your data is plain JSON.** Readable, transferable and always yours.
+- **It has something to say.** The desk reads the shape of your collection and
+  answers from it, which a general assistant cannot do without your shelves.
 
 ---
 

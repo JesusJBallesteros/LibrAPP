@@ -6,7 +6,13 @@ import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
 // Imported under another name: `ask` is already the state holding which
 // prompt is selected, and the local binding silently shadows the import.
-import { actualCost, ask as askModel, dollars, pricesForChoice } from '../ai/model.js'
+import {
+  actualCost,
+  ask as askModel,
+  dollars,
+  estimateAskCost,
+  pricesForChoice,
+} from '../ai/model.js'
 import { providerById } from '../ai/providers.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
@@ -82,8 +88,16 @@ export default function Desk({ catalog }) {
     }
   }
 
-  // Naming the service on the button matters: the answer is about to be paid
-  // for by whoever's key is switched on, and they should see whose it is.
+  // The shelf shows what a read will cost before spending anything. A question
+  // should say the same before it is sent.
+  const askEstimate = estimateAskCost(assembled, pricesForChoice(keyStatus))
+  const askEstimateLabel =
+    askEstimate.dollars !== null
+      ? dollars(askEstimate.dollars)
+      : t('shelf.tokensOnly', { k: Math.max(1, Math.round(askEstimate.inputTokens / 1000)) })
+
+  // The button names the service because the answer is paid for by whichever
+  // key is switched on.
   const serviceName = keyStatus ? providerById(keyStatus.provider).label.split(' - ')[0] : ''
   const askLabel =
     serviceName && serviceName.length <= 20 ? t('desk.askService', { service: serviceName }) : t('desk.askForMe')
@@ -214,6 +228,12 @@ export default function Desk({ catalog }) {
                 {copied === 'ctx' ? t('common.copied') : t('desk.copyProfile')}
               </button>
             </div>
+
+            {keyStatus?.usable && assembled && (
+              <p className="tiny faint" style={{ marginTop: 8 }}>
+                {askEstimateLabel} · {t('desk.estimateNote')}
+              </p>
+            )}
 
             {askError && (
               <div className="notice bad" style={{ marginTop: 12 }}>

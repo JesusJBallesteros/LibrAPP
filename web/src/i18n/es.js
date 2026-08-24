@@ -17,7 +17,7 @@ export default {
   'landing.needs.source':
     'Al menos una fuente de libros: una fotografía, una lista que ya tengas o un catálogo exportado desde otro dispositivo.',
   'landing.needs.ai':
-    'Leer los lomos de una fotografía necesita un asistente de IA. Puedes pegar las imágenes en el asistente que uses, o darle a LibrAPP una clave para que lo haga por ti. Todo lo demás funciona sin IA.',
+    'Un servicio de IA, para dos de los pasos: leer los lomos de una foto y preguntar en el escritorio sobre tus libros. Los dos funcionan sin clave, preparando la petición para que la pegues tú en cualquier sesión de IA. Todo lo demás funciona aquí sin IA.',
   'landing.start': '¿Por dónde quieres empezar?',
   'landing.start.hint': 'Cualquiera de estas opciones configurará el almacenamiento si aún no lo has elegido.',
 
@@ -570,4 +570,11 @@ export default {
   'shelf.failedUnknown': 'Ha fallado sin decir por qu\u00e9.',
   'shelf.copyFailure': 'Copiar este mensaje',
   'shelf.usingService': 'Servicio: {service} \u00b7 modelo: {model}',
+
+  'landing.next.title': 'Y luego preg\u00fantale',
+  'landing.next.body':
+    'Un cat\u00e1logo es un punto de partida, no el final. El escritorio usa tus estanter\u00edas como contexto: qu\u00e9 leer a continuaci\u00f3n y por qu\u00e9, qu\u00e9 te falta de un autor que has ido reuniendo a medias, qu\u00e9 hilos recorren lo que tienes, una lista para un vuelo largo o para el verano. Responde sobre tus libros, no sobre los libros en general.',
+  'landing.next.action': 'Abrir el escritorio',
+  'landing.next.empty': 'Estar\u00e1 listo en cuanto haya libros aqu\u00ed.',
+  'desk.estimateNote': 'una estimaci\u00f3n. Lo que ha costado de verdad aparece con la respuesta.',
 }

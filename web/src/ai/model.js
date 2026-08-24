@@ -41,6 +41,23 @@ export function estimateShelfCost(tiles, prices, { promptTokens = 800, outputTok
   }
 }
 
+/**
+ * What a question will cost, before it is sent.
+ *
+ * The input side is measured from the assembled text at roughly four characters
+ * per token. That is accurate enough to warn with and not accurate enough to
+ * quote. The output side cannot be known in advance at all, so a typical answer
+ * is assumed.
+ */
+export function estimateAskCost(request, prices, { outputTokens = 1200 } = {}) {
+  const inputTokens = Math.ceil(String(request || '').length / 4)
+  return {
+    inputTokens,
+    outputTokens,
+    dollars: prices ? (inputTokens / 1e6) * prices.in + (outputTokens / 1e6) * prices.out : null,
+  }
+}
+
 export const dollars = (value) => (value < 0.01 ? 'under a cent' : `about $${value.toFixed(2)}`)
 
 /** What a call actually cost, from the usage the service returned. Null if unpriced. */

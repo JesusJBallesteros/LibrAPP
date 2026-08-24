@@ -114,6 +114,24 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
           </div>
         </section>
 
+        <section className="landing-next">
+          <h2>{t('landing.next.title')}</h2>
+          <p className="muted tiny">{t('landing.next.body')}</p>
+          <button
+            className="btn primary"
+            style={{ marginTop: 12 }}
+            onClick={() => onGo('desk')}
+            disabled={!hasCatalog}
+          >
+            {t('landing.next.action')}
+          </button>
+          {!hasCatalog && (
+            <p className="tiny faint" style={{ marginTop: 8 }}>
+              {t('landing.next.empty')}
+            </p>
+          )}
+        </section>
+
         <footer className="landing-foot">
           {/* One page behind four links: each lands on its own section. */}
           <nav className="foot-links tiny">

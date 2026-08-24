@@ -16,7 +16,7 @@ import {
   providerById,
   toGeminiSchema,
 } from '../src/ai/providers.js'
-import { estimateShelfCost, visualTokens } from '../src/ai/model.js'
+import { estimateAskCost, estimateShelfCost, visualTokens } from '../src/ai/model.js'
 
 const FAMILIES = new Set(['anthropic', 'openai', 'google'])
 
@@ -147,6 +147,24 @@ describe('what a shelf will cost', () => {
     const unpriced = estimateShelfCost(tiles, null)
     expect(unpriced.dollars).toBeNull()
     expect(unpriced.inputTokens).toBeGreaterThan(0)
+  })
+
+  it('estimates a question from the text that will be sent', () => {
+    const short = estimateAskCost('a'.repeat(400), null)
+    const long = estimateAskCost('a'.repeat(4000), null)
+    expect(long.inputTokens).toBeGreaterThan(short.inputTokens)
+    expect(short.inputTokens).toBeGreaterThan(0)
+  })
+
+  it('prices a question where the rate is known, and not where it is not', () => {
+    expect(estimateAskCost('a'.repeat(4000), { in: 5, out: 25 }).dollars).toBeGreaterThan(0)
+    expect(estimateAskCost('a'.repeat(4000), null).dollars).toBeNull()
+  })
+
+  it('estimates an empty question as costing the answer alone', () => {
+    const empty = estimateAskCost('', { in: 5, out: 25 })
+    expect(empty.inputTokens).toBe(0)
+    expect(empty.dollars).toBeGreaterThan(0)
   })
 
   it('only claims a price for a model whose rate has been checked', () => {
