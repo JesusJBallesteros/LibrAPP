@@ -10,19 +10,14 @@ import ListImport from './views/ListImport.jsx'
 import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
 
-const VIEWS = [
-  { id: 'home', glyph: '✦' },
-  { id: 'catalog', glyph: '📖' },
-  { id: 'shelf', glyph: '📷' },
-  { id: 'list', glyph: '📋' },
-  { id: 'desk', glyph: '🕮' },
-  { id: 'storage', glyph: '🗄' },
-]
+const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
 
+// The sidebar calls the desk by a shorter name than its own title carries.
 const NAV_KEY = {
-  home: 'home', catalog: 'catalog', shelf: 'shelf',
-  list: 'list', desk: 'desk', storage: 'library',
+  catalog: 'catalog', shelf: 'shelf', list: 'list',
+  desk: 'deskShort', storage: 'library', about: 'about',
 }
 
 export default function App() {
@@ -64,9 +59,9 @@ export default function App() {
     return <div className="loading">{t('common.opening')}</div>
   }
 
-  // Before every other check: About must be readable in whatever state the
-  // app is in, including the very first visit.
-  if (view === 'about') {
+  // About has to be readable before a library exists, and there is no shell to
+  // put it in at that point, so it gets a page of its own with a way back.
+  if (view === 'about' && lib.status !== 'ready') {
     return <About focus={focus} onBack={() => setView(before)} />
   }
 
@@ -129,26 +124,25 @@ export default function App() {
           <h1>
             Libr<em>APP</em>
           </h1>
-          <p>{t('app.strapline')}</p>
+          <span className="brand-rule" aria-hidden="true" />
+          <p className="eyebrow">{t('app.strapline')}</p>
         </button>
 
         <nav className="nav">
-          {VIEWS.map((v) => (
+          {VIEWS.map((id) => (
             <button
-              key={v.id}
-              onClick={() => go(v.id)}
-              aria-current={view === v.id}
-              title={t(`nav.${NAV_KEY[v.id]}.hint`)}
+              key={id}
+              onClick={() => go(id)}
+              aria-current={view === id}
+              title={t(`nav.${NAV_KEY[id]}.hint`)}
             >
-              <span className="glyph" aria-hidden="true">
-                {v.glyph}
-              </span>
-              {t(`nav.${NAV_KEY[v.id]}`)}
+              {t(`nav.${NAV_KEY[id]}`)}
             </button>
           ))}
         </nav>
 
         <div className="sidebar-foot">
+          <p className="eyebrow">{t('sidebar.holdings')}</p>
           {counts ? (
             <dl>
               <dt>{t('sidebar.books')}</dt>
@@ -170,11 +164,22 @@ export default function App() {
               {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
             </button>
           </div>
-          <div className="sidebar-links">
-            <button className="btn link tiny" onClick={() => go('about')}>
-              {t('foot.about')}
-            </button>
-          </div>
+          <ThemeToggle />
+
+          <nav className="sidebar-links">
+            {[
+              ['foot.about', null],
+              ['foot.privacy', 'privacy'],
+              ['foot.licence', 'licence'],
+            ].map(([key, section], i) => (
+              <span key={key}>
+                {i > 0 && <span aria-hidden="true"> · </span>}
+                <button className="btn link" onClick={() => go('about', section)}>
+                  {t(key)}
+                </button>
+              </span>
+            ))}
+          </nav>
         </div>
       </aside>
 
@@ -200,6 +205,8 @@ export default function App() {
           <ListImport lib={lib} />
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} onGo={go} />
+        ) : view === 'about' ? (
+          <About focus={focus} inShell />
         ) : (
           <Storage lib={lib} focus={focus} />
         )}

@@ -291,10 +291,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .foot-links a,
 .foot-links .btn.link { color: var(--accent); font-size: 12.5px; }
 
-.sidebar-links { padding: 10px 8px 0; margin-top: 8px; border-top: 1px solid var(--rule); }
-.sidebar-links .btn.link { color: var(--ink-faint); padding: 0; }
-.sidebar-links .btn.link:hover { color: var(--accent); }
-
 /* About reuses the landing shell; its cards want a little more room to read. */
 .landing section.card { margin-bottom: 14px; }
 .landing section.card p + p { margin-top: 9px; }
@@ -322,56 +318,123 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------------------------------------------------------------- shell -- */
 
-.shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
+.shell { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
 
 .sidebar {
   background: var(--paper-sunk);
   border-right: 1px solid var(--rule);
-  padding: 22px 14px;
+  padding: 34px 0 26px;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 34px;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
 }
 
-.brand { padding: 0 8px; }
+.brand { padding: 0 26px; }
 .brand h1 {
-  font: 500 25px/1 var(--serif);
+  font: 500 30px/1 var(--serif);
   margin: 0;
-  letter-spacing: .01em;
+  letter-spacing: .005em;
+  color: var(--accent);
 }
 .brand h1 em { font-style: normal; color: var(--accent); }
-.brand p { margin: 6px 0 0; font-size: 12px; color: var(--ink-faint); }
+/* Two lines of different weight, the way a title page rules off a heading. */
+.brand-rule {
+  display: block;
+  margin: 11px 0 2px;
+  border-top: 1px solid var(--ink);
+  opacity: .5;
+}
+.brand-rule::after {
+  content: '';
+  display: block;
+  margin-top: 2px;
+  border-top: 1px solid var(--ink);
+  opacity: .36;
+}
+.brand p { margin: 0; }
 
-.nav { display: flex; flex-direction: column; gap: 2px; }
+.nav { display: flex; flex-direction: column; }
 .nav button {
-  display: flex;
-  align-items: center;
-  gap: 10px;
   width: 100%;
-  padding: 9px 11px;
+  padding: 9px 26px;
   border: 0;
-  border-radius: 8px;
-  background: transparent;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  background: none;
   cursor: pointer;
   text-align: left;
+  font: 400 14.5px/1.4 var(--sans);
   color: var(--ink-soft);
+  transition: color .12s, border-color .12s;
 }
-.nav button:hover { background: var(--paper-raised); color: var(--ink); }
+.nav button:hover { color: var(--ink); }
 .nav button[aria-current='true'] {
-  background: var(--accent-soft);
-  color: var(--accent);
+  border-left-color: var(--accent);
+  color: var(--ink);
   font-weight: 500;
 }
-.nav .glyph { font-size: 16px; width: 20px; text-align: center; }
 
-.sidebar-foot { margin-top: auto; font-size: 12px; color: var(--ink-faint); }
-.sidebar-foot dl { display: grid; grid-template-columns: 1fr auto; gap: 3px 8px; margin: 0 0 12px; padding: 0 8px; }
-.sidebar-foot dt { color: var(--ink-faint); }
-.sidebar-foot dd { margin: 0; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+.sidebar-foot {
+  margin-top: auto;
+  padding: 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  font-size: 13px;
+}
+.sidebar-foot dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 10px;
+  margin: 9px 0 0;
+  padding: 0;
+}
+.sidebar-foot dt { color: var(--ink-soft); }
+.sidebar-foot dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.theme-toggle {
+  display: flex;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.theme-toggle button {
+  flex: 1;
+  padding: 6px 11px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: 400 12px/1.3 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: background .12s, color .12s;
+}
+.theme-toggle button + button { border-left: 1px solid var(--rule); }
+.theme-toggle button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
+
+.sidebar-links {
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-faint);
+  font-size: 12.5px;
+}
+.sidebar-links .btn.link {
+  color: var(--ink-faint);
+  padding: 0;
+  text-decoration: none;
+  font-size: 12.5px;
+}
+.sidebar-links .btn.link:hover { color: var(--accent); text-decoration: underline; }
 
 .main { min-width: 0; display: flex; flex-direction: column; }
 
@@ -659,8 +722,22 @@ textarea.compose:focus { outline: 2px solid var(--accent); outline-offset: -1px;
     padding: 14px;
     overflow: visible;
   }
-  .nav { flex-direction: row; flex-wrap: wrap; }
-  .nav button { flex: 1 1 auto; }
+  /* A left border marks the current item in a column. In a row it would mark
+     the wrong edge, so the underline does the work instead. */
+  .nav { flex-direction: row; flex-wrap: wrap; gap: 2px; }
+  .nav button {
+    /* The column rule sets width:100%, which in a row makes every item its own
+       row. */
+    width: auto;
+    flex: 1 1 auto;
+    padding: 8px 12px;
+    text-align: center;
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+  }
+  .nav button[aria-current='true'] { border-bottom-color: var(--accent); }
+  .brand { padding: 0; }
+  .sidebar-foot { padding: 0; gap: 14px; }
   .view { padding: 18px 14px 60px; }
 
   /* A heading and its control stop sharing a line once there is no line to

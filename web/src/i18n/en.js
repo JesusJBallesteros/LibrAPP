@@ -641,4 +641,15 @@ export default {
     'No named author. The sources describe this as \u201c{label}\u201d, which is a description rather than a person, so it is not filled in above.',
   'editor.noAuthorRecorded':
     'No author recorded. Leave this blank for an anonymous or corporate work, or type one in.',
+
+  'nav.deskShort': 'The desk',
+  'nav.deskShort.hint': 'Ask about your own shelves',
+  'nav.about': 'About',
+  'nav.about.hint': 'What this is, who made it, and the terms',
+  'sidebar.holdings': 'The holdings',
+  'about.eyebrow': 'Colophon',
+  'theme.label': 'Theme',
+  'theme.light': 'Day',
+  'theme.dark': 'Night',
+  'theme.following': 'Press again to follow the system',
 }

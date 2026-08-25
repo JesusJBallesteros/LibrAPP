@@ -54,7 +54,7 @@ const Out = ({ href, children }) => (
   </a>
 )
 
-export default function About({ onBack, focus }) {
+export default function About({ onBack, focus, inShell = false }) {
   const { t } = useT()
 
   // Arriving from a footer link should land on the section that link named.
@@ -64,16 +64,22 @@ export default function About({ onBack, focus }) {
   }, [focus])
 
   return (
-    <div className="landing">
-      <div className="landing-inner">
+    <div className={inShell ? 'view' : 'landing'}>
+      <div className={inShell ? undefined : 'landing-inner'}>
         <header className="landing-head">
           <div className="spread">
-            <h1 className="landing-brand">
-              Libr<em>APP</em>
-            </h1>
-            <button className="btn" onClick={onBack}>
-              ← {t('about.back')}
-            </button>
+            {inShell ? (
+              <p className="eyebrow">{t('about.eyebrow')}</p>
+            ) : (
+              <h1 className="landing-brand">
+                Libr<em>APP</em>
+              </h1>
+            )}
+            {onBack && (
+              <button className="btn" onClick={onBack}>
+                ← {t('about.back')}
+              </button>
+            )}
           </div>
           <p className="landing-tagline">{t('about.title')}</p>
         </header>

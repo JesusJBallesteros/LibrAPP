@@ -649,4 +649,15 @@ export default {
     'Sin autor con nombre. Las fuentes lo describen como \u00ab{label}\u00bb, que es una descripci\u00f3n y no una persona, as\u00ed que no aparece arriba.',
   'editor.noAuthorRecorded':
     'Sin autor anotado. D\u00e9jalo en blanco si la obra es an\u00f3nima o corporativa, o escribe uno.',
+
+  'nav.deskShort': 'El escritorio',
+  'nav.deskShort.hint': 'Pregunta sobre tus propias estanter\u00edas',
+  'nav.about': 'Acerca de',
+  'nav.about.hint': 'Qu\u00e9 es esto, qui\u00e9n lo hizo y en qu\u00e9 t\u00e9rminos',
+  'sidebar.holdings': 'El fondo',
+  'about.eyebrow': 'Colof\u00f3n',
+  'theme.label': 'Tema',
+  'theme.light': 'D\u00eda',
+  'theme.dark': 'Noche',
+  'theme.following': 'Pulsa otra vez para seguir al sistema',
 }
