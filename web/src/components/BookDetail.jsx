@@ -121,7 +121,7 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
         {(book.tags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>{t('book.tags')}</h4>
+            <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>{t('book.tags')}</h4>
             <div className="row" style={{ gap: 5 }}>
               {book.tags.map((tag) => (
                 <span className="pill" key={`${tag.kind}-${tag.key}`}>
@@ -134,7 +134,7 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
         {(book.flags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>
+            <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>
               {t('book.worthKnowing')}
             </h4>
             <ul className="tiny muted" style={{ margin: 0, paddingLeft: 18 }}>

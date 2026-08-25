@@ -23,8 +23,10 @@ const ISSUES = 'https://github.com/JesusJBallesteros/LibrAPP/issues'
 const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0'
 
 // Everything that ships inside the built app, with the terms it ships under.
-// Attribution is a condition of both MIT and Apache-2.0, so this list is an
-// obligation. Check it against package.json when a dependency changes.
+// Attribution is a condition of MIT, Apache-2.0 and the Open Font Licence, so
+// this list is an obligation. Check it against package.json when a dependency
+// changes, and against public/fonts when a face is added or dropped. The two
+// font licences travel with the files, in public/fonts.
 const BUNDLED = [
   { name: 'React', licence: 'MIT', url: 'https://github.com/facebook/react' },
   { name: 'pdf.js', licence: 'Apache-2.0', url: 'https://github.com/mozilla/pdf.js' },
@@ -33,6 +35,16 @@ const BUNDLED = [
     name: 'Anthropic SDK',
     licence: 'MIT',
     url: 'https://github.com/anthropics/anthropic-sdk-typescript',
+  },
+  {
+    name: 'EB Garamond',
+    licence: 'SIL Open Font Licence 1.1',
+    url: 'https://github.com/octaviopardo/EBGaramond12',
+  },
+  {
+    name: 'IBM Plex Sans and Mono',
+    licence: 'SIL Open Font Licence 1.1',
+    url: 'https://github.com/IBM/plex',
   },
 ]
 
@@ -129,7 +141,7 @@ export default function About({ onBack, focus }) {
             <Out href={LICENCE}>{t('about.licenceName')}</Out>
           </p>
 
-          <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>
+          <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>
             {t('about.attributions')}
           </h4>
           <p className="tiny faint" style={{ margin: 0 }}>

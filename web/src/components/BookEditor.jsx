@@ -229,7 +229,7 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
           <Row label={t('editor.where')} hint={t('editor.whereHint')}>
             <input style={field} value={form.location} onChange={set('location')} />
           </Row>
-          <h4 style={{ margin: '18px 0 10px', font: '600 13px var(--sans)' }}>
+          <h4 style={{ margin: '18px 0 10px', font: '500 13px var(--sans)' }}>
             {t('editor.whereIsIt')}
           </h4>
           <p className="tiny faint" style={{ margin: '0 0 11px' }}>{t('editor.loanHint')}</p>

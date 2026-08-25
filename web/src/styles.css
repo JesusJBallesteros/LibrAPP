@@ -1,68 +1,190 @@
 /* LibrAPP: a reading room rather than a dashboard.
-   Light is paper, dark is ink. Book titles are set in a serif so the catalog
-   reads like a shelf rather than a spreadsheet. */
+   Light is paper, dark is ink. Separation is done with hairlines and
+   whitespace, not with boxes and shadows.
+
+   Colours are sampled from the app icon. Three families: EB Garamond for
+   titles and anything a reader reads, IBM Plex Sans for the interface, IBM
+   Plex Mono for numbers, filenames and anything that should line up in a
+   column. All three are self-hosted under public/fonts, because the app makes
+   no third-party request. */
 
 :root {
-  --paper: #faf7f2;
-  --paper-raised: #ffffff;
-  --paper-sunk: #f2ede4;
-  --ink: #23201c;
-  --ink-soft: #5d564c;
-  --ink-faint: #8d857a;
-  --rule: #e0d8ca;
-  --rule-strong: #cdc2ae;
-  --accent: #7a4a2b;
-  --accent-soft: #f0e2d6;
-  --good: #4a6b45;
-  --warn: #8a6516;
-  --bad: #93402f;
-  --shadow: 0 1px 2px rgba(35, 32, 28, .06), 0 6px 20px rgba(35, 32, 28, .05);
-  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
-  --radius: 10px;
+  /* Raw palette, in one place. The blocks below name these by role, so a
+     colour is edited here and nowhere else. */
+  --l-paper: #faf7f2;
+  --l-raised: #fffdf9;
+  --l-sunk: #f3eee5;
+  --l-card: #f7efe0;
+  --l-ink: #26221d;
+  --l-ink-soft: #5d564c;
+  --l-ink-faint: #8d857a;
+  --l-rule: #e3dbcd;
+  --l-rule-soft: #ece5d8;
+  --l-rule-strong: #d5cab8;
+  --l-accent: #7a4a2b;
+  --l-tan: #d09a6e;
+  --l-accent-soft: #f2e6da;
+  --l-good: #4a6b45;
+  --l-warn: #8a6516;
+  --l-bad: #93402f;
 
-  /* Categorical series colours, in fixed slot order. Validated for
-     colour-vision deficiency against this app's card surface in both themes;
-     every slice is also named and counted, so identity never rests on colour. */
-  --series-1: #2a78d6;
-  --series-2: #eb6834;
-  --series-3: #1baf7a;
-  --series-4: #eda100;
-  --series-5: #e87ba4;
-  --series-6: #008300;
+  --d-paper: #1c1915;
+  --d-raised: #23201b;
+  --d-sunk: #15130f;
+  --d-card: #2a251d;
+  --d-ink: #ece5d8;
+  --d-ink-soft: #a9a297;
+  --d-ink-faint: #7a736a;
+  --d-rule: #35302a;
+  --d-rule-soft: #2a2620;
+  --d-rule-strong: #443d35;
+  --d-accent: #d09a6e;
+  --d-tan: #d09a6e;
+  --d-accent-soft: #33291f;
+  --d-good: #8fb383;
+  --d-warn: #d3a94f;
+  --d-bad: #d98873;
+
+  --serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+
+  --radius: 2px;
+
+  /* Two shadows survive the redesign: the detail overlay and the librarian
+     badge. Everything else separates with a hairline. `--shadow` stays defined
+     as none so the rules still using it fall flat rather than break; those uses
+     are removed view by view. */
+  --shadow: none;
+  --shadow-overlay: 0 6px 24px rgba(20, 18, 15, .12);
+  --shadow-badge: 0 3px 14px rgba(20, 18, 15, .12);
+
+  /* Genre slices, lightest to darkest. A monochrome ramp rather than six hues,
+     so it reads as one chart belonging to this app. Hue-blindness is not a
+     problem here, but the steps are pure lightness, so keep every slice named
+     and counted in the legend. Six steps because the pie can allocate six
+     slots; the handoff gives five and the sixth continues the ramp. */
+  --series-1: #7a4a2b;
+  --series-2: #a4693e;
+  --series-3: #c68f63;
+  --series-4: #d9b189;
+  --series-5: #e8d3ba;
+  --series-6: #f0e4d2;
+
+  /* Spine fills, indexed by a hash of the book id so a spine keeps its colour. */
+  --spine-1: #7a4a2b;
+  --spine-2: #d09a6e;
+  --spine-3: #9c5f38;
+  --spine-4: #c68f63;
+  --spine-5: #6b4023;
+  --spine-6: #b8794c;
+  --spine-7: #e0b489;
+  --spine-8: #8a5c3c;
+
+  --paper: var(--l-paper);
+  --paper-raised: var(--l-raised);
+  --paper-sunk: var(--l-sunk);
+  --card: var(--l-card);
+  --ink: var(--l-ink);
+  --ink-soft: var(--l-ink-soft);
+  --ink-faint: var(--l-ink-faint);
+  --rule: var(--l-rule);
+  --rule-soft: var(--l-rule-soft);
+  --rule-strong: var(--l-rule-strong);
+  --accent: var(--l-accent);
+  --tan: var(--l-tan);
+  --accent-soft: var(--l-accent-soft);
+  --good: var(--l-good);
+  --warn: var(--l-warn);
+  --bad: var(--l-bad);
 
   color-scheme: light;
 }
 
+/* Dark comes from two places and they must not fight. The system preference
+   applies only while no choice has been stored, which is what the :not() guard
+   does; without it the Day button cannot win back a dark system. The explicit
+   choice below wins in both directions. The assignments are repeated because
+   CSS cannot share one block across a media query, but the values are not. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #16151a;
-    --paper-raised: #1e1d23;
-    --paper-sunk: #121116;
-    --ink: #e9e4dc;
-    --ink-soft: #a9a297;
-    --ink-faint: #776f65;
-    --rule: #2e2c34;
-    --rule-strong: #413e48;
-    --accent: #d09a6e;
-    --accent-soft: #34291f;
-    --good: #8fb383;
-    --warn: #d3a94f;
-    --bad: #d98873;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 6px 20px rgba(0, 0, 0, .3);
-
-    /* The same six hues, re-stepped for the dark surface rather than flipped. */
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-4: #c98500;
-    --series-5: #d55181;
-    --series-6: #008300;
+  :root:not([data-theme='light']) {
+    --paper: var(--d-paper);
+    --paper-raised: var(--d-raised);
+    --paper-sunk: var(--d-sunk);
+    --card: var(--d-card);
+    --ink: var(--d-ink);
+    --ink-soft: var(--d-ink-soft);
+    --ink-faint: var(--d-ink-faint);
+    --rule: var(--d-rule);
+    --rule-soft: var(--d-rule-soft);
+    --rule-strong: var(--d-rule-strong);
+    --accent: var(--d-accent);
+    --tan: var(--d-tan);
+    --accent-soft: var(--d-accent-soft);
+    --good: var(--d-good);
+    --warn: var(--d-warn);
+    --bad: var(--d-bad);
 
     color-scheme: dark;
   }
 }
+
+:root[data-theme='dark'] {
+  --paper: var(--d-paper);
+  --paper-raised: var(--d-raised);
+  --paper-sunk: var(--d-sunk);
+  --card: var(--d-card);
+  --ink: var(--d-ink);
+  --ink-soft: var(--d-ink-soft);
+  --ink-faint: var(--d-ink-faint);
+  --rule: var(--d-rule);
+  --rule-soft: var(--d-rule-soft);
+  --rule-strong: var(--d-rule-strong);
+  --accent: var(--d-accent);
+  --tan: var(--d-tan);
+  --accent-soft: var(--d-accent-soft);
+  --good: var(--d-good);
+  --warn: var(--d-warn);
+  --bad: var(--d-bad);
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------- shared patterns -- */
+
+/* The eyebrow above a view title and above a field label. */
+.eyebrow {
+  font: 400 10.5px/1.4 var(--sans);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Every view opens the same way: eyebrow, large serif title, hairline, intro. */
+.view-head { margin-bottom: 26px; }
+.view-head h2 {
+  font: 400 42px/1.05 var(--serif);
+  margin: 6px 0 0;
+  letter-spacing: .002em;
+}
+.view-head .rule {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 18px 0 14px;
+}
+.view-head p { margin: 0; color: var(--ink-soft); max-width: 64ch; }
+
+/* A heading that rules off a section of a view. Ink rather than --rule: the
+   heavier line is what makes a page look typeset rather than boxed. */
+.section-head {
+  font: 400 22px/1.2 var(--serif);
+  margin: 0 0 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Numbers, filenames, costs and anything that should line up in a column. */
+.tabular { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 
 * { box-sizing: border-box; }
 
@@ -82,7 +204,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-inner { max-width: 760px; margin: 0 auto; }
 
 .landing-head { margin-bottom: 22px; }
-.landing-brand { font: 600 40px/1 var(--serif); margin: 0; letter-spacing: .01em; }
+.landing-brand { font: 500 40px/1 var(--serif); margin: 0; letter-spacing: .01em; }
 .landing-brand em { font-style: normal; color: var(--accent); }
 .landing-lang { flex: 0 0 auto; gap: 7px; }
 .landing-lang select { border: 1px solid var(--rule-strong); background: var(--paper-raised); border-radius: 7px; padding: 6px 9px; }
@@ -97,7 +219,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-needs li { display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: start; }
 .landing-needs .glyph { font-size: 14px; line-height: 1.5; }
 
-.landing-start h2 { font: 600 20px/1.3 var(--serif); margin: 0 0 4px; }
+.landing-start h2 { font: 500 20px/1.3 var(--serif); margin: 0 0 4px; }
 .landing-options { display: grid; gap: 9px; margin-top: 14px; }
 
 .landing-option {
@@ -119,7 +241,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-option:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
 .landing-option .glyph { font-size: 19px; text-align: center; }
 .landing-option-text { display: grid; gap: 2px; min-width: 0; }
-.landing-option-text strong { font-weight: 600; }
+.landing-option-text strong { font-weight: 500; }
 .landing-option-go { color: var(--ink-faint); font-size: 17px; }
 
 .landing-next {
@@ -129,7 +251,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-radius: var(--radius);
   background: var(--paper-sunk);
 }
-.landing-next h2 { font: 600 20px/1.3 var(--serif); margin: 0 0 6px; }
+.landing-next h2 { font: 500 20px/1.3 var(--serif); margin: 0 0 6px; }
 
 .landing-foot { margin-top: 30px; }
 
@@ -217,7 +339,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .brand { padding: 0 8px; }
 .brand h1 {
-  font: 600 25px/1 var(--serif);
+  font: 500 25px/1 var(--serif);
   margin: 0;
   letter-spacing: .01em;
 }
@@ -242,7 +364,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .nav button[aria-current='true'] {
   background: var(--accent-soft);
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 500;
 }
 .nav .glyph { font-size: 16px; width: 20px; text-align: center; }
 
@@ -255,7 +377,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .view { padding: 26px 30px 60px; max-width: 1180px; width: 100%; }
 .view > header { margin-bottom: 20px; }
-.view h2 { font: 600 24px/1.2 var(--serif); margin: 0 0 5px; }
+.view h2 { font: 500 24px/1.2 var(--serif); margin: 0 0 5px; }
 .view header p { margin: 0; color: var(--ink-soft); max-width: 62ch; }
 
 /* --------------------------------------------------------------- pieces -- */
@@ -265,26 +387,38 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   padding: 18px;
-  box-shadow: var(--shadow);
 }
 .card + .card { margin-top: 14px; }
-.card h3 { font: 600 15px/1.3 var(--sans); margin: 0 0 10px; }
+.card h3 { font: 500 15px/1.3 var(--sans); margin: 0 0 10px; }
 
 .btn {
-  border: 1px solid var(--rule-strong);
-  background: var(--paper-raised);
-  border-radius: 8px;
-  padding: 7px 13px;
+  border: 1px solid var(--rule);
+  background: none;
+  border-radius: var(--radius);
+  padding: 7px 14px;
   cursor: pointer;
-  color: var(--ink);
+  color: var(--ink-soft);
+  font: 400 13.5px/1.3 var(--sans);
+  transition: border-color .12s, background .12s, color .12s;
 }
 .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover:not(:disabled) { filter: brightness(1.08); color: #fff; }
-@media (prefers-color-scheme: dark) { .btn.primary { color: #1a1410; } .btn.primary:hover:not(:disabled) { color: #1a1410; } }
-.btn.small { padding: 4px 9px; font-size: 13px; }
-.btn.link { border: 0; background: none; color: var(--accent); padding: 2px 4px; text-decoration: underline; }
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper);
+  padding: 9px 17px;
+}
+.btn.primary:hover:not(:disabled) { filter: brightness(1.08); color: var(--paper); }
+.btn.small { padding: 5px 11px; font-size: 12.5px; }
+.btn.link {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  padding: 2px 4px;
+  text-decoration: underline;
+  font-size: 12.5px;
+}
 
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .spread { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -307,14 +441,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .pill.flag { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
 
 .notice {
-  border-left: 3px solid var(--accent);
-  background: var(--accent-soft);
-  padding: 11px 14px;
-  border-radius: 0 8px 8px 0;
-  margin: 0 0 16px;
+  border: 0;
+  border-left: 2px solid var(--accent);
+  border-radius: 0;
+  background: none;
+  padding: 2px 0 2px 14px;
+  margin: 14px 0;
+  color: var(--ink-soft);
 }
-.notice.bad { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, transparent); }
-.notice.good { border-color: var(--good); background: color-mix(in srgb, var(--good) 12%, transparent); }
+.notice.bad { border-left-color: var(--bad); color: var(--bad); }
+.notice.good { border-left-color: var(--good); color: var(--good); }
 .notice p { margin: 0; }
 .notice p + p { margin-top: 6px; }
 
@@ -341,7 +477,7 @@ pre.snippet {
 }
 .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-soft); }
 .drop .glyph { font-size: 30px; display: block; margin-bottom: 8px; }
-.drop strong { display: block; font-weight: 600; }
+.drop strong { display: block; font-weight: 500; }
 .drop span { color: var(--ink-soft); font-size: 13px; }
 
 /* -------------------------------------------------------------- catalog -- */
@@ -391,7 +527,7 @@ pre.snippet {
   color: var(--ink-soft);
 }
 .segmented button + button { border-left: 1px solid var(--rule); }
-.segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
 
 .results { display: grid; grid-template-columns: 1fr; gap: 0; }
 .group-head {
@@ -399,7 +535,7 @@ pre.snippet {
   top: 62px;
   background: var(--paper);
   padding: 14px 4px 6px;
-  font: 600 13px/1 var(--sans);
+  font: 500 13px/1 var(--sans);
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-faint);
@@ -443,9 +579,9 @@ pre.snippet {
   border-left: 1px solid var(--rule);
   padding: 22px 24px 40px;
   overflow-y: auto;
-  box-shadow: -8px 0 30px rgba(0, 0, 0, .13);
+  box-shadow: var(--shadow-overlay);
 }
-.detail h3 { font: 600 21px/1.28 var(--serif); margin: 0 0 4px; }
+.detail h3 { font: 500 21px/1.28 var(--serif); margin: 0 0 4px; }
 .detail .byline { color: var(--ink-soft); margin: 0 0 16px; }
 .detail dl { display: grid; grid-template-columns: 116px 1fr; gap: 7px 14px; margin: 0; font-size: 13.5px; }
 .detail dt { color: var(--ink-faint); }
