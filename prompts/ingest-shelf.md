@@ -97,12 +97,7 @@ Write one JSON file:
 (`top-left`, `bottom shelf, right of the divider`). Group books by the shelf
 they sit on, in the order they stand, so the file reads like the shelf looks.
 
-Then:
-
-```bash
-python tools/librapp/parse_shelf.py import <file>.json -o data/private/shelf.json
-```
-
-It will refuse the file if a book has no title or an unknown confidence value,
-which is the point: a transcription that does not survive import is one you
-want to see before it reaches the catalog.
+The file is checked before any of it reaches the catalog, and it is refused
+whole if a book has no title or carries a confidence value other than the three
+above. That is deliberate: a transcription that does not survive the check is
+one worth looking at before it becomes a catalog.
