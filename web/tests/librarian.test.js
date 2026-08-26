@@ -6,7 +6,7 @@
 // when it has nothing it can count.
 
 import { describe, expect, it } from 'vitest'
-import { LONG_LOAN_YEARS, announce, observe } from '../src/librarian.js'
+import { LONG_LOAN_YEARS, MOST, announce, observations, observe } from '../src/librarian.js'
 import { arrival } from '../src/views/ListImport.jsx'
 
 const YEAR = 365.25 * 24 * 3600 * 1000
@@ -96,8 +96,11 @@ describe('not calling an unrecorded shelf a read one', () => {
     expect(said.key).toBe('unrecorded')
   })
 
-  it('says nothing at all when there is neither a read book nor an unrecorded one', () => {
-    expect(observe({ view: 'catalog', hasCatalog: true, books: [], counts: { unread: 0 } })).toBe(null)
+  it('reads nothing from a shelf with neither a read book nor an unrecorded one', () => {
+    // Nothing to observe. The page still explains itself, so what comes back
+    // is guidance rather than nothing at all.
+    const lines = observations({ view: 'catalog', hasCatalog: true, books: [], counts: { unread: 0 } })
+    expect(lines.every((l) => l.key.startsWith('guide.'))).toBe(true)
   })
 
   it('mentions the unread pile before the unrecorded ones', () => {
@@ -158,9 +161,13 @@ describe('the lines that belong to a view', () => {
     })
   })
 
-  for (const [view, key] of [['desk', 'desk'], ['shelf', 'shelf'], ['list', 'list'], ['storage', 'storage']]) {
-    it(`has a line for ${view}`, () => {
-      expect(observe({ view, hasCatalog: true, books }).key).toBe(key)
+  it('opens with the count on the desk, which is the one reading it has there', () => {
+    expect(observe({ view: 'desk', hasCatalog: true, books }).key).toBe('desk')
+  })
+
+  for (const view of ['shelf', 'list', 'storage']) {
+    it(`opens with guidance on ${view}, where there is nothing to read off the shelf`, () => {
+      expect(observe({ view, hasCatalog: true, books }).key).toMatch(/^guide\./)
     })
   }
 
@@ -222,5 +229,102 @@ describe('counting what an import brought', () => {
   it('says nothing when a total was not available to compare', () => {
     expect(arrival(undefined, 30, 23)).toBe(null)
     expect(arrival(10, undefined, 23)).toBe(null)
+  })
+})
+
+
+// Each page carries up to three things: what is true of the collection here and
+// worth acting on, then how the page works. The guidance is what somebody who
+// has never used the page needs, which is why it exists at all.
+describe('what a page has to say', () => {
+  const shelf = [book({ id: '1', read: null })]
+  const at = (view, over = {}) =>
+    observations({ view, hasCatalog: true, books: shelf, ...over })
+
+  it('never offers more than three', () => {
+    for (const view of ['home', 'catalog', 'shelf', 'list', 'desk', 'storage']) {
+      expect(at(view).length, view).toBeLessThanOrEqual(MOST)
+    }
+  })
+
+  it('has something to say on every page that has an owl', () => {
+    for (const view of ['home', 'catalog', 'shelf', 'list', 'desk', 'storage']) {
+      expect(at(view).length, view).toBeGreaterThan(0)
+    }
+  })
+
+  it('says nothing at all on About', () => {
+    expect(observations({ view: 'about', hasCatalog: true, books: shelf })).toEqual([])
+  })
+
+  it('says nothing on a page it has no lines for', () => {
+    expect(observations({ view: 'somewhere-new', hasCatalog: true, books: shelf })).toEqual([])
+  })
+
+  it('gives different lines on different pages', () => {
+    const keys = (view) => at(view).map((l) => l.key).join('|')
+    expect(keys('shelf')).not.toBe(keys('list'))
+    expect(keys('storage')).not.toBe(keys('desk'))
+    expect(keys('catalog')).not.toBe(keys('shelf'))
+  })
+
+  it('tells a beginner how the page works, on every page', () => {
+    // Not only what the shelf contains. A page nobody has used before has to
+    // explain itself.
+    for (const view of ['home', 'catalog', 'shelf', 'list', 'desk', 'storage']) {
+      const guides = at(view).filter((l) => l.key.startsWith('guide.'))
+      expect(guides.length, view).toBeGreaterThan(0)
+    }
+  })
+
+  it('puts what is worth acting on before the manual', () => {
+    const lines = observations({
+      view: 'catalog',
+      hasCatalog: true,
+      books: [book({ id: '1', read: false })],
+      counts: { unread: 1 },
+    })
+    expect(lines[0].key).toBe('unread')
+    expect(lines[1].key).toMatch(/^guide\./)
+  })
+
+  it('offers the action on the line it belongs to, not on the guidance', () => {
+    const lines = observations({
+      view: 'catalog',
+      hasCatalog: true,
+      books: [book({ id: '1', read: false })],
+      counts: { unread: 1 },
+    })
+    expect(lines[0].action).toBeTruthy()
+    expect(lines.slice(1).every((l) => l.action === null)).toBe(true)
+  })
+
+  it('gives an empty catalog nothing but how to begin', () => {
+    const lines = observations({ view: 'catalog', hasCatalog: false })
+    expect(lines[0].key).toBe('empty')
+    expect(lines[0].action.view).toBe('shelf')
+    expect(lines.length).toBeGreaterThan(1)
+    expect(lines.slice(1).every((l) => l.key.startsWith('guide.'))).toBe(true)
+  })
+
+  it('gives the same lines on an empty catalog whatever page it is on', () => {
+    // There is nothing to observe yet, so the page makes no difference.
+    const a = observations({ view: 'catalog', hasCatalog: false }).map((l) => l.key)
+    const b = observations({ view: 'storage', hasCatalog: false }).map((l) => l.key)
+    expect(a).toEqual(b)
+  })
+
+  it('still answers with one line, for anything that wants only the first', () => {
+    expect(observe({ view: 'shelf', hasCatalog: true, books: shelf })).toEqual(
+      observations({ view: 'shelf', hasCatalog: true, books: shelf })[0],
+    )
+  })
+
+  it('carries no values or action on a guidance line', () => {
+    for (const line of at('shelf')) {
+      if (!line.key.startsWith('guide.')) continue
+      expect(line.values).toEqual({})
+      expect(line.action).toBe(null)
+    }
   })
 })

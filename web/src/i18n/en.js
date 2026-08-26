@@ -55,13 +55,55 @@ export default {
   'librarian.lentLong': '{n} {n:book|books} {n:has|have} been with someone else for more than a year.',
   'librarian.borrowedLong': '{n} {n:book|books} here {n:belongs|belong} to somebody else, and {n:has|have} for more than a year.',
   'librarian.desk': 'Ask about your own shelves. All {n} {n:book|books} here {n:is|are} in the catalog.',
-  'librarian.shelf': 'Photograph the shelf straight on and at full size, and every visible spine can be read.',
-  'librarian.list': 'A spreadsheet does nicely. It merges with what is already here, without duplicates.',
-  'librarian.storage': 'The catalog lives where it was put. An export kept somewhere else is worth having.',
 
   'librarian.reading': '{n} {n:tile|tiles}, spines top to bottom. This takes a moment.',
   'librarian.asking': 'Looking through the shelves.',
   'librarian.imported': '{n} {n:book|books} arrived, and {known} {known:was|were} already here. One entry each.',
+
+  'librarian.previous': 'The one before',
+  'librarian.next': 'The next one',
+  'librarian.position': '{at} of {of}',
+
+  'librarian.guide.empty.1':
+    'Three ways in: a photograph of a shelf, a spreadsheet or store export you already keep, or a catalog exported from another device. Any one of them is enough to start.',
+  'librarian.guide.empty.2':
+    'Nothing is uploaded anywhere. The catalog is a file on this device, and the app keeps working with no network at all.',
+
+  'librarian.guide.home.1':
+    'Pick whichever route matches what you already have. A photograph is quickest; a spreadsheet is most complete.',
+  'librarian.guide.home.2':
+    'Storage is only asked for at the point it is needed, so there is nothing to set up before starting.',
+
+  'librarian.guide.catalog.1':
+    'Search covers titles, authors, series and tags. Three filters stay on screen and the rest sit behind "more filters", which says when one of them is hiding something from the list.',
+  'librarian.guide.catalog.2':
+    'Any book opens its full record, where it can be edited, starred, or given a note. Spines draws the same books as a shelf.',
+
+  'librarian.guide.shelf.1':
+    'Photograph the shelf straight on and at full size. Spine text a few pixels tall is where invented titles come from.',
+  'librarian.guide.shelf.2':
+    'The photograph is cut into tiles and each is read separately. Adjust how many across and down, and discard any tile that holds no books, before spending anything.',
+  'librarian.guide.shelf.3':
+    'The checklist below asks for more than titles. The first group is printed on the spine; the second is recalled by the model and is marked on every book that carries it.',
+
+  'librarian.guide.list.1':
+    'A spreadsheet, CSV, TSV, XML, or a store export as PDF. Whatever columns it has, the ones it recognises are used and the rest are left alone.',
+  'librarian.guide.list.2':
+    'A file holding several lists asks which one to take. Importing a wishlist as a library is the mistake worth one extra question.',
+  'librarian.guide.list.3':
+    'The same book arriving from a second source becomes one entry, not two. Say how much to trust each source and the more reliable one wins where they disagree.',
+
+  'librarian.guide.desk.1':
+    'Three requests: a synopsis of any book, a recommendation weighed against where the reading is going, and filling in the details the catalog is missing.',
+  'librarian.guide.desk.2':
+    'All three work without an API key by preparing the request to paste elsewhere. With a key, the cost is shown before sending and the real figure after.',
+
+  'librarian.guide.storage.1':
+    'The catalog lives where it was put: a folder chosen on this device, or storage the browser manages. Either way it stays here.',
+  'librarian.guide.storage.2':
+    'Export writes one file holding every source and every correction. That file is how a catalog moves to another device, and it is worth keeping a copy elsewhere.',
+  'librarian.guide.storage.3':
+    'Everything corrected by hand is listed here, and every one of them can be undone.',
 
   'librarian.action.startPhoto': 'Start with a photograph',
   'librarian.action.showOldest': 'Show the oldest of them',
@@ -545,7 +587,7 @@ export default {
   'about.librarianBody':
     'The desk answers three kinds of request. A synopsis of any book, owned or not, described to somebody whose shelf is already known. A recommendation of two or three books, weighed against where the reading is going rather than where it has been. And filling in gaps: asking for the details the catalog is missing, for books already on the shelf, which is the only one that writes anything back. Nothing it proposes is kept without being shown first, and everything it writes can be undone one book at a time.',
   'about.librarianOwl':
-    'The badge in the corner is the same librarian, saying one thing at a time: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from the Library tab.',
+    'The badge in the corner is the same librarian, with up to three things to say about the page you are on, stepped through one at a time. What is worth acting on first: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. After those comes how the page itself works, which is what a first visit needs. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from the Library tab.',
   'about.librarianYours':
     'Starring a book and writing a note on one are the two things in a record that come from nobody else. Both are sent with every question, quoted as yours rather than as a description of the book, and the desk is told to weigh them above anything it worked out by counting.',
   'about.librarianHonest':

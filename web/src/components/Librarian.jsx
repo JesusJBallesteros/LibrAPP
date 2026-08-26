@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useT } from '../i18n/index.jsx'
-import { announce, observe } from '../librarian.js'
+import { announce, observations } from '../librarian.js'
 
 /**
  * The LibrAPPrian: a small fixed presence in the corner.
@@ -17,10 +17,16 @@ import { announce, observe } from '../librarian.js'
 export default function Librarian({ view, counts, books, hasCatalog, event, onGo, gone, onDismiss }) {
   const { t } = useT()
   const [open, setOpen] = useState(false)
+  // Which of the things it has to say is showing. Reset when the page changes,
+  // because the second thing about the catalog is not the second thing here.
+  const [at, setAt] = useState(0)
 
   const transient = announce(event)
-  const observation = observe({ view, counts, books, hasCatalog })
-  const said = transient || observation
+  const lines = observations({ view, counts, books, hasCatalog })
+
+  useEffect(() => {
+    setAt(0)
+  }, [view, hasCatalog])
 
   // Something is happening, so the owl speaks without being asked. It closes
   // again on its own when whoever set the event clears it.
@@ -28,10 +34,14 @@ export default function Librarian({ view, counts, books, hasCatalog, event, onGo
     if (transient) setOpen(true)
   }, [transient?.key])
 
-  if (gone || !said) return null
+  // A transient line replaces the lot: it is about right now, and paging
+  // through the manual while a photograph is being read helps nobody.
+  const showing = transient || lines[Math.min(at, lines.length - 1)]
+  if (gone || !showing) return null
 
-  const line = t(`librarian.${said.key}`, said.values)
-  const action = !transient && observation?.action
+  const line = t(`librarian.${showing.key}`, showing.values)
+  const action = !transient && showing.action
+  const many = !transient && lines.length > 1
 
   return (
     <div className="librarian">
@@ -54,6 +64,28 @@ export default function Librarian({ view, counts, books, hasCatalog, event, onGo
             >
               {t(`librarian.action.${action.key}`)}
             </button>
+          )}
+
+          {many && (
+            <div className="owl-pager">
+              <button
+                onClick={() => setAt((i) => Math.max(0, i - 1))}
+                disabled={at === 0}
+                aria-label={t('librarian.previous')}
+              >
+                {'\u2039'}
+              </button>
+              <span className="tabular" aria-live="polite">
+                {t('librarian.position', { at: at + 1, of: lines.length })}
+              </span>
+              <button
+                onClick={() => setAt((i) => Math.min(lines.length - 1, i + 1))}
+                disabled={at >= lines.length - 1}
+                aria-label={t('librarian.next')}
+              >
+                {'\u203a'}
+              </button>
+            </div>
           )}
         </div>
       )}

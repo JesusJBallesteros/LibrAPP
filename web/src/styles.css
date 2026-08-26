@@ -1210,6 +1210,31 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 .owl-bubble .spread { gap: 12px; align-items: baseline; }
 .owl-line { margin: 8px 0 0; font: 400 15px/1.5 var(--serif); }
 .owl-bubble .btn.link { margin-top: 8px; padding-left: 0; }
+/* Stepping through what it has to say. Small, and at the foot of the bubble,
+   because the line matters and the controls do not. */
+.owl-pager {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+  font: 400 11px/1 var(--mono);
+  color: var(--ink-faint);
+}
+.owl-pager button {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+.owl-pager button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.owl-pager button:disabled { opacity: .4; cursor: default; }
+
 .owl-dismiss {
   border: 0;
   background: none;

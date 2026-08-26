@@ -16,9 +16,13 @@ commits.
 The librarian was a page in v1. It is now also a presence on every screen except
 About.
 
-- A badge at the bottom right opens a bubble carrying **one observation about
-  your collection**, and where there is something to act on, one link that acts
-  on it.
+- A badge at the bottom right opens a bubble carrying **up to three things
+  about the page you are on**, stepped through one at a time: what is true of
+  your collection and worth acting on, then how the page works.
+- The guidance is the part a beginner needs, and it is per page: photographing
+  a shelf, adjusting the tiles, which file formats are taken, what the three
+  desk requests are, where the catalog lives. Before any books exist, all of it
+  is how to begin.
 - Observations are ordered by what they ask of you. A book belonging to somebody
   else outranks an unread pile, because one is an obligation and the other is
   only an opportunity. Below that: books lent out for more than a year, books

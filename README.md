@@ -525,19 +525,32 @@ LibrAPP asks.
 ### The owl in the corner
 
 The LibrAPPrian also keeps a small presence at the bottom right of every screen
-except About. Press it and it says one thing about your collection, drawn from
-what the catalog already holds:
+except About. Press it and it has up to three things to say about the page you
+are on, stepped through one at a time.
+
+**What is true of your collection, and worth doing something about** comes
+first, where there is any:
 
 - How many books are owed back to someone, or out with someone, for more than a
   year.
 - How many are still unopened, with a link that filters the catalog to them,
   oldest first.
 - How many have no read state recorded, with the same kind of link.
-- On the shelf and list pages, what makes for a good photograph or file.
 
-It also speaks while something is happening: how many tiles are being read, that
-a question is in flight, how many books an import brought and how many were
-already there.
+Following one of these applies the filter it describes.
+
+**Then how the page works**, which is the part worth reading the first time you
+open it. Each page has its own: how to photograph a shelf and why tiles are
+adjusted before spending anything, which file formats the list page takes and
+what happens when a file holds several lists, what the three desk requests are
+and that all of them work without a key, where your catalog lives and what an
+export is for.
+
+Before any books exist, all three are about how to begin.
+
+It also speaks while something is happening, and then it says only that: how
+many tiles are being read, that a question is in flight, how many books an
+import brought and how many were already there.
 
 It is not a chat surface, and it has nowhere to type on purpose. Anything worth
 typing belongs at the desk, where the question gets your catalog as context and
