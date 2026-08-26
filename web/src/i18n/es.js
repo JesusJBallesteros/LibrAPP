@@ -122,6 +122,8 @@ export default {
   'book.tags': 'Etiquetas',
   'book.worthKnowing': 'Conviene saber',
   'book.confidence': 'Confianza',
+  'book.confShort': 'conf. {level}',
+  'book.authorUnknown': 'Autor\u00eda sin registrar',
   'book.notedWhenRead': 'Anotado al leerlo:',
   'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
@@ -670,4 +672,8 @@ export default {
   'catalog.viewMode': 'C\u00f3mo mostrar los libros',
   'catalog.mode.list': 'Lista',
   'catalog.mode.spines': 'Lomos',
+  'catalog.spineWall': 'Los libros como lomos en un estante',
+  'catalog.spinesCaption':
+    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale de la longitud del t\u00edtulo, no del n\u00famero de p\u00e1ginas: todav\u00eda no hay ninguna fuente que lo registre.',
+  'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

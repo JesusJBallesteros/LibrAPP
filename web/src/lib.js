@@ -21,10 +21,16 @@ export function authorNames(catalog) {
   return byId
 }
 
+/**
+ * Who wrote it, or null when nothing says.
+ *
+ * Null rather than a dash, so the caller can name the gap in the reader's own
+ * language instead of printing a mark that could mean anything.
+ */
 export function byline(book, authors) {
   const names = (book.authors || []).map((id) => authors.get(id)?.display_name || id)
   if (names.length) return names.join(', ')
-  return book.author_label || '—'
+  return book.author_label || null
 }
 
 /** Surname first, for sorting people the way a shelf does. */
@@ -111,6 +117,62 @@ export const hiddenActiveFilters = ({ format = 'all', source = 'all', loan = 'al
   ]
     .filter(([, on]) => on)
     .map(([name]) => name)
+
+/* -------------------------------------------------------------- spines -- */
+
+/**
+ * A number in 0..(range-1) that a given id always maps to.
+ *
+ * The point is that a spine keeps its colour. Anything derived from position
+ * would reshuffle the wall every time a filter changes, which would make the
+ * colours look meaningful when they are not.
+ */
+export function spineHash(id, range) {
+  let h = 2166136261
+  for (const ch of String(id ?? '')) {
+    h ^= ch.codePointAt(0)
+    h = Math.imul(h, 16777619)
+  }
+  return Math.abs(h) % range
+}
+
+/** 1..8, matching the --spine-N custom properties. */
+export const spineTint = (book) => spineHash(book?.id, 8) + 1
+
+/** A physical book gets a wider spine, because on a shelf it would. */
+export const spineWidth = (book) => ((book?.formats || []).includes('physical') ? 34 : 26)
+
+/**
+ * How tall to draw the spine, in pixels.
+ *
+ * A page count would be the honest input and nothing records one: no source
+ * carries the field, so the height comes from the length of the title instead.
+ * That is decoration, not data, which is why the wall carries a caption saying
+ * so. If page counts ever arrive, this is the one place to change.
+ */
+export function spineHeight(book, { min = 150, max = 250 } = {}) {
+  const length = String(book?.title || '').length
+  const span = Math.min(Math.max(length, 4), 60)
+  return Math.round(min + ((span - 4) / 56) * (max - min))
+}
+
+/**
+ * A shelf mark for the detail card, or null.
+ *
+ * Built from the author's sort name and the year the book was acquired, both
+ * of them recorded rather than invented. A book with no author recorded gets
+ * no mark: sortName falls back to the title, and a call number derived from a
+ * title would look like a real classification and be nothing of the kind.
+ */
+export function callNumber(book, authors) {
+  const first = (book?.authors || [])[0]
+  const name = authors?.get?.(first)?.sort_name || book?.author_label
+  if (!name) return null
+  const letters = fold(name).replace(/[^a-z]/g, '').slice(0, 3).toUpperCase()
+  if (!letters) return null
+  const year = book?.acquired_on ? String(book.acquired_on).slice(0, 4) : null
+  return year ? `${letters} ${year}` : letters
+}
 
 export const uniqueSorted = (values) => [...new Set(values.filter(Boolean))].sort()
 

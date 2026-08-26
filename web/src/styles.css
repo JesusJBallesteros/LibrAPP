@@ -81,6 +81,20 @@
   --spine-7: #e0b489;
   --spine-8: #8a5c3c;
 
+  /* Lettering for each fill above. Half the palette is light enough that pale
+     lettering on it reads at under 2:1, so each fill names its own ink: paper
+     on the dark browns, near-black on the light ones. Both are fixed rather
+     than themed, because the fills are fixed and the title has to stay legible
+     in either theme. Every pairing here clears 4.5:1. */
+  --spine-1-ink: #faf7f2;
+  --spine-2-ink: #1c1508;
+  --spine-3-ink: #faf7f2;
+  --spine-4-ink: #1c1508;
+  --spine-5-ink: #faf7f2;
+  --spine-6-ink: #1c1508;
+  --spine-7-ink: #1c1508;
+  --spine-8-ink: #faf7f2;
+
   --paper: var(--l-paper);
   --paper-raised: var(--l-raised);
   --paper-sunk: var(--l-sunk);
@@ -696,6 +710,56 @@ pre.snippet {
 .drop strong { display: block; font-weight: 500; }
 .drop span { color: var(--ink-soft); font-size: 13px; }
 
+/* The shelf. Spines sit on their base line, so the wall aligns at the bottom
+   however tall the individual books are. */
+.spine-view { padding-top: 34px; }
+.spine-wall {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 280px;
+}
+.spine {
+  border: 0;
+  padding: 12px 0 0;
+  border-radius: 1px 1px 0 0;
+  cursor: pointer;
+  /* Two insets stand in for the roundness of a spine: a shadow down the right
+     edge and a highlight down the left. */
+  box-shadow: inset -3px 0 6px rgba(0, 0, 0, .16), inset 3px 0 4px rgba(255, 255, 255, .12);
+}
+.spine-title {
+  display: block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 400 15px/1 var(--serif);
+  /* Inherited from the spine, which picks the ink that suits its own fill. */
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  max-height: 100%;
+}
+.spine[aria-selected='true'] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.spine:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The board the spines stand on. The handoff pairs --tan with --accent, which
+   in the dark theme are the same colour and render flat, so the lower stop is
+   a fixed dark brown from the spine palette instead: the board reads as a
+   board in both themes. */
+.shelf-board {
+  height: 9px;
+  border-radius: 1px;
+  background: linear-gradient(var(--tan), var(--spine-5));
+  opacity: .55;
+}
+.spine-caption {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  max-width: 64ch;
+}
+
 .empty { padding: 50px 10px; text-align: center; color: var(--ink-faint); }
 
 /* --------------------------------------------------------------- detail -- */
@@ -707,19 +771,105 @@ pre.snippet {
   z-index: 40;
 }
 .detail {
-  width: min(460px, 100%);
+  width: min(480px, 100%);
   background: var(--paper-raised);
   border-left: 1px solid var(--rule);
-  padding: 22px 24px 40px;
+  padding: 30px 32px 48px;
   overflow-y: auto;
   box-shadow: var(--shadow-overlay);
 }
-.detail h3 { font: 500 21px/1.28 var(--serif); margin: 0 0 4px; }
-.detail .byline { color: var(--ink-soft); margin: 0 0 16px; }
-.detail dl { display: grid; grid-template-columns: 116px 1fr; gap: 7px 14px; margin: 0; font-size: 13.5px; }
-.detail dt { color: var(--ink-faint); }
-.detail dd { margin: 0; }
-.detail .close { position: absolute; }
+.detail-close {
+  display: block;
+  margin: 0 0 18px auto;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: 400 12.5px/1 var(--sans);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.detail-close:hover { color: var(--accent); }
+
+/* The catalog card. The only decorated surface in the app, and the reason the
+   --card token exists. */
+.catalog-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 26px 26px 22px;
+  box-shadow: 0 1px 0 var(--rule);
+}
+/* The punch a card would have, so it could go on the rod in the drawer. */
+.card-hole {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.call-number {
+  margin: 0 0 18px;
+  font: 400 11px/1.4 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.catalog-card h3 { font: 400 27px/1.2 var(--serif); margin: 0 0 4px; }
+.catalog-card .byline { font: italic 400 16px/1.4 var(--serif); color: var(--ink-soft); margin: 0 0 18px; }
+
+/* No gap: the rules under each cell are what make the card read as ruled
+   lines, and a gap would break them into stripes. */
+.detail dl.ruled {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 0;
+  margin: 0;
+  font-size: 13.5px;
+}
+.detail dl.ruled dt,
+.detail dl.ruled dd {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  margin: 0;
+}
+.detail dl.ruled dt {
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  align-self: center;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+/* Stamped rather than printed, which is why it sits off the square. */
+.stamp {
+  display: inline-block;
+  font: 400 11px/1 var(--mono);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 2px;
+  padding: 4px 10px;
+  transform: rotate(-2deg);
+}
+.card-foot .conf { font: 400 11px/1 var(--mono); color: var(--ink-faint); }
+
+.card-why { margin: 14px 0 0; max-width: 60ch; }
+.card-actions { gap: 8px; margin-top: 14px; }
+.btn.danger { border-color: color-mix(in srgb, var(--bad) 50%, transparent); color: var(--bad); }
 
 /* ---------------------------------------------------------------- tiles -- */
 

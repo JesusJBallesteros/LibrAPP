@@ -123,6 +123,8 @@ export default {
   'book.tags': 'Tags',
   'book.worthKnowing': 'Worth knowing',
   'book.confidence': 'Confidence',
+  'book.confShort': 'conf. {level}',
+  'book.authorUnknown': 'Author not recorded',
   'book.notedWhenRead': 'Noted when read:',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',
@@ -662,4 +664,8 @@ export default {
   'catalog.viewMode': 'How to show the books',
   'catalog.mode.list': 'List',
   'catalog.mode.spines': 'Spines',
+  'catalog.spineWall': 'The books as spines on a shelf',
+  'catalog.spinesCaption':
+    'Colour is fixed per book so a spine keeps it. Height comes from the length of the title, not from a page count: no source records one yet.',
+  'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

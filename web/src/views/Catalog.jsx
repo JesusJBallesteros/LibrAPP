@@ -11,6 +11,9 @@ import {
   lentOut,
   readState,
   sortName,
+  spineHeight,
+  spineTint,
+  spineWidth,
   uniqueSorted,
 } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
@@ -39,8 +42,6 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
   const [showMore, setShowMore] = useState(false)
-  // Spines arrive in the next task. The toggle carries its state now so the
-  // control is not wired up twice.
   const [mode, setMode] = useState('list')
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
@@ -61,7 +62,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       _author: sortName(b, authors),
       _byline: byline(b, authors),
       _haystack: fold(
-        [b.title, byline(b, authors), b.series, (b.tags || []).map((t) => t.value).join(' ')].join(' '),
+        [
+          b.title,
+          byline(b, authors) || '',
+          b.series,
+          (b.tags || []).map((t) => t.value).join(' '),
+        ].join(' '),
       ),
     }))
   }, [catalog, authors])
@@ -325,6 +331,8 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             {t('catalog.clearFilters')}
           </button>
         </div>
+      ) : mode === 'spines' ? (
+        <SpineWall books={shown} authors={authors} selected={selected} onPick={setSelected} t={t} />
       ) : (
         <div className="results">
           {groups.map(({ key, books }) => (
@@ -348,7 +356,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                       {book.title}
                     </span>
                     <br />
-                    <span className="byline">{book._byline}</span>
+                    <span className="byline">{book._byline || t('book.authorUnknown')}</span>
                   </span>
                   <span className="meta">
                     <span className="formats">
@@ -430,6 +438,52 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           }
         />
       )}
+    </div>
+  )
+}
+
+/**
+ * The catalog as a shelf.
+ *
+ * One button per book, so the wall is reachable by keyboard and each spine
+ * keeps its title as the accessible name. Grouping is deliberately not applied
+ * here: a wall with headings cut through it stops looking like a shelf. The
+ * sort still decides the order.
+ *
+ * Colour and height are decoration, and the caption below says so, because a
+ * height that looked like a page count and was not would be the app inventing
+ * data about the books.
+ */
+function SpineWall({ books, authors, selected, onPick, t }) {
+  return (
+    <div className="spine-view">
+      {/* A group rather than a list: role="listitem" on a button replaces the
+          button role, and a spine that is no longer announced as clickable is
+          a worse trade than losing the list semantics. */}
+      <div className="spine-wall" role="group" aria-label={t('catalog.spineWall')}>
+        {books.map((book) => {
+          const name = byline(book, authors)
+          return (
+            <button
+              key={book.id}
+              className="spine"
+              aria-selected={selected?.id === book.id}
+              title={name ? `${book.title} · ${name}` : book.title}
+              onClick={() => onPick(book)}
+              style={{
+                width: spineWidth(book),
+                height: spineHeight(book),
+                background: `var(--spine-${spineTint(book)})`,
+                color: `var(--spine-${spineTint(book)}-ink)`,
+              }}
+            >
+              <span className="spine-title">{book.title}</span>
+            </button>
+          )
+        })}
+      </div>
+      <div className="shelf-board" />
+      <p className="spine-caption">{t('catalog.spinesCaption')}</p>
     </div>
   )
 }
