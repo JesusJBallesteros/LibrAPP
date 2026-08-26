@@ -315,17 +315,20 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tiles figure.dropped figcaption { text-decoration: line-through; }
 .tiles figure.dropped .btn { text-decoration: none; }
 
-.word-cloud { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.word-cloud { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; }
+/* Every word in the accent. Size carries the count; colour never carried
+   anything, and the ramp these used to cycle has a pale end that all but
+   disappears against paper. */
 .word-cloud .word {
   border: 0;
   background: none;
-  padding: 2px 3px;
-  border-radius: 5px;
+  padding: 0;
   cursor: pointer;
   font-family: var(--serif);
-  line-height: 1.25;
+  line-height: 1.15;
+  color: var(--accent);
 }
-.word-cloud .word:hover { background: var(--accent-soft); text-decoration: underline; }
+.word-cloud .word:hover { text-decoration: underline; }
 .word-cloud .word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .check { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
@@ -568,13 +571,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink);
 }
 
-.theme-toggle {
+.theme-toggle,
+.segmented {
   display: flex;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   overflow: hidden;
 }
-.theme-toggle button {
+.theme-toggle button,
+.segmented button {
   flex: 1;
   padding: 6px 11px;
   border: 0;
@@ -586,8 +591,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink-soft);
   transition: background .12s, color .12s;
 }
-.theme-toggle button + button { border-left: 1px solid var(--rule); }
-.theme-toggle button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
+.theme-toggle button + button,
+.segmented button + button { border-left: 1px solid var(--rule); }
+.theme-toggle button[aria-pressed='true'],
+.segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
 
 .sidebar-links {
   padding-top: 18px;
@@ -880,33 +887,109 @@ pre.snippet {
 
 /* ----------------------------------------------------------------- desk -- */
 
-.desk-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-@media (min-width: 1000px) { .desk-grid { grid-template-columns: 1.15fr .85fr; align-items: start; } }
+.desk-grid { display: grid; grid-template-columns: 1fr; gap: 34px; }
+@media (min-width: 1000px) { .desk-grid { grid-template-columns: 1.12fr .88fr; align-items: start; } }
 
-.forgotten-item { padding: 9px 0; border-bottom: 1px solid var(--rule); }
+/* Sections rather than boxes. The heading rule does the separating, which is
+   what makes the page read as typeset rather than as a dashboard. */
+.desk-section + .desk-section { margin-top: 34px; }
+.desk-section .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.desk-section .section-head h3 { font: inherit; margin: 0; }
+.desk-section > p { max-width: 60ch; }
+
+/* A label over a run of rows, not a heading: the section already has one. */
+.group-label {
+  margin: 18px 0 0;
+  font: 400 10.5px/1.4 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.forgotten-item { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); }
 .forgotten-item:last-child { border-bottom: 0; }
-.forgotten-item .title { font: 500 15px/1.3 var(--serif); }
-.forgotten-item .why { font-size: 12.5px; color: var(--ink-faint); }
-.waited { font-variant-numeric: tabular-nums; color: var(--warn); font-size: 13px; white-space: nowrap; }
+.forgotten-item .title { font: 400 17px/1.3 var(--serif); }
+.forgotten-item .tiny.muted { font-size: 12.5px; color: var(--ink-soft); }
+.forgotten-item .why { font-size: 12px; color: var(--ink-faint); }
+.waited {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: var(--warn);
+  white-space: nowrap;
+}
+
+/* The one filled panel left on the page: a question is being composed here,
+   and the surface marks off the place where that happens. */
+.ask-panel {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 26px;
+}
+/* Tabs, not buttons in a box. The active one carries its underline down on to
+   the container rule, so the two read as one line. */
+.ask-tabs {
+  display: flex;
+  gap: 20px;
+  margin: 8px 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.ask-tabs button {
+  border: 0;
+  background: none;
+  padding: 0 0 10px;
+  margin-bottom: -11px;
+  cursor: pointer;
+  font: 400 17px/1.2 var(--serif);
+  color: var(--ink-soft);
+  border-bottom: 2px solid transparent;
+}
+.ask-tabs button[aria-pressed='true'] { color: var(--ink); border-bottom-color: var(--accent); }
 
 textarea.compose {
   width: 100%;
-  min-height: 78px;
-  border: 1px solid var(--rule-strong);
-  border-radius: 8px;
-  padding: 9px 11px;
+  min-height: 96px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 12px 13px;
   background: var(--paper);
+  /* Set as prose: a question to a librarian, not a value in a form. */
+  font: 400 15px/1.5 var(--serif);
+  color: var(--ink);
   resize: vertical;
 }
-textarea.compose:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+textarea.compose:focus { outline: none; border-color: var(--accent); }
 
-.pie-wrap { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+/* The key box and the extras checklist: recessed rather than raised, so they
+   read as apparatus beside the page rather than part of it. */
+.sunk-panel {
+  background: var(--paper-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+/* A state, not a category: mono, so it sits with the other machine readings. */
+.tag {
+  font: 400 11px/1 var(--mono);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+.tag.read { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.tag.unread { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); }
+.tag.unknown { color: var(--ink-faint); }
+
+.pie-wrap { display: flex; gap: 30px; align-items: center; flex-wrap: wrap; }
 .pie { flex: 0 0 auto; display: block; }
 .pie-legend { list-style: none; margin: 0; padding: 0; flex: 1 1 190px; min-width: 0; display: grid; gap: 5px; }
-.pie-legend li { display: grid; grid-template-columns: 10px 1fr auto; gap: 9px; align-items: baseline; font-size: 13px; }
-.pie-legend .swatch { width: 10px; height: 10px; border-radius: 3px; align-self: center; }
+.pie-legend li { display: grid; grid-template-columns: 10px 1fr auto; gap: 12px; align-items: baseline; font-size: 13.5px; }
+.pie-legend .swatch { width: 10px; height: 10px; border-radius: 2px; align-self: center; }
 .pie-label { min-width: 0; overflow-wrap: anywhere; }
-.pie-value { font-variant-numeric: tabular-nums; color: var(--ink-soft); white-space: nowrap; }
+.pie-value { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); white-space: nowrap; font-size: 12.5px; }
 .pie-note { flex: 1 1 100%; margin: 4px 0 0; }
 
 /* --------------------------------------------------------------- states -- */

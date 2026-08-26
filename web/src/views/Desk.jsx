@@ -108,26 +108,30 @@ export default function Desk({ catalog, onGo }) {
   if (!catalog) {
     return (
       <div className="view">
-        <header>
+        <div className="view-head">
+          <p className="eyebrow">{t('desk.eyebrow')}</p>
           <h2>{t('nav.desk')}</h2>
+          <hr className="rule" />
           <p>{t('desk.nothingYet')}</p>
-        </header>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="view">
-      <header>
+      <div className="view-head">
+        <p className="eyebrow">{t('desk.eyebrow')}</p>
         <h2>{t('nav.desk')}</h2>
+        <hr className="rule" />
         <p>{t('desk.intro')}</p>
-      </header>
+      </div>
 
       <div className="desk-grid">
         <div>
-          <div className="card">
-            <div className="spread">
-              <h3 style={{ margin: 0 }}>{t('desk.neverOpened')}</h3>
+          <section className="desk-section">
+            <div className="section-head spread">
+              <h3>{t('desk.neverOpened')}</h3>
               <label className="field">
                 {t('desk.waitingAtLeast')}
                 <select
@@ -182,10 +186,10 @@ export default function Desk({ catalog, onGo }) {
                 {showAllStale ? t('desk.showFive') : t('desk.showAll', { n: stale.length })}
               </button>
             )}
-          </div>
+          </section>
 
-          <div className="card">
-            <h3>{t('desk.away')}</h3>
+          <section className="desk-section">
+            <h3 className="section-head">{t('desk.away')}</h3>
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.awayNote')}</p>
 
             {!lent.length && !borrowedIn.length && (
@@ -198,7 +202,7 @@ export default function Desk({ catalog, onGo }) {
             ].map(([heading, rows, whoKey]) =>
               rows.length ? (
                 <div key={heading} style={{ marginTop: 10 }}>
-                  <strong className="tiny">{t(heading, { n: rows.length })}</strong>
+                  <p className="group-label">{t(heading, { n: rows.length })}</p>
                   {rows.map((row) => (
                     <div className="forgotten-item spread" key={row.book.id}>
                       <span>
@@ -222,27 +226,29 @@ export default function Desk({ catalog, onGo }) {
                 </div>
               ) : null,
             )}
-          </div>
+          </section>
 
-          <div className="card">
-            <h3>{t('desk.madeOf')}</h3>
+          <section className="desk-section">
+            <h3 className="section-head">{t('desk.madeOf')}</h3>
             <GenrePie books={catalog.books} />
-          </div>
+          </section>
 
-          <div className="card">
-            <h3>{t('desk.themes')}</h3>
+          <section className="desk-section">
+            <h3 className="section-head">{t('desk.themes')}</h3>
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.themesNote')}</p>
             <WordCloud
               books={catalog.books}
               onPick={(word) => onGo?.('catalog', { tag: word.key, label: word.value })}
             />
-          </div>
+          </section>
         </div>
 
         <div>
-          <div className="card">
-            <h3>{t('desk.ask')}</h3>
-            <div className="segmented" style={{ marginBottom: 10 }}>
+          <section className="ask-panel">
+            <p className="eyebrow">{t('desk.askEyebrow')}</p>
+            {/* Tabs rather than a segmented control: the two are alternative
+                questions to put, not a setting being switched. */}
+            <div className="ask-tabs" role="group" aria-label={t('desk.ask')}>
               {ASKS.map((a) => (
                 <button key={a.id} aria-pressed={ask === a.id} onClick={() => setAsk(a.id)}>
                   {t(`desk.${a.id}`)}
@@ -326,13 +332,13 @@ export default function Desk({ catalog, onGo }) {
                 {t('desk.promptsNote')}
               </p>
             </div>
-          </div>
+          </section>
 
           {context && (
-            <div className="card">
-              <div className="spread">
-                <h3 style={{ margin: 0 }}>{t('desk.profile')}</h3>
-                <span className="tiny faint">
+            <section className="desk-section">
+              <div className="section-head spread">
+                <h3>{t('desk.profile')}</h3>
+                <span className="tabular tiny faint">
                   {t('desk.characters', { n: context.length.toLocaleString() })}
                 </span>
               </div>
@@ -340,7 +346,7 @@ export default function Desk({ catalog, onGo }) {
               <pre className="snippet" style={{ marginTop: 10, maxHeight: 300 }}>
                 {context}
               </pre>
-            </div>
+            </section>
           )}
         </div>
       </div>

@@ -59,14 +59,15 @@ export default function WordCloud({ books, onPick }) {
   return (
     <div>
       <div className="word-cloud">
-        {words.map((word, i) => (
+        {words.map((word) => (
           <button
             key={word.key}
             className="word"
-            style={{
-              fontSize: sizeFor(word.count, max),
-              color: `var(--series-${(i % 6) + 1})`,
-            }}
+            /* One colour for every word. The old cycle through --series-N
+               now runs a lightness ramp, whose pale end all but disappears on
+               paper, and the colour never carried meaning here anyway: size
+               does, and it still does. */
+            style={{ fontSize: sizeFor(word.count, max) }}
             title={t('cloud.count', { n: word.count })}
             aria-label={t('cloud.label', { word: word.value, n: word.count })}
             onClick={() => onPick?.(word)}

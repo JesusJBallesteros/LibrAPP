@@ -91,10 +91,10 @@ export default function ApiKeyBox({ what, onChange }) {
   }
 
   return (
-    <div className="card" style={{ background: 'var(--paper-sunk)', boxShadow: 'none' }}>
+    <div className="sunk-panel">
       <div className="spread">
-        <h3 style={{ margin: 0 }}>{t('key.title')}</h3>
-        <span className={`pill ${state === 'active' ? 'read' : state === 'off' ? 'unread' : 'unknown'}`}>
+        <p className="eyebrow">{t('key.title')}</p>
+        <span className={`tag ${state === 'active' ? 'read' : state === 'off' ? 'unread' : 'unknown'}`}>
           {state === 'active'
             ? t('key.inUse')
             : state === 'off'

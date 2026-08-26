@@ -88,7 +88,7 @@ export default function GenrePie({ books, size = 168 }) {
     return <p className="muted tiny">{t('pie.noGenres')}</p>
   }
 
-  const r = size / 2 - 2
+  const r = size / 2 - 6
   const cx = size / 2
   const cy = size / 2
   let angle = -Math.PI / 2 // start at twelve o'clock
@@ -115,11 +115,10 @@ export default function GenrePie({ books, size = 168 }) {
             key={slice.label}
             d={slice.d}
             fill={`var(--series-${slice.slot})`}
-            /* A 2px gap in the surface colour keeps adjacent slices apart even
-               when their hues are close for a colour-blind reader. */
-            stroke="var(--paper-raised)"
-            strokeWidth="2"
-            strokeLinejoin="round"
+            /* No stroke between slices. The palette is a single ramp from dark
+               to light, so neighbouring slices differ in lightness rather than
+               hue and separate themselves. Every slice is still named and
+               counted in the legend, which is what identity actually rests on. */
           >
             <title>
               {slice.isOther ? t('pie.other') : slice.label}: {slice.count} (
@@ -127,6 +126,12 @@ export default function GenrePie({ books, size = 168 }) {
             </title>
           </path>
         ))}
+        {/* Punched out of the middle, so the chart reads as a ring rather
+            than a pie. Painted in the page colour rather than cut, which keeps
+            the slice paths and their tooltips whole. --paper, not
+            --paper-raised: the desk section behind it is no longer a card, so
+            a raised fill would show as a lighter disc. */}
+        <circle cx={cx} cy={cy} r={30} fill="var(--paper)" />
       </svg>
 
       <ul className="pie-legend">

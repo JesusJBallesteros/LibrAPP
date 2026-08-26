@@ -368,6 +368,8 @@ export default {
   'desk.showAll': 'Ver los {n}',
   'desk.madeOf': 'De qué se compone la colección',
 
+  'desk.eyebrow': 'Consultas',
+  'desk.askEyebrow': 'Plantea una pregunta',
   'desk.ask': 'Preguntar',
   'desk.whatItIsFor': 'el escritorio',
   'desk.synopsis': 'Sinopsis',

@@ -367,6 +367,8 @@ export default {
   'desk.showAll': 'Show all {n}',
   'desk.madeOf': 'What the collection is made of',
 
+  'desk.eyebrow': 'Enquiries',
+  'desk.askEyebrow': 'Put a question',
   'desk.ask': 'Ask',
   'desk.whatItIsFor': 'the desk',
   'desk.synopsis': 'Synopsis',
