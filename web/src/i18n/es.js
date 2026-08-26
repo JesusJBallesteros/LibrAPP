@@ -546,6 +546,15 @@ export default {
   'about.whatBody2':
     'Y un bibliotecario que se ha leído tus estanterías. El escritorio responde sobre lo que tienes: qué leer a continuación y por qué, qué te falta de un autor que has ido reuniendo a medias, qué hilos recorren la colección, una lista para un vuelo largo. No es una red social, ni un registro de lecturas, ni una tienda. Nadie más puede ver tus estanterías, y no hay nadie que pudiera verlas, porque LibrAPP no tiene servidor. Dos pasos pueden usar un servicio de IA si le das una clave, y los dos funcionan también sin ella.',
 
+  'about.librarian': 'La BibliotecAPPri@',
+  'about.librarianBody':
+    'El escritorio responde a tres tipos de petici\u00f3n. Una sinopsis de cualquier libro, est\u00e9 en el cat\u00e1logo o no, contada a alguien de quien ya se conocen las estanter\u00edas. Una recomendaci\u00f3n de dos o tres libros, medida por hacia d\u00f3nde va la lectura y no por d\u00f3nde ha estado. Y rellenar huecos: pedir los datos que faltan en el cat\u00e1logo, para libros que ya est\u00e1n en la estanter\u00eda, que es la \u00fanica que escribe algo. Nada de lo que propone se guarda sin ense\u00f1arlo antes, y todo lo que escribe se puede deshacer libro a libro.',
+  'about.librarianOwl':
+    'El distintivo de la esquina es la misma bibliotecaria, diciendo una cosa cada vez: qu\u00e9 hay que devolver, qu\u00e9 lleva m\u00e1s tiempo sin abrir, de qu\u00e9 no consta si est\u00e1 le\u00eddo. Al seguir una l\u00ednea, el cat\u00e1logo se filtra por ella. No hay d\u00f3nde escribir, y es a prop\u00f3sito: una pregunta que merezca la pena va en el escritorio, donde recibe el cat\u00e1logo como contexto y el coste se ve antes de gastarlo. Se puede despedir para siempre desde su propio globo, y recuperar desde la pesta\u00f1a Biblioteca.',
+  'about.librarianYours':
+    'Marcar un libro como favorito y escribir una nota sobre \u00e9l son las dos cosas de una ficha que no vienen de nadie m\u00e1s. Ambas se env\u00edan con cada pregunta, citadas como tuyas y no como descripci\u00f3n del libro, y el escritorio tiene instrucciones de darles m\u00e1s peso que a nada que haya deducido contando.',
+  'about.librarianHonest':
+    'Cada frase del distintivo sale de contar el cat\u00e1logo, no de suponer. De una estanter\u00eda sin constancia de lectura se dice eso, no se felicita por haberla terminado.',
   'about.who': 'Quién la escribió',
   'about.whoBody':
     'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías.',

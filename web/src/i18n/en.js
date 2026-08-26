@@ -541,6 +541,15 @@ export default {
   'about.whatBody2':
     'And a librarian who has read your shelves. The desk answers about what you own: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through the collection, a list for a long flight. It is not a social network, a reading tracker or a shop. Nobody else can see your shelves, and there is nobody to see them, because LibrAPP has no server. Two steps can use an AI service if you give it a key, and both work without one.',
 
+  'about.librarian': 'The LibrAPPrian',
+  'about.librarianBody':
+    'The desk answers three kinds of request. A synopsis of any book, owned or not, described to somebody whose shelf is already known. A recommendation of two or three books, weighed against where the reading is going rather than where it has been. And filling in gaps: asking for the details the catalog is missing, for books already on the shelf, which is the only one that writes anything back. Nothing it proposes is kept without being shown first, and everything it writes can be undone one book at a time.',
+  'about.librarianOwl':
+    'The badge in the corner is the same librarian, saying one thing at a time: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from the Library tab.',
+  'about.librarianYours':
+    'Starring a book and writing a note on one are the two things in a record that come from nobody else. Both are sent with every question, quoted as yours rather than as a description of the book, and the desk is told to weigh them above anything it worked out by counting.',
+  'about.librarianHonest':
+    'Every line the badge says is counted from the catalog rather than guessed. A shelf with no read state recorded is told so, not congratulated on being finished.',
   'about.who': 'Who wrote it',
   'about.whoBody':
     'LibrAPP is written by Jesús J. Ballesteros, and it started as a way to catalog his own shelves.',

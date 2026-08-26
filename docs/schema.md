@@ -4,14 +4,13 @@ One JSON file holds the whole catalog. At this size — a few hundred books — 
 database would cost more than it returns, and a plain file diffs cleanly in git
 and is readable without any tool at all.
 
-It is built from one or more **source files** — by the app, or by
-`tools/librapp/build_catalog.py`, which produce the same thing. Nothing else
-should write it: hand-edits are lost on the next rebuild. Corrections belong in
+It is built from one or more **source files** by the app. Nothing else should
+write it: hand-edits are lost on the next rebuild. Corrections belong in
 the overrides file described below, which survives every rebuild.
 
 A source file is the envelope every ingester emits and the builder reads,
-defined and validated by `web/src/core/records.js` and its Python twin
-`tools/librapp/records.py`. That indirection is what lets a catalog be built
+defined and validated by `web/src/core/records.js`. That indirection is what
+lets a catalog be built
 from a photograph alone, a list alone, or both, and what makes adding a new kind
 of input a matter of writing one more ingester.
 
@@ -59,23 +58,32 @@ of input a matter of writing one more ingester.
 | `published_year` | int? | recalled by a model |
 | `rating` | number? | recalled by a model, out of 5 |
 | `original_language` | string? | recalled by a model |
+| `pages` | int? | recalled by a model; a typical edition, not this copy |
+| `favourite` | bool | marked by the reader; `false` rather than `null`, since nothing but the reader can set it |
 | `flags` | string[] | see below |
 
 `lent_to` and `borrowed_from` are mutually exclusive: a lent book is owned and
 away, a borrowed one is not owned. They are written by the corrections layer
 rather than by any ingester, since no source can know them.
 
-The four recalled fields are only ever filled in when the shelf checklist asked
-for them. They are not present in the photograph, and every book carrying one is
-flagged `recalled_details`.
+`favourite` and `notes` are the two fields that come from the reader alone.
+Both are written by the corrections layer, and both are sent to the model with
+every desk request, quoted as the reader's own rather than as description.
+
+The five recalled fields are filled in either by the shelf checklist, when it
+asked for them, or later by the desk's gap-filling request. They are not present
+in any photograph. A book that got them from a shelf read is flagged
+`recalled_details`; one that got them from the desk carries the reason on its
+correction instead, because a flag cannot travel through the corrections layer
+and a reason attached to the change is undone along with it.
 
 ### `read` is three-valued
 
 `true` and `false` come from a source that records it, such as a store export.
 A book seen only on a shelf carries `null`: nothing has ever recorded whether
 it was read. Treating `null` as `false` would invent a hundred unread books, so
-any filter or count has to handle the three cases separately - which is why
-`query.py forgotten` considers only books explicitly marked unread.
+any filter or count has to handle the three cases separately, which is why the
+desk's list of forgotten books considers only those explicitly marked unread.
 
 ### `confidence`
 

@@ -37,6 +37,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [Install](#install)
 - [Adding your books](#adding-your-books)
 - [Using the catalog](#using-the-catalog)
+- [Favourites and notes](#favourites-and-notes)
 - [Corrections](#corrections)
 - [Lending and borrowing](#lending-and-borrowing)
 - [The desk](#the-desk)
@@ -44,6 +45,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [Optional AI key](#optional-ai-key)
 - [About, privacy and version](#about-privacy-and-version)
 - [How this was built](#how-this-was-built)
+- [What changed since v1](#what-changed-since-v1)
 - [Command-line tools](#command-line-tools)
 - [Development](#development)
 - [Licence](#licence)
@@ -59,6 +61,8 @@ The interface is available in English and Spanish, chosen on the opening page.
 | **Browse** | search, filter and group offline — no network, no waiting |
 | **Correct** | edit or remove any entry; corrections outlast every rebuild |
 | **Ask** | recommendations, synopses and reading lists, with your own shelves as the context |
+| **Complete** | ask for the details the catalog is missing, and see them before they are kept |
+| **Mark** | star the ones that matter and write your own notes, which the desk then reads |
 | **Track** | who has the book you lent, and whose book you are still holding |
 
 Two steps use AI: reading spines off a photograph, and asking the desk a
@@ -76,6 +80,8 @@ directly.
 - **Your data is plain JSON.** Readable, transferable and always yours.
 - **It has something to say.** The desk reads the shape of your collection and
   answers from it, which a general assistant cannot do without your shelves.
+- **It knows what you told it.** Star a book or write a note on one and the
+  desk weighs that above anything it worked out by counting.
 
 ---
 
@@ -206,7 +212,8 @@ series and volume. These are printed on the spine, so the model is transcribing
 and the answer is evidence of the same kind as the title itself.
 
 **Recalled by the model** — a short abstract, the year first published, a reader
-rating, the original language. **None of this is in your photograph.** The model
+rating, the original language, and the page count of a typical edition. **None
+of this is in your photograph.** The model
 produces it from what it was trained on, so it can be confidently wrong about a
 real book. LibrAPP marks every book carrying such a field, shows the mark on the
 book, and counts them before you import. The mark comes from which fields are
@@ -220,9 +227,17 @@ Cover images are not offered. A model replying with JSON can only return a link,
 and fetching one would put a network request into an app that makes none, and
 would tell whoever hosts that image which books you own.
 
+The page count is worth a word of its own, because it is a number and numbers
+look measured. It is the length of a typical edition of that work, not of the
+copy in your picture. Nothing on a spine states a page count, so it is recalled
+like the rest, and it is labelled that way wherever it appears.
+
 A photograph shows a title, usually an author, sometimes a publisher. It cannot
 show when you bought a book or whether you read it, so those stay blank until
 another source fills them in.
+
+Anything you do not tick here can be asked for later at the desk, for books
+already in the catalog. See [Filling gaps](#filling-gaps-in-the-records).
 
 ### A list you already keep
 
@@ -259,12 +274,24 @@ duplicating it.
 
 **Search** across titles, authors, series and tags.
 
-**Filter** by read status, format (paper, ebook, audio) and which source a book
-came from.
+**Filter** by read status, format (paper, ebook, audio), which source a book
+came from, whether it is away from the shelf, and whether you marked it a
+favourite. Three filters stay on screen and the rest sit behind **more
+filters**; when one of the hidden ones is narrowing the list, the page says so
+rather than letting it work out of sight.
 
 **Group** by title, author or series.
 
 **Sort** by title, author, newest or oldest.
+
+**Switch the view** between **List** and **Spines**. Spines draws the filtered
+books as a shelf: colour is fixed per book so a spine keeps it, and height comes
+from the page count where one was recorded and from the length of the title
+where none was. The wall says so underneath, because a height that looked like a
+measurement and was not would be the app inventing something about your books.
+
+**Switch between Day and Night** from the sidebar, or leave it alone and it
+follows whatever your system asks for. The landing page has the same switch.
 
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
@@ -292,6 +319,44 @@ genre come from whichever source recorded one.
 
 ---
 
+## Favourites and notes
+
+Two things in a record come from nobody but you. Everything else arrives from a
+spine, a spreadsheet or a model.
+
+**The star.** Open any book, press Edit, and mark it. Starred books show the
+star in the list and on the card, filter on their own, and get a section at the
+desk.
+
+**The note.** The same form has a box for whatever you want to say about the
+book. It is not a summary and it is not for the catalog's benefit. "Bought in
+Lisbon, never got past chapter three" is a perfectly good note.
+
+Both live in the corrections layer, so they survive every rebuild and can be
+undone one book at a time. See [Corrections](#corrections).
+
+### The LibrAPPrian reads them
+
+This is the point of both. When you ask the desk anything, LibrAPP sends a
+profile of your reading with the question, and that profile now carries every
+star and every note, quoted in your own words under a heading that says they are
+yours rather than a description of the book.
+
+The prompts say plainly that these outrank the counting. Genre totals are what
+is left when nobody has said anything; a starred book and a sentence you wrote
+are you saying something outright. Where the two disagree, the answer is meant
+to follow you.
+
+Practically: a shelf of ninety history books and one starred volume of poetry
+will not be told to buy more history. Three notes complaining that a subject was
+handled badly are a stronger signal than a genre count, and they are the kind of
+thing no amount of counting would reveal.
+
+Neither field is required, and the desk works without them. They are simply the
+cheapest way to make the answers better.
+
+---
+
 ## Corrections
 
 Anything LibrAPP got wrong can be fixed, and the fix outlasts every rebuild.
@@ -307,6 +372,12 @@ back.
 
 Everything you have corrected is listed under **Library → Corrections you have
 made**, where removals can be restored and edits undone.
+
+Three other things land here, because they are corrections in the same sense:
+your stars, your notes, and anything the desk fills in when you accept it. A
+desk entry carries the reason *recalled by a model at the desk, not read from
+any source*, and the notice on the book says it was changed after the sources
+were read rather than corrected by hand, because it was not.
 
 ---
 
@@ -338,6 +409,8 @@ A catalog tells you what you own. The desk reads the shape of it and answers
 from that, which is why the answers are about your books rather than books in
 general.
 
+### What it shows you without being asked
+
 **Bought, and never opened** — books you own and have not read, ordered by how
 long they have waited and weighted by how much you evidently wanted them at the
 time: filing a book into a collection, or putting it on several devices, is a
@@ -348,6 +421,10 @@ unread appear.
 whom, and how long each has been gone. See
 [Lending and borrowing](#lending-and-borrowing).
 
+**The ones marked** — the books you starred, each with its note underneath, and
+a link through to the same filter in the catalog. See
+[Favourites and notes](#favourites-and-notes).
+
 **What the collection is made of** — the largest genres as a share of the
 whole, with the long tail grouped as *other*. Genre labels come from your
 sources and are not a controlled list, so the chart says how much of the
@@ -357,32 +434,122 @@ collection the named genres actually cover.
 book, drawn larger the more often they appear. Pick a word to open the catalog
 filtered to it.
 
-**Ask** — this is the part worth coming back for. LibrAPP builds a profile of
-your reading: what the collection contains, how it has changed over the years,
-which authors dominate, what is waiting unread, and which books are currently
-out of the house. It sends that with your question.
+### What you can ask it
 
-Things it is good at:
+Three requests, as tabs above the box.
 
-- **What next.** A recommendation weighed against where your reading is going
-  rather than where it has been, and checked against your unread pile before it
-  suggests buying anything.
-- **Filling a gap.** Which books by an author you have collected unevenly are
-  missing, and which of them to read first.
-- **A synopsis.** Of any book, including one you do not own, described to
-  somebody whose shelf is already known.
-- **A thread.** What connects the books you keep buying, which is often not what
-  you would have said.
-- **A list.** For a long flight, a summer, a subject you are about to start.
+**Synopsis.** Any book described to somebody whose shelf is already known: what
+it argues, where it sits, what it does that the books you own do not, and
+whether reading it would give you anything the shelf does not already have. The
+book does not have to be one you own.
 
-With an AI key it asks directly and shows the cost before sending and the real
-figure afterwards. Without a key it assembles the whole request for you to paste
-into any AI session. Both routes ask exactly the same question.
+**Recommendation.** Two or three books, never more, each with the book on your
+shelf it follows from or argues with. It is told to read the trajectory rather
+than the pile, to consider your unread books before suggesting a purchase, and
+not to recommend by resemblance.
 
-The book you ask about does not have to be one you own.
+**Fill in gaps.** Described below. Unlike the other two, this one writes to your
+catalog, and only after you have seen what it wants to write.
+
+### What it knows when it answers
+
+LibrAPP builds a profile of your reading and sends it with the question. In v2
+that profile carries:
+
+- **The counts.** How many books, how many read, how many never recorded.
+- **What the collection is made of**, and how that has changed between the
+  earliest quarter of your buying and the most recent.
+- **The shape of the shelf** — how long the books tend to be, when they were
+  first published, what languages they were written in, how they are rated.
+  None of this can be inferred from titles.
+- **What the catalog records** — how much of each field is actually filled in,
+  so a field blank across your whole shelf reads as *nobody has recorded this*
+  rather than as an answer of no.
+- **A cross-section** of the books themselves, described below.
+- **Your favourites and your notes**, in full.
+- **What is out of the house**, so nothing at a friend's is recommended.
+
+#### The cross-section
+
+Naming every book would crowd out the question and be paid for on every
+request. Naming the thirty most recent would describe the last two years and
+imply the shelf began then.
+
+So the sample is proportional. Each genre gets a share of the slots matching its
+share of the shelf, the books carrying the most information go first within a
+genre, and anything you starred or wrote about is always included whatever its
+genre's share. It is the same every time for the same catalog.
+
+The prompts are told this is a sample, so absence from it is never treated as
+proof you do not own something.
+
+### Filling gaps in the records
+
+The extras checklist is offered once, while a photograph is being read. Anything
+you did not tick then was lost until the photograph was read again, which for a
+catalog built from a spreadsheet never happens at all.
+
+**Fill in gaps** asks for the same fields later, for books already on the shelf.
+
+1. Tick the fields you want. Each says how many books are missing it.
+2. The panel says how many books the request covers. The cost goes up with that
+   number, so it is stated before anything is sent.
+3. Send it, or copy it and paste the answer back if you have no key.
+4. **What came back is shown before anything is written.** Keep it or discard
+   it.
+
+What it will not do:
+
+- **It will not overwrite anything.** This fills gaps. A value already recorded
+  came from somewhere, and this is not the thing to replace it.
+- **It will not write silently.** Nothing reaches the catalog that you have not
+  seen listed, book by book, field by field.
+- **It will not keep what it cannot verify.** A value of the wrong type, a book
+  it does not recognise, a field you did not ask for: all discarded, and the
+  count of what was dropped is shown next to what survived.
+
+Everything it writes goes in as a correction, so each one appears under
+[Corrections](#corrections), carries the reason *recalled by a model at the
+desk, not read from any source*, and can be undone one book at a time.
+
+### With and without a key
+
+With an AI key the desk asks directly, showing the cost before sending and the
+real figure afterwards. Without one it assembles the whole request for you to
+paste into any AI session, and takes the answer back. Both routes ask exactly
+the same question of the same prompt.
 
 The prompts live in [`prompts/`](prompts) as plain text. Edit them to change how
 LibrAPP asks.
+
+### The owl in the corner
+
+The LibrAPPrian also keeps a small presence at the bottom right of every screen
+except About. Press it and it says one thing about your collection, drawn from
+what the catalog already holds:
+
+- How many books are owed back to someone, or out with someone, for more than a
+  year.
+- How many are still unopened, with a link that filters the catalog to them,
+  oldest first.
+- How many have no read state recorded, with the same kind of link.
+- On the shelf and list pages, what makes for a good photograph or file.
+
+It also speaks while something is happening: how many tiles are being read, that
+a question is in flight, how many books an import brought and how many were
+already there.
+
+It is not a chat surface, and it has nowhere to type on purpose. Anything worth
+typing belongs at the desk, where the question gets your catalog as context and
+the cost is shown before it is spent.
+
+**Every line it says is computed from your catalog.** It never states anything
+it cannot count. If your books have no read state recorded, it says that, rather
+than congratulating you on having read them all.
+
+**Press *Not again* in its bubble to dismiss it for good.** That choice survives
+reloads. The way back is in **Library**, with the other settings, and appears
+only once there is something to undo.
 
 ---
 
@@ -543,29 +710,34 @@ until you add a key.
 
 ---
 
+## What changed since v1
+
+Version 2 is a redesign of every screen, a new component, and four features
+that did not exist in v1.
+
+- **The LibrAPPrian** is now a presence rather than only a page: an owl in the
+  corner that says one true thing about your collection and offers to act on
+  it, and a desk that has gained a third kind of request.
+- **Fill in gaps** asks a model for the details your catalog is missing, for
+  books already on the shelf, and shows you everything before it writes.
+- **Favourites and notes** are yours to set, and the desk reads both.
+- **Page counts** can be asked for while a photograph is read, and the spine
+  wall uses them.
+- **The reader profile** the desk sends now describes the shape of the shelf,
+  says which fields are actually recorded, and names a proportional
+  cross-section of your books instead of the most recent thirty.
+- **Day and Night**, and a **Spines** view of the catalog.
+
+The full list, including what was fixed and what changed underneath, is in
+[CHANGELOG.md](CHANGELOG.md).
+
+---
+
 ## Command-line tools
 
-Everything LibrAPP imports is also available as Python scripts in
-[`tools/librapp/`](tools/librapp), which read and write the same folder layout.
-
-```bash
-python tools/librapp/parse_kindle.py export.pdf -o data/private/kindle.json
-python tools/librapp/parse_table.py library.xlsx -o data/private/list.json
-python tools/librapp/parse_shelf.py tile shelf.jpg -o work/tiles
-python tools/librapp/build_catalog.py --source data/private/kindle.json -o catalog.json
-
-python tools/librapp/query.py stats
-python tools/librapp/query.py search kant
-python tools/librapp/query.py series --volumes
-python tools/librapp/query.py forgotten
-python tools/librapp/query.py context
-```
-
-Requires Python 3.11+, plus [PyMuPDF](https://pymupdf.readthedocs.io/) for PDF
-import and [Pillow](https://python-pillow.org/) for photo tiling.
-
-The command-line tools do not apply corrections — those are added by the app
-after the merge.
+The Python scripts under [`tools/librapp/`](tools/librapp) predate the app and
+still read and write the same folder layout. They are unmaintained: the app does
+everything they did, and nothing in it depends on them.
 
 ---
 

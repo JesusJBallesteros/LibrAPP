@@ -90,6 +90,14 @@ export default function About({ onBack, focus, inShell = false }) {
           <p className="muted tiny">{t('about.whatBody2')}</p>
         </section>
 
+        <section className="about-section" id="about-librarian">
+          <h3 className="section-head">{t('about.librarian')}</h3>
+          <p className="muted tiny">{t('about.librarianBody')}</p>
+          <p className="muted tiny">{t('about.librarianOwl')}</p>
+          <p className="muted tiny">{t('about.librarianYours')}</p>
+          <p className="tiny faint">{t('about.librarianHonest')}</p>
+        </section>
+
         <section className="about-section" id="about-who">
           <h3 className="section-head">{t('about.who')}</h3>
           <p className="muted tiny">{t('about.whoBody')}</p>
