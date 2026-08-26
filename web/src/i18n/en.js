@@ -40,6 +40,77 @@ export default {
     'This browser is missing something LibrAPP needs. Open the Library tab once you are in for the details.',
 
   // -- shell --------------------------------------------------------------
+  // -- the LibrAPPrian ------------------------------------------------------
+  'librarian.name': 'The LibrAPPrian',
+  'librarian.open': 'What the LibrAPPrian has to say',
+  'librarian.close': 'Put the LibrAPPrian away',
+  'librarian.dismiss': 'Not again',
+  'librarian.dismissWhy': 'Hide the LibrAPPrian on every page from now on',
+
+  'librarian.empty': 'Nothing on the shelves yet. A photograph of one is the quickest way to start.',
+  'librarian.welcome': 'Welcome back. {n} {n:book|books} {n:is|are} catalogued and waiting.',
+  'librarian.unread': '{n} {n:book|books} here {n:is|are} still unopened.',
+  'librarian.allRead': 'Every book here is marked read. That is not a common sight.',
+  'librarian.unrecorded': '{n} {n:book|books} here {n:has|have} no read state recorded.',
+  'librarian.lentLong': '{n} {n:book|books} {n:has|have} been with someone else for more than a year.',
+  'librarian.borrowedLong': '{n} {n:book|books} here {n:belongs|belong} to somebody else, and {n:has|have} for more than a year.',
+  'librarian.desk': 'Ask about your own shelves. All {n} {n:book|books} here {n:is|are} in the catalog.',
+
+  'librarian.reading': '{n} {n:tile|tiles}, spines top to bottom. This takes a moment.',
+  'librarian.asking': 'Looking through the shelves.',
+  'librarian.imported': '{n} {n:book|books} arrived, and {known} {known:was|were} already here. One entry each.',
+
+  'librarian.previous': 'The one before',
+  'librarian.next': 'The next one',
+  'librarian.position': '{at} of {of}',
+
+  'librarian.guide.empty.1':
+    'Three ways in: a photograph of a shelf, a spreadsheet or store export you already keep, or a catalog exported from another device. Any one of them is enough to start.',
+  'librarian.guide.empty.2':
+    'Nothing is uploaded anywhere. The catalog is a file on this device, and the app keeps working with no network at all.',
+
+  'librarian.guide.home.1':
+    'Pick whichever route matches what you already have. A photograph is quickest; a spreadsheet is most complete.',
+  'librarian.guide.home.2':
+    'Storage is only asked for at the point it is needed, so there is nothing to set up before starting.',
+
+  'librarian.guide.catalog.1':
+    'Search covers titles, authors, series and tags. Three filters stay on screen and the rest sit behind "more filters", which says when one of them is hiding something from the list.',
+  'librarian.guide.catalog.2':
+    'Any book opens its full record, where it can be edited, starred, or given a note. Spines draws the same books as a shelf.',
+
+  'librarian.guide.shelf.1':
+    'Photograph the shelf straight on and at full size. Spine text a few pixels tall is where invented titles come from.',
+  'librarian.guide.shelf.2':
+    'The photograph is cut into tiles and each is read separately. Adjust how many across and down, and discard any tile that holds no books, before spending anything.',
+  'librarian.guide.shelf.3':
+    'The checklist below asks for more than titles. The first group is printed on the spine; the second is recalled by the model and is marked on every book that carries it.',
+
+  'librarian.guide.list.1':
+    'A spreadsheet, CSV, TSV, XML, or a store export as PDF. Whatever columns it has, the ones it recognises are used and the rest are left alone.',
+  'librarian.guide.list.2':
+    'A file holding several lists asks which one to take. Importing a wishlist as a library is the mistake worth one extra question.',
+  'librarian.guide.list.3':
+    'The same book arriving from a second source becomes one entry, not two. Say how much to trust each source and the more reliable one wins where they disagree.',
+
+  'librarian.guide.desk.1':
+    'Three requests: a synopsis of any book, a recommendation weighed against where the reading is going, and filling in the details the catalog is missing.',
+  'librarian.guide.desk.2':
+    'All three work without an API key by preparing the request to paste elsewhere. With a key, the cost is shown before sending and the real figure after.',
+
+  'librarian.guide.storage.1':
+    'The catalog lives where it was put: a folder chosen on this device, or storage the browser manages. Either way it stays here.',
+  'librarian.guide.storage.2':
+    'Export writes one file holding every source and every correction. That file is how a catalog moves to another device, and it is worth keeping a copy elsewhere.',
+  'librarian.guide.storage.3':
+    'Everything corrected by hand is listed here, and every one of them can be undone.',
+
+  'librarian.action.startPhoto': 'Start with a photograph',
+  'librarian.action.showOldest': 'Show the oldest of them',
+  'librarian.action.showLent': 'Show what is out',
+  'librarian.action.showBorrowed': 'Show what is owed back',
+  'librarian.action.showUnrecorded': 'Show them',
+
   'app.strapline': 'your shelf, catalogued',
   'nav.home': 'Start',
   'nav.catalog': 'Catalog',
@@ -123,12 +194,18 @@ export default {
   'book.tags': 'Tags',
   'book.worthKnowing': 'Worth knowing',
   'book.confidence': 'Confidence',
-  'book.notedWhenRead': 'Noted when read:',
+  'book.confShort': 'conf. {level}',
+  'book.authorUnknown': 'Author not recorded',
+  'book.notedWhenRead': 'Your note',
+  'book.favourite': 'A favourite',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',
   'book.corrected': 'Corrected by hand.',
   'book.correctedOn': 'Corrected by hand on {date}.',
+  'book.changed': 'Changed after the sources were read.',
+  'book.changedOn': 'Changed on {date}, after the sources were read.',
   'book.correctedFields': '{fields} - overriding what the sources say.',
+  'book.wasUnset': 'not recorded',
   'book.before': 'Before:',
   'book.undoCorrection': 'Undo this correction',
 
@@ -207,6 +284,11 @@ export default {
   // -- library --------------------------------------------------------------
   'storage.intro':
     'Where your catalog lives, what it was built from, and how to move it to another device.',
+  'storage.owlHidden': 'The LibrAPPrian is hidden on every page. Bringing it back shows the badge in the corner again.',
+  'storage.owlRestore': 'Bring it back',
+  'storage.owlBack': 'The LibrAPPrian is back.',
+  'storage.eyebrow': 'The stacks',
+  'storage.kindUnknown': 'not recorded',
   'storage.where': 'Storage',
   'storage.kind.folder': 'a folder you chose — plain files you can open, back up or commit',
   'storage.kind.browser': 'browser storage — private to LibrAPP, and only leaves by export',
@@ -303,6 +385,12 @@ export default {
   'shelf.intro':
     'Photograph a shelf straight on, at your camera’s full resolution. This matters more than anything else here: a whole bookcase at one megapixel is unreadable, and the same shelf at fifty is not.',
   'shelf.whatItIsFor': 'reading a shelf',
+  'shelf.eyebrow': 'Accessions',
+  'list.listsFound': '{n} lists found',
+  'list.eyebrow': 'Accessions',
+  'shelf.stepOne': 'Step one · The photograph',
+  'shelf.stepTwo': 'Step two · Read the spines',
+  'shelf.stepThree': 'Step three · Check what it read',
   'shelf.step1': '1 · The photograph',
   'shelf.dropPhoto': 'Take or choose a photograph',
   'shelf.dropPhotoHint': 'JPEG or PNG · nothing is uploaded',
@@ -365,7 +453,23 @@ export default {
   'desk.showAll': 'Show all {n}',
   'desk.madeOf': 'What the collection is made of',
 
+  'desk.eyebrow': 'Enquiries',
+  'desk.askEyebrow': 'Put a question',
   'desk.ask': 'Ask',
+  'desk.fill': 'Fill in gaps',
+  'desk.fill.blurb':
+    'Ask for the details the catalog does not hold. Every answer is recalled rather than read, so nothing is written until it has been seen.',
+  'desk.fill.which': 'What to ask for',
+  'desk.fill.missing': '{n} missing',
+  'desk.fill.pickOne': 'Pick at least one field.',
+  'desk.fill.covers': 'This asks about {n} {n:book|books}. The cost goes up with that number.',
+  'desk.fill.review': 'What came back',
+  'desk.fill.reviewNote':
+    '{n} {n:book|books} to update. {ignored} {ignored:answer was|answers were} dropped as unusable or already recorded.',
+  'desk.fill.accept': 'Keep these {n}',
+  'desk.fill.discard': 'Discard',
+  'desk.fill.paste': 'Paste an answer',
+  'desk.fill.pastePrompt': 'Paste the JSON reply here.',
   'desk.whatItIsFor': 'the desk',
   'desk.synopsis': 'Synopsis',
   'desk.synopsis.placeholder': 'Which book? It does not have to be one you own.',
@@ -409,12 +513,18 @@ export default {
   'editor.where': 'Where it is',
   'editor.whereHint': 'a shelf, a room, a box in the attic',
   'editor.notes': 'Notes',
+  'editor.notesHint': 'Personal remarks on this book. The LibrAPPrian takes them into account.',
+  'editor.favourite': 'Favourite',
+  'editor.favouriteOn': 'Marked as a favourite',
+  'editor.favouriteOff': 'Not marked',
   'editor.saveCorrection': 'Save correction',
   'editor.addBook': 'Add the book',
   'editor.correctable': 'Correctable fields: {fields}. Anything else is derived from the sources.',
   'editor.needTitle': 'A title is the one thing a book cannot go in without.',
   'editor.badDate': 'Write the date as YYYY-MM-DD, or leave it blank.',
   'editor.badVolume': 'The volume number must be a whole number.',
+  'editor.badPages': 'The page count must be a whole number.',
+  'editor.pagesHint': 'A typical edition, not a count of this copy',
   'editor.nothingChanged': 'Nothing changed, so there is nothing to correct.',
 
   // -- the genre pie --------------------------------------------------------
@@ -473,9 +583,18 @@ export default {
   'about.whatBody2':
     'And a librarian who has read your shelves. The desk answers about what you own: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through the collection, a list for a long flight. It is not a social network, a reading tracker or a shop. Nobody else can see your shelves, and there is nobody to see them, because LibrAPP has no server. Two steps can use an AI service if you give it a key, and both work without one.',
 
+  'about.librarian': 'The LibrAPPrian',
+  'about.librarianBody':
+    'The desk answers three kinds of request. A synopsis of any book, owned or not, described to somebody whose shelf is already known. A recommendation of two or three books, weighed against where the reading is going rather than where it has been. And filling in gaps: asking for the details the catalog is missing, for books already on the shelf, which is the only one that writes anything back. Nothing it proposes is kept without being shown first, and everything it writes can be undone one book at a time.',
+  'about.librarianOwl':
+    'The badge in the corner is the same librarian, with up to three things to say about the page you are on, stepped through one at a time. What is worth acting on first: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. After those comes how the page itself works, which is what a first visit needs. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from the Library tab.',
+  'about.librarianYours':
+    'Starring a book and writing a note on one are the two things in a record that come from nobody else. Both are sent with every question, quoted as yours rather than as a description of the book, and the desk is told to weigh them above anything it worked out by counting.',
+  'about.librarianHonest':
+    'Every line the badge says is counted from the catalog rather than guessed. A shelf with no read state recorded is told so, not congratulated on being finished.',
   'about.who': 'Who wrote it',
   'about.whoBody':
-    'LibrAPP is written by Jesús J. Ballesteros, and it started as a way to catalog his own shelves. You are being asked to photograph your books and, if you want the AI parts, to paste a key into this page — so it seems fair to say plainly whose work this is and where to check it.',
+    'LibrAPP is written by Jesús J. Ballesteros, and it started as a way to catalog his own shelves.',
   'about.cv': 'His site and CV',
   'about.github': 'His GitHub',
   'about.repo': 'This project on GitHub',
@@ -529,7 +648,7 @@ export default {
 
   'about.ai': 'AI, and how this was built',
   'about.aiBody':
-    'LibrAPP was written by one person working with an AI assistant, over a series of sessions. Most of the code was typed by the model. Every decision about what to build was the person’s. Saying which is which seems better than leaving it to be guessed:',
+    'LibrAPP was written by one person working with an AI assistant, over a series of sessions. Most of the code was typed by the model. Every decision about what to build was the person’s.',
   'about.ai.author': 'Jesús J. Ballesteros',
   'about.ai.author.did':
     'conceived the app and decided every step of it — what to build next, which of the proposed approaches to take, what to leave out, and when to stop. He supplied everything it was tested against: his own shelves, his own exports, his own devices. He reviewed the results, and corrected them.',
@@ -585,11 +704,18 @@ export default {
   'editor.bothLoans': 'A book cannot be lent out and borrowed at the same time.',
 
   'catalog.whereIs': 'Where',
+  'catalog.mark': 'Mark as a favourite',
+  'catalog.unmark': 'Remove the favourite mark',
+  'catalog.favourites': 'Favourites',
+  'catalog.favouritesOnly': 'Favourites only',
   'catalog.atHome': 'on the shelf',
   'catalog.lentOut': 'lent out',
   'catalog.borrowed': 'borrowed',
 
   'desk.away': 'Away from the shelf',
+  'desk.favourites': 'The ones marked',
+  'desk.favouritesNote': 'Books singled out by hand. These carry more weight than anything the catalog works out on its own.',
+  'desk.showFavourites': 'See them all in the catalog',
   'desk.awayNote':
     'Books that are not where they should be. Recorded by hand, one entry at a time, since nothing else can know.',
   'desk.lentGroup': 'Lent out ({n})',
@@ -612,6 +738,7 @@ export default {
   // -- extras a model can be asked for --------------------------------------
   'book.abstract': 'Abstract:',
   'book.published': 'First published',
+  'book.pages': 'Pages, typical edition',
   'book.rating': 'Rating',
   'book.originalLanguage': 'Originally in',
   'flag.recalled_details':
@@ -633,6 +760,7 @@ export default {
   'shelf.extra.published': 'Year first published',
   'shelf.extra.rating': 'A general reader rating',
   'shelf.extra.original': 'Original language and whether this is a translation',
+  'shelf.extra.pages': 'The page count of a typical edition',
   'shelf.noCover':
     'Cover images are not offered. A model can only return a link, and fetching one would tell whoever hosts the image which books you own.',
   'shelf.recalledCount': '{n} book(s) carry a recalled detail',
@@ -641,4 +769,27 @@ export default {
     'No named author. The sources describe this as \u201c{label}\u201d, which is a description rather than a person, so it is not filled in above.',
   'editor.noAuthorRecorded':
     'No author recorded. Leave this blank for an anonymous or corporate work, or type one in.',
+
+  'nav.about': 'About',
+  'nav.about.hint': 'What this is, who made it, and the terms',
+  'sidebar.holdings': 'The holdings',
+  'about.eyebrow': 'Colophon',
+  'theme.label': 'Theme',
+  'theme.light': 'Day',
+  'theme.dark': 'Night',
+  'theme.following': 'Press again to follow the system',
+
+  'catalog.eyebrow': 'Shelf list',
+  'catalog.moreFilters': 'more filters',
+  'catalog.fewerFilters': 'fewer filters',
+  'catalog.hiddenFiltersOn': 'Also filtering by {filters}, which is hidden.',
+  'catalog.showThem': 'Show those filters',
+  'catalog.clearTag': 'Clear',
+  'catalog.viewMode': 'How to show the books',
+  'catalog.mode.list': 'List',
+  'catalog.mode.spines': 'Spines',
+  'catalog.spineWall': 'The books as spines on a shelf',
+  'catalog.spinesCaption':
+    'Colour is fixed per book so a spine keeps it. Height comes from the page count where one was recorded, and from the length of the title where none was, so a shelf can mix the two.',
+  'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

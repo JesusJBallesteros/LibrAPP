@@ -4,12 +4,10 @@ Suggest books, given a catalog and the shape of how it was built.
 
 ## How to use it
 
-```bash
-python tools/librapp/query.py context > profile.md
-```
-
-Hand a model `profile.md` and this file. Add the occasion if there is one
-("something for a long flight", "I want to understand X properly").
+This file arrives with a reader profile, and usually an occasion ("something for
+a long flight", "I want to understand X properly"). The profile is the whole of
+what you know about the collection: there is nothing else to consult and no
+command to run.
 
 ## What to produce
 
@@ -34,23 +32,33 @@ is going, not into where it has been. A collection that has moved from genre
 fiction to philosophy over ten years does not want more of what it read in
 year one — unless it asks for exactly that.
 
-**Check it is not already owned.** The catalog is right there. Recommending a
-book from the shelf is the fastest way to prove the context went unread. Search
-before answering:
+**Check it is not already owned.** Recommending a book that is named in the
+profile is the fastest way to prove the profile went unread. Read it through
+before answering.
 
-```bash
-python tools/librapp/query.py search <title or author>
-```
+The named books are a cross-section, chosen to match the shape of the
+collection rather than to list all of it, so absence from the profile is not
+proof the shelf lacks a book. Where it matters, say which way you are taking it:
+"if you do not already have it" costs one clause and is honest.
 
 **Consider the unread pile first.** A book already owned and never read is a
-better answer than a new purchase, when one fits. `query.py forgotten` lists
-them, oldest and most-wanted first. Say plainly that this is what you are
-doing: "you already own this and have not read it" is a recommendation.
+better answer than a new purchase, when one fits. The profile lists the ones
+waiting longest. Say plainly that this is what you are doing: "you already own
+this and have not read it" is a recommendation.
+
+**Favourites and notes outrank the counts.** A starred book and a sentence the
+reader wrote about one are direct statements of taste. Genre totals are what is
+left when nobody has said anything. Where the two disagree, follow the reader.
 
 **Do not recommend by resemblance.** "You liked A, so here is more like A" is
 what a shop does. Recommend a book that does something the shelf does not
-already do — answers a question it keeps asking, or puts the strongest case
+already do: answers a question it keeps asking, or puts the strongest case
 against something it keeps assuming.
+
+**Length and era are part of the answer.** The profile says how long the books
+on this shelf tend to be and when they were written. A nine hundred page
+untranslated monograph is a different recommendation from a two hundred page
+one, and saying which you are giving is part of giving it.
 
 **Earn the second one.** If the two suggestions are interchangeable, one of
 them is wasted. Make them do different jobs: one that goes deeper into

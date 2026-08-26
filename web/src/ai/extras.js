@@ -29,6 +29,7 @@ export const EXTRAS = [
   { id: 'published', kind: 'recalled', field: 'published_year' },
   { id: 'rating', kind: 'recalled', field: 'rating' },
   { id: 'original', kind: 'recalled', field: 'original_language' },
+  { id: 'pages', kind: 'recalled', field: 'pages' },
 ]
 
 export const extraById = (id) => EXTRAS.find((e) => e.id === id) || null
@@ -51,6 +52,10 @@ const INSTRUCTIONS = {
   original:
     'Add the language the work was originally written in as `original_language`, and say in ' +
     '`notes` whether this edition looks like a translation.',
+  pages:
+    'Add the page count of a typical edition as `pages`, as a whole number. No spine states ' +
+    'this, so give a representative figure for the work rather than a measurement of the copy ' +
+    'in the photograph, and leave it null for anything you do not recognise.',
 }
 
 /**

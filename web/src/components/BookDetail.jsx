@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { byline, readState } from '../lib.js'
+import { byline, callNumber, readState } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 
 export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy }) {
@@ -31,6 +31,10 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
         (book.borrowed_on ? `${book.borrowed_from} (${book.borrowed_on})` : book.borrowed_from),
     ],
     [t('book.publisher'), book.publisher],
+    // Labelled as a typical edition, because that is what it is. Nothing on a
+    // shelf states a page count, so a bare "Pages" would read as a measurement
+    // of the copy in the room.
+    [t('book.pages'), book.pages],
     [t('book.published'), book.published_year],
     [t('book.rating'), book.rating],
     [t('book.originalLanguage'), book.original_language],
@@ -41,44 +45,66 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
     [t('book.sources'), (book.sources || []).join(', ')],
   ].filter(([, value]) => value !== null && value !== undefined && value !== '')
 
+  // A correction carrying a reason did not come from the reader typing it, so
+  // the notice must not call it a correction by hand.
+  const byHand = !book.overridden?.why
+  const mark = callNumber(book, authors)
+  const name = byline(book, authors)
+
   return (
     <div className="detail-backdrop" onClick={onClose}>
       <aside className="detail" onClick={(e) => e.stopPropagation()}>
-        <div className="spread" style={{ marginBottom: 10 }}>
-          <span className={`pill ${state}`}>{t(`read.${state}`)}</span>
-          <span className="row" style={{ gap: 6 }}>
-            {onEdit && (
-              <button className="btn small" onClick={() => onEdit(book)} disabled={busy}>
-                {t('common.edit')}
-              </button>
+        <button className="detail-close" onClick={onClose}>
+          {t('common.close')} ✕
+        </button>
+
+        {/* The one decorated surface in the app: a catalog card, the way a
+            library would have written one. Everything on it is a recorded
+            field, including the shelf mark, which is omitted rather than
+            invented when no author is known. */}
+        <div className="catalog-card">
+          <span className="card-hole" aria-hidden="true" />
+          {mark && <p className="call-number">{mark}</p>}
+
+          <h3>
+            {book.favourite && (
+              <span className="star" title={t('book.favourite')} aria-label={t('book.favourite')}>
+                {'\u2605'}
+              </span>
             )}
-            {onRemove && (
-              <button
-                className="btn small"
-                onClick={() => onRemove(book)}
-                disabled={busy}
-                style={{ borderColor: 'color-mix(in srgb, var(--bad) 50%, transparent)', color: 'var(--bad)' }}
-              >
-                {t('common.remove')}
-              </button>
-            )}
-            <button className="btn small" onClick={onClose}>
-              {t('common.close')}
-            </button>
-          </span>
+            {book.title}
+          </h3>
+          <p className="byline">{name || t('book.authorUnknown')}</p>
+
+          <dl className="ruled">
+            {rows.map(([label, value]) => (
+              <div key={label} style={{ display: 'contents' }}>
+                <dt>{label}</dt>
+                <dd>{String(value)}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <p className="card-foot">
+            <span className={`stamp ${state}`}>{t(`read.${state}`)}</span>
+            <span className="conf">{t('book.confShort', { level: t(`confidence.${book.confidence}`) })}</span>
+          </p>
         </div>
 
-        <h3>{book.title}</h3>
-        <p className="byline">{byline(book, authors)}</p>
+        <p className="tiny faint card-why">{t(`confidence.${book.confidence}.why`)}</p>
 
-        <dl>
-          {rows.map(([label, value]) => (
-            <div key={label} style={{ display: 'contents' }}>
-              <dt>{label}</dt>
-              <dd>{String(value)}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="row card-actions">
+          {onEdit && (
+            <button className="btn" onClick={() => onEdit(book)} disabled={busy}>
+              {t('common.edit')}
+            </button>
+          )}
+          {onRemove && (
+            <button className="btn danger" onClick={() => onRemove(book)} disabled={busy}>
+              {t('common.remove')}
+            </button>
+          )}
+        </div>
 
         {state === 'unknown' && <p className="tiny faint" style={{ marginTop: 14 }}>{t('book.unknownNote')}</p>}
 
@@ -87,8 +113,8 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             <p className="tiny">
               <strong>
                 {book.overridden.at
-                  ? t('book.correctedOn', { date: book.overridden.at })
-                  : t('book.corrected')}
+                  ? t(byHand ? 'book.correctedOn' : 'book.changedOn', { date: book.overridden.at })
+                  : t(byHand ? 'book.corrected' : 'book.changed')}
               </strong>{' '}
               {t('book.correctedFields', { fields: book.overridden.fields.join(', ') })}
               {book.overridden.why ? ` ${book.overridden.why}` : ''}
@@ -96,7 +122,16 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             <p className="tiny" style={{ marginTop: 6 }}>
               {t('book.before')}{' '}
               {book.overridden.fields
-                .map((f) => `${f} = ${JSON.stringify(book.overridden.was[f])}`)
+                // A field no source ever carried is absent rather than null, and
+                // JSON.stringify turns that into the word "undefined". Naming the
+                // gap is what the rest of the app does everywhere else.
+                .map((f) => {
+                  const before = book.overridden.was[f]
+                  const shown = before === undefined || before === null
+                    ? t('book.wasUnset')
+                    : JSON.stringify(before)
+                  return `${f} = ${shown}`
+                })
                 .join(' · ')}
             </p>
             {onRevert && (
@@ -107,21 +142,22 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           </div>
         )}
 
+        {book.notes && (
+          <div className="own-note">
+            <p className="eyebrow">{t('book.notedWhenRead')}</p>
+            <p>{book.notes}</p>
+          </div>
+        )}
+
         {book.abstract && (
           <p className="tiny muted" style={{ marginTop: 14 }}>
             <strong>{t('book.abstract')}</strong> {book.abstract}
           </p>
         )}
 
-        {book.notes && (
-          <p className="tiny muted" style={{ marginTop: 14 }}>
-            <strong>{t('book.notedWhenRead')}</strong> {book.notes}
-          </p>
-        )}
-
         {(book.tags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>{t('book.tags')}</h4>
+            <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>{t('book.tags')}</h4>
             <div className="row" style={{ gap: 5 }}>
               {book.tags.map((tag) => (
                 <span className="pill" key={`${tag.kind}-${tag.key}`}>
@@ -134,7 +170,7 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
 
         {(book.flags || []).length > 0 && (
           <>
-            <h4 style={{ margin: '18px 0 7px', font: '600 13px var(--sans)' }}>
+            <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>
               {t('book.worthKnowing')}
             </h4>
             <ul className="tiny muted" style={{ margin: 0, paddingLeft: 18 }}>
@@ -147,10 +183,6 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           </>
         )}
 
-        <p className="tiny faint" style={{ marginTop: 18 }}>
-          {t('book.confidence')} <strong>{t(`confidence.${book.confidence}`)}</strong> —{' '}
-          {t(`confidence.${book.confidence}.why`)}
-        </p>
       </aside>
     </div>
   )

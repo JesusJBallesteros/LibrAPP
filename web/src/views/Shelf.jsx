@@ -31,7 +31,7 @@ import { useT } from '../i18n/index.jsx'
 // for as long as the page stays open, which is indistinguishable from a button
 // that does nothing at all.
 const READ_TIMEOUT_MS = 4 * 60 * 1000
-export default function Shelf({ lib }) {
+export default function Shelf({ lib, onOwl }) {
   const { t } = useT()
   const [photo, setPhoto] = useState(null)
   const [tiles, setTiles] = useState(null)
@@ -126,6 +126,7 @@ export default function Shelf({ lib }) {
   const readWithKey = async () => {
     setReadError(null)
     setReading(true)
+    onOwl?.({ kind: 'reading', tiles: kept.length })
     const controller = new AbortController()
     inFlight.current = controller
     const timer = setTimeout(
@@ -150,6 +151,7 @@ export default function Shelf({ lib }) {
       clearTimeout(timer)
       inFlight.current = null
       setReading(false)
+      onOwl?.(null)
     }
   }
 
@@ -251,10 +253,12 @@ export default function Shelf({ lib }) {
 
   return (
     <div className="view">
-      <header>
+      <div className="view-head">
+        <p className="eyebrow">{t('shelf.eyebrow')}</p>
         <h2>{t('nav.shelf')}</h2>
+        <hr className="rule" />
         <p>{t('shelf.intro')}</p>
-      </header>
+      </div>
 
       {error && (
         <div className="notice bad">
@@ -262,38 +266,39 @@ export default function Shelf({ lib }) {
         </div>
       )}
 
-      <div className="card">
-        <h3>{t('shelf.step1')}</h3>
-        <DropZone
-          glyph="📷"
+      {/* The two steps sit side by side. Step two appears only once a
+          photograph has been cut into tiles, so before that step one has the
+          row to itself. */}
+      <div className="shelf-steps">
+        <section className="shelf-step">
+          <p className="eyebrow">{t('shelf.stepOne')}</p>
+          <DropZone
+          mark="camera"
           title={t('shelf.dropPhoto')}
           hint={t('shelf.dropPhotoHint')}
           accept="image/*"
           disabled={working}
           onFile={onPhoto}
         />
-        {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('shelf.cutting')}</p>}
-      </div>
+          {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('shelf.cutting')}</p>}
+        </section>
 
-      <ApiKeyBox what={t('shelf.whatItIsFor')} onChange={setKeyStatus} />
-
-      {tiles && (
-        <>
-          <div className="card">
+        {tiles && (
+          <section className="shelf-step">
             <div className="spread">
-              <h3 style={{ margin: 0 }}>{t('shelf.step2')}</h3>
-              <span className="tiny faint">
+              <p className="eyebrow">{t('shelf.stepTwo')}</p>
+              <span className="tabular tiny faint">
                 {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} ·{' '}
                 {t('shelf.tileCount', { n: tiles.tiles.length })}
               </span>
             </div>
             <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.tilesNote')}</p>
 
-            <div className="card" style={{ marginTop: 12, boxShadow: 'none', background: 'var(--paper-sunk)' }}>
+            <div className="sunk-panel" style={{ marginTop: 12 }}>
               <div className="spread">
-                <strong className="tiny">
+                <h3 className="panel-head">
                   {t('shelf.grid', { cols: tiles.grid.cols, rows: tiles.grid.rows })}
-                </strong>
+                </h3>
                 <span className="row" style={{ gap: 6 }}>
                   <button className="btn small" disabled={working} onClick={() => regrid(-1, 0)}>
                     {t('shelf.lessAcross')}
@@ -327,11 +332,8 @@ export default function Shelf({ lib }) {
               )}
             </div>
 
-            <div
-              className="card"
-              style={{ marginTop: 12, boxShadow: 'none', background: 'var(--paper-sunk)' }}
-            >
-              <strong className="tiny">{t('shelf.extras')}</strong>
+            <div className="sunk-panel" style={{ marginTop: 12 }}>
+              <h3 className="panel-head">{t('shelf.extras')}</h3>
               <p className="tiny faint" style={{ margin: '6px 0 10px' }}>{t('shelf.extrasNote')}</p>
 
               {['read', 'recalled'].map((kind) => (
@@ -436,11 +438,19 @@ export default function Shelf({ lib }) {
               </pre>
             )}
 
-            <p className="tiny faint" style={{ margin: '14px 0 0' }}>
-              {t('shelf.discardHint')}
-            </p>
+          </section>
+        )}
+      </div>
 
-            <div className="tiles" style={{ marginTop: 10 }}>
+      <ApiKeyBox what={t('shelf.whatItIsFor')} onChange={setKeyStatus} />
+
+      {tiles && (
+        <>
+          <p className="tiny faint" style={{ margin: '26px 0 0' }}>
+            {t('shelf.discardHint')}
+          </p>
+
+          <div className="tiles" style={{ marginTop: 10 }}>
               {tiles.tiles.map((tile) => {
                 const isDropped = dropped.has(tile.tile)
                 return (
@@ -472,13 +482,12 @@ export default function Shelf({ lib }) {
                 )
               })}
             </div>
-          </div>
 
           {proposed && (
-            <div className="card">
+            <section className="shelf-step" style={{ marginTop: 34 }}>
               <div className="spread">
-                <h3 style={{ margin: 0 }}>{t('shelf.step3')}</h3>
-                <span className="tiny faint">
+                <p className="eyebrow">{t('shelf.stepThree')}</p>
+                <span className="tabular tiny faint">
                   {t('shelf.bookCount', { n: proposed.counted })}
                   {proposed.recalled > 0 &&
                     ` · ${t('shelf.recalledCount', { n: proposed.recalled })}`}
@@ -520,14 +529,14 @@ export default function Shelf({ lib }) {
                   {t('shelf.discard')}
                 </button>
               </div>
-            </div>
+            </section>
           )}
 
           <div className="card">
             <h3>{t('shelf.stepBring', { n: proposed ? 4 : 3 })}</h3>
             <p className="muted tiny">{t('shelf.bringNote')}</p>
             <DropZone
-              glyph="📄"
+              mark="page"
               title={t('shelf.dropTranscription')}
               hint={t('shelf.dropTranscriptionHint')}
               disabled={lib.busy}

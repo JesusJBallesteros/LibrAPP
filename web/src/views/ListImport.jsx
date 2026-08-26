@@ -31,7 +31,22 @@ async function probe(file) {
   return { suffix, sections: [] }
 }
 
-export default function ListImport({ lib }) {
+/**
+ * What the librarian says once an import lands.
+ *
+ * The parser reports how many records a file held, and the catalog reports how
+ * many books it holds afterwards. The difference is how many were new, and the
+ * remainder is how many merged into a book already here. Both figures are
+ * counted rather than assumed: a source file carries no record of what the
+ * catalog already knew.
+ */
+export function arrival(before, after, records) {
+  if (typeof before !== 'number' || typeof after !== 'number') return null
+  const added = Math.max(0, Math.min(records, after - before))
+  return { kind: 'imported', added, known: Math.max(0, records - added) }
+}
+
+export default function ListImport({ lib, onOwl }) {
   const { t } = useT()
   const [pending, setPending] = useState(null)
   const [name, setName] = useState('list')
@@ -46,6 +61,7 @@ export default function ListImport({ lib }) {
     setError(null)
     setResult(null)
     setWorking(true)
+    const before = lib.catalog?.counts?.books ?? 0
     try {
       if (suffixOf(file.name) === '.pdf') {
         const pdfjs = await import('pdfjs-dist/build/pdf.mjs')
@@ -63,6 +79,7 @@ export default function ListImport({ lib }) {
           })
           const catalog = await library.rebuild()
           setResult({ records: records.length, counts: catalog.counts, stats, written })
+          onOwl?.(arrival(before, catalog.counts?.books, records.length))
         })
         return
       }
@@ -79,6 +96,7 @@ export default function ListImport({ lib }) {
 
   const doImport = () =>
     lib.run(async (library) => {
+      const before = lib.catalog?.counts?.books ?? 0
       const { file } = pending
       const bytes = new Uint8Array(await file.arrayBuffer())
       const records = await loadTable({
@@ -95,14 +113,17 @@ export default function ListImport({ lib }) {
       const catalog = await library.rebuild()
       setPending(null)
       setResult({ records: records.length, counts: catalog.counts, written })
+      onOwl?.(arrival(before, catalog.counts?.books, records.length))
     })
 
   return (
     <div className="view">
-      <header>
+      <div className="view-head">
+        <p className="eyebrow">{t('list.eyebrow')}</p>
         <h2>{t('nav.list')}</h2>
+        <hr className="rule" />
         <p>{t('list.intro')}</p>
-      </header>
+      </div>
 
       {error && (
         <div className="notice bad">
@@ -110,9 +131,9 @@ export default function ListImport({ lib }) {
         </div>
       )}
 
-      <div className="card">
+      <div className="drop-wide">
         <DropZone
-          glyph="📋"
+          mark="page"
           title={t('list.drop')}
           hint=".xlsx · .csv · .tsv · .xml · .pdf"
           accept=".xlsx,.xlsm,.csv,.tsv,.txt,.xml,.pdf"
@@ -123,8 +144,17 @@ export default function ListImport({ lib }) {
       </div>
 
       {pending && (
-        <div className="card">
-          <h3>{t('list.whatIsIn', { name: pending.file.name })}</h3>
+        <section className="desk-section" style={{ marginTop: 34 }}>
+          <div className="section-head spread">
+            <h3>{t('list.whatIsIn', { name: pending.file.name })}</h3>
+            {/* A plain CSV has no named sections. Reporting "0 lists found"
+                for it would state something the file never said. */}
+            {pending.sections.length > 0 && (
+              <span className="tabular tiny faint">
+                {t('list.listsFound', { n: pending.sections.length })}
+              </span>
+            )}
+          </div>
 
           {pending.sections.length > 1 && (
             <div className="notice">
@@ -132,7 +162,7 @@ export default function ListImport({ lib }) {
             </div>
           )}
 
-          <div className="row" style={{ marginTop: 10, alignItems: 'flex-end' }}>
+          <div className="import-controls">
             {pending.sections.length > 0 && (
               <label className="field">
                 {t('list.whichList')}
@@ -148,14 +178,7 @@ export default function ListImport({ lib }) {
 
             <label className="field">
               {t('list.callIt')}
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{
-                  border: '1px solid var(--rule-strong)', background: 'var(--paper)',
-                  borderRadius: 7, padding: '6px 8px', width: 130,
-                }}
-              />
+              <input value={name} onChange={(e) => setName(e.target.value)} />
             </label>
 
             <label className="field">
@@ -189,7 +212,7 @@ export default function ListImport({ lib }) {
             <strong>{t('list.theseAre')}</strong> {t('list.theseAreNote')}{' '}
             <strong>{t('list.trust')}</strong> {t('list.trustNote')}
           </p>
-        </div>
+        </section>
       )}
 
       {result && (

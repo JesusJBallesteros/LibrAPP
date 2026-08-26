@@ -57,6 +57,7 @@ export const TRANSCRIPTION_SCHEMA = {
                 'published_year',
                 'rating',
                 'original_language',
+                'pages',
                 'flags',
               ],
               properties: {
@@ -76,6 +77,7 @@ export const TRANSCRIPTION_SCHEMA = {
                 published_year: { type: ['integer', 'null'] },
                 rating: { type: ['number', 'null'] },
                 original_language: { type: ['string', 'null'] },
+                pages: { type: ['integer', 'null'] },
                 flags: { type: 'array', items: { type: 'string' } },
               },
             },

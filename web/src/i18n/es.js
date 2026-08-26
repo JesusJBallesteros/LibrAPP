@@ -39,6 +39,77 @@ export default {
     'A este navegador le falta algo que LibrAPP necesita. Abre la pestaña Biblioteca cuando entres para ver los detalles.',
 
   // -- shell --------------------------------------------------------------
+  // -- la BibliotecAPPri@ ---------------------------------------------------
+  'librarian.name': 'La BibliotecAPPri@',
+  'librarian.open': 'Lo que dice la BibliotecAPPri@',
+  'librarian.close': 'Guardar la BibliotecAPPri@',
+  'librarian.dismiss': 'No otra vez',
+  'librarian.dismissWhy': 'Ocultar la BibliotecAPPri@ en todas las páginas a partir de ahora',
+
+  'librarian.empty': 'Todavía no hay nada en las estanterías. Una foto de una de ellas es la forma más rápida de empezar.',
+  'librarian.welcome': 'Bienvenido de nuevo. Hay {n} {n:libro|libros} catalogado{n:|s} y esperando.',
+  'librarian.unread': '{n} {n:libro|libros} de aquí {n:sigue|siguen} sin abrir.',
+  'librarian.allRead': 'Todos los libros de aquí constan como leídos. No es algo que se vea a menudo.',
+  'librarian.unrecorded': 'De {n} {n:libro|libros} de aquí no consta si {n:está|están} leído{n:|s}.',
+  'librarian.lentLong': '{n} {n:libro|libros} {n:lleva|llevan} más de un año con otra persona.',
+  'librarian.borrowedLong': '{n} {n:libro|libros} de aquí {n:es|son} de otra persona, y lo {n:es|son} desde hace más de un año.',
+  'librarian.desk': 'Pregunta sobre tus propias estanterías. {n:El|Los} {n} {n:libro|libros} de aquí {n:está|están} en el catálogo.',
+
+  'librarian.reading': '{n} {n:recorte|recortes}, lomos de arriba abajo. Esto lleva un momento.',
+  'librarian.asking': 'Revisando las estanterías.',
+  'librarian.imported': '{n:Ha|Han} llegado {n} {n:libro|libros}, y {known} ya {known:estaba|estaban} aquí. Una entrada para cada uno.',
+
+  'librarian.previous': 'La anterior',
+  'librarian.next': 'La siguiente',
+  'librarian.position': '{at} de {of}',
+
+  'librarian.guide.empty.1':
+    'Tres formas de empezar: una foto de una estanter\u00eda, una hoja de c\u00e1lculo o extracto de tienda que ya tengas, o un cat\u00e1logo exportado desde otro dispositivo. Con cualquiera de ellas basta.',
+  'librarian.guide.empty.2':
+    'No se sube nada a ninguna parte. El cat\u00e1logo es un archivo de este dispositivo, y la aplicaci\u00f3n sigue funcionando sin conexi\u00f3n.',
+
+  'librarian.guide.home.1':
+    'Elige la v\u00eda que encaje con lo que ya tengas. Una foto es lo m\u00e1s r\u00e1pido; una hoja de c\u00e1lculo, lo m\u00e1s completo.',
+  'librarian.guide.home.2':
+    'El almacenamiento se pide solo cuando hace falta, as\u00ed que no hay nada que configurar antes de empezar.',
+
+  'librarian.guide.catalog.1':
+    'La b\u00fasqueda cubre t\u00edtulos, autor\u00eda, colecciones y etiquetas. Tres filtros quedan a la vista y el resto est\u00e1n tras "m\u00e1s filtros", que avisa cuando alguno de ellos oculta algo de la lista.',
+  'librarian.guide.catalog.2':
+    'Cualquier libro abre su ficha completa, donde se puede editar, marcar como favorito o anotar. Lomos dibuja esos mismos libros como un estante.',
+
+  'librarian.guide.shelf.1':
+    'Fotograf\u00eda la estanter\u00eda de frente y a tama\u00f1o completo. De un lomo de pocos p\u00edxeles de alto salen los t\u00edtulos inventados.',
+  'librarian.guide.shelf.2':
+    'La foto se corta en recortes y cada uno se lee por separado. Ajusta cu\u00e1ntos a lo ancho y a lo alto, y descarta los que no tengan libros, antes de gastar nada.',
+  'librarian.guide.shelf.3':
+    'La lista de abajo pide m\u00e1s que los t\u00edtulos. El primer grupo est\u00e1 impreso en el lomo; el segundo lo recuerda el modelo, y queda marcado en cada libro que lo lleve.',
+
+  'librarian.guide.list.1':
+    'Una hoja de c\u00e1lculo, CSV, TSV, XML, o un extracto de tienda en PDF. Tenga las columnas que tenga, se usan las que se reconocen y las dem\u00e1s se dejan estar.',
+  'librarian.guide.list.2':
+    'Un archivo con varias listas pregunta cu\u00e1l tomar. Importar una lista de deseos como biblioteca es el error que merece una pregunta de m\u00e1s.',
+  'librarian.guide.list.3':
+    'El mismo libro llegando de una segunda fuente acaba siendo una entrada, no dos. Di cu\u00e1nto fiarte de cada fuente y la m\u00e1s fiable gana donde discrepen.',
+
+  'librarian.guide.desk.1':
+    'Tres peticiones: una sinopsis de cualquier libro, una recomendaci\u00f3n medida por hacia d\u00f3nde va la lectura, y rellenar los datos que faltan en el cat\u00e1logo.',
+  'librarian.guide.desk.2':
+    'Las tres funcionan sin clave de API, preparando la petici\u00f3n para pegarla en otro sitio. Con clave, el coste se ve antes de enviar y la cifra real despu\u00e9s.',
+
+  'librarian.guide.storage.1':
+    'El cat\u00e1logo est\u00e1 donde lo pusiste: una carpeta elegida en este dispositivo, o el almacenamiento que gestiona el navegador. En ambos casos se queda aqu\u00ed.',
+  'librarian.guide.storage.2':
+    'Exportar escribe un archivo con todas las fuentes y todas las correcciones. Ese archivo es la forma de llevar el cat\u00e1logo a otro dispositivo, y vale la pena guardar una copia en otro sitio.',
+  'librarian.guide.storage.3':
+    'Todo lo corregido a mano aparece aqu\u00ed, y cualquiera de esas correcciones se puede deshacer.',
+
+  'librarian.action.startPhoto': 'Empezar con una foto',
+  'librarian.action.showOldest': 'Ver los más antiguos',
+  'librarian.action.showLent': 'Ver lo que está fuera',
+  'librarian.action.showBorrowed': 'Ver lo que hay que devolver',
+  'librarian.action.showUnrecorded': 'Verlos',
+
   'app.strapline': 'tu estantería, catalogada',
   'nav.home': 'Inicio',
   'nav.catalog': 'Catálogo',
@@ -122,11 +193,17 @@ export default {
   'book.tags': 'Etiquetas',
   'book.worthKnowing': 'Conviene saber',
   'book.confidence': 'Confianza',
-  'book.notedWhenRead': 'Anotado al leerlo:',
+  'book.confShort': 'conf. {level}',
+  'book.authorUnknown': 'Autor\u00eda sin registrar',
+  'book.notedWhenRead': 'Tu nota',
+  'book.favourite': 'Un favorito',
   'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
   'book.correctedOn': 'Corregido a mano el {date}.',
+  'book.changed': 'Modificado después de leer las fuentes.',
+  'book.changedOn': 'Modificado el {date}, después de leer las fuentes.',
   'book.correctedFields': '{fields} — por encima de lo que dicen las fuentes.',
+  'book.wasUnset': 'sin registrar',
   'book.before': 'Antes:',
   'book.undoCorrection': 'Deshacer esta corrección',
 
@@ -205,6 +282,11 @@ export default {
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':
     'Dónde vive tu catálogo, con qué se construyó y cómo llevarlo a otro dispositivo.',
+  'storage.owlHidden': 'La BibliotecAPPri@ está oculta en todas las páginas. Al recuperarla vuelve a aparecer el distintivo en la esquina.',
+  'storage.owlRestore': 'Recuperarla',
+  'storage.owlBack': 'La BibliotecAPPri@ ha vuelto.',
+  'storage.eyebrow': 'Los depósitos',
+  'storage.kindUnknown': 'sin registrar',
   'storage.where': 'Almacenamiento',
   'storage.kind.folder':
     'una carpeta que elegiste — archivos normales que puedes abrir, copiar o versionar',
@@ -304,6 +386,12 @@ export default {
 
   'shelf.intro': 'Fotografía la estantería de frente a una resolución alta.',
   'shelf.whatItIsFor': 'leer una estantería',
+  'shelf.eyebrow': 'Ingresos',
+  'list.listsFound': '{n} listas encontradas',
+  'list.eyebrow': 'Ingresos',
+  'shelf.stepOne': 'Paso uno \u00b7 La foto',
+  'shelf.stepTwo': 'Paso dos \u00b7 Leer los lomos',
+  'shelf.stepThree': 'Paso tres \u00b7 Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Haz o elige una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
@@ -366,7 +454,23 @@ export default {
   'desk.showAll': 'Ver los {n}',
   'desk.madeOf': 'De qué se compone la colección',
 
+  'desk.eyebrow': 'Consultas',
+  'desk.askEyebrow': 'Plantea una pregunta',
   'desk.ask': 'Preguntar',
+  'desk.fill': 'Rellenar huecos',
+  'desk.fill.blurb':
+    'Pide los datos que el cat\u00e1logo no tiene. Cada respuesta viene de la memoria del modelo, no de una lectura, as\u00ed que no se guarda nada sin verlo antes.',
+  'desk.fill.which': 'Qu\u00e9 pedir',
+  'desk.fill.missing': 'faltan {n}',
+  'desk.fill.pickOne': 'Elige al menos un campo.',
+  'desk.fill.covers': 'Esto pregunta por {n} {n:libro|libros}. El coste sube con esa cifra.',
+  'desk.fill.review': 'Lo que ha llegado',
+  'desk.fill.reviewNote':
+    '{n} {n:libro|libros} por actualizar. Se {ignored:ha|han} descartado {ignored} por no servir o por constar ya.',
+  'desk.fill.accept': 'Guardar {n}',
+  'desk.fill.discard': 'Descartar',
+  'desk.fill.paste': 'Pegar una respuesta',
+  'desk.fill.pastePrompt': 'Pega aqu\u00ed la respuesta JSON.',
   'desk.whatItIsFor': 'el escritorio',
   'desk.synopsis': 'Sinopsis',
   'desk.synopsis.placeholder': '¿Qué libro? No hace falta que sea tuyo.',
@@ -411,6 +515,10 @@ export default {
   'editor.where': 'Dónde está',
   'editor.whereHint': 'un estante, una habitación, una caja',
   'editor.notes': 'Notas',
+  'editor.notesHint': 'Comentarios personales sobre este libro. La BibliotecAPPri@ los tiene en cuenta.',
+  'editor.favourite': 'Favorito',
+  'editor.favouriteOn': 'Marcado como favorito',
+  'editor.favouriteOff': 'Sin marcar',
   'editor.saveCorrection': 'Guardar la corrección',
   'editor.addBook': 'Añadir el libro',
   'editor.correctable':
@@ -418,6 +526,8 @@ export default {
   'editor.needTitle': 'El título es lo único sin lo que un libro no puede entrar.',
   'editor.badDate': 'Escribe la fecha como AAAA-MM-DD, o déjala en blanco.',
   'editor.badVolume': 'El número de volumen tiene que ser un número entero.',
+  'editor.badPages': 'El número de páginas tiene que ser un número entero.',
+  'editor.pagesHint': 'Una edición tipo, no un recuento de este ejemplar',
   'editor.nothingChanged': 'No ha cambiado nada, así que no hay nada que corregir.',
 
   // -- el quesito de géneros ------------------------------------------------
@@ -478,9 +588,18 @@ export default {
   'about.whatBody2':
     'Y un bibliotecario que se ha leído tus estanterías. El escritorio responde sobre lo que tienes: qué leer a continuación y por qué, qué te falta de un autor que has ido reuniendo a medias, qué hilos recorren la colección, una lista para un vuelo largo. No es una red social, ni un registro de lecturas, ni una tienda. Nadie más puede ver tus estanterías, y no hay nadie que pudiera verlas, porque LibrAPP no tiene servidor. Dos pasos pueden usar un servicio de IA si le das una clave, y los dos funcionan también sin ella.',
 
+  'about.librarian': 'La BibliotecAPPri@',
+  'about.librarianBody':
+    'El escritorio responde a tres tipos de petici\u00f3n. Una sinopsis de cualquier libro, est\u00e9 en el cat\u00e1logo o no, contada a alguien de quien ya se conocen las estanter\u00edas. Una recomendaci\u00f3n de dos o tres libros, medida por hacia d\u00f3nde va la lectura y no por d\u00f3nde ha estado. Y rellenar huecos: pedir los datos que faltan en el cat\u00e1logo, para libros que ya est\u00e1n en la estanter\u00eda, que es la \u00fanica que escribe algo. Nada de lo que propone se guarda sin ense\u00f1arlo antes, y todo lo que escribe se puede deshacer libro a libro.',
+  'about.librarianOwl':
+    'El distintivo de la esquina es la misma bibliotecaria, con hasta tres cosas que decir sobre la p\u00e1gina en la que est\u00e1s, de una en una. Primero lo que merece una acci\u00f3n: qu\u00e9 hay que devolver, qu\u00e9 lleva m\u00e1s tiempo sin abrir, de qu\u00e9 no consta si est\u00e1 le\u00eddo. Al seguir una l\u00ednea, el cat\u00e1logo se filtra por ella. Despu\u00e9s viene c\u00f3mo funciona la p\u00e1gina, que es lo que hace falta la primera vez. No hay d\u00f3nde escribir, y es a prop\u00f3sito: una pregunta que merezca la pena va en el escritorio, donde recibe el cat\u00e1logo como contexto y el coste se ve antes de gastarlo. Se puede despedir para siempre desde su propio globo, y recuperar desde la pesta\u00f1a Biblioteca.',
+  'about.librarianYours':
+    'Marcar un libro como favorito y escribir una nota sobre \u00e9l son las dos cosas de una ficha que no vienen de nadie m\u00e1s. Ambas se env\u00edan con cada pregunta, citadas como tuyas y no como descripci\u00f3n del libro, y el escritorio tiene instrucciones de darles m\u00e1s peso que a nada que haya deducido contando.',
+  'about.librarianHonest':
+    'Cada frase del distintivo sale de contar el cat\u00e1logo, no de suponer. De una estanter\u00eda sin constancia de lectura se dice eso, no se felicita por haberla terminado.',
   'about.who': 'Quién la escribió',
   'about.whoBody':
-    'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías. Se te está pidiendo que fotografíes tus libros y, si quieres las funciones con IA, que pegues una clave en esta página; parece justo decir claramente de quién es este trabajo y dónde comprobarlo.',
+    'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías.',
   'about.cv': 'Su web y su CV',
   'about.github': 'Su GitHub',
   'about.repo': 'Este proyecto en GitHub',
@@ -535,7 +654,7 @@ export default {
 
   'about.ai': 'La IA, y cómo se construyó esto',
   'about.aiBody':
-    'LibrAPP la ha escrito una persona trabajando con un asistente de IA, a lo largo de varias sesiones. La mayor parte del código lo tecleó el modelo. Todas las decisiones sobre qué construir fueron de la persona. Parece mejor decir qué es cada cosa que dejarlo a la imaginación:',
+    'LibrAPP la ha escrito una persona trabajando con un asistente de IA, a lo largo de varias sesiones. La mayor parte del código lo tecleó el modelo. Todas las decisiones sobre qué construir fueron de la persona.',
   'about.ai.author': 'Jesús J. Ballesteros',
   'about.ai.author.did':
     'concibió la app y decidió cada paso: qué construir a continuación, cuál de los caminos propuestos tomar, qué dejar fuera y cuándo parar. Puso todo aquello con lo que se probó: sus propias estanterías, sus propios extractos, sus propios dispositivos. Revisó los resultados y los corrigió.',
@@ -592,11 +711,18 @@ export default {
   'editor.bothLoans': 'Un libro no puede estar prestado y tomado prestado a la vez.',
 
   'catalog.whereIs': 'D\u00f3nde',
+  'catalog.mark': 'Marcar como favorito',
+  'catalog.unmark': 'Quitar la marca de favorito',
+  'catalog.favourites': 'Favoritos',
+  'catalog.favouritesOnly': 'S\u00f3lo favoritos',
   'catalog.atHome': 'en la estanter\u00eda',
   'catalog.lentOut': 'prestado',
   'catalog.borrowed': 'de otra persona',
 
   'desk.away': 'Fuera de la estanter\u00eda',
+  'desk.favourites': 'Los marcados',
+  'desk.favouritesNote': 'Libros se\u00f1alados a mano. Pesan m\u00e1s que cualquier cosa que el cat\u00e1logo deduzca por su cuenta.',
+  'desk.showFavourites': 'Verlos todos en el cat\u00e1logo',
   'desk.awayNote':
     'Libros que no est\u00e1n donde deber\u00edan. Se anotan a mano, uno a uno, porque no hay otra forma de saberlo.',
   'desk.lentGroup': 'Prestados ({n})',
@@ -620,6 +746,7 @@ export default {
   // -- extras que se le pueden pedir al modelo ------------------------------
   'book.abstract': 'Resumen:',
   'book.published': 'Publicado por primera vez',
+  'book.pages': 'Páginas, edición tipo',
   'book.rating': 'Valoraci\u00f3n',
   'book.originalLanguage': 'Idioma original',
   'flag.recalled_details':
@@ -641,6 +768,7 @@ export default {
   'shelf.extra.published': 'A\u00f1o de la primera publicaci\u00f3n',
   'shelf.extra.rating': 'Una valoraci\u00f3n general de lectores',
   'shelf.extra.original': 'Idioma original y si esto es una traducci\u00f3n',
+  'shelf.extra.pages': 'El n\u00famero de p\u00e1ginas de una edici\u00f3n tipo',
   'shelf.noCover':
     'No se ofrecen im\u00e1genes de cubierta. Un modelo solo puede devolver un enlace, y descargarlo dir\u00eda a quien aloje la imagen qu\u00e9 libros tienes.',
   'shelf.recalledCount': '{n} libro(s) traen alg\u00fan dato recordado',
@@ -649,4 +777,27 @@ export default {
     'Sin autor con nombre. Las fuentes lo describen como \u00ab{label}\u00bb, que es una descripci\u00f3n y no una persona, as\u00ed que no aparece arriba.',
   'editor.noAuthorRecorded':
     'Sin autor anotado. D\u00e9jalo en blanco si la obra es an\u00f3nima o corporativa, o escribe uno.',
+
+  'nav.about': 'Acerca de',
+  'nav.about.hint': 'Qu\u00e9 es esto, qui\u00e9n lo hizo y en qu\u00e9 t\u00e9rminos',
+  'sidebar.holdings': 'El fondo',
+  'about.eyebrow': 'Colof\u00f3n',
+  'theme.label': 'Tema',
+  'theme.light': 'D\u00eda',
+  'theme.dark': 'Noche',
+  'theme.following': 'Pulsa otra vez para seguir al sistema',
+
+  'catalog.eyebrow': 'Lista de la estanter\u00eda',
+  'catalog.moreFilters': 'm\u00e1s filtros',
+  'catalog.fewerFilters': 'menos filtros',
+  'catalog.hiddenFiltersOn': 'Tambi\u00e9n filtrando por {filters}, que est\u00e1 oculto.',
+  'catalog.showThem': 'Mostrar esos filtros',
+  'catalog.clearTag': 'Quitar',
+  'catalog.viewMode': 'C\u00f3mo mostrar los libros',
+  'catalog.mode.list': 'Lista',
+  'catalog.mode.spines': 'Lomos',
+  'catalog.spineWall': 'Los libros como lomos en un estante',
+  'catalog.spinesCaption':
+    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale del n\u00famero de p\u00e1ginas cuando consta, y de la longitud del t\u00edtulo cuando no, as\u00ed que un estante puede mezclar ambas.',
+  'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

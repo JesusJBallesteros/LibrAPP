@@ -5,7 +5,7 @@
 // records where every fact came from, so the two must not arrive looking alike.
 
 import { describe, expect, it } from 'vitest'
-import { EXTRAS, RECALLED_FLAG, extrasPrompt, recalledIn } from '../src/ai/extras.js'
+import { EXTRAS, RECALLED_FLAG, extraById, extrasPrompt, recalledIn } from '../src/ai/extras.js'
 import { loadTranscription } from '../src/ingest/shelf.js'
 import { TRANSCRIPTION_SCHEMA, toGeminiSchema } from '../src/ai/providers.js'
 import { normalise } from '../src/core/records.js'
@@ -118,5 +118,38 @@ describe('reading which fields were recalled', () => {
 
   it('names none for a book read straight off the shelf', () => {
     expect(recalledIn({ title: 'Dune', publisher: 'Chilton' })).toEqual([])
+  })
+})
+
+// The page count is the newest extra and the one most likely to be mistaken for
+// evidence, since it is a number and numbers look measured. Nothing on a spine
+// states it, so it belongs on the recalled side with the rest of the claims.
+describe('the page count is recalled, never read', () => {
+  it('sits on the recalled side of the split', () => {
+    expect(extraById('pages').kind).toBe('recalled')
+  })
+
+  it('writes to the pages field', () => {
+    expect(extraById('pages').field).toBe('pages')
+  })
+
+  it('is asked for under the model\'s own knowledge, not the photograph', () => {
+    const prompt = extrasPrompt(['pages'])
+    expect(prompt).toContain('From your own knowledge')
+    expect(prompt).not.toContain('From the photograph itself')
+  })
+
+  it('carries the recalled warning with it', () => {
+    expect(extrasPrompt(['pages'])).toContain('not in the photograph')
+  })
+
+  it('counts as a recalled field on a book that came back with one', () => {
+    expect(recalledIn({ pages: 412 })).toContain('pages')
+    expect(recalledIn({ pages: null })).not.toContain('pages')
+  })
+
+  it('asks for a typical edition rather than the copy in the picture', () => {
+    // The whole honesty of the field rests on this wording.
+    expect(extrasPrompt(['pages'])).toContain('typical edition')
   })
 })

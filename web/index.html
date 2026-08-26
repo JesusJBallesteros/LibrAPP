@@ -3,6 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      // Before the first paint, and before React. An async read here would
+      // paint the wrong theme and correct it a moment later.
+      try {
+        var t = localStorage.getItem('librapp-theme')
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
+      } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="./fonts/fonts.css" />
     <title>LibrAPP: your library catalog and your own personal librarian</title>
     <meta name="description" content="Build your full library catalog from a photograph of your shelf, then ask it about your own books. Works offline, installs as an app, and your books never leave your device." />
     <link rel="manifest" href="./manifest.webmanifest" />

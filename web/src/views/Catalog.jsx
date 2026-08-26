@@ -5,12 +5,18 @@ import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
 import {
   authorNames,
   borrowed,
+  hiddenActiveFilters,
   byline,
   fold,
   lentOut,
   readState,
   sortName,
+  sortBand,
+  spineHeight,
+  spineTint,
+  spineWidth,
   uniqueSorted,
+  withBands,
 } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 
@@ -34,9 +40,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const [format, setFormat] = useState('all')
   const [source, setSource] = useState('all')
   const [loan, setLoan] = useState('all')
+  const [favourite, setFavourite] = useState('all')
   // Set when the desk sends a word here. Matched against tag keys, which are
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
+  const [showMore, setShowMore] = useState(false)
+  const [mode, setMode] = useState('list')
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)
@@ -46,6 +55,19 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
 
   useEffect(() => {
     if (focus?.tag) setTag({ key: focus.tag, label: focus.label ?? focus.tag })
+    // The desk sends a word; the librarian sends a filter. Both arrive the same
+    // way, and a filter behind the disclosure opens it, so nothing narrows the
+    // list with its control out of sight.
+    if (focus?.read) setRead(focus.read)
+    if (focus?.favourite) {
+      setFavourite(focus.favourite)
+      setShowMore(true)
+    }
+    if (focus?.sort) setSort(focus.sort)
+    if (focus?.loan) {
+      setLoan(focus.loan)
+      setShowMore(true)
+    }
   }, [focus])
 
   const prepared = useMemo(() => {
@@ -56,7 +78,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       _author: sortName(b, authors),
       _byline: byline(b, authors),
       _haystack: fold(
-        [b.title, byline(b, authors), b.series, (b.tags || []).map((t) => t.value).join(' ')].join(' '),
+        [
+          b.title,
+          byline(b, authors) || '',
+          b.series,
+          (b.tags || []).map((t) => t.value).join(' '),
+        ].join(' '),
       ),
     }))
   }, [catalog, authors])
@@ -71,6 +98,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       if (read !== 'all' && readState(b) !== read) return false
       if (format !== 'all' && !(b.formats || []).includes(format)) return false
       if (source !== 'all' && !(b.sources || []).includes(source)) return false
+      if (favourite === 'yes' && !b.favourite) return false
       if (loan === 'lent' && !lentOut(b)) return false
       if (loan === 'borrowed' && !borrowed(b)) return false
       if (loan === 'home' && (lentOut(b) || borrowed(b))) return false
@@ -78,7 +106,34 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       return true
     })
     return out.sort(SORTS[sort])
-  }, [prepared, q, read, format, source, loan, tag, sort])
+  }, [prepared, q, read, format, source, loan, favourite, tag, sort])
+
+  // Format, Source and Where sit behind the disclosure, so the page has to say
+  // when one of them is narrowing the list.
+  const LABEL = {
+    format: 'catalog.format',
+    source: 'catalog.source',
+    loan: 'catalog.whereIs',
+    favourite: 'catalog.favourites',
+  }
+  /**
+   * Turn the mark on or off, from wherever it was pressed.
+   *
+   * A correction like any other, so it survives a rebuild and can be undone
+   * from the Library. Nothing else about the book is touched: setOverride
+   * merges into whatever that book already carries.
+   */
+  const toggleFavourite = (book) =>
+    lib?.run(async (library) => {
+      const overrides = await library.readOverrides()
+      await library.writeOverrides(setOverride(overrides, book, { favourite: !book.favourite }))
+      await library.rebuild()
+    })
+
+  const hiddenNames = hiddenActiveFilters({ format, source, loan, favourite }).map((name) =>
+    t(LABEL[name]),
+  )
+  const hiddenActive = hiddenNames.length
 
   const groups = useMemo(() => {
     if (group === 'title') return [{ key: null, books: shown }]
@@ -142,10 +197,18 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
 
   return (
     <div className="view">
-      <header className="spread">
-        <div>
-          <h2>{t('nav.catalog')}</h2>
-          <p className="tiny muted">
+      <header className="view-head">
+        <div className="spread">
+          <div>
+            <p className="eyebrow">{t('catalog.eyebrow')}</p>
+            <h2>{t('nav.catalog')}</h2>
+          </div>
+          <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
+            {t('catalog.typeIn')}
+          </button>
+        </div>
+        <hr className="rule" />
+        <p className="catalog-meta">
             {shown.length === prepared.length
               ? t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
                   total: prepared.length,
@@ -161,11 +224,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             {catalog.counts?.removed
               ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
               : ''}
-          </p>
-        </div>
-        <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
-          {t('catalog.typeIn')}
-        </button>
+        </p>
       </header>
 
       <div className="toolbar">
@@ -204,50 +263,6 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           </select>
         </label>
 
-        {formats.length > 1 && (
-          <label className="field">
-            {t('catalog.format')}
-            <select value={format} onChange={(e) => setFormat(e.target.value)}>
-              <option value="all">{t('catalog.any')}</option>
-              {formats.map((f) => (
-                <option key={f} value={f}>
-                  {t(`format.${f}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {sources.length > 1 && (
-          <label className="field">
-            {t('catalog.source')}
-            <select value={source} onChange={(e) => setSource(e.target.value)}>
-              <option value="all">{t('catalog.any')}</option>
-              {sources.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {tag && (
-          <button className="btn small" onClick={() => setTag(null)}>
-            {t('catalog.taggedWith', { tag: tag.label })} ×
-          </button>
-        )}
-
-        <label className="field">
-          {t('catalog.whereIs')}
-          <select value={loan} onChange={(e) => setLoan(e.target.value)}>
-            <option value="all">{t('catalog.any')}</option>
-            <option value="home">{t('catalog.atHome')}</option>
-            <option value="lent">{t('catalog.lentOut')}</option>
-            <option value="borrowed">{t('catalog.borrowed')}</option>
-          </select>
-        </label>
-
         <label className="field">
           {t('catalog.sort')}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -257,7 +272,93 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             <option value="oldest">{t('catalog.sort.oldest')}</option>
           </select>
         </label>
+
+        <button className="btn link more-filters" onClick={() => setShowMore((open) => !open)}>
+          {showMore ? t('catalog.fewerFilters') : t('catalog.moreFilters')}
+          {!showMore && hiddenActive > 0 && (
+            <span className="filter-count">{hiddenActive}</span>
+          )}
+        </button>
+
+        <div className="segmented view-mode" role="group" aria-label={t('catalog.viewMode')}>
+          {['list', 'spines'].map((each) => (
+            <button key={each} aria-pressed={mode === each} onClick={() => setMode(each)}>
+              {t(`catalog.mode.${each}`)}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {showMore && (
+        <div className="toolbar toolbar-more">
+          {formats.length > 1 && (
+            <label className="field">
+              {t('catalog.format')}
+              <select value={format} onChange={(e) => setFormat(e.target.value)}>
+                <option value="all">{t('catalog.any')}</option>
+                {formats.map((f) => (
+                  <option key={f} value={f}>
+                    {t(`format.${f}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {sources.length > 1 && (
+            <label className="field">
+              {t('catalog.source')}
+              <select value={source} onChange={(e) => setSource(e.target.value)}>
+                <option value="all">{t('catalog.any')}</option>
+                {sources.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          <label className="field">
+            {t('catalog.favourites')}
+            <select value={favourite} onChange={(e) => setFavourite(e.target.value)}>
+              <option value="all">{t('catalog.any')}</option>
+              <option value="yes">{t('catalog.favouritesOnly')}</option>
+            </select>
+          </label>
+
+          <label className="field">
+            {t('catalog.whereIs')}
+            <select value={loan} onChange={(e) => setLoan(e.target.value)}>
+              <option value="all">{t('catalog.any')}</option>
+              <option value="home">{t('catalog.atHome')}</option>
+              <option value="lent">{t('catalog.lentOut')}</option>
+              <option value="borrowed">{t('catalog.borrowed')}</option>
+            </select>
+          </label>
+        </div>
+      )}
+
+      {/* A filter that is on while its control is hidden would narrow the
+          catalog with nothing on screen to explain it. Naming each one is the
+          only version of this that cannot mislead. */}
+      {!showMore && hiddenActive > 0 && (
+        <p className="hidden-filters">
+          {t('catalog.hiddenFiltersOn', { filters: hiddenNames.join(', ') })}{' '}
+          <button className="btn link" onClick={() => setShowMore(true)}>
+            {t('catalog.showThem')}
+          </button>
+        </p>
+      )}
+
+      {tag && (
+        <p className="hidden-filters">
+          {t('catalog.taggedWith', { tag: tag.label })}{' '}
+          <button className="btn link" onClick={() => setTag(null)}>
+            {t('catalog.clearTag')}
+          </button>
+        </p>
+      )}
 
       {shown.length === 0 ? (
         <div className="empty">
@@ -270,12 +371,24 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
               setFormat('all')
               setSource('all')
               setLoan('all')
+              setFavourite('all')
               setTag(null)
             }}
           >
             {t('catalog.clearFilters')}
           </button>
         </div>
+      ) : mode === 'spines' ? (
+        <SpineWall
+          books={shown}
+          authors={authors}
+          selected={selected}
+          onPick={setSelected}
+          onToggle={toggleFavourite}
+          busy={lib?.busy}
+          sort={sort}
+          t={t}
+        />
       ) : (
         <div className="results">
           {groups.map(({ key, books }) => (
@@ -286,34 +399,54 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                   <span className="faint">· {books.length}</span>
                 </div>
               )}
-              {books.map((book) => (
-                <button
-                  key={book.id}
+              {/* Bands only where the list is one run. Grouping already cuts it
+                  into named sections, and two kinds of divider in one list
+                  would say the same thing twice. */}
+              {(key ? books.map((book) => ({ book })) : withBands(books, sort)).map((item) =>
+                item.band ? (
+                  <p className="band" key={`band-${item.band}`}>
+                    <span>{item.band}</span>
+                  </p>
+                ) : (
+                <div
+                  key={item.book.id}
                   className="book-row"
-                  aria-selected={selected?.id === book.id}
-                  onClick={() => setSelected(book)}
+                  aria-selected={selected?.id === item.book.id}
                 >
+                  <Star book={item.book} onToggle={toggleFavourite} t={t} busy={lib?.busy} />
+                  <button className="row-open" onClick={() => setSelected(item.book)}>
                   <span>
                     <span className="title">
-                      {book.series_index && group === 'series' ? `${book.series_index}. ` : ''}
-                      {book.title}
+                      {item.book.series_index && group === 'series'
+                        ? `${item.book.series_index}. `
+                        : ''}
+                      {item.book.title}
                     </span>
                     <br />
-                    <span className="byline">{book._byline}</span>
+                    <span className="byline">{item.book._byline || t('book.authorUnknown')}</span>
                   </span>
                   <span className="meta">
-                    {(book.formats || []).map((f) => (
-                      <span className="pill" key={f}>
-                        {t(`format.${f}`)}
-                      </span>
-                    ))}
-                    <span className={`pill ${readState(book)}`}>{t(`read.${readState(book)}`)}</span>
-                    {lentOut(book) && <span className="pill flag">{t('catalog.lentOut')}</span>}
-                    {borrowed(book) && <span className="pill unread">{t('catalog.borrowed')}</span>}
-                    {book.acquired_on && <span className="faint tiny">{book.acquired_on.slice(0, 4)}</span>}
+                    <span className="formats">
+                      {(item.book.formats || []).map((f) => t(`format.${f}`)).join(' · ')}
+                    </span>
+                    <span className={`state ${readState(item.book)}`}>
+                      {t(`read.${readState(item.book)}`)}
+                    </span>
+                    <span className="away">
+                      {lentOut(item.book)
+                        ? t('catalog.lentOut')
+                        : borrowed(item.book)
+                          ? t('catalog.borrowed')
+                          : ''}
+                    </span>
+                    <span className="year">
+                      {item.book.acquired_on ? item.book.acquired_on.slice(0, 4) : ''}
+                    </span>
                   </span>
-                </button>
-              ))}
+                  </button>
+                </div>
+                ),
+              )}
             </div>
           ))}
         </div>
@@ -376,6 +509,93 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           }
         />
       )}
+    </div>
+  )
+}
+
+/**
+ * The mark, pressable wherever a book appears.
+ *
+ * A button rather than a glyph, with its own pressed state, because it is a
+ * control and not decoration. It stops the click from reaching whatever sits
+ * behind it, so pressing the star never also opens the book.
+ */
+function Star({ book, onToggle, t, busy }) {
+  return (
+    <button
+      className={`star-cell${book.favourite ? ' on' : ''}`}
+      aria-pressed={Boolean(book.favourite)}
+      disabled={busy}
+      title={book.favourite ? t('catalog.unmark') : t('catalog.mark')}
+      aria-label={book.favourite ? t('catalog.unmark') : t('catalog.mark')}
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggle(book)
+      }}
+    >
+      {book.favourite ? '\u2605' : '\u2606'}
+    </button>
+  )
+}
+
+/**
+ * The catalog as a shelf.
+ *
+ * One button per book, so the wall is reachable by keyboard and each spine
+ * keeps its title as the accessible name. Grouping is deliberately not applied
+ * here: a wall with headings cut through it stops looking like a shelf. The
+ * sort still decides the order.
+ *
+ * Colour and height are decoration, and the caption below says so, because a
+ * height that looked like a page count and was not would be the app inventing
+ * data about the books.
+ */
+function SpineWall({ books, authors, selected, onPick, onToggle, busy, sort, t }) {
+  return (
+    <div className="spine-view">
+      {/* A group rather than a list: role="listitem" on a button replaces the
+          button role, and a spine that is no longer announced as clickable is
+          a worse trade than losing the list semantics. */}
+      <div className="spine-wall" role="group" aria-label={t('catalog.spineWall')}>
+        {withBands(books, sort).map((item) => {
+          if (item.band) {
+            return (
+              <p className="band band-spine" key={`band-${item.band}`}>
+                <span>{item.band}</span>
+              </p>
+            )
+          }
+          const book = item.book
+          const name = byline(book, authors)
+          return (
+            <div
+              key={book.id}
+              className={`spine-slot${book.favourite ? ' marked' : ''}`}
+              style={{ width: spineWidth(book) }}
+            >
+              {/* Above the spine rather than on it: a spine is 26 pixels wide
+                  and its lettering already fills it. First in the column, so
+                  it sits over the spine rather than down on the shelf board. */}
+              <Star book={book} onToggle={onToggle} t={t} busy={busy} />
+              <button
+                className="spine"
+                aria-selected={selected?.id === book.id}
+                title={name ? `${book.title} · ${name}` : book.title}
+                onClick={() => onPick(book)}
+                style={{
+                  height: spineHeight(book),
+                  background: `var(--spine-${spineTint(book)})`,
+                  color: `var(--spine-${spineTint(book)}-ink)`,
+                }}
+              >
+                <span className="spine-title">{book.title}</span>
+              </button>
+            </div>
+          )
+        })}
+      </div>
+      <div className="shelf-board" />
+      <p className="spine-caption">{t('catalog.spinesCaption')}</p>
     </div>
   )
 }

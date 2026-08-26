@@ -71,11 +71,39 @@ describe('the rest of the form', () => {
     expect(toForm({}, names).read).toBe('unknown')
   })
 
-  it('never puts null or undefined into a text input', () => {
+  it('never puts null or undefined into a field', () => {
+    // React shouts when a controlled input is handed null, and shows the word
+    // "undefined" when it is handed that. Every field must therefore carry a
+    // real value. The favourite toggle is a boolean rather than text, since it
+    // is a button with a pressed state and not something typed into.
     const form = toForm({ title: 'Bare' }, names)
+    const toggles = ['favourite']
     for (const [key, value] of Object.entries(form)) {
       if (Array.isArray(value)) continue
-      expect(typeof value, key).toBe('string')
+      expect(value, key).not.toBe(null)
+      expect(value, key).not.toBe(undefined)
+      expect(typeof value, key).toBe(toggles.includes(key) ? 'boolean' : 'string')
     }
+  })
+})
+
+// The page count is the second numeric field in the form, and the first one
+// added since the string comparison in changedOnly was written. A number
+// arriving as a string from an input is exactly what that comparison gets
+// wrong, so it is worth pinning.
+describe('the page count in the form', () => {
+  it('comes out of a book as its own value, not a string', () => {
+    expect(toForm({ title: 'Dune', pages: 412 }, names).pages).toBe(412)
+  })
+
+  it('is blank rather than null for a book with none recorded', () => {
+    // A null in a controlled input makes React shout about uncontrolled fields.
+    expect(toForm({ title: 'Dune' }, names).pages).toBe('')
+    expect(toForm({ title: 'Dune', pages: null }, names).pages).toBe('')
+  })
+
+  it('survives a round trip through the form unchanged', () => {
+    const book = { title: 'Dune', pages: 412 }
+    expect(toForm(book, names).pages).toBe(book.pages)
   })
 })

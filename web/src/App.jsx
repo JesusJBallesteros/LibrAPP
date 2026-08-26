@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react'
 import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
+import Librarian from './components/Librarian.jsx'
+import { dismiss as dismissLibrarian, isDismissed, restore as restoreLibrarian } from './store/librarian.js'
 import Landing from './views/Landing.jsx'
 import About from './views/About.jsx'
 import Catalog from './views/Catalog.jsx'
@@ -10,19 +12,13 @@ import ListImport from './views/ListImport.jsx'
 import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
 
-const VIEWS = [
-  { id: 'home', glyph: '✦' },
-  { id: 'catalog', glyph: '📖' },
-  { id: 'shelf', glyph: '📷' },
-  { id: 'list', glyph: '📋' },
-  { id: 'desk', glyph: '🕮' },
-  { id: 'storage', glyph: '🗄' },
-]
+const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
 
 const NAV_KEY = {
-  home: 'home', catalog: 'catalog', shelf: 'shelf',
-  list: 'list', desk: 'desk', storage: 'library',
+  catalog: 'catalog', shelf: 'shelf', list: 'list',
+  desk: 'desk', storage: 'library', about: 'about',
 }
 
 export default function App() {
@@ -30,6 +26,12 @@ export default function App() {
   const lib = useLibrary()
   const [view, setView] = useState('home')
   const [focus, setFocus] = useState(null)
+  // The owl is drawn in one place and put away from another, so the preference
+  // is held here rather than inside either of them. The same goes for what it
+  // is currently reporting: the views that start the work say so, and clear it
+  // when the work finishes rather than on a timer.
+  const [owlGone, setOwlGone] = useState(isDismissed)
+  const [owlEvent, setOwlEvent] = useState(null)
   // Where About was opened from, so leaving it returns to that view rather
   // than to the front page.
   const [before, setBefore] = useState('home')
@@ -64,9 +66,9 @@ export default function App() {
     return <div className="loading">{t('common.opening')}</div>
   }
 
-  // Before every other check: About must be readable in whatever state the
-  // app is in, including the very first visit.
-  if (view === 'about') {
+  // About has to be readable before a library exists, and there is no shell to
+  // put it in at that point, so it gets a page of its own with a way back.
+  if (view === 'about' && lib.status !== 'ready') {
     return <About focus={focus} onBack={() => setView(before)} />
   }
 
@@ -113,12 +115,26 @@ export default function App() {
 
   if (view === 'home' || lib.status !== 'ready') {
     return (
-      <Landing
-        onGo={go}
-        hasCatalog={Boolean(counts?.books)}
-        bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
-        browserUsable={capabilities.usable}
-      />
+      <>
+        <Landing
+          onGo={go}
+          hasCatalog={Boolean(counts?.books)}
+          bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
+          browserUsable={capabilities.usable}
+        />
+        <Librarian
+          view="home"
+          counts={counts}
+          books={lib.catalog?.books || []}
+          hasCatalog={Boolean(counts?.books)}
+          onGo={go}
+          gone={owlGone}
+          onDismiss={() => {
+            dismissLibrarian()
+            setOwlGone(true)
+          }}
+        />
+      </>
     )
   }
 
@@ -129,26 +145,25 @@ export default function App() {
           <h1>
             Libr<em>APP</em>
           </h1>
-          <p>{t('app.strapline')}</p>
+          <span className="brand-rule" aria-hidden="true" />
+          <p className="eyebrow">{t('app.strapline')}</p>
         </button>
 
         <nav className="nav">
-          {VIEWS.map((v) => (
+          {VIEWS.map((id) => (
             <button
-              key={v.id}
-              onClick={() => go(v.id)}
-              aria-current={view === v.id}
-              title={t(`nav.${NAV_KEY[v.id]}.hint`)}
+              key={id}
+              onClick={() => go(id)}
+              aria-current={view === id}
+              title={t(`nav.${NAV_KEY[id]}.hint`)}
             >
-              <span className="glyph" aria-hidden="true">
-                {v.glyph}
-              </span>
-              {t(`nav.${NAV_KEY[v.id]}`)}
+              {t(`nav.${NAV_KEY[id]}`)}
             </button>
           ))}
         </nav>
 
         <div className="sidebar-foot">
+          <p className="eyebrow">{t('sidebar.holdings')}</p>
           {counts ? (
             <dl>
               <dt>{t('sidebar.books')}</dt>
@@ -170,11 +185,22 @@ export default function App() {
               {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
             </button>
           </div>
-          <div className="sidebar-links">
-            <button className="btn link tiny" onClick={() => go('about')}>
-              {t('foot.about')}
-            </button>
-          </div>
+          <ThemeToggle />
+
+          <nav className="sidebar-links">
+            {[
+              ['foot.about', null],
+              ['foot.privacy', 'privacy'],
+              ['foot.licence', 'licence'],
+            ].map(([key, section], i) => (
+              <span key={key}>
+                {i > 0 && <span aria-hidden="true"> · </span>}
+                <button className="btn link" onClick={() => go('about', section)}>
+                  {t(key)}
+                </button>
+              </span>
+            ))}
+          </nav>
         </div>
       </aside>
 
@@ -195,13 +221,41 @@ export default function App() {
         {view === 'catalog' ? (
           <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
         ) : view === 'shelf' ? (
-          <Shelf lib={lib} />
+          <Shelf lib={lib} onOwl={setOwlEvent} />
         ) : view === 'list' ? (
-          <ListImport lib={lib} />
+          <ListImport lib={lib} onOwl={setOwlEvent} />
         ) : view === 'desk' ? (
-          <Desk catalog={lib.catalog} onGo={go} />
+          <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
+        ) : view === 'about' ? (
+          <About focus={focus} inShell />
         ) : (
-          <Storage lib={lib} focus={focus} />
+          <Storage
+            lib={lib}
+            focus={focus}
+            owlGone={owlGone}
+            onRestoreOwl={() => {
+              restoreLibrarian()
+              setOwlGone(false)
+            }}
+          />
+        )}
+
+        {/* Not on About: that is the page where the app explains itself, and a
+            character talking over the explanation reads badly. */}
+        {view !== 'about' && (
+          <Librarian
+            view={view}
+            counts={counts}
+            books={lib.catalog?.books || []}
+            hasCatalog={Boolean(counts?.books)}
+            event={owlEvent}
+            onGo={go}
+            gone={owlGone}
+            onDismiss={() => {
+              dismissLibrarian()
+              setOwlGone(true)
+            }}
+          />
         )}
       </main>
     </div>

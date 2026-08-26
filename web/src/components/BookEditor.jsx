@@ -49,8 +49,10 @@ export const toForm = (book, names) => ({
   borrowed_from: book?.borrowed_from || '',
   borrowed_on: book?.borrowed_on || '',
   publisher: book?.publisher || '',
+  pages: book?.pages ?? '',
   location: book?.location || '',
   notes: book?.notes || '',
+  favourite: Boolean(book?.favourite),
   formats: book?.formats?.length ? [...book.formats] : ['physical'],
 })
 
@@ -80,6 +82,8 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
     if (form.lent_to.trim() && form.borrowed_from.trim()) throw new Error(t('editor.bothLoans'))
     const index = String(form.series_index).trim()
     if (index && !/^\d+$/.test(index)) throw new Error(t('editor.badVolume'))
+    const pages = String(form.pages).trim()
+    if (pages && !/^\d+$/.test(pages)) throw new Error(t('editor.badPages'))
 
     return {
       title,
@@ -94,8 +98,10 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
       borrowed_from: form.borrowed_from.trim() || null,
       borrowed_on: form.borrowed_from.trim() ? form.borrowed_on.trim() || null : null,
       publisher: form.publisher.trim() || null,
+      pages: pages ? Number(pages) : null,
       location: form.location.trim() || null,
       notes: form.notes.trim() || null,
+      favourite: form.favourite,
       formats: form.formats.length ? form.formats : ['physical'],
     }
   }
@@ -119,6 +125,10 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
         if (!same(before, next.authors)) changed.authors = next.authors
         continue
       }
+      if (key === 'favourite') {
+        if (current.favourite !== next.favourite) changed.favourite = next.favourite
+        continue
+      }
       if (key === 'formats') {
         if (!same([...current.formats].sort(), [...next.formats].sort())) changed.formats = next.formats
         continue
@@ -128,9 +138,9 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
         if (before !== next.read) changed.read = next.read
         continue
       }
-      if (key === 'series_index') {
-        const before = current.series_index === '' ? null : Number(current.series_index)
-        if (before !== next.series_index) changed.series_index = next.series_index
+      if (key === 'series_index' || key === 'pages') {
+        const before = current[key] === '' ? null : Number(current[key])
+        if (before !== next[key]) changed[key] = next[key]
         continue
       }
       const before = String(current[key] ?? '').trim() || null
@@ -223,13 +233,17 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
             </div>
           </div>
 
+          <Row label={t('book.pages')} hint={t('editor.pagesHint')}>
+            <input style={field} value={form.pages} inputMode="numeric" onChange={set('pages')} />
+          </Row>
+
           <Row label={t('book.publisher')}>
             <input style={field} value={form.publisher} onChange={set('publisher')} />
           </Row>
           <Row label={t('editor.where')} hint={t('editor.whereHint')}>
             <input style={field} value={form.location} onChange={set('location')} />
           </Row>
-          <h4 style={{ margin: '18px 0 10px', font: '600 13px var(--sans)' }}>
+          <h4 style={{ margin: '18px 0 10px', font: '500 13px var(--sans)' }}>
             {t('editor.whereIsIt')}
           </h4>
           <p className="tiny faint" style={{ margin: '0 0 11px' }}>{t('editor.loanHint')}</p>
@@ -272,8 +286,26 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
             </div>
           </div>
 
-          <Row label={t('editor.notes')}>
-            <textarea style={{ ...field, minHeight: 62, resize: 'vertical' }} value={form.notes} onChange={set('notes')} />
+          {/* A toggle, not a checkbox in a list: it is one mark on one book,
+              and it carries its own state for a screen reader. */}
+          <Row label={t('editor.favourite')}>
+            <button
+              type="button"
+              className={`star-toggle${form.favourite ? ' on' : ''}`}
+              aria-pressed={form.favourite}
+              onClick={() => setForm({ ...form, favourite: !form.favourite })}
+            >
+              <span aria-hidden="true">{form.favourite ? '\u2605' : '\u2606'}</span>
+              {form.favourite ? t('editor.favouriteOn') : t('editor.favouriteOff')}
+            </button>
+          </Row>
+
+          <Row label={t('editor.notes')} hint={t('editor.notesHint')}>
+            <textarea
+              style={{ ...field, minHeight: 110, resize: 'vertical' }}
+              value={form.notes}
+              onChange={set('notes')}
+            />
           </Row>
 
           <Row label={t('book.formats')}>

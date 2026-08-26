@@ -21,10 +21,16 @@ export function authorNames(catalog) {
   return byId
 }
 
+/**
+ * Who wrote it, or null when nothing says.
+ *
+ * Null rather than a dash, so the caller can name the gap in the reader's own
+ * language instead of printing a mark that could mean anything.
+ */
 export function byline(book, authors) {
   const names = (book.authors || []).map((id) => authors.get(id)?.display_name || id)
   if (names.length) return names.join(', ')
-  return book.author_label || '—'
+  return book.author_label || null
 }
 
 /** Surname first, for sorting people the way a shelf does. */
@@ -94,6 +100,144 @@ export function onLoan(books, kind = 'lent') {
     })
     .filter(Boolean)
     .sort((a, b) => (b.age ?? -1) - (a.age ?? -1))
+}
+
+/**
+ * Which of the filters behind the catalog disclosure are narrowing the list.
+ *
+ * Group, Read and Sort stay on screen and explain themselves. Sort narrows
+ * nothing. A tag filter arrives from the desk rather than from the toolbar and
+ * is reported on its own.
+ */
+export const hiddenActiveFilters = ({
+  format = 'all',
+  source = 'all',
+  loan = 'all',
+  favourite = 'all',
+} = {}) =>
+  [
+    ['format', format !== 'all'],
+    ['source', source !== 'all'],
+    ['loan', loan !== 'all'],
+    ['favourite', favourite !== 'all'],
+  ]
+    .filter(([, on]) => on)
+    .map(([name]) => name)
+
+/**
+ * The band a book falls into under the current sort, or null.
+ *
+ * A letter for the two alphabetical sorts, a year for the two by date. The
+ * point is the same either way: a reader scanning a long list can see where one
+ * run ends and the next begins, and jump to roughly the right place.
+ *
+ * Reads the folded sort keys the catalog already computed, so the band matches
+ * the order exactly rather than being worked out again from the display text.
+ * That matters most for authors, where the row shows a given name and the list
+ * is ordered by surname.
+ */
+export function sortBand(book, sort) {
+  if (sort === 'acquired' || sort === 'oldest') {
+    return book?.acquired_on ? String(book.acquired_on).slice(0, 4) : null
+  }
+  const key = sort === 'author' ? book?._author : book?._title
+  const first = String(key || '').trim().charAt(0)
+  if (!first) return null
+  const upper = first.toUpperCase()
+  // Digits and punctuation share one band rather than each starting their own.
+  return /[A-Z]/.test(upper) ? upper : '#'
+}
+
+/**
+ * The same books, with a band marker before each run.
+ *
+ * Returns a flat list so the view can render it in one pass. A marker carries
+ * no book and a book carries no marker, which keeps the two apart in the
+ * markup as well.
+ */
+export function withBands(books, sort) {
+  const out = []
+  let last = null
+  for (const book of books) {
+    const band = sortBand(book, sort)
+    if (band !== null && band !== last) {
+      out.push({ band })
+      last = band
+    }
+    out.push({ book })
+  }
+  return out
+}
+
+/* -------------------------------------------------------------- spines -- */
+
+/**
+ * A number in 0..(range-1) that a given id always maps to.
+ *
+ * The point is that a spine keeps its colour. Anything derived from position
+ * would reshuffle the wall every time a filter changes, which would make the
+ * colours look meaningful when they are not.
+ */
+export function spineHash(id, range) {
+  let h = 2166136261
+  for (const ch of String(id ?? '')) {
+    h ^= ch.codePointAt(0)
+    h = Math.imul(h, 16777619)
+  }
+  return Math.abs(h) % range
+}
+
+/** 1..8, matching the --spine-N custom properties. */
+export const spineTint = (book) => spineHash(book?.id, 8) + 1
+
+/** A physical book gets a wider spine, because on a shelf it would. */
+export const spineWidth = (book) => ((book?.formats || []).includes('physical') ? 34 : 26)
+
+/**
+ * How tall to draw the spine, in pixels.
+ *
+ * A page count is the honest input, and a book has one only where somebody
+ * asked for it while reading a photograph. Where there is none the height comes
+ * from the length of the title instead, which is decoration rather than data.
+ * A wall can therefore mix the two, which is why its caption says both rules
+ * apply rather than claiming one.
+ *
+ * Both scales are clamped to the same band, so a long book and a long title
+ * never make a spine that towers over the shelf.
+ */
+export function spineHeight(book, { min = 150, max = 250 } = {}) {
+  const pages = Number(book?.pages)
+  if (Number.isFinite(pages) && pages > 0) {
+    const span = Math.min(Math.max(pages, 80), 900)
+    return Math.round(min + ((span - 80) / 820) * (max - min))
+  }
+  const length = String(book?.title || '').length
+  const span = Math.min(Math.max(length, 4), 60)
+  return Math.round(min + ((span - 4) / 56) * (max - min))
+}
+
+/** Whether a spine's height came from a recorded page count or from its title. */
+export const spineMeasured = (book) => {
+  const pages = Number(book?.pages)
+  return Number.isFinite(pages) && pages > 0
+}
+
+/**
+ * A shelf mark for the detail card, or null.
+ *
+ * Built from the author's sort name and the year the book was acquired, both
+ * of them recorded rather than invented. A book with no author recorded gets
+ * no mark: sortName falls back to the title, and a call number derived from a
+ * title would look like a real classification and be nothing of the kind.
+ */
+export function callNumber(book, authors) {
+  const first = (book?.authors || [])[0]
+  const name = authors?.get?.(first)?.sort_name || book?.author_label
+  if (!name) return null
+  const letters = fold(name).replace(/[^a-z]/g, '').slice(0, 3).toUpperCase()
+  if (!letters) return null
+  const year = book?.acquired_on ? String(book.acquired_on).slice(0, 4) : null
+  return year ? `${letters} ${year}` : letters
 }
 
 export const uniqueSorted = (values) => [...new Set(values.filter(Boolean))].sort()

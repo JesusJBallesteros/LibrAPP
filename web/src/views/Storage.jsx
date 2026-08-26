@@ -8,7 +8,7 @@ import { BUILT, buildLabel, reloadFresh } from '../version.js'
 
 const mb = (bytes) => `${(bytes / 1e6).toFixed(1)} MB`
 
-export default function Storage({ lib, focus }) {
+export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
   const { t, language } = useT()
   const [estimate, setEstimate] = useState(null)
   const [note, setNote] = useState(null)
@@ -111,10 +111,12 @@ export default function Storage({ lib, focus }) {
 
   return (
     <div className="view">
-      <header>
+      <div className="view-head">
+        <p className="eyebrow">{t('storage.eyebrow')}</p>
         <h2>{t('nav.library')}</h2>
+        <hr className="rule" />
         <p>{t('storage.intro')}</p>
-      </header>
+      </div>
 
       {note && (
         <div className="notice good">
@@ -122,16 +124,28 @@ export default function Storage({ lib, focus }) {
         </div>
       )}
 
-      <div className="card">
-        <h3>{t('storage.where')}</h3>
-        <p className="muted tiny">
-          {lib.library?.kind ? t(`storage.kind.${lib.library.kind}`) : t('storage.kind.unknown')}
-        </p>
-        {estimate?.quota ? (
-          <p className="tiny faint" style={{ marginTop: 8 }}>
-            {t('storage.using', { used: mb(estimate.usage), quota: mb(estimate.quota) })}
+      <div className="storage-pair">
+        <section className="desk-section">
+          <h3 className="section-head">{t('storage.where')}</h3>
+          <p className="muted tiny">
+            {lib.library?.kind ? t(`storage.kind.${lib.library.kind}`) : t('storage.kind.unknown')}
           </p>
-        ) : null}
+          {estimate?.quota ? (
+            <>
+              <p className="quota">
+                {t('storage.using', { used: mb(estimate.usage), quota: mb(estimate.quota) })}
+              </p>
+              {/* The figures are the statement; the bar is only there to make
+                  the proportion readable at a glance. */}
+              <div
+                className="usage"
+                role="img"
+                aria-label={t('storage.using', { used: mb(estimate.usage), quota: mb(estimate.quota) })}
+              >
+                <span style={{ width: `${Math.min(100, (estimate.usage / estimate.quota) * 100)}%` }} />
+              </div>
+            </>
+          ) : null}
         {lib.library?.kind === 'browser' && persisted === false && (
           <div className="notice bad" style={{ marginTop: 12 }}>
             <p className="tiny">
@@ -152,38 +166,82 @@ export default function Storage({ lib, focus }) {
           </p>
         )}
 
-        <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn" onClick={lib.forget}>
-            {t('storage.elsewhere')}
-          </button>
-        </div>
-        <p className="tiny faint" style={{ marginTop: 8 }}>
-          {t('storage.forgetNote')}
-        </p>
+          <div className="row" style={{ marginTop: 16 }}>
+            <button className="btn primary" onClick={exportBundle} disabled={!lib.sources.length}>
+              {t('common.export')}
+            </button>
+            <button className="btn" onClick={lib.forget}>
+              {t('storage.elsewhere')}
+            </button>
+          </div>
+          <p className="tiny faint" style={{ marginTop: 8 }}>
+            {t('storage.forgetNote')}
+          </p>
+        </section>
+        <section className="desk-section">
+          <div className="section-head spread">
+            <h3>{t('storage.browser')}</h3>
+            <span className={`tag ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'bad'}`}>
+              {capabilities.complete
+                ? t('storage.allSupported')
+                : capabilities.usable
+                  ? t('storage.someMissing', { n: capabilities.missingOptional.length })
+                  : t('storage.notSupported')}
+            </span>
+          </div>
+          <p className="muted tiny" style={{ marginTop: 8 }}>
+            {t('storage.browserNote')}
+          </p>
+
+          <div style={{ marginTop: 12 }}>
+            {capabilities.checks.map((c) => (
+              <div className="forgotten-item spread" key={c.id}>
+                <span>
+                  <span className="title" style={{ font: '400 13.5px/1.3 var(--sans)' }}>
+                    {cap(c.id, 'label', c.label)}
+                  </span>
+                  <div className="why">
+                    {cap(c.id, 'needed', c.needed)}
+                    {!c.ok && c.fix ? ` — ${cap(c.id, 'fix', c.fix)}` : ''}
+                  </div>
+                </span>
+                <span className={`answer ${c.ok ? 'read' : c.required ? 'bad' : 'unread'}`}>
+                  {c.ok ? t('storage.yes') : c.required ? t('storage.missing') : t('storage.no')}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {!capabilities.usable && (
+            <div className="notice bad" style={{ marginTop: 12 }}>
+              <p className="tiny">{t('storage.cannotRun')}</p>
+            </div>
+          )}
+        </section>
       </div>
 
-      <div className="card">
-        <h3>{t('storage.sources')}</h3>
+      <section className="desk-section">
+        <h3 className="section-head">{t('storage.sources')}</h3>
         {lib.sources.length === 0 ? (
           <p className="muted">{t('storage.noSources')}</p>
         ) : (
           <div className="table-scroll">
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5 }}>
+          <table className="sources">
             <thead>
-              <tr style={{ textAlign: 'left', color: 'var(--ink-faint)' }}>
-                <th style={{ padding: '4px 0' }}>{t('storage.col.name')}</th>
+              <tr>
+                <th>{t('storage.col.name')}</th>
                 <th>{t('storage.col.kind')}</th>
                 <th>{t('storage.col.from')}</th>
                 <th>{t('storage.col.trust')}</th>
-                <th style={{ textAlign: 'right' }}>{t('storage.col.records')}</th>
+                <th className="right">{t('storage.col.records')}</th>
                 <th />
               </tr>
             </thead>
             <tbody>
               {lib.sources.map((s) => (
-                <tr key={s.file} style={{ borderTop: '1px solid var(--rule)' }}>
-                  <td style={{ padding: '6px 0' }}>{s.source?.name || s.file}</td>
-                  <td className="muted">{s.source?.kind || '—'}</td>
+                <tr key={s.file}>
+                  <td className="tabular">{s.source?.name || s.file}</td>
+                  <td className="muted">{s.source?.kind || t('storage.kindUnknown')}</td>
                   <td className="faint">{s.error ? <span style={{ color: 'var(--bad)' }}>{s.error}</span> : s.source?.origin}</td>
                   <td className="muted">
                     {s.source?.confidence ? t(`confidence.${s.source.confidence}`) : '—'}
@@ -216,51 +274,10 @@ export default function Storage({ lib, focus }) {
         <p className="tiny faint" style={{ marginTop: 10 }}>
           {t('storage.sourcesNote')}
         </p>
-      </div>
+      </section>
 
-      <div className="card">
-        <div className="spread">
-          <h3 style={{ margin: 0 }}>{t('storage.browser')}</h3>
-          <span className={`pill ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'flag'}`}>
-            {capabilities.complete
-              ? t('storage.allSupported')
-              : capabilities.usable
-                ? t('storage.someMissing', { n: capabilities.missingOptional.length })
-                : t('storage.notSupported')}
-          </span>
-        </div>
-        <p className="muted tiny" style={{ marginTop: 8 }}>
-          {t('storage.browserNote')}
-        </p>
-
-        <div style={{ marginTop: 12 }}>
-          {capabilities.checks.map((c) => (
-            <div className="forgotten-item spread" key={c.id}>
-              <span>
-                <span className="title" style={{ font: '500 14px/1.3 var(--sans)' }}>
-                  {cap(c.id, 'label', c.label)}
-                </span>
-                <div className="why">
-                  {cap(c.id, 'needed', c.needed)}
-                  {!c.ok && c.fix ? ` — ${cap(c.id, 'fix', c.fix)}` : ''}
-                </div>
-              </span>
-              <span className={`pill ${c.ok ? 'read' : c.required ? 'flag' : 'unread'}`}>
-                {c.ok ? t('storage.yes') : c.required ? t('storage.missing') : t('storage.no')}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {!capabilities.usable && (
-          <div className="notice bad" style={{ marginTop: 12 }}>
-            <p className="tiny">{t('storage.cannotRun')}</p>
-          </div>
-        )}
-      </div>
-
-      <div className="card">
-        <h3>{t('storage.corrections')}</h3>
+      <section className="desk-section">
+        <h3 className="section-head">{t('storage.corrections')}</h3>
         <p className="muted tiny">{t('storage.correctionsNote')}</p>
 
         {!removed.length && !corrected.length && !orphaned.length && (
@@ -269,7 +286,7 @@ export default function Storage({ lib, focus }) {
 
         {removed.length > 0 && (
           <div style={{ marginTop: 12 }}>
-            <strong className="tiny">{t('storage.removedGroup', { n: removed.length })}</strong>
+            <p className="group-label">{t('storage.removedGroup', { n: removed.length })}</p>
             {removed.map((r) => (
               <div className="forgotten-item spread" key={r.id}>
                 <span>
@@ -286,7 +303,7 @@ export default function Storage({ lib, focus }) {
 
         {corrected.length > 0 && (
           <div style={{ marginTop: 14 }}>
-            <strong className="tiny">{t('storage.editedGroup', { n: corrected.length })}</strong>
+            <p className="group-label">{t('storage.editedGroup', { n: corrected.length })}</p>
             {corrected.map((c) => (
               <div className="forgotten-item spread" key={c.id}>
                 <span>
@@ -323,12 +340,12 @@ export default function Storage({ lib, focus }) {
             ))}
           </div>
         )}
-      </div>
+      </section>
 
-      <div className="card">
-        <div className="spread">
-          <h3 style={{ margin: 0 }}>{t('version.title')}</h3>
-          <span className="tiny faint" style={{ fontFamily: 'var(--mono)' }}>{buildLabel()}</span>
+      <section className="desk-section">
+        <div className="section-head spread">
+          <h3>{t('version.title')}</h3>
+          <span className="tabular tiny faint">{buildLabel()}</span>
         </div>
         <p className="muted tiny" style={{ marginTop: 8 }}>
           {BUILT ? t('version.built', { when: new Date(BUILT).toLocaleString(language) }) : ''}{' '}
@@ -342,26 +359,41 @@ export default function Storage({ lib, focus }) {
         <p className="tiny faint" style={{ marginTop: 8 }}>
           {t('version.safe')}
         </p>
-      </div>
+      </section>
 
-      <div className="card" id="import-box">
-        <h3>{t('storage.move')}</h3>
+      {owlGone && (
+        <section className="desk-section">
+          <h3 className="section-head">{t('librarian.name')}</h3>
+          <p className="muted tiny">{t('storage.owlHidden')}</p>
+          <div className="row" style={{ marginTop: 14 }}>
+            <button
+              className="btn"
+              onClick={() => {
+                onRestoreOwl?.()
+                setNote(t('storage.owlBack'))
+              }}
+            >
+              {t('storage.owlRestore')}
+            </button>
+          </div>
+        </section>
+      )}
+
+      {/* Export moved up beside the location it would be leaving, so this is
+          the way in rather than a pair of opposite doors in one box. */}
+      <section className="desk-section" id="import-box">
+        <h3 className="section-head">{t('storage.move')}</h3>
         <p className="muted tiny">{t('storage.moveNote')}</p>
-        <div className="row" style={{ marginTop: 12 }}>
-          <button className="btn primary" onClick={exportBundle} disabled={!lib.sources.length}>
-            {t('common.export')}
-          </button>
-        </div>
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: 18 }}>
           <DropZone
-            glyph="📥"
+            mark="bundle"
             title={t('storage.importTitle')}
             hint={t('storage.importHint')}
             disabled={lib.busy}
             onFile={importBundle}
           />
         </div>
-      </div>
+      </section>
     </div>
   )
 }

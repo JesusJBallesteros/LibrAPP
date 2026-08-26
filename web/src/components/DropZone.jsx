@@ -1,7 +1,12 @@
 import { useRef, useState } from 'react'
 
-/** A click-or-drag target for one file. */
-export default function DropZone({ accept, glyph, title, hint, disabled, onFile }) {
+/**
+ * A click-or-drag target for one file.
+ *
+ * `mark` names a shape drawn in CSS rather than an emoji, so the target looks
+ * the same on every platform and takes its colour from the theme.
+ */
+export default function DropZone({ accept, mark, title, hint, disabled, onFile }) {
   const input = useRef(null)
   const [over, setOver] = useState(false)
 
@@ -29,9 +34,7 @@ export default function DropZone({ accept, glyph, title, hint, disabled, onFile 
       aria-disabled={disabled}
       style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
     >
-      <span className="glyph" aria-hidden="true">
-        {glyph}
-      </span>
+      <span className={`mark ${mark}`} aria-hidden="true" />
       <strong>{title}</strong>
       <span>{hint}</span>
       <input

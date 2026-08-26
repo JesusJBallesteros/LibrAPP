@@ -40,6 +40,16 @@ uncertainty in `notes`. Do not silently complete it. A wrong title read
 confidently is worse than an honest fragment: the fragment gets fixed, the
 confident error propagates into recommendations.
 
+**Spines run in every direction.** On one shelf the text may run vertically
+upward, vertically downward, horizontally across a short spine, at an angle on
+a book leaning against its neighbour, or upside down relative to the book beside
+it. British and American spines are usually printed to read downward and
+continental European ones upward, so a shelf holding both has titles facing
+opposite ways. Rotate each spine as needed and read it. A title that is not the
+same way up as its neighbours is a title to transcribe, never one to skip. Order
+the books by where they stand, left to right along the shelf, whatever direction
+their lettering runs.
+
 **Non-Latin scripts.** Record them in their own script. If you can also give a
 transliteration or a translation, put it in `notes`. Do not replace the title
 with a translation.
@@ -87,12 +97,7 @@ Write one JSON file:
 (`top-left`, `bottom shelf, right of the divider`). Group books by the shelf
 they sit on, in the order they stand, so the file reads like the shelf looks.
 
-Then:
-
-```bash
-python tools/librapp/parse_shelf.py import <file>.json -o data/private/shelf.json
-```
-
-It will refuse the file if a book has no title or an unknown confidence value,
-which is the point: a transcription that does not survive import is one you
-want to see before it reaches the catalog.
+The file is checked before any of it reaches the catalog, and it is refused
+whole if a book has no title or carries a confidence value other than the three
+above. That is deliberate: a transcription that does not survive the check is
+one worth looking at before it becomes a catalog.

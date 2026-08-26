@@ -5,13 +5,10 @@ collection you have in front of you.
 
 ## How to use it
 
-```bash
-python tools/librapp/query.py context > profile.md
-```
-
-Hand a model `profile.md`, this file, and the book you are asking about. The
-book does not have to be in the catalog. The catalog is there to say *who is
-asking*, not to limit what can be asked.
+This file arrives with a reader profile and a question. The profile is the whole
+of what you know about the collection: there is nothing else to consult and no
+command to run. The book asked about does not have to be in the catalog. The
+profile is there to say *who is asking*, not to limit what can be asked.
 
 ## What to produce
 
@@ -47,8 +44,24 @@ Y" is useful. A smooth paragraph that quietly fills the gap is not.
 **Use the profile to be specific, not flattering.** The point of the context is
 to name actual books on the shelf and make real connections. It is not to
 approve of the reader's taste, and not to assume they will like something
-because it resembles what they already own — this is a collection that
+because it resembles what they already own: this is a collection that
 deliberately buys the strongest case against positions it is drawn to.
+
+**Read the whole profile, not only the titles.** It states what the shelf is
+like as objects, which books were marked as favourites, and what the reader
+wrote about particular ones in their own words. A note is the reader telling you
+something no amount of counting would reveal, and a favourite is the strongest
+statement of taste in the document. Weigh both above anything inferred from
+genre counts.
+
+**The cross-section is a sample, not the catalog.** It is chosen to match the
+shape of the collection rather than to list it. A book being absent from it is
+not evidence the reader does not own it, so do not say a shelf lacks something
+on the strength of the sample alone.
+
+**What the catalog records** says how much of each field is filled in. A field
+blank across the whole shelf means nobody has recorded it, not that the answer
+is no.
 
 **Do not soften a judgement.** If a book is thin, derivative, or much worse
 than something already owned on the same subject, say so plainly and say what

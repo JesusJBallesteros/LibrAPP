@@ -132,7 +132,7 @@ export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
 
 // Which fields a model may only have recalled, and the flag that says so.
 // Kept next to the checklist that asks for them.
-const RECALLED_FIELDS = ['abstract', 'published_year', 'rating', 'original_language']
+const RECALLED_FIELDS = ['abstract', 'published_year', 'rating', 'original_language', 'pages']
 const RECALLED_FLAG = 'recalled_details'
 
 export class TranscriptionError extends Error {}
@@ -190,6 +190,7 @@ export function loadTranscription(payload) {
         published_year: Number.isInteger(book.published_year) ? book.published_year : null,
         rating: typeof book.rating === 'number' ? book.rating : null,
         original_language: book.original_language ? clean(String(book.original_language)) : null,
+        pages: Number.isInteger(book.pages) && book.pages > 0 ? book.pages : null,
         flags: [
           ...(confidence === 'low' ? ['illegible_spine'] : []),
           ...(recalled.length ? [RECALLED_FLAG] : []),
