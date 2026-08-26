@@ -64,8 +64,12 @@ A third request beside Synopsis and Recommendation.
 
 ### New: favourites and notes
 
-- **A star** on any book, set from the editor, shown in the list and on the
-  card, with a filter of its own and a section at the desk.
+- **A star** on any book, pressed straight from the list or the spine wall
+  without opening anything, and also settable in the editor. Shown on the card,
+  with a filter of its own and a section at the desk.
+- On the wall the star sits above each spine, quiet until the book is marked or
+  the spine is pointed at, and always visible where there is no pointer to
+  point with.
 - **Notes** are no longer "noted when read". The field is now for whatever you
   want to say about a book, has more room in the editor, and appears above the
   abstract on the card, because your words come before anything a model wrote.

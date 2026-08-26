@@ -454,6 +454,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .book-row {
   display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: baseline;
+  width: 100%;
+  border-bottom: 1px solid var(--rule-soft);
+  transition: background .12s;
+}
+/* Everything except the mark opens the book. */
+.row-open {
+  display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px 20px;
   align-items: baseline;
@@ -461,15 +470,32 @@ button, input, select, textarea { font: inherit; color: inherit; }
   text-align: left;
   padding: 13px 10px 13px 0;
   border: 0;
-  border-bottom: 1px solid var(--rule-soft);
   border-radius: 0;
   background: none;
   cursor: pointer;
   color: var(--ink);
-  transition: background .12s;
+  font: inherit;
 }
 .book-row:hover { background: var(--accent-soft); }
 .book-row[aria-selected='true'] { background: var(--accent-soft); }
+
+/* The mark, wherever a book appears. Held at low weight until it is on or
+   pointed at, so a shelf of unmarked books is not a column of stars. */
+.star-cell {
+  border: 0;
+  background: none;
+  padding: 13px 4px 13px 0;
+  cursor: pointer;
+  line-height: 1;
+  font-size: 14px;
+  color: var(--ink-faint);
+  opacity: .35;
+  transition: opacity .12s, color .12s;
+}
+.star-cell:hover:not(:disabled),
+.star-cell:focus-visible { opacity: 1; color: var(--accent); }
+.star-cell.on { opacity: 1; color: var(--accent); }
+.star-cell:disabled { cursor: default; }
 .book-row .title { font: 400 18px/1.35 var(--serif); }
 .book-row .byline { font-size: 13px; color: var(--ink-soft); }
 
@@ -788,9 +814,34 @@ pre.snippet {
   gap: 6px;
   min-height: 280px;
 }
+/* A spine and its mark. The spines still meet at the foot of the wall, so the
+   slot aligns to the bottom and the mark sits above whatever height the spine
+   turned out to be. */
+.spine-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+/* Quiet, so a wall of unmarked books is not a row of stars, but never hidden
+   outright: on a touch screen there is no hover to reveal it with, and a
+   control that cannot be reached is not a control. */
+/* The glyph stays small; the area that answers a finger does not. A spine is
+   26px wide, so the target takes the whole width and gains its height from
+   padding. */
+.spine-slot .star-cell { padding: 6px 0; width: 100%; font-size: 13px; opacity: .3; }
+@media (hover: hover) {
+  .spine-slot .star-cell { opacity: 0; }
+  .spine-slot:hover .star-cell { opacity: 1; }
+}
+.spine-slot .star-cell:focus-visible,
+.spine-slot.marked .star-cell { opacity: 1; }
+
 .spine {
   border: 0;
   padding: 12px 0 0;
+  width: 100%;
   border-radius: 1px 1px 0 0;
   cursor: pointer;
   /* Two insets stand in for the roundness of a spine: a shadow down the right
@@ -1379,7 +1430,10 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
    and leaves the title a column of single words. Below this the row stacks and
    the metadata reads as a second line under the title. */
 @media (max-width: 560px) {
-  .book-row {
+  /* The row itself keeps its mark column. What stacks is the part that opens
+     the book, since the metadata will not wrap and was leaving the title a
+     column of single words. */
+  .row-open {
     grid-template-columns: 1fr;
     gap: 6px;
   }

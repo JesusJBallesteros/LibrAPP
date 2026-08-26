@@ -704,6 +704,8 @@ export default {
   'editor.bothLoans': 'A book cannot be lent out and borrowed at the same time.',
 
   'catalog.whereIs': 'Where',
+  'catalog.mark': 'Mark as a favourite',
+  'catalog.unmark': 'Remove the favourite mark',
   'catalog.favourites': 'Favourites',
   'catalog.favouritesOnly': 'Favourites only',
   'catalog.atHome': 'on the shelf',

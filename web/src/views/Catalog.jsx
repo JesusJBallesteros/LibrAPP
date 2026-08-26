@@ -114,6 +114,20 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     loan: 'catalog.whereIs',
     favourite: 'catalog.favourites',
   }
+  /**
+   * Turn the mark on or off, from wherever it was pressed.
+   *
+   * A correction like any other, so it survives a rebuild and can be undone
+   * from the Library. Nothing else about the book is touched: setOverride
+   * merges into whatever that book already carries.
+   */
+  const toggleFavourite = (book) =>
+    lib?.run(async (library) => {
+      const overrides = await library.readOverrides()
+      await library.writeOverrides(setOverride(overrides, book, { favourite: !book.favourite }))
+      await library.rebuild()
+    })
+
   const hiddenNames = hiddenActiveFilters({ format, source, loan, favourite }).map((name) =>
     t(LABEL[name]),
   )
@@ -363,7 +377,15 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           </button>
         </div>
       ) : mode === 'spines' ? (
-        <SpineWall books={shown} authors={authors} selected={selected} onPick={setSelected} t={t} />
+        <SpineWall
+          books={shown}
+          authors={authors}
+          selected={selected}
+          onPick={setSelected}
+          onToggle={toggleFavourite}
+          busy={lib?.busy}
+          t={t}
+        />
       ) : (
         <div className="results">
           {groups.map(({ key, books }) => (
@@ -375,19 +397,15 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                 </div>
               )}
               {books.map((book) => (
-                <button
+                <div
                   key={book.id}
                   className="book-row"
                   aria-selected={selected?.id === book.id}
-                  onClick={() => setSelected(book)}
                 >
+                  <Star book={book} onToggle={toggleFavourite} t={t} busy={lib?.busy} />
+                  <button className="row-open" onClick={() => setSelected(book)}>
                   <span>
                     <span className="title">
-                      {book.favourite && (
-                        <span className="star" aria-label={t('book.favourite')}>
-                          {'\u2605'}
-                        </span>
-                      )}
                       {book.series_index && group === 'series' ? `${book.series_index}. ` : ''}
                       {book.title}
                     </span>
@@ -410,7 +428,8 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                     </span>
                     <span className="year">{book.acquired_on ? book.acquired_on.slice(0, 4) : ''}</span>
                   </span>
-                </button>
+                  </button>
+                </div>
               ))}
             </div>
           ))}
@@ -479,6 +498,31 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
 }
 
 /**
+ * The mark, pressable wherever a book appears.
+ *
+ * A button rather than a glyph, with its own pressed state, because it is a
+ * control and not decoration. It stops the click from reaching whatever sits
+ * behind it, so pressing the star never also opens the book.
+ */
+function Star({ book, onToggle, t, busy }) {
+  return (
+    <button
+      className={`star-cell${book.favourite ? ' on' : ''}`}
+      aria-pressed={Boolean(book.favourite)}
+      disabled={busy}
+      title={book.favourite ? t('catalog.unmark') : t('catalog.mark')}
+      aria-label={book.favourite ? t('catalog.unmark') : t('catalog.mark')}
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggle(book)
+      }}
+    >
+      {book.favourite ? '\u2605' : '\u2606'}
+    </button>
+  )
+}
+
+/**
  * The catalog as a shelf.
  *
  * One button per book, so the wall is reachable by keyboard and each spine
@@ -490,7 +534,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
  * height that looked like a page count and was not would be the app inventing
  * data about the books.
  */
-function SpineWall({ books, authors, selected, onPick, t }) {
+function SpineWall({ books, authors, selected, onPick, onToggle, busy, t }) {
   return (
     <div className="spine-view">
       {/* A group rather than a list: role="listitem" on a button replaces the
@@ -500,21 +544,29 @@ function SpineWall({ books, authors, selected, onPick, t }) {
         {books.map((book) => {
           const name = byline(book, authors)
           return (
-            <button
+            <div
               key={book.id}
-              className="spine"
-              aria-selected={selected?.id === book.id}
-              title={name ? `${book.title} · ${name}` : book.title}
-              onClick={() => onPick(book)}
-              style={{
-                width: spineWidth(book),
-                height: spineHeight(book),
-                background: `var(--spine-${spineTint(book)})`,
-                color: `var(--spine-${spineTint(book)}-ink)`,
-              }}
+              className={`spine-slot${book.favourite ? ' marked' : ''}`}
+              style={{ width: spineWidth(book) }}
             >
-              <span className="spine-title">{book.title}</span>
-            </button>
+              {/* Above the spine rather than on it: a spine is 26 pixels wide
+                  and its lettering already fills it. First in the column, so
+                  it sits over the spine rather than down on the shelf board. */}
+              <Star book={book} onToggle={onToggle} t={t} busy={busy} />
+              <button
+                className="spine"
+                aria-selected={selected?.id === book.id}
+                title={name ? `${book.title} · ${name}` : book.title}
+                onClick={() => onPick(book)}
+                style={{
+                  height: spineHeight(book),
+                  background: `var(--spine-${spineTint(book)})`,
+                  color: `var(--spine-${spineTint(book)}-ink)`,
+                }}
+              >
+                <span className="spine-title">{book.title}</span>
+              </button>
+            </div>
           )
         })}
       </div>

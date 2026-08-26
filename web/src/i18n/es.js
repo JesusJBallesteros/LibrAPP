@@ -711,6 +711,8 @@ export default {
   'editor.bothLoans': 'Un libro no puede estar prestado y tomado prestado a la vez.',
 
   'catalog.whereIs': 'D\u00f3nde',
+  'catalog.mark': 'Marcar como favorito',
+  'catalog.unmark': 'Quitar la marca de favorito',
   'catalog.favourites': 'Favoritos',
   'catalog.favouritesOnly': 'S\u00f3lo favoritos',
   'catalog.atHome': 'en la estanter\u00eda',
