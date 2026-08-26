@@ -305,6 +305,12 @@ export default {
   'shelf.intro':
     'Photograph a shelf straight on, at your camera’s full resolution. This matters more than anything else here: a whole bookcase at one megapixel is unreadable, and the same shelf at fifty is not.',
   'shelf.whatItIsFor': 'reading a shelf',
+  'shelf.eyebrow': 'Accessions',
+  'list.listsFound': '{n} lists found',
+  'list.eyebrow': 'Accessions',
+  'shelf.stepOne': 'Step one · The photograph',
+  'shelf.stepTwo': 'Step two · Read the spines',
+  'shelf.stepThree': 'Step three · Check what it read',
   'shelf.step1': '1 · The photograph',
   'shelf.dropPhoto': 'Take or choose a photograph',
   'shelf.dropPhotoHint': 'JPEG or PNG · nothing is uploaded',

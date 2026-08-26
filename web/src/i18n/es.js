@@ -306,6 +306,12 @@ export default {
 
   'shelf.intro': 'Fotografía la estantería de frente a una resolución alta.',
   'shelf.whatItIsFor': 'leer una estantería',
+  'shelf.eyebrow': 'Ingresos',
+  'list.listsFound': '{n} listas encontradas',
+  'list.eyebrow': 'Ingresos',
+  'shelf.stepOne': 'Paso uno \u00b7 La foto',
+  'shelf.stepTwo': 'Paso dos \u00b7 Leer los lomos',
+  'shelf.stepThree': 'Paso tres \u00b7 Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Haz o elige una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
