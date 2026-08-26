@@ -51,6 +51,10 @@ export default function Desk({ catalog, onGo, onOwl }) {
   // already in hand, and computing it locally is what lets the desk work with
   // no network at all.
   const context = useMemo(() => (catalog ? readerProfile(catalog) : null), [catalog])
+  const favourites = useMemo(
+    () => (catalog?.books || []).filter((b) => b.favourite),
+    [catalog],
+  )
 
   const chosen = ASKS.find((a) => a.id === ask)
   const assembled = useMemo(() => {
@@ -229,6 +233,38 @@ export default function Desk({ catalog, onGo, onOwl }) {
               ) : null,
             )}
           </section>
+
+          {favourites.length > 0 && (
+            <section className="desk-section">
+              <div className="section-head spread">
+                <h3>{t('desk.favourites')}</h3>
+                <span className="tabular tiny faint">{favourites.length}</span>
+              </div>
+              <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
+              {favourites.map((book) => (
+                <div className="forgotten-item spread" key={book.id}>
+                  <span>
+                    <span className="title">
+                      <span className="star" aria-hidden="true">{'\u2605'}</span>
+                      {book.title}
+                    </span>
+                    <br />
+                    <span className="tiny muted">
+                      {byline(book, authors) || t('book.authorUnknown')}
+                    </span>
+                    {book.notes && <div className="why">{book.notes}</div>}
+                  </span>
+                </div>
+              ))}
+              <button
+                className="btn link"
+                style={{ marginTop: 12, paddingLeft: 0 }}
+                onClick={() => onGo?.('catalog', { favourite: 'yes' })}
+              >
+                {t('desk.showFavourites')}
+              </button>
+            </section>
+          )}
 
           <section className="desk-section">
             <h3 className="section-head">{t('desk.madeOf')}</h3>

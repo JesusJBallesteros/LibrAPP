@@ -38,6 +38,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const [format, setFormat] = useState('all')
   const [source, setSource] = useState('all')
   const [loan, setLoan] = useState('all')
+  const [favourite, setFavourite] = useState('all')
   // Set when the desk sends a word here. Matched against tag keys, which are
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
@@ -56,6 +57,10 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     // way, and a filter behind the disclosure opens it, so nothing narrows the
     // list with its control out of sight.
     if (focus?.read) setRead(focus.read)
+    if (focus?.favourite) {
+      setFavourite(focus.favourite)
+      setShowMore(true)
+    }
     if (focus?.sort) setSort(focus.sort)
     if (focus?.loan) {
       setLoan(focus.loan)
@@ -91,6 +96,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       if (read !== 'all' && readState(b) !== read) return false
       if (format !== 'all' && !(b.formats || []).includes(format)) return false
       if (source !== 'all' && !(b.sources || []).includes(source)) return false
+      if (favourite === 'yes' && !b.favourite) return false
       if (loan === 'lent' && !lentOut(b)) return false
       if (loan === 'borrowed' && !borrowed(b)) return false
       if (loan === 'home' && (lentOut(b) || borrowed(b))) return false
@@ -98,12 +104,19 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       return true
     })
     return out.sort(SORTS[sort])
-  }, [prepared, q, read, format, source, loan, tag, sort])
+  }, [prepared, q, read, format, source, loan, favourite, tag, sort])
 
   // Format, Source and Where sit behind the disclosure, so the page has to say
   // when one of them is narrowing the list.
-  const LABEL = { format: 'catalog.format', source: 'catalog.source', loan: 'catalog.whereIs' }
-  const hiddenNames = hiddenActiveFilters({ format, source, loan }).map((name) => t(LABEL[name]))
+  const LABEL = {
+    format: 'catalog.format',
+    source: 'catalog.source',
+    loan: 'catalog.whereIs',
+    favourite: 'catalog.favourites',
+  }
+  const hiddenNames = hiddenActiveFilters({ format, source, loan, favourite }).map((name) =>
+    t(LABEL[name]),
+  )
   const hiddenActive = hiddenNames.length
 
   const groups = useMemo(() => {
@@ -291,6 +304,14 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           )}
 
           <label className="field">
+            {t('catalog.favourites')}
+            <select value={favourite} onChange={(e) => setFavourite(e.target.value)}>
+              <option value="all">{t('catalog.any')}</option>
+              <option value="yes">{t('catalog.favouritesOnly')}</option>
+            </select>
+          </label>
+
+          <label className="field">
             {t('catalog.whereIs')}
             <select value={loan} onChange={(e) => setLoan(e.target.value)}>
               <option value="all">{t('catalog.any')}</option>
@@ -334,6 +355,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
               setFormat('all')
               setSource('all')
               setLoan('all')
+              setFavourite('all')
               setTag(null)
             }}
           >
@@ -361,6 +383,11 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                 >
                   <span>
                     <span className="title">
+                      {book.favourite && (
+                        <span className="star" aria-label={t('book.favourite')}>
+                          {'\u2605'}
+                        </span>
+                      )}
                       {book.series_index && group === 'series' ? `${book.series_index}. ` : ''}
                       {book.title}
                     </span>

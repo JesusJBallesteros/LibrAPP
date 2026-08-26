@@ -153,7 +153,8 @@ export default {
   'book.confidence': 'Confianza',
   'book.confShort': 'conf. {level}',
   'book.authorUnknown': 'Autor\u00eda sin registrar',
-  'book.notedWhenRead': 'Anotado al leerlo:',
+  'book.notedWhenRead': 'Tu nota',
+  'book.favourite': 'Un favorito',
   'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
   'book.correctedOn': 'Corregido a mano el {date}.',
@@ -456,6 +457,10 @@ export default {
   'editor.where': 'Dónde está',
   'editor.whereHint': 'un estante, una habitación, una caja',
   'editor.notes': 'Notas',
+  'editor.notesHint': 'Comentarios personales sobre este libro. La BibliotecAPPri@ los tiene en cuenta.',
+  'editor.favourite': 'Favorito',
+  'editor.favouriteOn': 'Marcado como favorito',
+  'editor.favouriteOff': 'Sin marcar',
   'editor.saveCorrection': 'Guardar la corrección',
   'editor.addBook': 'Añadir el libro',
   'editor.correctable':
@@ -639,11 +644,16 @@ export default {
   'editor.bothLoans': 'Un libro no puede estar prestado y tomado prestado a la vez.',
 
   'catalog.whereIs': 'D\u00f3nde',
+  'catalog.favourites': 'Favoritos',
+  'catalog.favouritesOnly': 'S\u00f3lo favoritos',
   'catalog.atHome': 'en la estanter\u00eda',
   'catalog.lentOut': 'prestado',
   'catalog.borrowed': 'de otra persona',
 
   'desk.away': 'Fuera de la estanter\u00eda',
+  'desk.favourites': 'Los marcados',
+  'desk.favouritesNote': 'Libros se\u00f1alados a mano. Pesan m\u00e1s que cualquier cosa que el cat\u00e1logo deduzca por su cuenta.',
+  'desk.showFavourites': 'Verlos todos en el cat\u00e1logo',
   'desk.awayNote':
     'Libros que no est\u00e1n donde deber\u00edan. Se anotan a mano, uno a uno, porque no hay otra forma de saberlo.',
   'desk.lentGroup': 'Prestados ({n})',

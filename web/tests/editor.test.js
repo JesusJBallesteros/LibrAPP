@@ -71,11 +71,18 @@ describe('the rest of the form', () => {
     expect(toForm({}, names).read).toBe('unknown')
   })
 
-  it('never puts null or undefined into a text input', () => {
+  it('never puts null or undefined into a field', () => {
+    // React shouts when a controlled input is handed null, and shows the word
+    // "undefined" when it is handed that. Every field must therefore carry a
+    // real value. The favourite toggle is a boolean rather than text, since it
+    // is a button with a pressed state and not something typed into.
     const form = toForm({ title: 'Bare' }, names)
+    const toggles = ['favourite']
     for (const [key, value] of Object.entries(form)) {
       if (Array.isArray(value)) continue
-      expect(typeof value, key).toBe('string')
+      expect(value, key).not.toBe(null)
+      expect(value, key).not.toBe(undefined)
+      expect(typeof value, key).toBe(toggles.includes(key) ? 'boolean' : 'string')
     }
   })
 })

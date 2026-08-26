@@ -154,7 +154,8 @@ export default {
   'book.confidence': 'Confidence',
   'book.confShort': 'conf. {level}',
   'book.authorUnknown': 'Author not recorded',
-  'book.notedWhenRead': 'Noted when read:',
+  'book.notedWhenRead': 'Your note',
+  'book.favourite': 'A favourite',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',
   'book.corrected': 'Corrected by hand.',
@@ -454,6 +455,10 @@ export default {
   'editor.where': 'Where it is',
   'editor.whereHint': 'a shelf, a room, a box in the attic',
   'editor.notes': 'Notes',
+  'editor.notesHint': 'Personal remarks on this book. The LibrAPPrian takes them into account.',
+  'editor.favourite': 'Favourite',
+  'editor.favouriteOn': 'Marked as a favourite',
+  'editor.favouriteOff': 'Not marked',
   'editor.saveCorrection': 'Save correction',
   'editor.addBook': 'Add the book',
   'editor.correctable': 'Correctable fields: {fields}. Anything else is derived from the sources.',
@@ -632,11 +637,16 @@ export default {
   'editor.bothLoans': 'A book cannot be lent out and borrowed at the same time.',
 
   'catalog.whereIs': 'Where',
+  'catalog.favourites': 'Favourites',
+  'catalog.favouritesOnly': 'Favourites only',
   'catalog.atHome': 'on the shelf',
   'catalog.lentOut': 'lent out',
   'catalog.borrowed': 'borrowed',
 
   'desk.away': 'Away from the shelf',
+  'desk.favourites': 'The ones marked',
+  'desk.favouritesNote': 'Books singled out by hand. These carry more weight than anything the catalog works out on its own.',
+  'desk.showFavourites': 'See them all in the catalog',
   'desk.awayNote':
     'Books that are not where they should be. Recorded by hand, one entry at a time, since nothing else can know.',
   'desk.lentGroup': 'Lent out ({n})',

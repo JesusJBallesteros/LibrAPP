@@ -63,7 +63,14 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           <span className="card-hole" aria-hidden="true" />
           {mark && <p className="call-number">{mark}</p>}
 
-          <h3>{book.title}</h3>
+          <h3>
+            {book.favourite && (
+              <span className="star" title={t('book.favourite')} aria-label={t('book.favourite')}>
+                {'\u2605'}
+              </span>
+            )}
+            {book.title}
+          </h3>
           <p className="byline">{name || t('book.authorUnknown')}</p>
 
           <dl className="ruled">
@@ -132,15 +139,16 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           </div>
         )}
 
+        {book.notes && (
+          <div className="own-note">
+            <p className="eyebrow">{t('book.notedWhenRead')}</p>
+            <p>{book.notes}</p>
+          </div>
+        )}
+
         {book.abstract && (
           <p className="tiny muted" style={{ marginTop: 14 }}>
             <strong>{t('book.abstract')}</strong> {book.abstract}
-          </p>
-        )}
-
-        {book.notes && (
-          <p className="tiny muted" style={{ marginTop: 14 }}>
-            <strong>{t('book.notedWhenRead')}</strong> {book.notes}
           </p>
         )}
 

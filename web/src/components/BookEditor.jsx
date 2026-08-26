@@ -52,6 +52,7 @@ export const toForm = (book, names) => ({
   pages: book?.pages ?? '',
   location: book?.location || '',
   notes: book?.notes || '',
+  favourite: Boolean(book?.favourite),
   formats: book?.formats?.length ? [...book.formats] : ['physical'],
 })
 
@@ -100,6 +101,7 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
       pages: pages ? Number(pages) : null,
       location: form.location.trim() || null,
       notes: form.notes.trim() || null,
+      favourite: form.favourite,
       formats: form.formats.length ? form.formats : ['physical'],
     }
   }
@@ -121,6 +123,10 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
       if (key === 'authors') {
         const before = current.authors.split(',').map((a) => a.trim()).filter(Boolean)
         if (!same(before, next.authors)) changed.authors = next.authors
+        continue
+      }
+      if (key === 'favourite') {
+        if (current.favourite !== next.favourite) changed.favourite = next.favourite
         continue
       }
       if (key === 'formats') {
@@ -280,8 +286,26 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
             </div>
           </div>
 
-          <Row label={t('editor.notes')}>
-            <textarea style={{ ...field, minHeight: 62, resize: 'vertical' }} value={form.notes} onChange={set('notes')} />
+          {/* A toggle, not a checkbox in a list: it is one mark on one book,
+              and it carries its own state for a screen reader. */}
+          <Row label={t('editor.favourite')}>
+            <button
+              type="button"
+              className={`star-toggle${form.favourite ? ' on' : ''}`}
+              aria-pressed={form.favourite}
+              onClick={() => setForm({ ...form, favourite: !form.favourite })}
+            >
+              <span aria-hidden="true">{form.favourite ? '\u2605' : '\u2606'}</span>
+              {form.favourite ? t('editor.favouriteOn') : t('editor.favouriteOff')}
+            </button>
+          </Row>
+
+          <Row label={t('editor.notes')} hint={t('editor.notesHint')}>
+            <textarea
+              style={{ ...field, minHeight: 110, resize: 'vertical' }}
+              value={form.notes}
+              onChange={set('notes')}
+            />
           </Row>
 
           <Row label={t('book.formats')}>

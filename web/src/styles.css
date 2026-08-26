@@ -1237,6 +1237,44 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
   .owl-bubble { max-width: min(280px, calc(100vw - 90px)); }
 }
 
+/* ----------------------------------------------------------- favourites -- */
+
+/* The mark a reader puts on a book by hand. Accent, so it reads as a decision
+   rather than as another piece of catalog data. */
+.star {
+  color: var(--accent);
+  margin-right: 6px;
+  font-size: .85em;
+  line-height: 1;
+}
+
+.star-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: none;
+  padding: 7px 12px;
+  cursor: pointer;
+  font: 400 13.5px/1 var(--sans);
+  color: var(--ink-soft);
+  transition: border-color .12s, color .12s;
+}
+.star-toggle span { font-size: 15px; line-height: 1; }
+.star-toggle:hover { border-color: var(--accent); color: var(--accent); }
+.star-toggle.on { border-color: var(--accent); color: var(--accent); }
+
+/* The reader's own words, set apart from anything a model wrote. A left rule
+   rather than a panel, matching the notices. */
+.own-note {
+  margin: 18px 0 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--accent);
+}
+.own-note .eyebrow { margin: 0 0 4px; }
+.own-note p + p { margin: 0; font: 400 15px/1.5 var(--serif); color: var(--ink); }
+
 /* --------------------------------------------------------------- states -- */
 
 .loading { padding: 60px; text-align: center; color: var(--ink-faint); }

@@ -109,11 +109,17 @@ export function onLoan(books, kind = 'lent') {
  * nothing. A tag filter arrives from the desk rather than from the toolbar and
  * is reported on its own.
  */
-export const hiddenActiveFilters = ({ format = 'all', source = 'all', loan = 'all' } = {}) =>
+export const hiddenActiveFilters = ({
+  format = 'all',
+  source = 'all',
+  loan = 'all',
+  favourite = 'all',
+} = {}) =>
   [
     ['format', format !== 'all'],
     ['source', source !== 'all'],
     ['loan', loan !== 'all'],
+    ['favourite', favourite !== 'all'],
   ]
     .filter(([, on]) => on)
     .map(([name]) => name)

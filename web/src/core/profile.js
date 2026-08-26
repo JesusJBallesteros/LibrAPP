@@ -24,7 +24,9 @@ function mostCommon(values, limit) {
 
 const describe = (book, names) => {
   const who = (book.authors || []).map((a) => names.get(a) || a).join(', ')
-  return `${book.title}  ·  ${who || book.author_label || '—'}`
+  // Naming the gap rather than printing a dash: this document is read by a
+  // model, and a bare dash tells it nothing about why the author is missing.
+  return `${book.title}  ·  ${who || book.author_label || 'author not recorded'}`
 }
 
 const tagValues = (books, kind) =>
@@ -104,6 +106,26 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now() } = {
     .slice(0, 15)
   for (const [age, book] of stale) {
     out.push(`- ${describe(book, names)} — bought ${Math.round(age)} years ago`)
+  }
+
+  // What the reader marked and what the reader wrote. Both outrank anything
+  // inferred from the shape of the collection, so both are labelled plainly
+  // enough that a model treats them as the reader's own opinion rather than as
+  // catalog data. Only books that carry them appear: the profile is sent with
+  // every request, and empty fields would be paid for on each one.
+  const favourites = books.filter((b) => b.favourite)
+  if (favourites.length) {
+    out.push('')
+    out.push('## Marked as favourites by the reader', '')
+    for (const book of favourites) out.push(`- ${describe(book, names)}`)
+  }
+
+  const noted = books.filter((b) => b.notes)
+  if (noted.length) {
+    out.push('')
+    out.push("## The reader's own notes on particular books", '')
+    out.push('These are the reader\'s words, not a description of the book.', '')
+    for (const book of noted) out.push(`- ${describe(book, names)}: ${book.notes}`)
   }
 
   // A recommendation should not suggest a book that is at a friend's house, and

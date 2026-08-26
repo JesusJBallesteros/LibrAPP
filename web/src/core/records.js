@@ -44,6 +44,9 @@ export const RECORD_FIELDS = {
   listed_volumes: null,
   flags: [],
   notes: null,
+  // Marked by the reader, never by a source. An unmarked book is not a
+  // favourite rather than unknown, which is why this is false and not null.
+  favourite: false,
   // Where a book is, when it is not on its shelf. A book lent out is still
   // owned; a book borrowed is not owned at all, and the catalog says so rather
   // than quietly counting it as part of the collection.
