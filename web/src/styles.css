@@ -440,6 +440,46 @@ button, input, select, textarea { font: inherit; color: inherit; }
    no background. The rules between rows do the separating. */
 .results { display: grid; grid-template-columns: 1fr; gap: 0; }
 
+/* Where one run of the sort ends and the next begins. A hairline with its
+   letter sitting on it, so a long list can be scanned and jumped through
+   without reading any of it. */
+.band {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 2px;
+  font: 400 11px/1 var(--mono);
+  letter-spacing: .12em;
+  color: var(--ink-faint);
+}
+.band::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--rule);
+}
+.band span { flex: 0 0 auto; }
+.results > div > .band:first-child { margin-top: 0; }
+
+/* On the wall it stands upright between the spines, aligned to the same foot
+   so it reads as part of the shelf rather than as a label floating over it. */
+.band-spine {
+  flex-direction: column;
+  justify-content: flex-end;
+  align-self: flex-end;
+  margin: 0;
+  gap: 6px;
+  height: 150px;
+  width: 16px;
+}
+.band-spine::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 1px;
+  height: 34px;
+  border-top: 0;
+  border-left: 1px solid var(--rule-strong);
+}
+
 .group-head {
   position: static;
   background: none;

@@ -124,6 +124,51 @@ export const hiddenActiveFilters = ({
     .filter(([, on]) => on)
     .map(([name]) => name)
 
+/**
+ * The band a book falls into under the current sort, or null.
+ *
+ * A letter for the two alphabetical sorts, a year for the two by date. The
+ * point is the same either way: a reader scanning a long list can see where one
+ * run ends and the next begins, and jump to roughly the right place.
+ *
+ * Reads the folded sort keys the catalog already computed, so the band matches
+ * the order exactly rather than being worked out again from the display text.
+ * That matters most for authors, where the row shows a given name and the list
+ * is ordered by surname.
+ */
+export function sortBand(book, sort) {
+  if (sort === 'acquired' || sort === 'oldest') {
+    return book?.acquired_on ? String(book.acquired_on).slice(0, 4) : null
+  }
+  const key = sort === 'author' ? book?._author : book?._title
+  const first = String(key || '').trim().charAt(0)
+  if (!first) return null
+  const upper = first.toUpperCase()
+  // Digits and punctuation share one band rather than each starting their own.
+  return /[A-Z]/.test(upper) ? upper : '#'
+}
+
+/**
+ * The same books, with a band marker before each run.
+ *
+ * Returns a flat list so the view can render it in one pass. A marker carries
+ * no book and a book carries no marker, which keeps the two apart in the
+ * markup as well.
+ */
+export function withBands(books, sort) {
+  const out = []
+  let last = null
+  for (const book of books) {
+    const band = sortBand(book, sort)
+    if (band !== null && band !== last) {
+      out.push({ band })
+      last = band
+    }
+    out.push({ book })
+  }
+  return out
+}
+
 /* -------------------------------------------------------------- spines -- */
 
 /**

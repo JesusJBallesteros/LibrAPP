@@ -134,6 +134,11 @@ What a question arrives with, beyond the counts and genres v1 sent:
 - **A favourites filter**, and a disclosure holding the less-used filters. When
   a hidden filter is narrowing the list, the page names it rather than letting
   it work unseen.
+- **Band markers** through the list and the spine wall, showing where one run of
+  the sort ends and the next begins: a letter for the two alphabetical sorts, a
+  year for the two by date. The band is taken from the key the list was sorted
+  by rather than from the visible text, which matters most under an author
+  sort, where the row shows a given name and the order follows the surname.
 - **The desk goes by its own name** in the sidebar, rather than "The desk".
 - Every screen redesigned. Self-hosted fonts, so the app still makes no
   third-party request; the licences are listed in About.

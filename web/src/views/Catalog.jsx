@@ -11,10 +11,12 @@ import {
   lentOut,
   readState,
   sortName,
+  sortBand,
   spineHeight,
   spineTint,
   spineWidth,
   uniqueSorted,
+  withBands,
 } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 
@@ -384,6 +386,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           onPick={setSelected}
           onToggle={toggleFavourite}
           busy={lib?.busy}
+          sort={sort}
           t={t}
         />
       ) : (
@@ -396,41 +399,54 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                   <span className="faint">· {books.length}</span>
                 </div>
               )}
-              {books.map((book) => (
+              {/* Bands only where the list is one run. Grouping already cuts it
+                  into named sections, and two kinds of divider in one list
+                  would say the same thing twice. */}
+              {(key ? books.map((book) => ({ book })) : withBands(books, sort)).map((item) =>
+                item.band ? (
+                  <p className="band" key={`band-${item.band}`}>
+                    <span>{item.band}</span>
+                  </p>
+                ) : (
                 <div
-                  key={book.id}
+                  key={item.book.id}
                   className="book-row"
-                  aria-selected={selected?.id === book.id}
+                  aria-selected={selected?.id === item.book.id}
                 >
-                  <Star book={book} onToggle={toggleFavourite} t={t} busy={lib?.busy} />
-                  <button className="row-open" onClick={() => setSelected(book)}>
+                  <Star book={item.book} onToggle={toggleFavourite} t={t} busy={lib?.busy} />
+                  <button className="row-open" onClick={() => setSelected(item.book)}>
                   <span>
                     <span className="title">
-                      {book.series_index && group === 'series' ? `${book.series_index}. ` : ''}
-                      {book.title}
+                      {item.book.series_index && group === 'series'
+                        ? `${item.book.series_index}. `
+                        : ''}
+                      {item.book.title}
                     </span>
                     <br />
-                    <span className="byline">{book._byline || t('book.authorUnknown')}</span>
+                    <span className="byline">{item.book._byline || t('book.authorUnknown')}</span>
                   </span>
                   <span className="meta">
                     <span className="formats">
-                      {(book.formats || []).map((f) => t(`format.${f}`)).join(' · ')}
+                      {(item.book.formats || []).map((f) => t(`format.${f}`)).join(' · ')}
                     </span>
-                    <span className={`state ${readState(book)}`}>
-                      {t(`read.${readState(book)}`)}
+                    <span className={`state ${readState(item.book)}`}>
+                      {t(`read.${readState(item.book)}`)}
                     </span>
                     <span className="away">
-                      {lentOut(book)
+                      {lentOut(item.book)
                         ? t('catalog.lentOut')
-                        : borrowed(book)
+                        : borrowed(item.book)
                           ? t('catalog.borrowed')
                           : ''}
                     </span>
-                    <span className="year">{book.acquired_on ? book.acquired_on.slice(0, 4) : ''}</span>
+                    <span className="year">
+                      {item.book.acquired_on ? item.book.acquired_on.slice(0, 4) : ''}
+                    </span>
                   </span>
                   </button>
                 </div>
-              ))}
+                ),
+              )}
             </div>
           ))}
         </div>
@@ -534,14 +550,22 @@ function Star({ book, onToggle, t, busy }) {
  * height that looked like a page count and was not would be the app inventing
  * data about the books.
  */
-function SpineWall({ books, authors, selected, onPick, onToggle, busy, t }) {
+function SpineWall({ books, authors, selected, onPick, onToggle, busy, sort, t }) {
   return (
     <div className="spine-view">
       {/* A group rather than a list: role="listitem" on a button replaces the
           button role, and a spine that is no longer announced as clickable is
           a worse trade than losing the list semantics. */}
       <div className="spine-wall" role="group" aria-label={t('catalog.spineWall')}>
-        {books.map((book) => {
+        {withBands(books, sort).map((item) => {
+          if (item.band) {
+            return (
+              <p className="band band-spine" key={`band-${item.band}`}>
+                <span>{item.band}</span>
+              </p>
+            )
+          }
+          const book = item.book
           const name = byline(book, authors)
           return (
             <div
