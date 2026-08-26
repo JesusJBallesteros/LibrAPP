@@ -162,6 +162,7 @@
 
 /* Every view opens the same way: eyebrow, large serif title, hairline, intro. */
 .view-head { margin-bottom: 26px; }
+.view .view-head h2,
 .view-head h2 {
   font: 400 42px/1.05 var(--serif);
   margin: 6px 0 0;
@@ -315,6 +316,158 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .check { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
 .check input { accent-color: var(--accent); }
+
+/* -------------------------------------------------------------- catalog -- */
+
+.catalog-meta {
+  margin: 0;
+  font: 400 12px/1.5 var(--mono);
+  letter-spacing: .02em;
+  color: var(--ink-faint);
+}
+
+.toolbar {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 26px;
+  margin: 0 0 18px;
+  padding: 0 0 16px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+}
+.toolbar-more { margin-top: -6px; }
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 260px;
+  min-width: 200px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ink-faint);
+  position: static;
+}
+.search .glyph { font-size: 17px; color: var(--ink-faint); }
+.search input {
+  flex: 1;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: 400 14.5px/1.4 var(--sans);
+  color: var(--ink);
+}
+.search input:focus { outline: none; }
+.search:focus-within { border-bottom-color: var(--accent); }
+.search .clear { border: 0; background: none; cursor: pointer; color: var(--ink-faint); }
+
+.field { display: grid; gap: 4px; font: 400 10.5px/1.4 var(--sans); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-faint); }
+.field select {
+  border: 0;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  background: none;
+  padding: 4px 2px;
+  font: 400 13.5px/1.3 var(--sans);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.more-filters { align-self: flex-end; padding-bottom: 5px; }
+.filter-count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--paper);
+  font: 400 10.5px/1.6 var(--mono);
+  text-decoration: none;
+}
+.view-mode { margin-left: auto; align-self: flex-end; }
+
+.hidden-filters {
+  margin: -8px 0 16px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+/* The rows sit directly on the page, so the list itself carries no gap and
+   no background. The rules between rows do the separating. */
+.results { display: grid; grid-template-columns: 1fr; gap: 0; }
+
+.group-head {
+  position: static;
+  background: none;
+  padding: 26px 0 8px;
+  border-bottom: 1px solid var(--rule);
+  font: 400 13px/1.3 var(--sans);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.group-head .faint { font-family: var(--mono); font-size: 11.5px; letter-spacing: normal; }
+
+.book-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 20px;
+  align-items: baseline;
+  width: 100%;
+  text-align: left;
+  padding: 13px 10px 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule-soft);
+  border-radius: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink);
+  transition: background .12s;
+}
+.book-row:hover { background: var(--accent-soft); }
+.book-row[aria-selected='true'] { background: var(--accent-soft); }
+.book-row .title { font: 400 18px/1.35 var(--serif); }
+.book-row .byline { font-size: 13px; color: var(--ink-soft); }
+
+.book-row .meta {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  white-space: nowrap;
+}
+.book-row .formats {
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.book-row .state {
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.book-row .state.read { color: var(--good); }
+.book-row .state.unread { color: var(--warn); }
+.book-row .state.unknown { color: var(--ink-faint); }
+.book-row .away {
+  font-size: 11.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+/* A fixed column so the years line up down the page rather than drifting with
+   whatever sits to their left. */
+.book-row .year {
+  width: 34px;
+  text-align: right;
+  font: 400 12px/1.4 var(--mono);
+  color: var(--ink-faint);
+}
 
 /* ---------------------------------------------------------------- shell -- */
 
@@ -543,89 +696,6 @@ pre.snippet {
 .drop strong { display: block; font-weight: 500; }
 .drop span { color: var(--ink-soft); font-size: 13px; }
 
-/* -------------------------------------------------------------- catalog -- */
-
-.toolbar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 12px 14px;
-  background: var(--paper-raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  margin-bottom: 14px;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  box-shadow: var(--shadow);
-}
-.search { flex: 1 1 220px; min-width: 180px; position: relative; }
-.search input {
-  width: 100%;
-  padding: 8px 30px 8px 32px;
-  border-radius: 8px;
-  border: 1px solid var(--rule-strong);
-  background: var(--paper);
-}
-.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
-.search .glyph { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); }
-.search .clear { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: none; cursor: pointer; color: var(--ink-faint); }
-
-.field { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-soft); }
-.field select {
-  border: 1px solid var(--rule-strong);
-  background: var(--paper);
-  border-radius: 7px;
-  padding: 6px 8px;
-}
-
-.segmented { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 8px; overflow: hidden; }
-.segmented button {
-  border: 0;
-  background: var(--paper);
-  padding: 6px 11px;
-  cursor: pointer;
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-.segmented button + button { border-left: 1px solid var(--rule); }
-.segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
-
-.results { display: grid; grid-template-columns: 1fr; gap: 0; }
-.group-head {
-  position: sticky;
-  top: 62px;
-  background: var(--paper);
-  padding: 14px 4px 6px;
-  font: 500 13px/1 var(--sans);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  border-bottom: 1px solid var(--rule);
-  z-index: 2;
-}
-
-.book-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px 16px;
-  align-items: baseline;
-  padding: 9px 10px;
-  border-bottom: 1px solid var(--rule);
-  cursor: pointer;
-  border-radius: 6px;
-  text-align: left;
-  background: none;
-  border-left: 0; border-right: 0; border-top: 0;
-  width: 100%;
-}
-.book-row:hover { background: var(--paper-raised); }
-.book-row[aria-selected='true'] { background: var(--accent-soft); }
-.book-row .title { font: 500 15.5px/1.35 var(--serif); }
-.book-row .byline { font-size: 13px; color: var(--ink-soft); }
-.book-row .meta { display: flex; gap: 6px; align-items: center; justify-content: flex-end; flex-wrap: wrap; }
-
 .empty { padding: 50px 10px; text-align: center; color: var(--ink-faint); }
 
 /* --------------------------------------------------------------- detail -- */
@@ -752,6 +822,23 @@ textarea.compose:focus { outline: 2px solid var(--accent); outline-offset: -1px;
   .detail { width: 100%; padding: 18px 16px 40px; }
   .tiles { grid-template-columns: 1fr; }
   .sidebar-foot dl { grid-template-columns: 1fr auto; }
+}
+
+/* The row is two columns because the metadata is short. On a phone it is not
+   short enough: the metadata refuses to wrap, so it takes the width it wants
+   and leaves the title a column of single words. Below this the row stacks and
+   the metadata reads as a second line under the title. */
+@media (max-width: 560px) {
+  .book-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .book-row .meta {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+  .book-row .year { width: auto; text-align: left; }
 }
 
 @media (max-width: 420px) {

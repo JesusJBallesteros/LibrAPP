@@ -5,6 +5,7 @@ import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
 import {
   authorNames,
   borrowed,
+  hiddenActiveFilters,
   byline,
   fold,
   lentOut,
@@ -37,6 +38,10 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // Set when the desk sends a word here. Matched against tag keys, which are
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
+  const [showMore, setShowMore] = useState(false)
+  // Spines arrive in the next task. The toggle carries its state now so the
+  // control is not wired up twice.
+  const [mode, setMode] = useState('list')
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)
@@ -79,6 +84,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     })
     return out.sort(SORTS[sort])
   }, [prepared, q, read, format, source, loan, tag, sort])
+
+  // Format, Source and Where sit behind the disclosure, so the page has to say
+  // when one of them is narrowing the list.
+  const LABEL = { format: 'catalog.format', source: 'catalog.source', loan: 'catalog.whereIs' }
+  const hiddenNames = hiddenActiveFilters({ format, source, loan }).map((name) => t(LABEL[name]))
+  const hiddenActive = hiddenNames.length
 
   const groups = useMemo(() => {
     if (group === 'title') return [{ key: null, books: shown }]
@@ -142,10 +153,18 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
 
   return (
     <div className="view">
-      <header className="spread">
-        <div>
-          <h2>{t('nav.catalog')}</h2>
-          <p className="tiny muted">
+      <header className="view-head">
+        <div className="spread">
+          <div>
+            <p className="eyebrow">{t('catalog.eyebrow')}</p>
+            <h2>{t('nav.catalog')}</h2>
+          </div>
+          <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
+            {t('catalog.typeIn')}
+          </button>
+        </div>
+        <hr className="rule" />
+        <p className="catalog-meta">
             {shown.length === prepared.length
               ? t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
                   total: prepared.length,
@@ -161,11 +180,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             {catalog.counts?.removed
               ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
               : ''}
-          </p>
-        </div>
-        <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
-          {t('catalog.typeIn')}
-        </button>
+        </p>
       </header>
 
       <div className="toolbar">
@@ -204,50 +219,6 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           </select>
         </label>
 
-        {formats.length > 1 && (
-          <label className="field">
-            {t('catalog.format')}
-            <select value={format} onChange={(e) => setFormat(e.target.value)}>
-              <option value="all">{t('catalog.any')}</option>
-              {formats.map((f) => (
-                <option key={f} value={f}>
-                  {t(`format.${f}`)}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {sources.length > 1 && (
-          <label className="field">
-            {t('catalog.source')}
-            <select value={source} onChange={(e) => setSource(e.target.value)}>
-              <option value="all">{t('catalog.any')}</option>
-              {sources.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-
-        {tag && (
-          <button className="btn small" onClick={() => setTag(null)}>
-            {t('catalog.taggedWith', { tag: tag.label })} ×
-          </button>
-        )}
-
-        <label className="field">
-          {t('catalog.whereIs')}
-          <select value={loan} onChange={(e) => setLoan(e.target.value)}>
-            <option value="all">{t('catalog.any')}</option>
-            <option value="home">{t('catalog.atHome')}</option>
-            <option value="lent">{t('catalog.lentOut')}</option>
-            <option value="borrowed">{t('catalog.borrowed')}</option>
-          </select>
-        </label>
-
         <label className="field">
           {t('catalog.sort')}
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -257,7 +228,85 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             <option value="oldest">{t('catalog.sort.oldest')}</option>
           </select>
         </label>
+
+        <button className="btn link more-filters" onClick={() => setShowMore((open) => !open)}>
+          {showMore ? t('catalog.fewerFilters') : t('catalog.moreFilters')}
+          {!showMore && hiddenActive > 0 && (
+            <span className="filter-count">{hiddenActive}</span>
+          )}
+        </button>
+
+        <div className="segmented view-mode" role="group" aria-label={t('catalog.viewMode')}>
+          {['list', 'spines'].map((each) => (
+            <button key={each} aria-pressed={mode === each} onClick={() => setMode(each)}>
+              {t(`catalog.mode.${each}`)}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {showMore && (
+        <div className="toolbar toolbar-more">
+          {formats.length > 1 && (
+            <label className="field">
+              {t('catalog.format')}
+              <select value={format} onChange={(e) => setFormat(e.target.value)}>
+                <option value="all">{t('catalog.any')}</option>
+                {formats.map((f) => (
+                  <option key={f} value={f}>
+                    {t(`format.${f}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {sources.length > 1 && (
+            <label className="field">
+              {t('catalog.source')}
+              <select value={source} onChange={(e) => setSource(e.target.value)}>
+                <option value="all">{t('catalog.any')}</option>
+                {sources.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          <label className="field">
+            {t('catalog.whereIs')}
+            <select value={loan} onChange={(e) => setLoan(e.target.value)}>
+              <option value="all">{t('catalog.any')}</option>
+              <option value="home">{t('catalog.atHome')}</option>
+              <option value="lent">{t('catalog.lentOut')}</option>
+              <option value="borrowed">{t('catalog.borrowed')}</option>
+            </select>
+          </label>
+        </div>
+      )}
+
+      {/* A filter that is on while its control is hidden would narrow the
+          catalog with nothing on screen to explain it. Naming each one is the
+          only version of this that cannot mislead. */}
+      {!showMore && hiddenActive > 0 && (
+        <p className="hidden-filters">
+          {t('catalog.hiddenFiltersOn', { filters: hiddenNames.join(', ') })}{' '}
+          <button className="btn link" onClick={() => setShowMore(true)}>
+            {t('catalog.showThem')}
+          </button>
+        </p>
+      )}
+
+      {tag && (
+        <p className="hidden-filters">
+          {t('catalog.taggedWith', { tag: tag.label })}{' '}
+          <button className="btn link" onClick={() => setTag(null)}>
+            {t('catalog.clearTag')}
+          </button>
+        </p>
+      )}
 
       {shown.length === 0 ? (
         <div className="empty">
@@ -302,15 +351,20 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                     <span className="byline">{book._byline}</span>
                   </span>
                   <span className="meta">
-                    {(book.formats || []).map((f) => (
-                      <span className="pill" key={f}>
-                        {t(`format.${f}`)}
-                      </span>
-                    ))}
-                    <span className={`pill ${readState(book)}`}>{t(`read.${readState(book)}`)}</span>
-                    {lentOut(book) && <span className="pill flag">{t('catalog.lentOut')}</span>}
-                    {borrowed(book) && <span className="pill unread">{t('catalog.borrowed')}</span>}
-                    {book.acquired_on && <span className="faint tiny">{book.acquired_on.slice(0, 4)}</span>}
+                    <span className="formats">
+                      {(book.formats || []).map((f) => t(`format.${f}`)).join(' · ')}
+                    </span>
+                    <span className={`state ${readState(book)}`}>
+                      {t(`read.${readState(book)}`)}
+                    </span>
+                    <span className="away">
+                      {lentOut(book)
+                        ? t('catalog.lentOut')
+                        : borrowed(book)
+                          ? t('catalog.borrowed')
+                          : ''}
+                    </span>
+                    <span className="year">{book.acquired_on ? book.acquired_on.slice(0, 4) : ''}</span>
                   </span>
                 </button>
               ))}

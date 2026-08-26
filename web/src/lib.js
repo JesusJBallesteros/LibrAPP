@@ -96,6 +96,22 @@ export function onLoan(books, kind = 'lent') {
     .sort((a, b) => (b.age ?? -1) - (a.age ?? -1))
 }
 
+/**
+ * Which of the filters behind the catalog disclosure are narrowing the list.
+ *
+ * Group, Read and Sort stay on screen and explain themselves. Sort narrows
+ * nothing. A tag filter arrives from the desk rather than from the toolbar and
+ * is reported on its own.
+ */
+export const hiddenActiveFilters = ({ format = 'all', source = 'all', loan = 'all' } = {}) =>
+  [
+    ['format', format !== 'all'],
+    ['source', source !== 'all'],
+    ['loan', loan !== 'all'],
+  ]
+    .filter(([, on]) => on)
+    .map(([name]) => name)
+
 export const uniqueSorted = (values) => [...new Set(values.filter(Boolean))].sort()
 
 export async function copyText(text) {

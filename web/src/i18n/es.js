@@ -660,4 +660,14 @@ export default {
   'theme.light': 'D\u00eda',
   'theme.dark': 'Noche',
   'theme.following': 'Pulsa otra vez para seguir al sistema',
+
+  'catalog.eyebrow': 'Lista de la estanter\u00eda',
+  'catalog.moreFilters': 'm\u00e1s filtros',
+  'catalog.fewerFilters': 'menos filtros',
+  'catalog.hiddenFiltersOn': 'Tambi\u00e9n filtrando por {filters}, que est\u00e1 oculto.',
+  'catalog.showThem': 'Mostrar esos filtros',
+  'catalog.clearTag': 'Quitar',
+  'catalog.viewMode': 'C\u00f3mo mostrar los libros',
+  'catalog.mode.list': 'Lista',
+  'catalog.mode.spines': 'Lomos',
 }

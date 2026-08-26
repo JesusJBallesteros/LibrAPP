@@ -652,4 +652,14 @@ export default {
   'theme.light': 'Day',
   'theme.dark': 'Night',
   'theme.following': 'Press again to follow the system',
+
+  'catalog.eyebrow': 'Shelf list',
+  'catalog.moreFilters': 'more filters',
+  'catalog.fewerFilters': 'fewer filters',
+  'catalog.hiddenFiltersOn': 'Also filtering by {filters}, which is hidden.',
+  'catalog.showThem': 'Show those filters',
+  'catalog.clearTag': 'Clear',
+  'catalog.viewMode': 'How to show the books',
+  'catalog.mode.list': 'List',
+  'catalog.mode.spines': 'Spines',
 }
