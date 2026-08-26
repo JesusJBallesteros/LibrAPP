@@ -12,11 +12,11 @@ import { LANGUAGES, useT } from '../i18n/index.jsx'
  */
 
 const OPTIONS = [
-  { id: 'storage', glyph: '🗄', view: 'storage' },
-  { id: 'photo', glyph: '📷', view: 'shelf' },
-  { id: 'list', glyph: '📋', view: 'list' },
-  { id: 'import', glyph: '📥', view: 'storage', focus: 'import' },
-  { id: 'browse', glyph: '📖', view: 'catalog', needsCatalog: true },
+  { id: 'storage', view: 'storage' },
+  { id: 'photo', view: 'shelf' },
+  { id: 'list', view: 'list' },
+  { id: 'import', view: 'storage', focus: 'import' },
+  { id: 'browse', view: 'catalog', needsCatalog: true },
 ]
 
 export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) {
@@ -42,6 +42,9 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
             </label>
           </div>
 
+          <span className="brand-rule" aria-hidden="true" />
+          <p className="eyebrow">{t('app.strapline')}</p>
+
           <p className="landing-tagline">{t('landing.tagline')}</p>
           <p className="landing-intro">{t('landing.intro')}</p>
         </header>
@@ -53,24 +56,24 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
         )}
 
         <div className="landing-facts">
-          <section className="card">
-            <h3>{t('landing.privacy.title')}</h3>
+          <section>
+            <h3 className="section-head">{t('landing.privacy.title')}</h3>
             <p className="tiny muted">{t('landing.privacy.body')}</p>
           </section>
 
-          <section className="card">
-            <h3>{t('landing.needs.title')}</h3>
+          <section>
+            <h3 className="section-head">{t('landing.needs.title')}</h3>
             <ul className="landing-needs">
               <li>
-                <span className="glyph" aria-hidden="true">🗄</span>
+                <span className="tick" aria-hidden="true" />
                 <span className="tiny muted">{t('landing.needs.storage')}</span>
               </li>
               <li>
-                <span className="glyph" aria-hidden="true">📚</span>
+                <span className="tick" aria-hidden="true" />
                 <span className="tiny muted">{t('landing.needs.source')}</span>
               </li>
               <li>
-                <span className="glyph" aria-hidden="true">✨</span>
+                <span className="tick" aria-hidden="true" />
                 <span className="tiny muted">{t('landing.needs.ai')}</span>
               </li>
             </ul>
@@ -91,9 +94,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
                   onClick={() => onGo(option.view, option.focus)}
                   disabled={unavailable}
                 >
-                  <span className="glyph" aria-hidden="true">
-                    {option.glyph}
-                  </span>
                   <span className="landing-option-text">
                     <strong>{t(`landing.option.${option.id}`)}</strong>
                     <span className="tiny faint">

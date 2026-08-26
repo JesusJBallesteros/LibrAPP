@@ -492,7 +492,7 @@ export default {
 
   'about.who': 'Quién la escribió',
   'about.whoBody':
-    'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías. Se te está pidiendo que fotografíes tus libros y, si quieres las funciones con IA, que pegues una clave en esta página; parece justo decir claramente de quién es este trabajo y dónde comprobarlo.',
+    'LibrAPP la escribe Jesús J. Ballesteros, y nació como una forma de catalogar sus propias estanterías.',
   'about.cv': 'Su web y su CV',
   'about.github': 'Su GitHub',
   'about.repo': 'Este proyecto en GitHub',
@@ -547,7 +547,7 @@ export default {
 
   'about.ai': 'La IA, y cómo se construyó esto',
   'about.aiBody':
-    'LibrAPP la ha escrito una persona trabajando con un asistente de IA, a lo largo de varias sesiones. La mayor parte del código lo tecleó el modelo. Todas las decisiones sobre qué construir fueron de la persona. Parece mejor decir qué es cada cosa que dejarlo a la imaginación:',
+    'LibrAPP la ha escrito una persona trabajando con un asistente de IA, a lo largo de varias sesiones. La mayor parte del código lo tecleó el modelo. Todas las decisiones sobre qué construir fueron de la persona.',
   'about.ai.author': 'Jesús J. Ballesteros',
   'about.ai.author.did':
     'concibió la app y decidió cada paso: qué construir a continuación, cuál de los caminos propuestos tomar, qué dejar fuera y cuándo parar. Puso todo aquello con lo que se probó: sus propias estanterías, sus propios extractos, sus propios dispositivos. Revisó los resultados y los corrigió.',
