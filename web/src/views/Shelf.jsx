@@ -534,7 +534,7 @@ export default function Shelf({ lib }) {
             <h3>{t('shelf.stepBring', { n: proposed ? 4 : 3 })}</h3>
             <p className="muted tiny">{t('shelf.bringNote')}</p>
             <DropZone
-              glyph="📄"
+              mark="page"
               title={t('shelf.dropTranscription')}
               hint={t('shelf.dropTranscriptionHint')}
               disabled={lib.busy}

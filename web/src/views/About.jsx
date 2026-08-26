@@ -81,17 +81,17 @@ export default function About({ onBack, focus, inShell = false }) {
               </button>
             )}
           </div>
-          <p className="landing-tagline">{t('about.title')}</p>
+          <p className="landing-tagline about-tagline">{t('about.title')}</p>
         </header>
 
-        <section className="card" id="about-what">
-          <h3>{t('about.what')}</h3>
+        <section className="about-section" id="about-what">
+          <h3 className="section-head">{t('about.what')}</h3>
           <p className="muted tiny">{t('about.whatBody')}</p>
           <p className="muted tiny">{t('about.whatBody2')}</p>
         </section>
 
-        <section className="card" id="about-who">
-          <h3>{t('about.who')}</h3>
+        <section className="about-section" id="about-who">
+          <h3 className="section-head">{t('about.who')}</h3>
           <p className="muted tiny">{t('about.whoBody')}</p>
           <div className="row" style={{ marginTop: 10 }}>
             <Out href={CV}>{t('about.cv')}</Out>
@@ -103,8 +103,8 @@ export default function About({ onBack, focus, inShell = false }) {
           </p>
         </section>
 
-        <section className="card" id="about-ai">
-          <h3>{t('about.ai')}</h3>
+        <section className="about-section" id="about-ai">
+          <h3 className="section-head">{t('about.ai')}</h3>
           <p className="muted tiny">{t('about.aiBody')}</p>
           <ul className="landing-needs" style={{ marginTop: 10 }}>
             {['author', 'assistant', 'testers'].map((id) => (
@@ -122,8 +122,8 @@ export default function About({ onBack, focus, inShell = false }) {
           <p className="tiny faint" style={{ marginTop: 10 }}>{t('about.aiNotYourBooks')}</p>
         </section>
 
-        <section className="card" id="about-privacy">
-          <h3>{t('about.privacy')}</h3>
+        <section className="about-section" id="about-privacy">
+          <h3 className="section-head">{t('about.privacy')}</h3>
           <p className="muted tiny">{t('about.privacyBody')}</p>
           <ul className="landing-needs" style={{ marginTop: 10 }}>
             {['account', 'device', 'key', 'cookies', 'offline'].map((id) => (
@@ -140,8 +140,8 @@ export default function About({ onBack, focus, inShell = false }) {
           </p>
         </section>
 
-        <section className="card" id="about-licence">
-          <h3>{t('about.licence')}</h3>
+        <section className="about-section" id="about-licence">
+          <h3 className="section-head">{t('about.licence')}</h3>
           <p className="muted tiny">{t('about.licenceBody')}</p>
           <p className="tiny" style={{ marginTop: 8 }}>
             <Out href={LICENCE}>{t('about.licenceName')}</Out>
@@ -167,8 +167,8 @@ export default function About({ onBack, focus, inShell = false }) {
           </ul>
         </section>
 
-        <section className="card" id="about-contact">
-          <h3>{t('about.contact')}</h3>
+        <section className="about-section" id="about-contact">
+          <h3 className="section-head">{t('about.contact')}</h3>
           <p className="muted tiny">{t('about.contactBody')}</p>
           <div className="row" style={{ marginTop: 10 }}>
             <Out href={ISSUES}>{t('about.reportProblem')}</Out>

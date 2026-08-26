@@ -209,6 +209,8 @@ export default {
   // -- library --------------------------------------------------------------
   'storage.intro':
     'Where your catalog lives, what it was built from, and how to move it to another device.',
+  'storage.eyebrow': 'The stacks',
+  'storage.kindUnknown': 'not recorded',
   'storage.where': 'Storage',
   'storage.kind.folder': 'a folder you chose — plain files you can open, back up or commit',
   'storage.kind.browser': 'browser storage — private to LibrAPP, and only leaves by export',

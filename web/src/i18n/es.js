@@ -207,6 +207,8 @@ export default {
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':
     'Dónde vive tu catálogo, con qué se construyó y cómo llevarlo a otro dispositivo.',
+  'storage.eyebrow': 'Los depósitos',
+  'storage.kindUnknown': 'sin registrar',
   'storage.where': 'Almacenamiento',
   'storage.kind.folder':
     'una carpeta que elegiste — archivos normales que puedes abrir, copiar o versionar',
