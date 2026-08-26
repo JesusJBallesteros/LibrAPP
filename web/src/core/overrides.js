@@ -36,6 +36,14 @@ export const EDITABLE = [
   'formats',
   'pages',
   'favourite',
+  // Recalled by a model rather than read from a source, whether that happened
+  // while reading a photograph or later at the desk. They belong here for the
+  // same reason as the rest: a value somebody can see is a value somebody must
+  // be able to correct, and until now a wrong rating could not be fixed at all.
+  'abstract',
+  'published_year',
+  'rating',
+  'original_language',
   // Not corrections to a source, but facts only the owner knows. They live here
   // because this is the layer that survives a rebuild, and because a source
   // file records what was ingested and is never written back to.

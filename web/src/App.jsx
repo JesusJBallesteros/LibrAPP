@@ -225,7 +225,7 @@ export default function App() {
         ) : view === 'list' ? (
           <ListImport lib={lib} onOwl={setOwlEvent} />
         ) : view === 'desk' ? (
-          <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} />
+          <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
         ) : view === 'about' ? (
           <About focus={focus} inShell />
         ) : (

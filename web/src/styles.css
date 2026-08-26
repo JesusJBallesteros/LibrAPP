@@ -1237,6 +1237,15 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
   .owl-bubble { max-width: min(280px, calc(100vw - 90px)); }
 }
 
+/* The gap-filling request: a checklist, then whatever came back, before any of
+   it is written. */
+.fill-picker .check { justify-content: flex-start; gap: 9px; }
+.fill-picker .check .tabular { margin-left: auto; }
+
+.fill-review { border-top: 1px solid var(--rule); margin-top: 18px; }
+.fill-review .forgotten-item { display: block; }
+.fill-review .why { overflow-wrap: anywhere; }
+
 /* ----------------------------------------------------------- favourites -- */
 
 /* The mark a reader puts on a book by hand. Accent, so it reads as a decision

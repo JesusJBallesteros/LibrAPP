@@ -17,6 +17,16 @@ import {
 import { providerById } from '../ai/providers.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
+import fillPrompt from '../../../prompts/fill-gaps.md?raw'
+import { setOverride } from '../core/overrides.js'
+import {
+  FILLABLE,
+  WHY as FILL_WHY,
+  booksNeeding,
+  buildRequest,
+  gapsByField,
+  parseReply,
+} from '../ai/gaps.js'
 import { useT } from '../i18n/index.jsx'
 
 // The prompt text itself is not translated: it is the instruction sent to a
@@ -25,9 +35,22 @@ import { useT } from '../i18n/index.jsx'
 const ASKS = [
   { id: 'synopsis', text: synopsisPrompt },
   { id: 'recommend', text: recommendPrompt },
+  // Not a question in prose but a list of books with holes in them, so it
+  // assembles its own request and reads the answer back rather than printing
+  // it. The reply is written only after somebody has seen it.
+  { id: 'fill', text: fillPrompt, structured: true },
 ]
 
-export default function Desk({ catalog, onGo, onOwl }) {
+// The checklist labels are keyed by extra id, and the gaps are keyed by field.
+const EXTRA_ID = {
+  abstract: 'abstract',
+  published_year: 'published',
+  rating: 'rating',
+  original_language: 'original',
+  pages: 'pages',
+}
+
+export default function Desk({ catalog, onGo, onOwl, lib }) {
   const { t, language } = useT()
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
@@ -41,6 +64,10 @@ export default function Desk({ catalog, onGo, onOwl }) {
   const [asking, setAsking] = useState(false)
   const [spent, setSpent] = useState(null)
   const [askError, setAskError] = useState(null)
+  // The gap-filling request carries its own state: which fields to ask about,
+  // and what came back, held until it is accepted or discarded.
+  const [fields, setFields] = useState(['published_year', 'pages'])
+  const [proposed, setProposed] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
@@ -57,7 +84,18 @@ export default function Desk({ catalog, onGo, onOwl }) {
   )
 
   const chosen = ASKS.find((a) => a.id === ask)
+
+  const gaps = useMemo(() => gapsByField(catalog?.books || []), [catalog])
+  const toFill = useMemo(
+    () => booksNeeding(catalog?.books || [], fields),
+    [catalog, fields],
+  )
+  const fillRequest = useMemo(
+    () => (toFill.length ? buildRequest(toFill, fields, authors, fillPrompt) : ''),
+    [toFill, fields, authors],
+  )
   const assembled = useMemo(() => {
+    if (chosen.structured) return fillRequest
     if (!context) return ''
     return [
       chosen.text.trim(),
@@ -66,7 +104,7 @@ export default function Desk({ catalog, onGo, onOwl }) {
       '\n---\n',
       question.trim() ? `## The question\n\n${question.trim()}` : '## The question\n\n(fill this in)',
     ].join('\n')
-  }, [context, chosen, question])
+  }, [context, chosen, question, fillRequest])
 
   const askClaude = async () => {
     setAskError(null)
@@ -77,11 +115,16 @@ export default function Desk({ catalog, onGo, onOwl }) {
     try {
       // The same block the copy button produces, so both routes ask the same
       // question of the same model.
+      let whole = ''
       const { usage } = await askModel({
         request: assembled,
-        onText: (chunk) => setAnswer((prior) => prior + chunk),
+        onText: (chunk) => {
+          whole += chunk
+          setAnswer((prior) => prior + chunk)
+        },
       })
       setSpent(actualCost(usage, pricesForChoice(keyStatus)))
+      if (chosen.structured) setProposed(parseReply(whole, { books: toFill, fields }))
     } catch (err) {
       setAskError(err.message)
     } finally {
@@ -89,6 +132,28 @@ export default function Desk({ catalog, onGo, onOwl }) {
       onOwl?.(null)
     }
   }
+
+  /**
+   * Write what was accepted, one correction per book.
+   *
+   * Through the override layer rather than into a source: these values were
+   * recalled, not read, and the layer is what makes each one show under
+   * Corrections and come back out again singly. The reason travels with the
+   * correction, so undoing it takes the provenance with it.
+   */
+  const acceptProposed = () =>
+    lib.run(async (library) => {
+      let overrides = await library.readOverrides()
+      const byId = new Map((catalog.books || []).map((b) => [b.id, b]))
+      for (const row of proposed.proposals) {
+        const book = byId.get(row.id)
+        if (book) overrides = setOverride(overrides, book, row.set, FILL_WHY)
+      }
+      await library.writeOverrides(overrides)
+      await library.rebuild()
+      setProposed(null)
+      setAnswer('')
+    })
 
   const flash = async (key, text) => {
     if (await copyText(text)) {
@@ -295,13 +360,44 @@ export default function Desk({ catalog, onGo, onOwl }) {
             </div>
             <p className="tiny muted">{t(`desk.${chosen.id}.blurb`)}</p>
 
-            <textarea
-              className="compose"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder={t(`desk.${chosen.id}.placeholder`)}
-              style={{ marginTop: 10 }}
-            />
+            {chosen.structured ? (
+              <div className="fill-picker">
+                <p className="eyebrow" style={{ marginTop: 14 }}>{t('desk.fill.which')}</p>
+                {FILLABLE.map((field) => (
+                  <label key={field} className="check">
+                    <input
+                      type="checkbox"
+                      checked={fields.includes(field)}
+                      onChange={() =>
+                        setFields((on) =>
+                          on.includes(field) ? on.filter((f) => f !== field) : [...on, field],
+                        )
+                      }
+                    />
+                    <span className="tiny">{t(`shelf.extra.${EXTRA_ID[field]}`)}</span>
+                    <span className="tiny faint tabular">
+                      {t('desk.fill.missing', { n: gaps[field] ?? 0 })}
+                    </span>
+                  </label>
+                ))}
+
+                {/* The cost scales with the number of books, so the number is
+                    stated before anything is sent rather than after. */}
+                <p className="tiny faint" style={{ marginTop: 12 }}>
+                  {fields.length === 0
+                    ? t('desk.fill.pickOne')
+                    : t('desk.fill.covers', { n: toFill.length })}
+                </p>
+              </div>
+            ) : (
+              <textarea
+                className="compose"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder={t(`desk.${chosen.id}.placeholder`)}
+                style={{ marginTop: 10 }}
+              />
+            )}
 
             <div className="row" style={{ marginTop: 10 }}>
               {keyStatus?.usable && (
@@ -320,6 +416,24 @@ export default function Desk({ catalog, onGo, onOwl }) {
               >
                 {copied === 'all' ? t('common.copied') : t('desk.copyRequest')}
               </button>
+              {chosen.structured && (
+                <button
+                  className="btn"
+                  disabled={!toFill.length}
+                  onClick={() => {
+                    const text = window.prompt(t('desk.fill.pastePrompt'))
+                    if (!text) return
+                    try {
+                      setAskError(null)
+                      setProposed(parseReply(text, { books: toFill, fields }))
+                    } catch (err) {
+                      setAskError(err.message)
+                    }
+                  }}
+                >
+                  {t('desk.fill.paste')}
+                </button>
+              )}
               <button className="btn" disabled={!context} onClick={() => flash('ctx', context)}>
                 {copied === 'ctx' ? t('common.copied') : t('desk.copyProfile')}
               </button>
@@ -357,6 +471,40 @@ export default function Desk({ catalog, onGo, onOwl }) {
                     {copied === 'answer' ? t('common.copied') : t('desk.copyAnswer')}
                   </button>
                 )}
+              </div>
+            )}
+
+            {proposed && (
+              <div className="fill-review">
+                <p className="eyebrow" style={{ marginTop: 18 }}>{t('desk.fill.review')}</p>
+                <p className="tiny faint" style={{ margin: '4px 0 10px' }}>
+                  {t('desk.fill.reviewNote', {
+                    n: proposed.proposals.length,
+                    ignored: proposed.ignored,
+                  })}
+                </p>
+                {proposed.proposals.map((row) => (
+                  <div className="forgotten-item" key={row.id}>
+                    <span className="title">{row.title}</span>
+                    <div className="why">
+                      {Object.entries(row.set)
+                        .map(([field, value]) => `${field}: ${String(value).slice(0, 90)}`)
+                        .join(' · ')}
+                    </div>
+                  </div>
+                ))}
+                <div className="row" style={{ marginTop: 14 }}>
+                  <button
+                    className="btn primary"
+                    disabled={!proposed.proposals.length || lib?.busy}
+                    onClick={acceptProposed}
+                  >
+                    {t('desk.fill.accept', { n: proposed.proposals.length })}
+                  </button>
+                  <button className="btn" disabled={lib?.busy} onClick={() => setProposed(null)}>
+                    {t('desk.fill.discard')}
+                  </button>
+                </div>
               </div>
             )}
 

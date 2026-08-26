@@ -45,6 +45,9 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
     [t('book.sources'), (book.sources || []).join(', ')],
   ].filter(([, value]) => value !== null && value !== undefined && value !== '')
 
+  // A correction carrying a reason did not come from the reader typing it, so
+  // the notice must not call it a correction by hand.
+  const byHand = !book.overridden?.why
   const mark = callNumber(book, authors)
   const name = byline(book, authors)
 
@@ -110,8 +113,8 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             <p className="tiny">
               <strong>
                 {book.overridden.at
-                  ? t('book.correctedOn', { date: book.overridden.at })
-                  : t('book.corrected')}
+                  ? t(byHand ? 'book.correctedOn' : 'book.changedOn', { date: book.overridden.at })
+                  : t(byHand ? 'book.corrected' : 'book.changed')}
               </strong>{' '}
               {t('book.correctedFields', { fields: book.overridden.fields.join(', ') })}
               {book.overridden.why ? ` ${book.overridden.why}` : ''}
