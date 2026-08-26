@@ -8,7 +8,7 @@ import { BUILT, buildLabel, reloadFresh } from '../version.js'
 
 const mb = (bytes) => `${(bytes / 1e6).toFixed(1)} MB`
 
-export default function Storage({ lib, focus }) {
+export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
   const { t, language } = useT()
   const [estimate, setEstimate] = useState(null)
   const [note, setNote] = useState(null)
@@ -360,6 +360,24 @@ export default function Storage({ lib, focus }) {
           {t('version.safe')}
         </p>
       </section>
+
+      {owlGone && (
+        <section className="desk-section">
+          <h3 className="section-head">{t('librarian.name')}</h3>
+          <p className="muted tiny">{t('storage.owlHidden')}</p>
+          <div className="row" style={{ marginTop: 14 }}>
+            <button
+              className="btn"
+              onClick={() => {
+                onRestoreOwl?.()
+                setNote(t('storage.owlBack'))
+              }}
+            >
+              {t('storage.owlRestore')}
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* Export moved up beside the location it would be leaving, so this is
           the way in rather than a pair of opposite doors in one box. */}

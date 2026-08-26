@@ -52,6 +52,15 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
 
   useEffect(() => {
     if (focus?.tag) setTag({ key: focus.tag, label: focus.label ?? focus.tag })
+    // The desk sends a word; the librarian sends a filter. Both arrive the same
+    // way, and a filter behind the disclosure opens it, so nothing narrows the
+    // list with its control out of sight.
+    if (focus?.read) setRead(focus.read)
+    if (focus?.sort) setSort(focus.sort)
+    if (focus?.loan) {
+      setLoan(focus.loan)
+      setShowMore(true)
+    }
   }, [focus])
 
   const prepared = useMemo(() => {

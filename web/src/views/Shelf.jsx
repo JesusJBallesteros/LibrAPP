@@ -31,7 +31,7 @@ import { useT } from '../i18n/index.jsx'
 // for as long as the page stays open, which is indistinguishable from a button
 // that does nothing at all.
 const READ_TIMEOUT_MS = 4 * 60 * 1000
-export default function Shelf({ lib }) {
+export default function Shelf({ lib, onOwl }) {
   const { t } = useT()
   const [photo, setPhoto] = useState(null)
   const [tiles, setTiles] = useState(null)
@@ -126,6 +126,7 @@ export default function Shelf({ lib }) {
   const readWithKey = async () => {
     setReadError(null)
     setReading(true)
+    onOwl?.({ kind: 'reading', tiles: kept.length })
     const controller = new AbortController()
     inFlight.current = controller
     const timer = setTimeout(
@@ -150,6 +151,7 @@ export default function Shelf({ lib }) {
       clearTimeout(timer)
       inFlight.current = null
       setReading(false)
+      onOwl?.(null)
     }
   }
 

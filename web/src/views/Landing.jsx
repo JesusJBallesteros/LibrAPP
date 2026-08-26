@@ -1,3 +1,4 @@
+import ThemeToggle from '../components/ThemeToggle.jsx'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
 
 /**
@@ -30,16 +31,24 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
             <h1 className="landing-brand">
               Libr<em>APP</em>
             </h1>
-            <label className="field landing-lang">
-              <span className="tiny">{t('landing.language')}</span>
-              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                {LANGUAGES.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {l.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+            {/* Language and theme are the two choices that apply before
+                anything has been set up, so both belong on the front door. */}
+            <div className="landing-prefs">
+              <label className="field landing-lang">
+                <span className="tiny">{t('landing.language')}</span>
+                <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                  {LANGUAGES.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="field landing-theme">
+                <span className="tiny">{t('theme.label')}</span>
+                <ThemeToggle />
+              </label>
+            </div>
           </div>
 
           <span className="brand-rule" aria-hidden="true" />

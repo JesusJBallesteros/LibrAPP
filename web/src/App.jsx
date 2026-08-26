@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react'
 import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
+import Librarian from './components/Librarian.jsx'
+import { dismiss as dismissLibrarian, isDismissed, restore as restoreLibrarian } from './store/librarian.js'
 import Landing from './views/Landing.jsx'
 import About from './views/About.jsx'
 import Catalog from './views/Catalog.jsx'
@@ -14,10 +16,9 @@ import ThemeToggle from './components/ThemeToggle.jsx'
 
 const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
 
-// The sidebar calls the desk by a shorter name than its own title carries.
 const NAV_KEY = {
   catalog: 'catalog', shelf: 'shelf', list: 'list',
-  desk: 'deskShort', storage: 'library', about: 'about',
+  desk: 'desk', storage: 'library', about: 'about',
 }
 
 export default function App() {
@@ -25,6 +26,12 @@ export default function App() {
   const lib = useLibrary()
   const [view, setView] = useState('home')
   const [focus, setFocus] = useState(null)
+  // The owl is drawn in one place and put away from another, so the preference
+  // is held here rather than inside either of them. The same goes for what it
+  // is currently reporting: the views that start the work say so, and clear it
+  // when the work finishes rather than on a timer.
+  const [owlGone, setOwlGone] = useState(isDismissed)
+  const [owlEvent, setOwlEvent] = useState(null)
   // Where About was opened from, so leaving it returns to that view rather
   // than to the front page.
   const [before, setBefore] = useState('home')
@@ -108,12 +115,26 @@ export default function App() {
 
   if (view === 'home' || lib.status !== 'ready') {
     return (
-      <Landing
-        onGo={go}
-        hasCatalog={Boolean(counts?.books)}
-        bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
-        browserUsable={capabilities.usable}
-      />
+      <>
+        <Landing
+          onGo={go}
+          hasCatalog={Boolean(counts?.books)}
+          bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
+          browserUsable={capabilities.usable}
+        />
+        <Librarian
+          view="home"
+          counts={counts}
+          books={lib.catalog?.books || []}
+          hasCatalog={Boolean(counts?.books)}
+          onGo={go}
+          gone={owlGone}
+          onDismiss={() => {
+            dismissLibrarian()
+            setOwlGone(true)
+          }}
+        />
+      </>
     )
   }
 
@@ -200,15 +221,41 @@ export default function App() {
         {view === 'catalog' ? (
           <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
         ) : view === 'shelf' ? (
-          <Shelf lib={lib} />
+          <Shelf lib={lib} onOwl={setOwlEvent} />
         ) : view === 'list' ? (
-          <ListImport lib={lib} />
+          <ListImport lib={lib} onOwl={setOwlEvent} />
         ) : view === 'desk' ? (
-          <Desk catalog={lib.catalog} onGo={go} />
+          <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} />
         ) : view === 'about' ? (
           <About focus={focus} inShell />
         ) : (
-          <Storage lib={lib} focus={focus} />
+          <Storage
+            lib={lib}
+            focus={focus}
+            owlGone={owlGone}
+            onRestoreOwl={() => {
+              restoreLibrarian()
+              setOwlGone(false)
+            }}
+          />
+        )}
+
+        {/* Not on About: that is the page where the app explains itself, and a
+            character talking over the explanation reads badly. */}
+        {view !== 'about' && (
+          <Librarian
+            view={view}
+            counts={counts}
+            books={lib.catalog?.books || []}
+            hasCatalog={Boolean(counts?.books)}
+            event={owlEvent}
+            onGo={go}
+            gone={owlGone}
+            onDismiss={() => {
+              dismissLibrarian()
+              setOwlGone(true)
+            }}
+          />
         )}
       </main>
     </div>

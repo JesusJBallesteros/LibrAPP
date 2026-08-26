@@ -39,6 +39,35 @@ export default {
     'A este navegador le falta algo que LibrAPP necesita. Abre la pestaña Biblioteca cuando entres para ver los detalles.',
 
   // -- shell --------------------------------------------------------------
+  // -- la BibliotecAPPri@ ---------------------------------------------------
+  'librarian.name': 'La BibliotecAPPri@',
+  'librarian.open': 'Lo que dice la BibliotecAPPri@',
+  'librarian.close': 'Guardar la BibliotecAPPri@',
+  'librarian.dismiss': 'No otra vez',
+  'librarian.dismissWhy': 'Ocultar la BibliotecAPPri@ en todas las páginas a partir de ahora',
+
+  'librarian.empty': 'Todavía no hay nada en las estanterías. Una foto de una de ellas es la forma más rápida de empezar.',
+  'librarian.welcome': 'Bienvenido de nuevo. Hay {n} {n:libro|libros} catalogado{n:|s} y esperando.',
+  'librarian.unread': '{n} {n:libro|libros} de aquí {n:sigue|siguen} sin abrir.',
+  'librarian.allRead': 'Todos los libros de aquí constan como leídos. No es algo que se vea a menudo.',
+  'librarian.unrecorded': 'De {n} {n:libro|libros} de aquí no consta si {n:está|están} leído{n:|s}.',
+  'librarian.lentLong': '{n} {n:libro|libros} {n:lleva|llevan} más de un año con otra persona.',
+  'librarian.borrowedLong': '{n} {n:libro|libros} de aquí {n:es|son} de otra persona, y lo {n:es|son} desde hace más de un año.',
+  'librarian.desk': 'Pregunta sobre tus propias estanterías. {n:El|Los} {n} {n:libro|libros} de aquí {n:está|están} en el catálogo.',
+  'librarian.shelf': 'Fotografía la estantería de frente y a tamaño completo, y se podrá leer cada lomo visible.',
+  'librarian.list': 'Una hoja de cálculo va bien. Se fusiona con lo que ya hay, sin duplicados.',
+  'librarian.storage': 'El catálogo está donde lo pusiste. Vale la pena guardar una copia en otro sitio.',
+
+  'librarian.reading': '{n} {n:recorte|recortes}, lomos de arriba abajo. Esto lleva un momento.',
+  'librarian.asking': 'Revisando las estanterías.',
+  'librarian.imported': '{n:Ha|Han} llegado {n} {n:libro|libros}, y {known} ya {known:estaba|estaban} aquí. Una entrada para cada uno.',
+
+  'librarian.action.startPhoto': 'Empezar con una foto',
+  'librarian.action.showOldest': 'Ver los más antiguos',
+  'librarian.action.showLent': 'Ver lo que está fuera',
+  'librarian.action.showBorrowed': 'Ver lo que hay que devolver',
+  'librarian.action.showUnrecorded': 'Verlos',
+
   'app.strapline': 'tu estantería, catalogada',
   'nav.home': 'Inicio',
   'nav.catalog': 'Catálogo',
@@ -207,6 +236,9 @@ export default {
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':
     'Dónde vive tu catálogo, con qué se construyó y cómo llevarlo a otro dispositivo.',
+  'storage.owlHidden': 'La BibliotecAPPri@ está oculta en todas las páginas. Al recuperarla vuelve a aparecer el distintivo en la esquina.',
+  'storage.owlRestore': 'Recuperarla',
+  'storage.owlBack': 'La BibliotecAPPri@ ha vuelto.',
   'storage.eyebrow': 'Los depósitos',
   'storage.kindUnknown': 'sin registrar',
   'storage.where': 'Almacenamiento',
@@ -662,8 +694,6 @@ export default {
   'editor.noAuthorRecorded':
     'Sin autor anotado. D\u00e9jalo en blanco si la obra es an\u00f3nima o corporativa, o escribe uno.',
 
-  'nav.deskShort': 'El escritorio',
-  'nav.deskShort.hint': 'Pregunta sobre tus propias estanter\u00edas',
   'nav.about': 'Acerca de',
   'nav.about.hint': 'Qu\u00e9 es esto, qui\u00e9n lo hizo y en qu\u00e9 t\u00e9rminos',
   'sidebar.holdings': 'El fondo',

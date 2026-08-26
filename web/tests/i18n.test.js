@@ -71,3 +71,46 @@ describe('translate', () => {
     expect(translate('en', 'catalog.countSome', { shown: 3 })).toContain('{total}')
   })
 })
+
+// Counting sentences have to read correctly at one. The dictionary carries a
+// {name:one|many} form for that, and it is worth checking in both languages,
+// since a mistyped form silently leaves the markup in the sentence.
+describe('choosing a form by count', () => {
+  it('picks the singular at one and the plural elsewhere', () => {
+    expect(translate('en', 'librarian.unread', { n: 1 })).toBe('1 book here is still unopened.')
+    expect(translate('en', 'librarian.unread', { n: 4 })).toBe('4 books here are still unopened.')
+  })
+
+  it('treats zero as plural, the way both languages do', () => {
+    expect(translate('en', 'librarian.unread', { n: 0 })).toBe('0 books here are still unopened.')
+  })
+
+  it('picks each count separately in a sentence carrying two', () => {
+    expect(translate('en', 'librarian.imported', { n: 1, known: 3 })).toBe(
+      '1 book arrived, and 3 were already here. One entry each.',
+    )
+    expect(translate('en', 'librarian.imported', { n: 3, known: 1 })).toBe(
+      '3 books arrived, and 1 was already here. One entry each.',
+    )
+  })
+
+  it('leaves no unfilled form in any counting string, in either language', () => {
+    const counted = [
+      'librarian.unread', 'librarian.unrecorded', 'librarian.lentLong',
+      'librarian.borrowedLong', 'librarian.imported', 'librarian.reading',
+      'librarian.welcome', 'librarian.desk',
+    ]
+    for (const code of ['en', 'es']) {
+      for (const key of counted) {
+        for (const n of [0, 1, 2]) {
+          const line = translate(code, key, { n, known: n })
+          expect(line, `${code} ${key} at ${n}`).not.toMatch(/[{}]/)
+        }
+      }
+    }
+  })
+
+  it('leaves the form alone when the count was not supplied', () => {
+    expect(translate('en', 'librarian.unread', { other: 1 })).toContain('{n:book|books}')
+  })
+})

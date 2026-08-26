@@ -47,13 +47,21 @@ export function detectLanguage() {
  * A missing translation falls back to English rather than showing a blank or a
  * key, so a half-translated language is merely mixed, never broken. `{name}`
  * placeholders are filled from `vars`.
+ *
+ * `{name:one|many}` picks a form by count, so a sentence counting books reads
+ * correctly at one of them. Both languages here use the same rule: one is
+ * singular and everything else, zero included, is plural.
  */
 export function translate(language, key, vars) {
   const value = DICTIONARIES[language]?.[key] ?? DICTIONARIES.en[key] ?? key
   if (!vars) return value
-  return String(value).replace(/\{(\w+)\}/g, (whole, name) =>
-    Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole,
-  )
+  return String(value)
+    .replace(/\{(\w+):([^|{}]*)\|([^{}]*)\}/g, (whole, name, one, many) =>
+      Object.prototype.hasOwnProperty.call(vars, name) ? (Number(vars[name]) === 1 ? one : many) : whole,
+    )
+    .replace(/\{(\w+)\}/g, (whole, name) =>
+      Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole,
+    )
 }
 
 const LanguageContext = createContext({ language: 'en', setLanguage: () => {}, t: (k) => k })

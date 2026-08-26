@@ -40,6 +40,35 @@ export default {
     'This browser is missing something LibrAPP needs. Open the Library tab once you are in for the details.',
 
   // -- shell --------------------------------------------------------------
+  // -- the LibrAPPrian ------------------------------------------------------
+  'librarian.name': 'The LibrAPPrian',
+  'librarian.open': 'What the LibrAPPrian has to say',
+  'librarian.close': 'Put the LibrAPPrian away',
+  'librarian.dismiss': 'Not again',
+  'librarian.dismissWhy': 'Hide the LibrAPPrian on every page from now on',
+
+  'librarian.empty': 'Nothing on the shelves yet. A photograph of one is the quickest way to start.',
+  'librarian.welcome': 'Welcome back. {n} {n:book|books} {n:is|are} catalogued and waiting.',
+  'librarian.unread': '{n} {n:book|books} here {n:is|are} still unopened.',
+  'librarian.allRead': 'Every book here is marked read. That is not a common sight.',
+  'librarian.unrecorded': '{n} {n:book|books} here {n:has|have} no read state recorded.',
+  'librarian.lentLong': '{n} {n:book|books} {n:has|have} been with someone else for more than a year.',
+  'librarian.borrowedLong': '{n} {n:book|books} here {n:belongs|belong} to somebody else, and {n:has|have} for more than a year.',
+  'librarian.desk': 'Ask about your own shelves. All {n} {n:book|books} here {n:is|are} in the catalog.',
+  'librarian.shelf': 'Photograph the shelf straight on and at full size, and every visible spine can be read.',
+  'librarian.list': 'A spreadsheet does nicely. It merges with what is already here, without duplicates.',
+  'librarian.storage': 'The catalog lives where it was put. An export kept somewhere else is worth having.',
+
+  'librarian.reading': '{n} {n:tile|tiles}, spines top to bottom. This takes a moment.',
+  'librarian.asking': 'Looking through the shelves.',
+  'librarian.imported': '{n} {n:book|books} arrived, and {known} {known:was|were} already here. One entry each.',
+
+  'librarian.action.startPhoto': 'Start with a photograph',
+  'librarian.action.showOldest': 'Show the oldest of them',
+  'librarian.action.showLent': 'Show what is out',
+  'librarian.action.showBorrowed': 'Show what is owed back',
+  'librarian.action.showUnrecorded': 'Show them',
+
   'app.strapline': 'your shelf, catalogued',
   'nav.home': 'Start',
   'nav.catalog': 'Catalog',
@@ -209,6 +238,9 @@ export default {
   // -- library --------------------------------------------------------------
   'storage.intro':
     'Where your catalog lives, what it was built from, and how to move it to another device.',
+  'storage.owlHidden': 'The LibrAPPrian is hidden on every page. Bringing it back shows the badge in the corner again.',
+  'storage.owlRestore': 'Bring it back',
+  'storage.owlBack': 'The LibrAPPrian is back.',
   'storage.eyebrow': 'The stacks',
   'storage.kindUnknown': 'not recorded',
   'storage.where': 'Storage',
@@ -654,8 +686,6 @@ export default {
   'editor.noAuthorRecorded':
     'No author recorded. Leave this blank for an anonymous or corporate work, or type one in.',
 
-  'nav.deskShort': 'The desk',
-  'nav.deskShort.hint': 'Ask about your own shelves',
   'nav.about': 'About',
   'nav.about.hint': 'What this is, who made it, and the terms',
   'sidebar.holdings': 'The holdings',

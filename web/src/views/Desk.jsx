@@ -27,7 +27,7 @@ const ASKS = [
   { id: 'recommend', text: recommendPrompt },
 ]
 
-export default function Desk({ catalog, onGo }) {
+export default function Desk({ catalog, onGo, onOwl }) {
   const { t, language } = useT()
   const [ask, setAsk] = useState('synopsis')
   const [question, setQuestion] = useState('')
@@ -69,6 +69,7 @@ export default function Desk({ catalog, onGo }) {
     setAnswer('')
     setSpent(null)
     setAsking(true)
+    onOwl?.({ kind: 'asking' })
     try {
       // The same block the copy button produces, so both routes ask the same
       // question of the same model.
@@ -81,6 +82,7 @@ export default function Desk({ catalog, onGo }) {
       setAskError(err.message)
     } finally {
       setAsking(false)
+      onOwl?.(null)
     }
   }
 
