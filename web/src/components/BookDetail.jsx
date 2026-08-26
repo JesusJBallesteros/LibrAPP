@@ -31,6 +31,10 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
         (book.borrowed_on ? `${book.borrowed_from} (${book.borrowed_on})` : book.borrowed_from),
     ],
     [t('book.publisher'), book.publisher],
+    // Labelled as a typical edition, because that is what it is. Nothing on a
+    // shelf states a page count, so a bare "Pages" would read as a measurement
+    // of the copy in the room.
+    [t('book.pages'), book.pages],
     [t('book.published'), book.published_year],
     [t('book.rating'), book.rating],
     [t('book.originalLanguage'), book.original_language],
@@ -108,7 +112,16 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             <p className="tiny" style={{ marginTop: 6 }}>
               {t('book.before')}{' '}
               {book.overridden.fields
-                .map((f) => `${f} = ${JSON.stringify(book.overridden.was[f])}`)
+                // A field no source ever carried is absent rather than null, and
+                // JSON.stringify turns that into the word "undefined". Naming the
+                // gap is what the rest of the app does everywhere else.
+                .map((f) => {
+                  const before = book.overridden.was[f]
+                  const shown = before === undefined || before === null
+                    ? t('book.wasUnset')
+                    : JSON.stringify(before)
+                  return `${f} = ${shown}`
+                })
                 .join(' · ')}
             </p>
             {onRevert && (

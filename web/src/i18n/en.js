@@ -160,6 +160,7 @@ export default {
   'book.corrected': 'Corrected by hand.',
   'book.correctedOn': 'Corrected by hand on {date}.',
   'book.correctedFields': '{fields} - overriding what the sources say.',
+  'book.wasUnset': 'not recorded',
   'book.before': 'Before:',
   'book.undoCorrection': 'Undo this correction',
 
@@ -459,6 +460,8 @@ export default {
   'editor.needTitle': 'A title is the one thing a book cannot go in without.',
   'editor.badDate': 'Write the date as YYYY-MM-DD, or leave it blank.',
   'editor.badVolume': 'The volume number must be a whole number.',
+  'editor.badPages': 'The page count must be a whole number.',
+  'editor.pagesHint': 'A typical edition, not a count of this copy',
   'editor.nothingChanged': 'Nothing changed, so there is nothing to correct.',
 
   // -- the genre pie --------------------------------------------------------
@@ -656,6 +659,7 @@ export default {
   // -- extras a model can be asked for --------------------------------------
   'book.abstract': 'Abstract:',
   'book.published': 'First published',
+  'book.pages': 'Pages, typical edition',
   'book.rating': 'Rating',
   'book.originalLanguage': 'Originally in',
   'flag.recalled_details':
@@ -677,6 +681,7 @@ export default {
   'shelf.extra.published': 'Year first published',
   'shelf.extra.rating': 'A general reader rating',
   'shelf.extra.original': 'Original language and whether this is a translation',
+  'shelf.extra.pages': 'The page count of a typical edition',
   'shelf.noCover':
     'Cover images are not offered. A model can only return a link, and fetching one would tell whoever hosts the image which books you own.',
   'shelf.recalledCount': '{n} book(s) carry a recalled detail',
@@ -706,6 +711,6 @@ export default {
   'catalog.mode.spines': 'Spines',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesCaption':
-    'Colour is fixed per book so a spine keeps it. Height comes from the length of the title, not from a page count: no source records one yet.',
+    'Colour is fixed per book so a spine keeps it. Height comes from the page count where one was recorded, and from the length of the title where none was, so a shelf can mix the two.',
   'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

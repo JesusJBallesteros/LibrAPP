@@ -7,7 +7,15 @@
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { byline, callNumber, spineHash, spineHeight, spineTint, spineWidth } from '../src/lib.js'
+import {
+  byline,
+  callNumber,
+  spineHash,
+  spineHeight,
+  spineMeasured,
+  spineTint,
+  spineWidth,
+} from '../src/lib.js'
 
 const authors = new Map([
   ['a1', { id: 'a1', display_name: 'Frank Herbert', sort_name: 'Herbert, Frank' }],
@@ -182,5 +190,62 @@ describe('the lettering on every spine fill', () => {
     const tints = new Set()
     for (let i = 0; i < 400; i++) tints.add(spineTint({ id: `book-${i}` }))
     for (const tint of tints) expect(value(`spine-${tint}-ink`)).toBeTruthy()
+  })
+})
+
+// A page count is the honest input for a spine's height, and a book has one only
+// where somebody ticked the box while reading a photograph. A wall therefore
+// mixes measured spines with ones sized from the title, and the caption says so.
+describe('drawing a spine from a page count', () => {
+  it('uses the count when one was recorded', () => {
+    const thin = spineHeight({ title: 'A', pages: 100 })
+    const thick = spineHeight({ title: 'A', pages: 800 })
+    expect(thin).toBeLessThan(thick)
+  })
+
+  it('lets the count beat the title, rather than averaging the two', () => {
+    // A short title on a long book must draw tall. If the title still had a
+    // say, this would land somewhere in between and mean nothing.
+    const shortTitleLongBook = spineHeight({ title: 'It', pages: 900 })
+    const longTitleNoCount = spineHeight({ title: 'a'.repeat(60) })
+    expect(shortTitleLongBook).toBeGreaterThanOrEqual(longTitleNoCount)
+  })
+
+  it('stays inside the same band as a title-sized spine', () => {
+    for (const pages of [1, 80, 300, 900, 12000]) {
+      const h = spineHeight({ title: 'A Book', pages })
+      expect(h).toBeGreaterThanOrEqual(150)
+      expect(h).toBeLessThanOrEqual(250)
+    }
+  })
+
+  it('falls back to the title for a count that is not a usable number', () => {
+    const fallback = spineHeight({ title: 'The Dispossessed' })
+    for (const pages of [null, undefined, 0, -20, 'many', NaN]) {
+      expect(spineHeight({ title: 'The Dispossessed', pages })).toBe(fallback)
+    }
+  })
+
+  it('reads a count that arrived as a string, since a form field gives one', () => {
+    expect(spineHeight({ title: 'A', pages: '800' })).toBe(spineHeight({ title: 'A', pages: 800 }))
+  })
+
+  it('says which rule drew each spine', () => {
+    expect(spineMeasured({ title: 'A', pages: 320 })).toBe(true)
+    expect(spineMeasured({ title: 'A' })).toBe(false)
+    expect(spineMeasured({ title: 'A', pages: 0 })).toBe(false)
+  })
+
+  it('draws a wall that mixes both rules without either escaping the band', () => {
+    const wall = [
+      { id: '1', title: 'Dune', pages: 412 },
+      { id: '2', title: 'The Left Hand of Darkness' },
+      { id: '3', title: 'It', pages: 1138 },
+    ]
+    for (const book of wall) {
+      expect(spineHeight(book)).toBeGreaterThanOrEqual(150)
+      expect(spineHeight(book)).toBeLessThanOrEqual(250)
+    }
+    expect(wall.map(spineMeasured)).toEqual([true, false, true])
   })
 })

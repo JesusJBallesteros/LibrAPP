@@ -158,6 +158,7 @@ export default {
   'book.corrected': 'Corregido a mano.',
   'book.correctedOn': 'Corregido a mano el {date}.',
   'book.correctedFields': '{fields} — por encima de lo que dicen las fuentes.',
+  'book.wasUnset': 'sin registrar',
   'book.before': 'Antes:',
   'book.undoCorrection': 'Deshacer esta corrección',
 
@@ -462,6 +463,8 @@ export default {
   'editor.needTitle': 'El título es lo único sin lo que un libro no puede entrar.',
   'editor.badDate': 'Escribe la fecha como AAAA-MM-DD, o déjala en blanco.',
   'editor.badVolume': 'El número de volumen tiene que ser un número entero.',
+  'editor.badPages': 'El número de páginas tiene que ser un número entero.',
+  'editor.pagesHint': 'Una edición tipo, no un recuento de este ejemplar',
   'editor.nothingChanged': 'No ha cambiado nada, así que no hay nada que corregir.',
 
   // -- el quesito de géneros ------------------------------------------------
@@ -664,6 +667,7 @@ export default {
   // -- extras que se le pueden pedir al modelo ------------------------------
   'book.abstract': 'Resumen:',
   'book.published': 'Publicado por primera vez',
+  'book.pages': 'Páginas, edición tipo',
   'book.rating': 'Valoraci\u00f3n',
   'book.originalLanguage': 'Idioma original',
   'flag.recalled_details':
@@ -685,6 +689,7 @@ export default {
   'shelf.extra.published': 'A\u00f1o de la primera publicaci\u00f3n',
   'shelf.extra.rating': 'Una valoraci\u00f3n general de lectores',
   'shelf.extra.original': 'Idioma original y si esto es una traducci\u00f3n',
+  'shelf.extra.pages': 'El n\u00famero de p\u00e1ginas de una edici\u00f3n tipo',
   'shelf.noCover':
     'No se ofrecen im\u00e1genes de cubierta. Un modelo solo puede devolver un enlace, y descargarlo dir\u00eda a quien aloje la imagen qu\u00e9 libros tienes.',
   'shelf.recalledCount': '{n} libro(s) traen alg\u00fan dato recordado',
@@ -714,6 +719,6 @@ export default {
   'catalog.mode.spines': 'Lomos',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesCaption':
-    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale de la longitud del t\u00edtulo, no del n\u00famero de p\u00e1ginas: todav\u00eda no hay ninguna fuente que lo registre.',
+    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale del n\u00famero de p\u00e1ginas cuando consta, y de la longitud del t\u00edtulo cuando no, as\u00ed que un estante puede mezclar ambas.',
   'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

@@ -79,3 +79,24 @@ describe('the rest of the form', () => {
     }
   })
 })
+
+// The page count is the second numeric field in the form, and the first one
+// added since the string comparison in changedOnly was written. A number
+// arriving as a string from an input is exactly what that comparison gets
+// wrong, so it is worth pinning.
+describe('the page count in the form', () => {
+  it('comes out of a book as its own value, not a string', () => {
+    expect(toForm({ title: 'Dune', pages: 412 }, names).pages).toBe(412)
+  })
+
+  it('is blank rather than null for a book with none recorded', () => {
+    // A null in a controlled input makes React shout about uncontrolled fields.
+    expect(toForm({ title: 'Dune' }, names).pages).toBe('')
+    expect(toForm({ title: 'Dune', pages: null }, names).pages).toBe('')
+  })
+
+  it('survives a round trip through the form unchanged', () => {
+    const book = { title: 'Dune', pages: 412 }
+    expect(toForm(book, names).pages).toBe(book.pages)
+  })
+})

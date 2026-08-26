@@ -51,6 +51,10 @@ export const RECORD_FIELDS = {
   // checklist asked for them. Every book carrying one is flagged.
   abstract: null,
   published_year: null,
+  // A typical edition's length, not this copy's. Nothing on a spine states a
+  // page count, so whatever fills this was recalled by a model and the book
+  // carries the recalled flag to say so.
+  pages: null,
   rating: null,
   original_language: null,
   lent_to: null,

@@ -145,15 +145,30 @@ export const spineWidth = (book) => ((book?.formats || []).includes('physical') 
 /**
  * How tall to draw the spine, in pixels.
  *
- * A page count would be the honest input and nothing records one: no source
- * carries the field, so the height comes from the length of the title instead.
- * That is decoration, not data, which is why the wall carries a caption saying
- * so. If page counts ever arrive, this is the one place to change.
+ * A page count is the honest input, and a book has one only where somebody
+ * asked for it while reading a photograph. Where there is none the height comes
+ * from the length of the title instead, which is decoration rather than data.
+ * A wall can therefore mix the two, which is why its caption says both rules
+ * apply rather than claiming one.
+ *
+ * Both scales are clamped to the same band, so a long book and a long title
+ * never make a spine that towers over the shelf.
  */
 export function spineHeight(book, { min = 150, max = 250 } = {}) {
+  const pages = Number(book?.pages)
+  if (Number.isFinite(pages) && pages > 0) {
+    const span = Math.min(Math.max(pages, 80), 900)
+    return Math.round(min + ((span - 80) / 820) * (max - min))
+  }
   const length = String(book?.title || '').length
   const span = Math.min(Math.max(length, 4), 60)
   return Math.round(min + ((span - 4) / 56) * (max - min))
+}
+
+/** Whether a spine's height came from a recorded page count or from its title. */
+export const spineMeasured = (book) => {
+  const pages = Number(book?.pages)
+  return Number.isFinite(pages) && pages > 0
 }
 
 /**

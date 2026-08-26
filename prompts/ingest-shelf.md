@@ -40,6 +40,16 @@ uncertainty in `notes`. Do not silently complete it. A wrong title read
 confidently is worse than an honest fragment: the fragment gets fixed, the
 confident error propagates into recommendations.
 
+**Spines run in every direction.** On one shelf the text may run vertically
+upward, vertically downward, horizontally across a short spine, at an angle on
+a book leaning against its neighbour, or upside down relative to the book beside
+it. British and American spines are usually printed to read downward and
+continental European ones upward, so a shelf holding both has titles facing
+opposite ways. Rotate each spine as needed and read it. A title that is not the
+same way up as its neighbours is a title to transcribe, never one to skip. Order
+the books by where they stand, left to right along the shelf, whatever direction
+their lettering runs.
+
 **Non-Latin scripts.** Record them in their own script. If you can also give a
 transliteration or a translation, put it in `notes`. Do not replace the title
 with a translation.

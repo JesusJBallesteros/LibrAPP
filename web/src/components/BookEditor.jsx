@@ -49,6 +49,7 @@ export const toForm = (book, names) => ({
   borrowed_from: book?.borrowed_from || '',
   borrowed_on: book?.borrowed_on || '',
   publisher: book?.publisher || '',
+  pages: book?.pages ?? '',
   location: book?.location || '',
   notes: book?.notes || '',
   formats: book?.formats?.length ? [...book.formats] : ['physical'],
@@ -80,6 +81,8 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
     if (form.lent_to.trim() && form.borrowed_from.trim()) throw new Error(t('editor.bothLoans'))
     const index = String(form.series_index).trim()
     if (index && !/^\d+$/.test(index)) throw new Error(t('editor.badVolume'))
+    const pages = String(form.pages).trim()
+    if (pages && !/^\d+$/.test(pages)) throw new Error(t('editor.badPages'))
 
     return {
       title,
@@ -94,6 +97,7 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
       borrowed_from: form.borrowed_from.trim() || null,
       borrowed_on: form.borrowed_from.trim() ? form.borrowed_on.trim() || null : null,
       publisher: form.publisher.trim() || null,
+      pages: pages ? Number(pages) : null,
       location: form.location.trim() || null,
       notes: form.notes.trim() || null,
       formats: form.formats.length ? form.formats : ['physical'],
@@ -128,9 +132,9 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
         if (before !== next.read) changed.read = next.read
         continue
       }
-      if (key === 'series_index') {
-        const before = current.series_index === '' ? null : Number(current.series_index)
-        if (before !== next.series_index) changed.series_index = next.series_index
+      if (key === 'series_index' || key === 'pages') {
+        const before = current[key] === '' ? null : Number(current[key])
+        if (before !== next[key]) changed[key] = next[key]
         continue
       }
       const before = String(current[key] ?? '').trim() || null
@@ -222,6 +226,10 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
               </Row>
             </div>
           </div>
+
+          <Row label={t('book.pages')} hint={t('editor.pagesHint')}>
+            <input style={field} value={form.pages} inputMode="numeric" onChange={set('pages')} />
+          </Row>
 
           <Row label={t('book.publisher')}>
             <input style={field} value={form.publisher} onChange={set('publisher')} />

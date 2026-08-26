@@ -34,6 +34,7 @@ export const EDITABLE = [
   'publisher',
   'notes',
   'formats',
+  'pages',
   // Not corrections to a source, but facts only the owner knows. They live here
   // because this is the layer that survives a rebuild, and because a source
   // file records what was ingested and is never written back to.
