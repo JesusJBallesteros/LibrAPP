@@ -421,7 +421,7 @@ export default function Shelf({ lib, onOwl }) {
                 )}
 
                 {readError && (
-                  <div className="notice bad" style={{ marginTop: 12 }} ref={failure}>
+                  <div className="notice bad" role="alert" style={{ marginTop: 12 }} ref={failure}>
                     <p className="tiny">
                       <strong>{t('shelf.failed')}</strong> {readError}
                     </p>

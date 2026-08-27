@@ -111,6 +111,7 @@ export default {
   'librarian.action.showBorrowed': 'Show what is owed back',
   'librarian.action.showUnrecorded': 'Show them',
 
+  'a11y.skipToContent': 'Skip to the catalog',
   'app.strapline': 'your shelf, catalogued',
   'nav.home': 'Start',
   'nav.catalog': 'Catalog',
@@ -197,6 +198,7 @@ export default {
   'book.confShort': 'conf. {level}',
   'book.authorUnknown': 'Author not recorded',
   'book.notedWhenRead': 'Your note',
+  'book.panelFor': 'Details for {title}',
   'book.favourite': 'A favourite',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',

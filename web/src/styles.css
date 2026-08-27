@@ -809,11 +809,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .btn.primary:hover:not(:disabled) { filter: brightness(1.08); color: var(--paper); }
 .btn.small { padding: 5px 11px; font-size: 12.5px; }
+/* Off screen until it is focused, which is the only time it is wanted. Not
+   display:none, which would take it out of the tab order and defeat the point
+   of having it. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 13.5px;
+  transition: top .12s;
+}
+.skip-link:focus { top: 8px; }
+/* The content region takes focus when the link is followed and when a panel
+   closes with nowhere to send it. It is not a tab stop of its own. */
+main:focus { outline: none; }
+
+/* A text button is still a target. The padding gives it the height a finger
+   needs without moving the words. */
 .btn.link {
   border: 0;
   background: none;
   color: var(--accent);
-  padding: 2px 4px;
+  padding: 6px 4px;
+  min-height: 24px;
   text-decoration: underline;
   font-size: 12.5px;
 }

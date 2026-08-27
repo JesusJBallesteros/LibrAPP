@@ -1,15 +1,9 @@
-import { useEffect } from 'react'
 import { byline, callNumber, readState } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
+import Overlay from './Overlay.jsx'
 
 export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy }) {
   const { t } = useT()
-
-  useEffect(() => {
-    const onKey = (e) => e.key === 'Escape' && onClose()
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
 
   const state = readState(book)
   const rows = [
@@ -52,8 +46,9 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
   const name = byline(book, authors)
 
   return (
-    <div className="detail-backdrop" onClick={onClose}>
-      <aside className="detail" onClick={(e) => e.stopPropagation()}>
+    // Named by the book it is about, which is what a reader needs to hear
+    // before anything else on the panel.
+    <Overlay onClose={onClose} label={t('book.panelFor', { title: book.title })}>
         <button className="detail-close" onClick={onClose}>
           {t('common.close')} ✕
         </button>
@@ -183,7 +178,6 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
           </>
         )}
 
-      </aside>
-    </div>
+    </Overlay>
   )
 }

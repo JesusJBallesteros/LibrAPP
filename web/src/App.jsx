@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
@@ -43,6 +43,15 @@ export default function App() {
   const capabilities = checkCapabilities()
 
   /** Go to a view, stopping for the storage question only if it is unanswered. */
+  // A single page app changes what it shows without changing what it is
+  // called, so a screen reader announces the same title on every view and a
+  // row of open tabs says nothing that tells them apart. The view leads, since
+  // that is the part that differs.
+  useEffect(() => {
+    const here = view === 'home' ? null : t(`nav.${NAV_KEY[view] || view}`)
+    document.title = here ? `${here} · LibrAPP` : 'LibrAPP'
+  }, [view, t])
+
   const go = useCallback(
     (next, wanted = null) => {
       setFocus(wanted)
@@ -141,6 +150,14 @@ export default function App() {
 
   return (
     <div className="shell">
+      {/* Thirteen tab stops stand between the top of the page and its content,
+          on every view, every time. This is the way past them, and it shows
+          only when focused, because it exists for the people who would
+          otherwise walk through all thirteen. It has to come before the
+          sidebar to be the first thing a Tab reaches. */}
+      <a className="skip-link" href="#content">
+        {t('a11y.skipToContent')}
+      </a>
       <aside className="sidebar">
         <button className="brand brand-button" onClick={() => setView('home')}>
           <h1>
@@ -155,7 +172,7 @@ export default function App() {
             <button
               key={id}
               onClick={() => go(id)}
-              aria-current={view === id}
+              aria-current={view === id ? 'page' : undefined}
               title={t(`nav.${NAV_KEY[id]}.hint`)}
             >
               {t(`nav.${NAV_KEY[id]}`)}
@@ -206,7 +223,7 @@ export default function App() {
         </div>
       </aside>
 
-      <main className="main">
+      <main className="main" id="content" tabIndex={-1}>
         {lib.error && (
           <div className="view" style={{ paddingBottom: 0 }}>
             <div className="notice bad">

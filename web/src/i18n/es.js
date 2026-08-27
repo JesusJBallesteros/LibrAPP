@@ -110,6 +110,7 @@ export default {
   'librarian.action.showBorrowed': 'Ver lo que hay que devolver',
   'librarian.action.showUnrecorded': 'Verlos',
 
+  'a11y.skipToContent': 'Saltar al cat\u00e1logo',
   'app.strapline': 'tu estantería, catalogada',
   'nav.home': 'Inicio',
   'nav.catalog': 'Catálogo',
@@ -196,6 +197,7 @@ export default {
   'book.confShort': 'conf. {level}',
   'book.authorUnknown': 'Autor\u00eda sin registrar',
   'book.notedWhenRead': 'Tu nota',
+  'book.panelFor': 'Ficha de {title}',
   'book.favourite': 'Un favorito',
   'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
