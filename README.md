@@ -194,6 +194,13 @@ Photograph the shelf straight on at your camera's **full resolution**.
      both to any AI assistant. Bring back the JSON it writes.
 4. Check what it read, then import.
 
+A long shelf is read in several requests rather than one, four tiles at a time,
+and the button says which is running. One reply covering forty tiles is longer
+than any model will return in one go, and a reply that runs out of room comes
+back unreadable rather than short. If one of those requests fails, whatever the
+others read is still offered, with the missing tiles named so a partial reading
+is never imported as though it were the whole shelf.
+
 Aim for tiles showing a handful of whole spines with the title readable top to
 bottom. Adding **rows** splits titles in half, so only do that when the photo
 really shows shelves stacked above one another.
@@ -495,8 +502,10 @@ catalog built from a spreadsheet never happens at all.
 2. The panel says how many books the request covers. The cost goes up with that
    number, so it is stated before anything is sent.
 3. Send it, or copy it and paste the answer back if you have no key.
-4. **What came back is shown before anything is written.** Keep it or discard
-   it.
+4. **What came back is shown before anything is written.** Not as text: as a
+   count of how many books are affected and which fields actually came back,
+   over the list of books themselves. A request asking for five fields commonly
+   returns three. Keep it or discard it.
 
 What it will not do:
 
@@ -510,7 +519,9 @@ What it will not do:
 
 Everything it writes goes in as a correction, so each one appears under
 [Corrections](#corrections), carries the reason *recalled by a model at the
-desk, not read from any source*, and can be undone one book at a time.
+desk, not read from any source*, and can be undone one book at a time. Once
+kept, the same counts are shown again, so the panel says what changed rather
+than emptying itself.
 
 ### With and without a key
 
