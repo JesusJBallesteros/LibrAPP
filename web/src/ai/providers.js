@@ -120,6 +120,44 @@ export function toGeminiSchema(node) {
  * filled in only where the rate has been checked. Where it is absent the
  * estimate shows tokens instead of a figure.
  */
+/**
+ * How much room a reply is given, in tokens.
+ *
+ * A shelf read returns one JSON document covering every tile, so its size grows
+ * with the number of tiles and again with every extra ticked: an abstract is
+ * two or three sentences per book. Running out mid-document does not produce a
+ * short answer, it produces an unparseable one, so the ceiling has to sit well
+ * above the largest honest reply.
+ *
+ * Per family, because the ceilings differ and asking for more than a model
+ * allows is refused outright. Claude takes far more than this; the OpenAI
+ * figure is what the smaller models in that family accept.
+ */
+export const REPLY_TOKENS = {
+  anthropic: { shelf: 32000, ask: 8000 },
+  openai: { shelf: 16000, ask: 8000 },
+  google: { shelf: 16000, ask: 8000 },
+}
+
+export const replyTokens = (family, kind) =>
+  REPLY_TOKENS[family]?.[kind] ?? REPLY_TOKENS.openai[kind]
+
+/**
+ * The same message for every route, because the cause and the remedy are the
+ * same wherever it happens. Named rather than inline so the shelf view can
+ * recognise it.
+ */
+export class ReplyTruncated extends Error {
+  constructor() {
+    super(
+      'The reply was cut off before it finished, so none of it could be read. ' +
+        'This happens when one request covers more books than a single answer has room for. ' +
+        'Read fewer tiles at a time, or untick some of the extras, and try again.',
+    )
+    this.name = 'ReplyTruncated'
+  }
+}
+
 export const PROVIDERS = [
   {
     id: 'anthropic',
