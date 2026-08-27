@@ -17,8 +17,17 @@
   --l-card: #f7efe0;
   --l-ink: #26221d;
   --l-ink-soft: #5d564c;
-  --l-ink-faint: #8d857a;
+  /* Solved against the darkest surface it appears on, which is the catalog
+     card. The old #8d857a read at 3.15 there, under the 4.5 that text needs. */
+  --l-ink-faint: #736b60;
+  --l-ink-faint-hi: #564e43;
+  /* The boundary of a control, which is the underline on a select or an input
+     since the redesign gave them no box. That has to clear 3, where a rule
+     drawn between two rows carries no meaning and does not. */
+  --l-control: #90887a;
+  --l-control-hi: #736b5d;
   --l-rule: #e3dbcd;
+  --l-rule-hi: #90887a;
   --l-rule-soft: #ece5d8;
   --l-rule-strong: #d5cab8;
   --l-accent: #7a4a2b;
@@ -34,8 +43,12 @@
   --d-card: #2a251d;
   --d-ink: #ece5d8;
   --d-ink-soft: #a9a297;
-  --d-ink-faint: #7a736a;
+  --d-ink-faint: #928b82;
+  --d-ink-faint-hi: #b6afa6;
+  --d-control: #736e68;
+  --d-control-hi: #908b85;
   --d-rule: #35302a;
+  --d-rule-hi: #736e68;
   --d-rule-soft: #2a2620;
   --d-rule-strong: #443d35;
   --d-accent: #d09a6e;
@@ -101,7 +114,20 @@
   --card: var(--l-card);
   --ink: var(--l-ink);
   --ink-soft: var(--l-ink-soft);
-  --ink-faint: var(--l-ink-faint);
+  /* Two steps, not one. The theme decides which palette is in play and puts
+     both the plain and the raised value in reach; the contrast layer below
+     then chooses between them without needing to know which theme it is in.
+     Without this indirection every contrast rule would need a light and a dark
+     twin, and the pair would drift. */
+  --faint-plain: var(--l-ink-faint);
+  --faint-hi: var(--l-ink-faint-hi);
+  --control-plain: var(--l-control);
+  --control-hi: var(--l-control-hi);
+  --rule-plain: var(--l-rule);
+  --rule-hi: var(--l-rule-hi);
+
+  --ink-faint: var(--faint-plain);
+  --control-line: var(--control-plain);
   --rule: var(--l-rule);
   --rule-soft: var(--l-rule-soft);
   --rule-strong: var(--l-rule-strong);
@@ -128,7 +154,14 @@
     --card: var(--d-card);
     --ink: var(--d-ink);
     --ink-soft: var(--d-ink-soft);
-    --ink-faint: var(--d-ink-faint);
+    --faint-plain: var(--d-ink-faint);
+    --faint-hi: var(--d-ink-faint-hi);
+    --control-plain: var(--d-control);
+    --control-hi: var(--d-control-hi);
+    --rule-plain: var(--d-rule);
+    --rule-hi: var(--d-rule-hi);
+    --ink-faint: var(--faint-plain);
+    --control-line: var(--control-plain);
     --rule: var(--d-rule);
     --rule-soft: var(--d-rule-soft);
     --rule-strong: var(--d-rule-strong);
@@ -150,7 +183,14 @@
   --card: var(--d-card);
   --ink: var(--d-ink);
   --ink-soft: var(--d-ink-soft);
-  --ink-faint: var(--d-ink-faint);
+  --faint-plain: var(--d-ink-faint);
+  --faint-hi: var(--d-ink-faint-hi);
+  --control-plain: var(--d-control);
+  --control-hi: var(--d-control-hi);
+  --rule-plain: var(--d-rule);
+  --rule-hi: var(--d-rule-hi);
+  --ink-faint: var(--faint-plain);
+  --control-line: var(--control-plain);
   --rule: var(--d-rule);
   --rule-soft: var(--d-rule-soft);
   --rule-strong: var(--d-rule-strong);
@@ -162,6 +202,39 @@
   --bad: var(--d-bad);
 
   color-scheme: dark;
+}
+
+/* ------------------------------------------------------------- contrast -- */
+
+/* A second axis, independent of light and dark. Somebody who needs more
+   contrast may want it on either, so this is not a third theme: it raises the
+   quiet colours of whichever theme is in force.
+ *
+ * The defaults already clear what text needs. This goes further, to the 7:1 the
+ * guidelines ask for as an enhanced level, and gives the rules between rows a
+ * contrast of their own, because at low vision the structure of a page matters
+ * as much as the words on it.
+ *
+ * The system asks first. Anyone who has turned contrast up in their operating
+ * system gets it here without finding a setting, the same way the theme follows
+ * prefers-color-scheme. Choosing "normal" in the app wins that back, which is
+ * what the :not() guard is for. */
+@media (prefers-contrast: more) {
+  :root:not([data-contrast='normal']) {
+    --ink-faint: var(--faint-hi);
+    --control-line: var(--control-hi);
+    --rule: var(--rule-hi);
+    --rule-soft: var(--rule-hi);
+    --rule-strong: var(--rule-hi);
+  }
+}
+
+:root[data-contrast='high'] {
+  --ink-faint: var(--faint-hi);
+  --control-line: var(--control-hi);
+  --rule: var(--rule-hi);
+  --rule-soft: var(--rule-hi);
+  --rule-strong: var(--rule-hi);
 }
 
 /* ------------------------------------------------------- shared patterns -- */
@@ -230,7 +303,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-theme .theme-toggle { align-self: stretch; }
 .landing-lang select {
   border: 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--control-line);
   background: none;
   border-radius: 0;
   padding: 4px 2px;
@@ -387,7 +460,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   flex: 1 1 260px;
   min-width: 200px;
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--ink-faint);
+  border-bottom: 1px solid var(--control-line);
   position: static;
 }
 .search .glyph { font-size: 17px; color: var(--ink-faint); }
@@ -407,7 +480,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   text-transform: uppercase; color: var(--ink-faint); }
 .field select {
   border: 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--control-line);
   border-radius: 0;
   background: none;
   padding: 4px 2px;
@@ -662,7 +735,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .theme-toggle,
 .segmented {
   display: flex;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -717,7 +790,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .card h3 { font: 500 15px/1.3 var(--sans); margin: 0 0 10px; }
 
 .btn {
-  border: 1px solid var(--rule);
+  border: 1px solid var(--control-line);
   background: none;
   border-radius: var(--radius);
   padding: 7px 14px;
@@ -736,11 +809,35 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .btn.primary:hover:not(:disabled) { filter: brightness(1.08); color: var(--paper); }
 .btn.small { padding: 5px 11px; font-size: 12.5px; }
+/* Off screen until it is focused, which is the only time it is wanted. Not
+   display:none, which would take it out of the tab order and defeat the point
+   of having it. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 13.5px;
+  transition: top .12s;
+}
+.skip-link:focus { top: 8px; }
+/* The content region takes focus when the link is followed and when a panel
+   closes with nowhere to send it. It is not a tab stop of its own. */
+main:focus { outline: none; }
+
+/* A text button is still a target. The padding gives it the height a finger
+   needs without moving the words. */
 .btn.link {
   border: 0;
   background: none;
   color: var(--accent);
-  padding: 2px 4px;
+  padding: 6px 4px;
+  min-height: 24px;
   text-decoration: underline;
   font-size: 12.5px;
 }
@@ -1060,7 +1157,7 @@ pre.snippet {
 }
 .import-controls input {
   border: 0;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--control-line);
   background: none;
   padding: 4px 2px;
   font-size: 13.5px;
@@ -1156,7 +1253,7 @@ pre.snippet {
 textarea.compose {
   width: 100%;
   min-height: 96px;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius);
   padding: 12px 13px;
   background: var(--paper);
@@ -1314,7 +1411,7 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
   color: var(--ink-faint);
 }
 .owl-pager button {
-  border: 1px solid var(--rule);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius);
   background: none;
   cursor: pointer;
@@ -1397,7 +1494,7 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--control-line);
   border-radius: var(--radius);
   background: none;
   padding: 7px 12px;

@@ -9,6 +9,8 @@
       try {
         var t = localStorage.getItem('librapp-theme')
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
+        var c = localStorage.getItem('librapp-contrast')
+        if (c === 'high' || c === 'normal') document.documentElement.setAttribute('data-contrast', c)
       } catch (e) {}
     </script>
     <link rel="stylesheet" href="./fonts/fonts.css" />

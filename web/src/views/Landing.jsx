@@ -1,4 +1,5 @@
 import ThemeToggle from '../components/ThemeToggle.jsx'
+import ContrastToggle from '../components/ContrastToggle.jsx'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
 
 /**
@@ -47,6 +48,10 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
               <label className="field landing-theme">
                 <span className="tiny">{t('theme.label')}</span>
                 <ThemeToggle />
+              </label>
+              <label className="field landing-theme">
+                <span className="tiny">{t('contrast.label')}</span>
+                <ContrastToggle />
               </label>
             </div>
           </div>

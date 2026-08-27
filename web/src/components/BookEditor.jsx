@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { EDITABLE } from '../core/overrides.js'
 import { useT } from '../i18n/index.jsx'
+import Overlay from './Overlay.jsx'
 
 /**
  * One form for both jobs: typing a book in, and correcting one already there.
@@ -165,8 +166,9 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
   }
 
   return (
-    <div className="detail-backdrop" onClick={onCancel}>
-      <aside className="detail" onClick={(e) => e.stopPropagation()}>
+    // Busy means a save is in flight, and closing then would lose it, so the
+    // backdrop stops dismissing until it lands.
+    <Overlay onClose={onCancel} busy={busy} label={editing ? t('editor.correct') : t('editor.add')}>
         <div className="spread" style={{ marginBottom: 12 }}>
           <h3 style={{ margin: 0 }}>{editing ? t('editor.correct') : t('editor.add')}</h3>
           <button className="btn small" onClick={onCancel} disabled={busy}>
@@ -344,7 +346,6 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
             {t('editor.correctable', { fields: EDITABLE.join(', ') })}
           </p>
         )}
-      </aside>
-    </div>
+    </Overlay>
   )
 }
