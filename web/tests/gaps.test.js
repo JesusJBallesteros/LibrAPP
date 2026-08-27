@@ -21,11 +21,36 @@ const book = (id, over = {}) => ({ id, title: `Book ${id}`, authors: [], ...over
 const names = new Map([['ursula', 'Ursula K. Le Guin']])
 
 describe('what can be filled', () => {
-  it('offers only the recalled half of the extras checklist', () => {
+  it('offers more than the shelf checklist does', () => {
+    // That checklist is shaped by a photograph: publisher and series count as
+    // read there because a spine prints them. There is no spine here, so they
+    // are as recallable as anything else and were being left out for no reason.
+    expect(FILLABLE).toContain('genre')
+    expect(FILLABLE).toContain('publisher')
+    expect(FILLABLE).toContain('series')
     expect(FILLABLE).toContain('abstract')
     expect(FILLABLE).toContain('pages')
-    // Publisher is read off a spine, so it is not something to recall.
-    expect(FILLABLE).not.toContain('publisher')
+  })
+
+  it('refuses the fields only the owner can know', () => {
+    // A model filling these in would be inventing the reader's history rather
+    // than recalling the book's.
+    for (const field of ['read', 'acquired_on', 'location', 'notes', 'favourite', 'lent_to', 'formats']) {
+      expect(FILLABLE, field).not.toContain(field)
+    }
+  })
+
+  it('refuses the two fields that identify the entry', () => {
+    // Everything else is a correction. Rewriting these is corruption, and it
+    // breaks the match between the entry and the sources it was built from.
+    expect(FILLABLE).not.toContain('title')
+    expect(FILLABLE).not.toContain('authors')
+  })
+
+  it('does not offer a volume number on its own', () => {
+    // Every standalone book is missing one, so it would report a gap across
+    // most of the shelf. It rides along with the series instead.
+    expect(FILLABLE).not.toContain('series_index')
   })
 
   it('can write every field it offers', () => {
@@ -233,5 +258,54 @@ describe('summarising what came back', () => {
 
   it('survives a proposal carrying no changes', () => {
     expect(summarise([proposal('1', undefined)]).fields).toEqual([])
+  })
+})
+
+
+// A series without its volume number is half an answer, so ticking the series
+// permits both. Nothing else asks for a field that was not ticked.
+describe('the fields a tick permits', () => {
+  const books = [{ id: 'b1', title: 'Dune', authors: [] }]
+
+  it('takes the volume number when the series was asked for', () => {
+    const { proposals } = parseReply(
+      '{"books":[{"id":"b1","series":"Dune","series_index":1}]}',
+      { books, fields: ['series'] },
+    )
+    expect(proposals[0].set).toEqual({ series: 'Dune', series_index: 1 })
+  })
+
+  it('still refuses a volume number nobody asked about', () => {
+    const { proposals } = parseReply(
+      '{"books":[{"id":"b1","series_index":1}]}',
+      { books, fields: ['genre'] },
+    )
+    expect(proposals).toHaveLength(0)
+  })
+
+  it('refuses a volume number that could not be one', () => {
+    for (const bad of [0, -2, 1.5, '1']) {
+      const { proposals } = parseReply(
+        JSON.stringify({ books: [{ id: 'b1', series: 'Dune', series_index: bad }] }),
+        { books, fields: ['series'] },
+      )
+      expect(proposals[0].set, String(bad)).toEqual({ series: 'Dune' })
+    }
+  })
+
+  it('accepts the new text fields, and trims them', () => {
+    const { proposals } = parseReply(
+      '{"books":[{"id":"b1","genre":"  Science fiction  ","publisher":"Chilton"}]}',
+      { books, fields: ['genre', 'publisher'] },
+    )
+    expect(proposals[0].set).toEqual({ genre: 'Science fiction', publisher: 'Chilton' })
+  })
+
+  it('refuses an empty string, which is a gap rather than an answer', () => {
+    const { proposals } = parseReply(
+      '{"books":[{"id":"b1","genre":"   "}]}',
+      { books, fields: ['genre'] },
+    )
+    expect(proposals).toHaveLength(0)
   })
 })

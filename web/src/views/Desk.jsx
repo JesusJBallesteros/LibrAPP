@@ -42,15 +42,6 @@ const ASKS = [
   { id: 'fill', text: fillPrompt, structured: true },
 ]
 
-// The checklist labels are keyed by extra id, and the gaps are keyed by field.
-const EXTRA_ID = {
-  abstract: 'abstract',
-  published_year: 'published',
-  rating: 'rating',
-  original_language: 'original',
-  pages: 'pages',
-}
-
 /**
  * Which fields a reply actually answered, and for how many books.
  *
@@ -64,7 +55,7 @@ function FieldCounts({ summary, t, written = false }) {
     <ul className="field-counts">
       {summary.fields.map(({ field, n }) => (
         <li key={field}>
-          <span>{t(`shelf.extra.${EXTRA_ID[field]}`)}</span>
+          <span>{t(`fill.field.${field}`)}</span>
           <span className="tabular">
             {written ? t('desk.fill.onBooks', { n }) : t('desk.fill.forBooks', { n })}
           </span>
@@ -407,6 +398,22 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             {chosen.structured ? (
               <div className="fill-picker">
                 <p className="eyebrow" style={{ marginTop: 14 }}>{t('desk.fill.which')}</p>
+                {/* One tick for the lot. Indeterminate while some are on, so it
+                    reports the state rather than guessing at it. */}
+                <label className="check check-all">
+                  <input
+                    type="checkbox"
+                    checked={fields.length === FILLABLE.length}
+                    ref={(box) => {
+                      if (box) box.indeterminate = fields.length > 0 && fields.length < FILLABLE.length
+                    }}
+                    onChange={() =>
+                      setFields(fields.length === FILLABLE.length ? [] : [...FILLABLE])
+                    }
+                  />
+                  <span className="tiny">{t('desk.fill.all')}</span>
+                </label>
+
                 {FILLABLE.map((field) => (
                   <label key={field} className="check">
                     <input
@@ -418,7 +425,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                         )
                       }
                     />
-                    <span className="tiny">{t(`shelf.extra.${EXTRA_ID[field]}`)}</span>
+                    <span className="tiny">{t(`fill.field.${field}`)}</span>
                     <span className="tiny faint tabular">
                       {t('desk.fill.missing', { n: gaps[field] ?? 0 })}
                     </span>
@@ -432,6 +439,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                     ? t('desk.fill.pickOne')
                     : t('desk.fill.covers', { n: toFill.length })}
                 </p>
+                {/* Every field on every book is the largest request the app can
+                    make, and the cost follows the number of both. */}
+                {fields.length === FILLABLE.length && toFill.length > 20 && (
+                  <p className="tiny faint">{t('desk.fill.thatIsALot')}</p>
+                )}
               </div>
             ) : (
               <textarea

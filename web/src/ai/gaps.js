@@ -10,10 +10,46 @@
 // through the override layer if somebody accepts it, which is what makes each
 // one visible under Corrections and undoable one at a time.
 
-import { EXTRAS } from './extras.js'
+/**
+ * What this can be asked to fill in.
+ *
+ * Its own list rather than the recalled half of the shelf checklist, which it
+ * used to borrow. That split is shaped by a photograph: publisher and series
+ * count as read there because they are printed on a spine. At the desk there is
+ * no spine and no photograph, so everything here is recalled, and the borrowed
+ * list was leaving out fields a model can perfectly well supply.
+ *
+ * Two kinds of field are deliberately absent.
+ *
+ * Facts only the owner knows: whether a book was read, when it was bought,
+ * where it sits, what they thought of it, whether it is a favourite, who has
+ * it. A model filling those in would be inventing the reader's history rather
+ * than recalling the book's.
+ *
+ * And the two that identify the entry, title and authors. Everything else is a
+ * correction; rewriting those is corruption, and it would break the match
+ * between the entry and the sources it was built from.
+ */
+export const FILLABLE = [
+  'genre',
+  'series',
+  'publisher',
+  'published_year',
+  'pages',
+  'rating',
+  'original_language',
+  'abstract',
+]
 
-/** The fields this can fill: the recalled half of the extras checklist. */
-export const FILLABLE = EXTRAS.filter((e) => e.kind === 'recalled').map((e) => e.field)
+/**
+ * Fields a tick actually permits, which is not always the one ticked.
+ *
+ * Asking for a series and being given "Dune" without "1" is half an answer, and
+ * the volume number is worthless on its own: every standalone book is missing
+ * one, so offering it as its own tick would report a gap on most of the shelf.
+ */
+const ALSO = { series: ['series_index'] }
+const writable = (fields) => fields.flatMap((f) => [f, ...(ALSO[f] || [])])
 
 /** How many books are missing each field. */
 export function gapsByField(books, fields = FILLABLE) {
@@ -75,11 +111,17 @@ export function buildRequest(books, fields, names, promptText) {
 
 export class GapsError extends Error {}
 
+const text = (v) => (typeof v === 'string' && v.trim() ? v.trim() : null)
+
 const FIELD_TYPE = {
-  abstract: (v) => (typeof v === 'string' && v.trim() ? v.trim() : null),
+  abstract: text,
+  genre: text,
+  series: text,
+  publisher: text,
+  original_language: text,
+  series_index: (v) => (Number.isInteger(v) && v > 0 && v < 1000 ? v : null),
   published_year: (v) => (Number.isInteger(v) && v > 0 && v <= 2200 ? v : null),
   rating: (v) => (typeof v === 'number' && v >= 0 && v <= 5 ? Math.round(v * 10) / 10 : null),
-  original_language: (v) => (typeof v === 'string' && v.trim() ? v.trim() : null),
   pages: (v) => (Number.isInteger(v) && v > 0 && v < 20000 ? v : null),
 }
 
@@ -106,7 +148,7 @@ export function parseReply(text, { books, fields }) {
   if (!rows) throw new GapsError('reply had no books array')
 
   const byId = new Map(books.map((b) => [b.id, b]))
-  const wanted = fields.filter((f) => FILLABLE.includes(f))
+  const wanted = writable(fields.filter((f) => FILLABLE.includes(f)))
   const proposals = []
   let ignored = 0
 

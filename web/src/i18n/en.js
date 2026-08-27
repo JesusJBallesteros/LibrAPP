@@ -461,6 +461,18 @@ export default {
   'desk.fill': 'Fill in gaps',
   'desk.fill.blurb':
     'Ask for the details the catalog does not hold. Every answer is recalled rather than read, so nothing is written until it has been seen.',
+  'desk.fill.all': 'Everything',
+  'desk.fill.thatIsALot':
+    'That asks for every field on every book missing one, which is the largest request this can make. Fewer fields, or fewer books, cost less.',
+  'fill.field.genre': 'Genre',
+  'fill.field.series': 'Series, and which volume',
+  'fill.field.series_index': 'Volume number',
+  'fill.field.publisher': 'Publisher',
+  'fill.field.published_year': 'Year first published',
+  'fill.field.pages': 'Pages in a typical edition',
+  'fill.field.rating': 'A general reader rating',
+  'fill.field.original_language': 'Original language',
+  'fill.field.abstract': 'A short abstract',
   'desk.fill.which': 'What to ask for',
   'desk.fill.missing': '{n} missing',
   'desk.fill.pickOne': 'Pick at least one field.',

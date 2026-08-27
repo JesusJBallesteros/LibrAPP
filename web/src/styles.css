@@ -1463,6 +1463,13 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 /* The gap-filling request: a checklist, then whatever came back, before any of
    it is written. */
 .fill-picker .check { justify-content: flex-start; gap: 9px; }
+/* Set apart from the list it governs, so it does not read as one more field. */
+.fill-picker .check-all {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 8px;
+  margin-bottom: 4px;
+}
+.fill-picker .check-all span { color: var(--ink); }
 .fill-picker .check .tabular { margin-left: auto; }
 
 /* What a reply answered, and for how many books. Ruled rows rather than a

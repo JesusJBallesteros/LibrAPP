@@ -462,6 +462,18 @@ export default {
   'desk.fill': 'Rellenar huecos',
   'desk.fill.blurb':
     'Pide los datos que el cat\u00e1logo no tiene. Cada respuesta viene de la memoria del modelo, no de una lectura, as\u00ed que no se guarda nada sin verlo antes.',
+  'desk.fill.all': 'Todo',
+  'desk.fill.thatIsALot':
+    'Eso pide todos los campos de todos los libros a los que les falte alguno, que es la petici\u00f3n m\u00e1s grande posible. Menos campos, o menos libros, cuestan menos.',
+  'fill.field.genre': 'G\u00e9nero',
+  'fill.field.series': 'Colecci\u00f3n, y qu\u00e9 volumen',
+  'fill.field.series_index': 'Número de volumen',
+  'fill.field.publisher': 'Editorial',
+  'fill.field.published_year': 'A\u00f1o de primera publicaci\u00f3n',
+  'fill.field.pages': 'P\u00e1ginas de una edici\u00f3n tipo',
+  'fill.field.rating': 'Una valoraci\u00f3n general de lectores',
+  'fill.field.original_language': 'Idioma original',
+  'fill.field.abstract': 'Un resumen breve',
   'desk.fill.which': 'Qu\u00e9 pedir',
   'desk.fill.missing': 'faltan {n}',
   'desk.fill.pickOne': 'Elige al menos un campo.',

@@ -36,6 +36,19 @@ in it. Plain language. Not a blurb, and not a recommendation.
 **Original language** is the language the work was written in, not the language
 of the edition on the shelf.
 
+**Genre** is a few words in plain language: "philosophy", "science fiction",
+"military history". Where the catalog already files similar books under a
+wording, use that wording rather than a synonym, so the shelf does not end up
+with three names for one subject.
+
+**Series** is the name the works are collected under, with `series_index` as the
+volume number where they are numbered. Leave both out for a standalone book. A
+publisher's imprint is not a series.
+
+**Publisher** is the house that issued a typical edition. Where a work has been
+issued by many, leave it out rather than picking one at random: a wrong
+publisher is worse than none, because it looks like it was read off the spine.
+
 **Answer only for the fields listed as missing** for each book. A field that is
 not listed is already recorded, and a value for it will be discarded.
 
