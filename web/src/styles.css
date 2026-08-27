@@ -1050,20 +1050,18 @@ pre.snippet {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   /* One size on every spine, thin or thick. Type that grew with the book would
-     make a thick book look important rather than long. 12px is the size two
-     lines of it fit inside the thinnest spine. */
-  font: 400 12px/1.25 var(--serif);
+     make a thick book look important rather than long. Sized to be read on a
+     screen at arm's length rather than to fit the longest title. */
+  font: 400 17px/1.15 var(--serif);
   /* Inherited from the spine, which picks the ink that suits its own fill. */
   color: inherit;
-  /* Wraps rather than running off the end. A long title becomes two lines
-     across the spine instead of a taller spine or a clipped name. */
-  white-space: normal;
-  overflow-wrap: anywhere;
-  max-inline-size: 100%;
-  /* Two lines: 2 x 1.25 x 12px. A third is cut off, the way a single line used
-     to be cut off when it outran the spine. */
-  max-block-size: 30px;
+  /* One line, and a title too long for the spine ends in an ellipsis rather
+     than being cut off mid-letter. A second line would have to be set smaller
+     than this to fit, and a title nobody can read is worse than a short one. */
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 100%;
 }
 .spine[aria-selected='true'] { outline: 2px solid var(--ink); outline-offset: 2px; }
 .spine:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }

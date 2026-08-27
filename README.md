@@ -338,10 +338,10 @@ gaps** at the desk.
 
 **Height and colour are decoration, and the wall says so underneath.** Height
 comes from the length of the title, so a tall spine means a long name and not a
-big book. Colour is fixed per book so a spine keeps its own. A long title wraps
-to a second line across the spine rather than making it taller, and the type is
-the same size on every spine so a thick book does not look more important than
-a thin one.
+big book. Colour is fixed per book so a spine keeps its own. Titles are set at
+one size on every spine, large enough to read across a room, and a title longer
+than its spine ends in an ellipsis. The whole title is always in the tooltip and
+in the accessible name.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. **More contrast** is a separate switch

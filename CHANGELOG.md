@@ -18,11 +18,10 @@ shelf by, while thickness was decided by whether the book was physical, which
 says nothing about the book and only about how it was catalogued.
 
 Height now comes from the length of the title, and the caption says it is
-decoration. A long title wraps to a second line across the spine instead of
-making it taller or being cut off, and the thinnest band is wide enough to hold
-two lines: the type size was chosen against that floor rather than picked for
-looks, and it is the same size on every spine, so a thick book does not read as
-a more important one.
+decoration. Titles are set at one size on every spine, chosen to be read on a
+screen rather than to fit the longest name, so a thick book does not read as a
+more important one. A title longer than its spine ends in an ellipsis; the whole
+of it stays in the tooltip and in the accessible name.
 
 A book with no page count is drawn at the middle width. Not because it is
 average, but because nothing is known, and drawing it thin would be inventing a

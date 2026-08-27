@@ -195,9 +195,9 @@ export const spineTint = (book) => spineHash(book?.id, 8) + 1
 // is measuring the difference between 260 pages and 280.
 export const PAGE_BANDS = { thin: 150, thick: 300 }
 
-// Wide enough for two lines of title at the size every spine uses. A thin book
-// with a long name still has to be readable, so this is the floor the type size
-// was chosen against rather than a number picked for looks.
+// Wide enough for one line of title at the size every spine uses, which is set
+// to be read on a screen rather than to fit the longest name. A title that
+// outruns its spine ends in an ellipsis.
 const THIN = 34
 const MEDIUM = 42
 const THICK = 52

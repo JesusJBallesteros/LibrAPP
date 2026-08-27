@@ -75,10 +75,10 @@ describe('how thick a spine is', () => {
     expect(spineWidth({ pages: 4000 })).toBe(52)
   })
 
-  it('is wide enough at its thinnest for two lines of title', () => {
-    // The type size was chosen against this floor: 2 lines x 1.25 x 12px is
-    // 30px of text, and the thinnest spine has to hold it.
-    expect(spineWidth({ pages: 1 })).toBeGreaterThanOrEqual(30)
+  it('is wide enough at its thinnest for a line of title', () => {
+    // One line at 17px with a 1.15 line height is about 20px across the spine,
+    // and the thinnest band has to hold it with room to sit in.
+    expect(spineWidth({ pages: 1 })).toBeGreaterThanOrEqual(20)
   })
 
   it('draws a book with no page count at the middle width', () => {
