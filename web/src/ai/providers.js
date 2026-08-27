@@ -51,6 +51,7 @@ export const TRANSCRIPTION_SCHEMA = {
                 'publisher',
                 'series',
                 'series_index',
+                'genre',
                 'confidence',
                 'notes',
                 'abstract',
@@ -69,6 +70,7 @@ export const TRANSCRIPTION_SCHEMA = {
                 publisher: { type: ['string', 'null'] },
                 series: { type: ['string', 'null'] },
                 series_index: { type: ['integer', 'null'] },
+                genre: { type: ['string', 'null'] },
                 confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
                 notes: { type: ['string', 'null'] },
                 // Only filled in when the extras checklist asked for them, and

@@ -132,7 +132,18 @@ export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
 
 // Which fields a model may only have recalled, and the flag that says so.
 // Kept next to the checklist that asks for them.
-const RECALLED_FIELDS = ['abstract', 'published_year', 'rating', 'original_language', 'pages']
+const RECALLED_FIELDS = [
+  'abstract',
+  'published_year',
+  'rating',
+  'original_language',
+  'pages',
+  // A spine sometimes prints a collection, so a genre can be read rather than
+  // recalled. The two arrive in one field and cannot be told apart afterwards,
+  // so both are flagged. Marking a read genre as recalled claims less than is
+  // known, which is the side to err on.
+  'genre',
+]
 const RECALLED_FLAG = 'recalled_details'
 
 export class TranscriptionError extends Error {}

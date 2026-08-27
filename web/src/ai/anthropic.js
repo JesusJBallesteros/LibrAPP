@@ -23,6 +23,7 @@ const Book = z.object({
   publisher: z.string().nullable(),
   series: z.string().nullable(),
   series_index: z.number().int().nullable(),
+  genre: z.string().nullable(),
   confidence: z.enum(['high', 'medium', 'low']),
   notes: z.string().nullable().describe('anything a person should check: partial text, odd script'),
   // Recalled rather than read, and only when asked for. See ai/extras.js.

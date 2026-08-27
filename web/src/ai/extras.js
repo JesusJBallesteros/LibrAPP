@@ -30,6 +30,7 @@ export const EXTRAS = [
   { id: 'rating', kind: 'recalled', field: 'rating' },
   { id: 'original', kind: 'recalled', field: 'original_language' },
   { id: 'pages', kind: 'recalled', field: 'pages' },
+  { id: 'genre', kind: 'recalled', field: 'genre' },
 ]
 
 export const extraById = (id) => EXTRAS.find((e) => e.id === id) || null
@@ -56,6 +57,11 @@ const INSTRUCTIONS = {
     'Add the page count of a typical edition as `pages`, as a whole number. No spine states ' +
     'this, so give a representative figure for the work rather than a measurement of the copy ' +
     'in the photograph, and leave it null for anything you do not recognise.',
+  genre:
+    'Add a `genre` for each book you recognise: a few words in plain language, such as ' +
+    '"philosophy", "science fiction" or "military history". Prefer the wording the catalog ' +
+    'already uses where a book is like one it holds. Leave it null rather than inventing a ' +
+    'category for a book you do not know.',
 }
 
 /**

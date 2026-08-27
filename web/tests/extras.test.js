@@ -153,3 +153,51 @@ describe('the page count is recalled, never read', () => {
     expect(extrasPrompt(['pages'])).toContain('typical edition')
   })
 })
+
+// Genre was asked for by the prompt, read by the ingester, and forbidden by the
+// schema, which is strict. So the field could never arrive and every catalog
+// built from a photograph had no genres in it at all. The same shape of fault
+// as the page count: a field wired at one end and blocked at the other.
+describe('genre can actually travel', () => {
+  it('is a field the schema allows', () => {
+    const book = TRANSCRIPTION_SCHEMA.properties.shelves.items.properties.books.items
+    expect(book.properties).toHaveProperty('genre')
+    expect(book.required).toContain('genre')
+  })
+
+  it('is recalled rather than read', () => {
+    // A spine sometimes prints a collection, but a genre is mostly a judgement
+    // about the work, so it carries the same warning as the other claims.
+    expect(extraById('genre').kind).toBe('recalled')
+    expect(extraById('genre').field).toBe('genre')
+  })
+
+  it('is asked for under what the model knows, not off the photograph', () => {
+    const prompt = extrasPrompt(['genre'])
+    expect(prompt).toContain('From your own knowledge')
+    expect(prompt).toContain('genre')
+  })
+
+  it('tells the model to leave it out rather than invent a category', () => {
+    expect(extrasPrompt(['genre'])).toMatch(/null rather than inventing/i)
+  })
+
+  it('counts as a recalled field on a book that came back with one', () => {
+    expect(recalledIn({ genre: 'Philosophy' })).toContain('genre')
+  })
+
+  it('reaches a record, and flags the book that carries it', () => {
+    const { records } = loadTranscription(
+      shelf({ title: 'A Book', authors: ['Someone'], confidence: 'high', genre: 'Science fiction' }),
+    )
+    expect(records[0].genre).toBe('Science fiction')
+    expect(records[0].flags).toContain(RECALLED_FLAG)
+  })
+
+  it('leaves the flag off a book with no recalled field at all', () => {
+    const { records } = loadTranscription(
+      shelf({ title: 'A Book', authors: ['Someone'], confidence: 'high' }),
+    )
+    expect(records[0].flags).not.toContain(RECALLED_FLAG)
+  })
+})

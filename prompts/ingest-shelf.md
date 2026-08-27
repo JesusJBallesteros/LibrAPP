@@ -60,7 +60,8 @@ books. A spine you can see but not read is still worth an entry with
 `confidence: "low"` and whatever colour or size detail helps find it again.
 
 **Do not fill in what a photograph cannot see.** No acquisition dates, no read
-flags, no ISBNs, no genre unless the spine states a collection. The catalog
+flags, no ISBNs, and no genre of your own unless the checklist below asks for
+one or the spine states a collection. The catalog
 treats a missing value as unknown, which is the truth here, and other sources
 may supply it later.
 

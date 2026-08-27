@@ -769,6 +769,7 @@ export default {
   'shelf.extra.published': 'Year first published',
   'shelf.extra.rating': 'A general reader rating',
   'shelf.extra.original': 'Original language and whether this is a translation',
+  'shelf.extra.genre': 'A genre for each book it recognises',
   'shelf.extra.pages': 'The page count of a typical edition',
   'shelf.noCover':
     'Cover images are not offered. A model can only return a link, and fetching one would tell whoever hosts the image which books you own.',

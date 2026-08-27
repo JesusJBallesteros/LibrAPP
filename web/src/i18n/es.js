@@ -777,6 +777,7 @@ export default {
   'shelf.extra.published': 'A\u00f1o de la primera publicaci\u00f3n',
   'shelf.extra.rating': 'Una valoraci\u00f3n general de lectores',
   'shelf.extra.original': 'Idioma original y si esto es una traducci\u00f3n',
+  'shelf.extra.genre': 'Un género para cada libro que reconozca',
   'shelf.extra.pages': 'El n\u00famero de p\u00e1ginas de una edici\u00f3n tipo',
   'shelf.noCover':
     'No se ofrecen im\u00e1genes de cubierta. Un modelo solo puede devolver un enlace, y descargarlo dir\u00eda a quien aloje la imagen qu\u00e9 libros tienes.',

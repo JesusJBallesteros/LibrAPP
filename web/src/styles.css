@@ -298,8 +298,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-head .eyebrow { margin: 8px 0 0; }
 
 /* An underline field, like every other select in the app. */
-.landing-prefs { display: flex; align-items: flex-end; gap: 20px; flex: 0 0 auto; }
-.landing-lang, .landing-theme { flex: 0 0 auto; gap: 4px; }
+/* Three controls at a hundred and ten pixels each, with gaps, need more room
+   than a phone has once the page padding is taken off. Two of them fitted,
+   which is why this only broke when contrast was added. They wrap now, and
+   each may shrink rather than push the row past the edge of the screen. */
+.landing-prefs { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 14px 20px; }
+.landing-lang, .landing-theme { flex: 0 1 auto; min-width: 0; gap: 4px; }
+/* The phone breakpoint makes every .field fill its row, which is right in a
+   toolbar and wrong here: it left the third control stretched across a line of
+   its own while the first two shared one. These size to their content and wrap
+   when they run out of room. */
+.landing-prefs .field { flex: 0 1 auto; width: auto; }
+.landing-prefs .field select { width: auto; }
 .landing-theme .theme-toggle { align-self: stretch; }
 .landing-lang select {
   border: 0;
