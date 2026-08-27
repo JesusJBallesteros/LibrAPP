@@ -34,6 +34,7 @@ const READ_TIMEOUT_MS = 4 * 60 * 1000
 export default function Shelf({ lib, onOwl }) {
   const { t } = useT()
   const [photo, setPhoto] = useState(null)
+  const [photoUrl, setPhotoUrl] = useState(null)
   const [tiles, setTiles] = useState(null)
   const [working, setWorking] = useState(false)
   const [error, setError] = useState(null)
@@ -61,6 +62,19 @@ export default function Shelf({ lib, onOwl }) {
   const [progress, setProgress] = useState(null)
   const failure = useRef(null)
   const inFlight = useRef(null)
+
+  // The photograph itself, shown in the box it was chosen from. Held as an
+  // object URL and revoked when it changes, so choosing several photographs in
+  // one sitting does not keep a copy of each for as long as the page lives.
+  useEffect(() => {
+    if (!photo) {
+      setPhotoUrl(null)
+      return undefined
+    }
+    const url = URL.createObjectURL(photo)
+    setPhotoUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [photo])
 
   useEffect(() => {
     idbGet('shelf-extras')
@@ -294,13 +308,14 @@ export default function Shelf({ lib, onOwl }) {
         <section className="shelf-step">
           <p className="eyebrow">{t('shelf.stepOne')}</p>
           <DropZone
-          mark="camera"
-          title={t('shelf.dropPhoto')}
-          hint={t('shelf.dropPhotoHint')}
-          accept="image/*"
-          disabled={working}
-          onFile={onPhoto}
-        />
+            mark="camera"
+            title={photoUrl ? photo.name : t('shelf.dropPhoto')}
+            hint={photoUrl ? t('shelf.photoReplace') : t('shelf.dropPhotoHint')}
+            preview={photoUrl ? { url: photoUrl } : null}
+            accept="image/*"
+            disabled={working}
+            onFile={onPhoto}
+          />
           {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('shelf.cutting')}</p>}
         </section>
 

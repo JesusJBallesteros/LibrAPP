@@ -396,6 +396,7 @@ export default {
   'shelf.step1': '1 · The photograph',
   'shelf.dropPhoto': 'Take or choose a photograph',
   'shelf.dropPhotoHint': 'JPEG or PNG · nothing is uploaded',
+  'shelf.photoReplace': 'Choose a different photograph',
   'shelf.cutting': 'Cutting it into tiles…',
   'shelf.step2': '2 · Read the spines',
   'shelf.tileCount': '{n} tile(s)',

@@ -120,10 +120,13 @@ export async function tileImage(file, { cols, rows, quality = 0.92 } = {}) {
     tiles.push({ ...spec, size: [outWidth, outHeight], blob, url: URL.createObjectURL(blob) })
   }
 
+  // Read before closing. A closed ImageBitmap reports zero for both, which is
+  // what the size beside the filename used to say for every photograph.
+  const photoSize = [bitmap.width, bitmap.height]
   bitmap.close?.()
   return {
     photo: file.name,
-    photoSize: [bitmap.width, bitmap.height],
+    photoSize,
     grid: { cols: across, rows: down },
     suggested,
     tiles,

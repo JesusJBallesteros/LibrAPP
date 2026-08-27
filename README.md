@@ -216,7 +216,8 @@ You need at least one source. Any one of these is enough on its own.
 
 Photograph the shelf straight on at your camera's **full resolution**.
 
-1. Open **Shelf picture** and choose the photo.
+1. Open **Shelf picture** and choose the photo. It appears in the box you
+   chose it from, and that box is also how to swap it for a different one.
 2. LibrAPP cuts it into tiles at full resolution. A close-up of a few books
    stays whole; a wide bookcase is split into several tiles. Adjust the grid
    with the **across** and **down** buttons if the default does not suit your

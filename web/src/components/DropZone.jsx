@@ -5,8 +5,12 @@ import { useRef, useState } from 'react'
  *
  * `mark` names a shape drawn in CSS rather than an emoji, so the target looks
  * the same on every platform and takes its colour from the theme.
+ *
+ * `preview` is a picture of the file already chosen, shown in place of the mark
+ * rather than beside it or further down the page. The target keeps working, so
+ * the picture is also the way to choose a different one, and the title says so.
  */
-export default function DropZone({ accept, mark, title, hint, disabled, onFile }) {
+export default function DropZone({ accept, mark, title, hint, disabled, preview, onFile }) {
   const input = useRef(null)
   const [over, setOver] = useState(false)
 
@@ -16,7 +20,7 @@ export default function DropZone({ accept, mark, title, hint, disabled, onFile }
 
   return (
     <div
-      className={`drop${over ? ' over' : ''}`}
+      className={`drop${over ? ' over' : ''}${preview ? ' showing' : ''}`}
       onClick={() => !disabled && input.current?.click()}
       onDragOver={(e) => {
         e.preventDefault()
@@ -34,7 +38,13 @@ export default function DropZone({ accept, mark, title, hint, disabled, onFile }
       aria-disabled={disabled}
       style={disabled ? { opacity: 0.5, cursor: 'not-allowed' } : undefined}
     >
-      <span className={`mark ${mark}`} aria-hidden="true" />
+      {preview ? (
+        // Decoration: the title below already says which photograph this is and
+        // what happens on a click, and an alt repeating it would say it twice.
+        <img className="drop-preview" src={preview.url} alt="" />
+      ) : (
+        <span className={`mark ${mark}`} aria-hidden="true" />
+      )}
       <strong>{title}</strong>
       <span>{hint}</span>
       <input

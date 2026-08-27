@@ -397,6 +397,7 @@ export default {
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Haz o elige una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
+  'shelf.photoReplace': 'Elige otra foto',
   'shelf.cutting': 'Recortando las fotos…',
   'shelf.step2': '2 · Leer los lomos',
   'shelf.tileCount': '{n} foto(s)',

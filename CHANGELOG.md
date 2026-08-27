@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+### The shelf photograph is shown where it was chosen
+
+Choosing a photograph left the box looking exactly as it had before, so the only
+sign that anything had happened was the tiles appearing further down. The
+photograph now takes the place of the camera mark, with its filename under it,
+and the box goes on working: clicking it is how to swap the photograph for
+another. Nothing about it is uploaded, and the picture is released as soon as it
+is replaced.
+
+### Fixed: every photograph measured zero by zero
+
+The size beside the filename read `0x0` whatever was chosen. The photograph was
+being closed one line before its width and height were read, and a closed image
+reports zero for both. The tiling was never affected, since it measured the
+photograph while it was still open; only the line reporting it was wrong.
+
+---
+
 ## v2.0.2
 
 An accessibility pass, a field that could never arrive, and three things found

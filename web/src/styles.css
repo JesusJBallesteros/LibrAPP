@@ -915,6 +915,28 @@ pre.snippet {
 .drop strong { display: block; font: 400 19px/1.3 var(--serif); margin-bottom: 4px; }
 .drop span { color: var(--ink-faint); font-size: 12.5px; }
 
+/* A box holding the photograph that was chosen. The generous padding is there
+   to give an empty target something to be; with a picture in it the picture is
+   the target, so the box closes in around it. */
+.drop.showing { padding: 12px 12px 14px; }
+.drop-preview {
+  display: block;
+  width: 100%;
+  /* A shelf photograph is wide, and a tall one taken portrait would otherwise
+     push the whole of step two below the fold. */
+  max-height: 260px;
+  object-fit: contain;
+  border-radius: var(--radius);
+  background: var(--paper-sunk);
+  margin-bottom: 10px;
+}
+/* The filename, which is the title once a photograph is in the box. Long names
+   are common from a camera and would otherwise set the width of the column. */
+.drop.showing strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
 /* Drawn rather than typed. An emoji renders differently on every platform and
    ignores the theme; these take their colour from --ink-faint like any other
    quiet mark on the page. */
