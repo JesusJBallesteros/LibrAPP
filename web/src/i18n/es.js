@@ -215,6 +215,7 @@ export default {
   'flag.no_personal_author': 'sin autor con nombre: obra de referencia, antología o texto anónimo',
   'flag.no_genre': 'todavía sin género',
   'flag.placeholder': 'un marcador de posición, no un título real: vuelve a fotografiarlo',
+  'flag.placeholder_author': 'la columna de autoría trae una palabra de relleno en vez de un nombre',
   'flag.series_not_expanded': 'representa varios volúmenes que ninguna fuente lista por separado',
   'flag.corrected': 'corregiste esta entrada a mano',
 

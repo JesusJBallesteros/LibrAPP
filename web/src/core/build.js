@@ -31,7 +31,23 @@ import {
 
 // A title standing in for a book nobody could identify, left behind by an
 // earlier and worse photograph. Kept so the gap stays visible, never trusted.
-const PLACEHOLDER = /^\s*\[.*\]\s*$|not legible|partly legible|illegible/iu
+//
+// The bracketed elision is its own case. The first pattern only matches a title
+// that is nothing but a bracketed note, so a title standing in for the half
+// nobody could read and then carrying on, "[...] and Philosophy", read as a
+// real title and was trusted at whatever its source claimed.
+const PLACEHOLDER =
+  /^\s*\[.*\]\s*$|\[\s*(?:\.{3}|…)\s*\]|not legible|partly legible|illegible/iu
+
+// What a source writes in the author column when it has no author to give.
+// A book can honestly have no personal author, which is what no_personal_author
+// records; this is different, and means the column was filled with a word
+// standing in for the answer.
+const PLACEHOLDER_AUTHOR =
+  /^\s*(?:reference|various|various authors|anon|anonymous|unknown|n\s*\/?\s*a|varios|varios autores|vv\.?\s*aa\.?|aa\.?\s*vv\.?|desconocido|autor desconocido)\s*$/iu
+
+/** Whichever of two confidence values is the lower. */
+const lower = (a, b) => (rank(a) <= rank(b) ? a : b)
 
 const sortedUnique = (values) => [...new Set(values)].sort(byCodePoint)
 
@@ -404,6 +420,16 @@ function buildEntry(cluster, collapsed, authors, ids) {
   const placeholder = PLACEHOLDER.test(title)
   if (placeholder) flags.push('placeholder')
 
+  // A stand-in where the author should be. Judged on what the entry ends up
+  // showing rather than on every record behind it, and by the same rule the
+  // label itself follows below: a source that wrote "Varios" but lost the merge
+  // to one that named the authors has been corrected, not tolerated, and the
+  // finished entry is no less trustworthy for it.
+  const shownAuthors = authorIds.length ? credits : [firstFact('author_label')]
+  const standInAuthor =
+    !placeholder && shownAuthors.some((name) => name && PLACEHOLDER_AUTHOR.test(String(name)))
+  if (standInAuthor) flags.push('placeholder_author')
+
   const base = slugify(credits.length ? credits[0] : '', title)
   let entryId = base
   let n = 2
@@ -443,9 +469,16 @@ function buildEntry(cluster, collapsed, authors, ids) {
     genre,
     tags: splitTags(genre, keywords),
     sources: [...cluster.sources()].sort(byCodePoint),
+    // A source declares how far it is trusted, and until now that was the whole
+    // of it: a tidy file said high and every row in it was high, however
+    // implausible the row itself. The container is still what a source can
+    // vouch for, so this only ever lowers, never raises.
     confidence: placeholder
       ? 'low'
-      : maxBy(cluster.records, (r) => rank(r.confidence)).confidence,
+      : lower(
+          maxBy(cluster.records, (r) => rank(r.confidence)).confidence,
+          standInAuthor ? 'medium' : 'high',
+        ),
     flags: sortedUnique(flags),
   }
 }

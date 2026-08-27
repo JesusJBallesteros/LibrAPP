@@ -217,6 +217,7 @@ export default {
   'flag.no_personal_author': 'no named author: a reference work, anthology or anonymous text',
   'flag.no_genre': 'no genre recorded yet',
   'flag.placeholder': 'a stand-in, not a real title - re-photograph this one',
+  'flag.placeholder_author': 'the author column holds a stand-in word rather than a name',
   'flag.series_not_expanded': 'stands for several volumes no source lists individually',
   'flag.corrected': 'you corrected this entry by hand',
 

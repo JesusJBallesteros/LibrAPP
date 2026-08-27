@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+### A floor under what a tidy file can claim
+
+A source says how far it is to be trusted, and every row in it inherited that
+wholesale. A spreadsheet declaring high confidence made every one of its rows
+high, however implausible the row itself, which meant confidence graded the
+format of the container and never the plausibility of the value. A reader takes
+"high confidence" to mean the entry is right, not that it arrived in a neat
+file.
+
+Two checks now sit under that claim. Neither can raise a record, only lower it,
+because the container is still what a source is able to vouch for.
+
+**A stand-in title that carries on into a real-looking one.** Placeholder titles
+were already caught and dropped to low, but only where the whole title was a
+bracketed note. A title standing in for the half nobody could read and then
+continuing, `[...] and Philosophy`, read as a real title and kept whatever its
+source claimed.
+
+**A stand-in word where the author should be.** `Reference`, `Various`,
+`VV.AA.`, `Varios`, `Anonymous`, `Unknown` and their like are what a source
+writes when it has no author to give. A book can honestly have no personal
+author, which is recorded separately and is not on its own a reason to doubt
+anything; this is the other case, and it drops the entry to medium and says why.
+
+The check reads what the entry ends up showing rather than every record behind
+it. A source that wrote `Varios` and lost the merge to one that named the
+authors has been corrected rather than tolerated, and the finished entry is no
+less trustworthy for it.
+
+Existing catalogs pick this up on their next rebuild, from an import or from
+**Rebuild catalog** under Library.
+
 ### The shelf is what the catalog opens as
 
 It opened as a list, which is the right shape for searching and the wrong one

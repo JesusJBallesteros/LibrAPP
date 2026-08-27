@@ -244,3 +244,88 @@ describe('what a model recalled reaches the catalog', () => {
     expect(find(catalog, 'Dispossessed').pages).toBe(341)
   })
 })
+
+// A source says how far it is to be trusted, and every row in it used to
+// inherit that wholesale: a tidy spreadsheet declared high, so a row reading
+// "[...] and Philosophy" by "Reference" was high too. The container is still
+// what a source can vouch for, so these checks only ever lower a record.
+describe('a floor under what a tidy file can claim', () => {
+  const trusted = (records) => build([source({ name: 'list', confidence: 'high' }, records)])
+
+  it('catches a stand-in that carries on into a real-looking title', () => {
+    // The old rule only matched a title that was nothing but a bracketed note,
+    // so this one read as a real title and kept its source's confidence.
+    const book = find(trusted([{ title: '[...] and Philosophy', authors: ['Meyer'] }]), 'Philosophy')
+    expect(book.flags).toContain('placeholder')
+    expect(book.confidence).toBe('low')
+  })
+
+  it('still catches a title that is nothing but a note', () => {
+    const book = find(trusted([{ title: '[spine partly legible]' }]), 'spine')
+    expect(book.flags).toContain('placeholder')
+    expect(book.confidence).toBe('low')
+  })
+
+  it('demotes a book whose author column holds a stand-in word', () => {
+    const book = find(trusted([{ title: 'Alemán para Dummies', author_label: 'Reference' }]), 'Dummies')
+    expect(book.flags).toContain('placeholder_author')
+    expect(book.confidence).toBe('medium')
+  })
+
+  it('catches a stand-in among the author names, not only the label', () => {
+    const book = find(trusted([{ title: 'An Anthology', authors: ['Various Authors'] }]), 'Anthology')
+    expect(book.flags).toContain('placeholder_author')
+  })
+
+  it('reads the Spanish stand-ins too, since a shelf is not all English', () => {
+    for (const name of ['VV.AA.', 'AA. VV.', 'Varios autores', 'Desconocido']) {
+      const book = find(trusted([{ title: `Libro de ${name}`, author_label: name }]), 'Libro')
+      expect(book.flags).toContain('placeholder_author')
+    }
+  })
+
+  it('leaves a real author alone', () => {
+    for (const name of ['Ursula K. Le Guin', 'Anonymous Sources Ltd', 'Reference Press']) {
+      const book = find(trusted([{ title: `A Book by ${name}`, authors: [name] }]), 'A Book')
+      expect(book.flags).not.toContain('placeholder_author')
+      expect(book.confidence).toBe('high')
+    }
+  })
+
+  it('leaves a real title carrying brackets alone', () => {
+    const book = find(
+      trusted([{ title: 'A Fire Upon the Deep (S.F. MASTERWORKS Book 166) [Kindle]', authors: ['Vinge'] }]),
+      'A Fire',
+    )
+    expect(book.flags).not.toContain('placeholder')
+    expect(book.confidence).toBe('high')
+  })
+
+  it('does not raise a record that was already lower', () => {
+    // A photograph declares medium. Finding nothing wrong must not promote it.
+    const catalog = build([
+      source({ name: 'shelf', kind: 'photo', confidence: 'medium' }, [
+        { title: 'A Perfectly Good Title', authors: ['Someone'] },
+      ]),
+    ])
+    expect(find(catalog, 'Perfectly').confidence).toBe('medium')
+  })
+
+  it('does not raise a placeholder title out of low', () => {
+    const catalog = build([
+      source({ name: 'shelf', kind: 'photo', confidence: 'medium' }, [
+        { title: '[two volumes, spines not legible]', confidence: 'low' },
+      ]),
+    ])
+    expect(find(catalog, 'two volumes').confidence).toBe('low')
+  })
+
+  it('does not confuse having no author with having a stand-in one', () => {
+    // A reference work honestly has no personal author. That is recorded, and
+    // is not on its own a reason to doubt the row.
+    const book = find(trusted([{ title: 'The Oxford Companion to Wine' }]), 'Oxford')
+    expect(book.flags).toContain('no_personal_author')
+    expect(book.flags).not.toContain('placeholder_author')
+    expect(book.confidence).toBe('high')
+  })
+})

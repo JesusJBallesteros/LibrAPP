@@ -367,6 +367,18 @@ it, and how confident LibrAPP is about the entry.
 | **medium** | transcribed by eye or by a model — a photograph, a hand-kept list |
 | **low** | a guess, or a placeholder for something illegible |
 
+A source declares how far it is trusted, and its rows start from there. Two
+checks can lower a row below its source, never raise it, because a tidy file can
+vouch for its own format and not for what somebody typed into it:
+
+- A title standing in for something nobody could read, whether the whole title
+  is a note in brackets or it starts with one and carries on, drops to **low**
+  and is marked as a stand-in to re-photograph.
+- An author column holding a word rather than a name, such as *Reference*,
+  *Various*, *VV.AA.* or *Unknown*, drops the entry to **medium** and says so.
+  A book that honestly has no personal author, like a reference work or an
+  anthology, is recorded as such and is not doubted for it.
+
 When two sources disagree, the more reliable one wins on facts it can know. A
 store export knows the purchase date; a photograph does not. Judgements like
 genre come from whichever source recorded one.
