@@ -1,5 +1,124 @@
 # Changelog
 
+## v2.0.2
+
+An accessibility pass, a field that could never arrive, and three things found
+by using the app on a phone.
+
+### Accessibility
+
+Audited against WCAG 2.2, in the running app rather than by reading the source.
+What was already sound stayed as it was: the language attribute follows the
+language switch, no form field is unlabelled, spines and charts and word cloud
+words all carry accessible names, read state is text rather than only colour,
+and reduced motion is honoured.
+
+What was not:
+
+- **The detail panel and the editor were not dialogs.** Opening one from the
+  keyboard left focus on the row behind it: nothing was announced, and tabbing
+  walked through the whole catalog, two hundred and forty one stops on the
+  shelf this was tested against, before arriving at the panel that had opened.
+  Both are now proper dialogs, named after the book or the job, taking focus on
+  open, keeping it inside while open, and handing it back to the row on close.
+- **Quiet text did not have the contrast it needed.** The faintest colour
+  measured between 3.15 and 3.96 depending on the surface under it, against the
+  4.5 that text requires, and it carries the card's field labels, the format and
+  year cells, the eyebrows and every hint. Both themes were moved one step
+  further along the same hue. The description given when this first came up,
+  that fixing it would shift the tone of the whole design, was an overstatement.
+- **Controls had no visible boundary.** Since the redesign gave selects and
+  inputs no box, their underline is the only thing identifying them, and it
+  measured 1.19. Boundaries now have a token of their own that clears 3, while
+  the hairlines between rows, which carry no meaning, are untouched.
+- **Nothing was announced.** There was not one live region in the app. A failed
+  read is now an alert.
+- **Thirteen tab stops** stood between the top of every page and its content.
+  There is a skip link now, visible when focused.
+- **The page title never changed**, so every view announced the same name and a
+  row of open tabs said nothing that told them apart. It names the view now.
+- The navigation marked the current item as a pressed button rather than as the
+  current page, and four text buttons were under the minimum target size.
+
+### New: a contrast level of its own
+
+Beside Day and Night rather than among them, because contrast is not a theme:
+somebody who needs more of it may want it on either, and folding the two
+together would make them choose. It raises the quiet colours of whichever theme
+is in force to 7, the enhanced level, and gives the rules between rows a
+contrast of their own, because at low vision the structure of a page matters as
+much as the words on it.
+
+Anyone who has turned contrast up in their operating system gets it without
+finding a setting, the way the theme already follows the system, and choosing
+normal in the app wins that back.
+
+The arithmetic is checked rather than trusted: the tests parse the stylesheet
+and measure every token against every surface it can appear on.
+
+### Fixed: genre could never arrive from a photograph
+
+The prompt mentioned it, the ingester read it, and neither schema listed it.
+Both schemas are strict, so the field was rejected before it could reach
+anything. Every catalog built from a photograph had no genre at all, which is
+why the chart was thin and so many books were flagged as having none. On the
+shelf this was tested against, genre was missing from 239 books of 241.
+
+It is now a field the schemas allow and an extra that can be asked for, on the
+recalled side with the other judgements.
+
+### Fixed: a corrected genre did not reach the chart
+
+Reported after filling gaps: the genres arrived, the books showed them, and
+"What the collection is made of" did not change.
+
+Tags are not stored. They are cut from genre and keywords when the catalog is
+built, and everything that counts genres reads them rather than the field: the
+chart, the word cloud, the tag filter, and the profile the desk sends. The
+correction layer is applied after the build and was setting the field without
+recutting them, so a genre added by hand or bought from a model was visible on
+the card and nowhere else.
+
+Corrections now recut the tags when they touch genre or keywords.
+
+### Fill in gaps asks for more
+
+It borrowed its field list from the recalled half of the shelf checklist, and
+that split is shaped by a photograph: publisher and series count as read there
+because a spine prints them. At the desk there is no spine, so everything is
+recalled, and the borrowed list was leaving out fields a model can perfectly
+well supply.
+
+It now offers genre, series and volume, publisher, first published, pages,
+rating, original language and abstract, with one tick that sets or clears the
+lot. Ticking every field on every book is the largest request the app can make,
+so it says so once that is what has been asked for.
+
+Two kinds of field stay out. The ones only the owner knows, meaning read state,
+acquisition date, shelf, notes, favourite and loans, because a model filling
+those in would invent the reader's history rather than recall the book's. And
+title and authors, which identify the entry: everything else is a correction,
+and rewriting those is corruption.
+
+### A book listed at the desk opens like one in the catalog
+
+[#6](https://github.com/JesusJBallesteros/LibrAPP/issues/6). The unread pile,
+the loans and the marked ones are all buttons now, opening the same panel the
+catalog opens, with the same Edit and Remove behind it. Cancelling an edit
+returns to the book rather than closing everything, which it used to do in the
+catalog too.
+
+### Also
+
+- The contrast toggle pushed the landing page past the edge of a phone screen.
+  Three controls needed more room than two, and the row did not wrap. It does
+  now, checked at 320, 375 and 1502.
+- An empty genre chart said only that no genres were recorded, which under a
+  heading reads as a section that failed rather than one with nothing in it. It
+  now says why it is empty and where the genres can be got.
+
+---
+
 ## v2.0.1
 
 Three things reported by testers reading real shelves with a real key, and one

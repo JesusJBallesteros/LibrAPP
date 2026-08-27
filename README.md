@@ -34,6 +34,7 @@ The interface is available in English and Spanish, chosen on the opening page.
 - [What it does](#what-it-does)
 - [Language](#language)
 - [Browser support](#browser-support)
+- [Getting at it](#getting-at-it)
 - [Install](#install)
 - [Adding your books](#adding-your-books)
 - [Using the catalog](#using-the-catalog)
@@ -151,6 +152,38 @@ Internet Explorer and browsers older than the versions above are not supported.
 
 ---
 
+## Getting at it
+
+LibrAPP is built to be used by keyboard and by screen reader, not only by mouse
+and eye. It is checked against WCAG 2.2 rather than guessed at, and the colour
+arithmetic is measured by its own tests, so a later change to the palette has to
+fail there before it can ship.
+
+**More contrast** is a switch of its own, beside Day and Night rather than among
+them, because it is not a theme: whoever needs it may want it on either. It
+raises the quiet colours to the enhanced level and gives the rules between rows
+a contrast of their own, since at low vision the structure of a page matters as
+much as the words. If your system already asks for more contrast, you get it
+without finding the switch.
+
+**By keyboard**, a skip link is the first thing Tab reaches, past the sidebar
+and into the catalog. The book panel is a real dialog: it takes focus when it
+opens, keeps it while open, closes on Escape, and hands focus back to the row
+you opened. The current page is marked as such, and the page title names the
+view you are on.
+
+**Everything that carries meaning carries it in words as well.** Read state is
+written out, not only coloured. The genre chart is labelled and every slice is
+named and counted in its legend. Spines keep their titles as their accessible
+names, and word cloud entries say how many books use each word.
+
+Nothing moves for anyone who has asked their system for less motion.
+
+If something here does not work for you, that is a bug and worth
+[reporting](https://github.com/JesusJBallesteros/LibrAPP/issues).
+
+---
+
 ## Install
 
 You do not have to install anything —
@@ -218,9 +251,9 @@ divides into two kinds that are not interchangeable.
 series and volume. These are printed on the spine, so the model is transcribing
 and the answer is evidence of the same kind as the title itself.
 
-**Recalled by the model** — a short abstract, the year first published, a reader
-rating, the original language, and the page count of a typical edition. **None
-of this is in your photograph.** The model
+**Recalled by the model** — a genre, a short abstract, the year first
+published, a reader rating, the original language, and the page count of a
+typical edition. **None of this is in your photograph.** The model
 produces it from what it was trained on, so it can be confidently wrong about a
 real book. LibrAPP marks every book carrying such a field, shows the mark on the
 book, and counts them before you import. The mark comes from which fields are
@@ -298,7 +331,8 @@ where none was. The wall says so underneath, because a height that looked like a
 measurement and was not would be the app inventing something about your books.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
-follows whatever your system asks for. The landing page has the same switch.
+follows whatever your system asks for. **More contrast** is a separate switch
+beside it, so it can be had on either. The landing page has both.
 
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
@@ -432,6 +466,9 @@ whom, and how long each has been gone. See
 a link through to the same filter in the catalog. See
 [Favourites and notes](#favourites-and-notes).
 
+Any book named in those three lists opens the same panel the catalog opens, so
+it can be read, corrected or removed without going looking for it.
+
 **What the collection is made of** — the largest genres as a share of the
 whole, with the long tail grouped as *other*. Genre labels come from your
 sources and are not a controlled list, so the chart says how much of the
@@ -498,7 +535,14 @@ catalog built from a spreadsheet never happens at all.
 
 **Fill in gaps** asks for the same fields later, for books already on the shelf.
 
-1. Tick the fields you want. Each says how many books are missing it.
+1. Tick the fields you want, or tick everything at once. Genre, series and
+   volume, publisher, first published, pages, rating, original language and
+   abstract. Each says how many books are missing it.
+
+   The fields only you can know are deliberately absent: whether a book was
+   read, when it was bought, where it sits, what you thought of it, who has it.
+   So are the title and the authors, which identify the entry rather than
+   describe the work.
 2. The panel says how many books the request covers. The cost goes up with that
    number, so it is stated before anything is sent.
 3. Send it, or copy it and paste the answer back if you have no key.
