@@ -450,7 +450,7 @@ export default {
   'desk.years': '{n} years',
   'desk.yearsShort': '{n} yr',
   'desk.neverOpenedNote':
-    'Ordered by how long they have waited, weighted by how much you evidently wanted them at the time. Only books known to be unread appear — {unknown} books have no reading record at all, and guessing would bury this list under books you already finished.',
+    'Only books known to be unread appear. {unknown} books have no reading record at all.',
   'desk.nothingWaited': 'Nothing has waited that long.',
   'desk.showFive': 'Show only the first five',
   'desk.showAll': 'Show all {n}',
@@ -551,6 +551,8 @@ export default {
   'pie.noGenresHow':
     'A photograph records one only where the checklist asked for it, and a spreadsheet only where it had a column. Fill in gaps, above, can ask for the rest.',
   'pie.other': 'other',
+  'pie.showMore': 'Name more genres',
+  'pie.showFewer': 'Back to the main few',
   'pie.more': '{n} more',
   'pie.note':
     'The {named} largest genres cover {share}% of tagged books. The other {rest} labels are each too small to chart',

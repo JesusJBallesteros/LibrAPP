@@ -457,7 +457,8 @@ general.
 long they have waited and weighted by how much you evidently wanted them at the
 time: filing a book into a collection, or putting it on several devices, is a
 record of intent that a purchase date alone is not. Only books *known* to be
-unread appear.
+unread appear. They are drawn as a shelf, with the years each has waited above
+its spine.
 
 **Away from the shelf** — what you lent and to whom, what you borrowed and from
 whom, and how long each has been gone. See
@@ -473,7 +474,9 @@ it can be read, corrected or removed without going looking for it.
 **What the collection is made of** — the largest genres as a share of the
 whole, with the long tail grouped as *other*. Genre labels come from your
 sources and are not a controlled list, so the chart says how much of the
-collection the named genres actually cover.
+collection the named genres actually cover. **Name more genres** opens it up
+from five to eleven, slices and legend together, and appears only when there is
+a tail to open up.
 
 **What it keeps coming back to** — a cloud of the keywords used by more than one
 book, drawn larger the more often they appear. Pick a word to open the catalog

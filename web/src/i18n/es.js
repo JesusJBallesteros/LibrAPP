@@ -451,7 +451,7 @@ export default {
   'desk.years': '{n} años',
   'desk.yearsShort': '{n} años',
   'desk.neverOpenedNote':
-    'Ordenados por lo que llevan esperando, ponderado por las ganas que tenías de ellos entonces. Solo aparecen los libros de los que consta que no has leído: {unknown} libros no tienen ninguna constancia de lectura.',
+    'Solo aparecen los libros de los que consta que no has leído. {unknown} libros no tienen ninguna constancia de lectura.',
   'desk.nothingWaited': 'Nada lleva esperando tanto tiempo.',
   'desk.showFive': 'Ver solo los cinco primeros',
   'desk.showAll': 'Ver los {n}',
@@ -554,6 +554,8 @@ export default {
   'pie.noGenresHow':
     'Una foto solo lo registra si la lista de extras lo pidió, y una hoja de cálculo solo si tenía esa columna. Rellenar huecos, aquí arriba, puede pedir el resto.',
   'pie.other': 'otros',
+  'pie.showMore': 'Nombrar más géneros',
+  'pie.showFewer': 'Volver a los principales',
   'pie.more': '{n} más',
   'pie.note':
     'Los {named} géneros mayores cubren el {share}% de los libros con etiqueta. Las otras {rest} etiquetas son, cada una, demasiado pequeñas para el gráfico',

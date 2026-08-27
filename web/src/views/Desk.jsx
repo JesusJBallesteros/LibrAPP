@@ -1,5 +1,15 @@
 import { useMemo, useState } from 'react'
-import { authorNames, byline, copyText, forgotten, intentWhy, onLoan } from '../lib.js'
+import {
+  authorNames,
+  byline,
+  copyText,
+  forgotten,
+  intentWhy,
+  onLoan,
+  spineHeight,
+  spineTint,
+  spineWidth,
+} from '../lib.js'
 import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
 import GenrePie from '../components/GenrePie.jsx'
@@ -63,6 +73,62 @@ function FieldCounts({ summary, t, written = false }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+/**
+ * The waiting books as a shelf, drawn the way the catalog draws one.
+ *
+ * The same spines, so a pile the desk has singled out looks like the shelf it
+ * came off rather than like a report about it. What the list had and a spine
+ * has no room for goes above it: the years are the reason these books are here
+ * at all, and the order they stand in.
+ */
+function StaleWall({ rows, authors, language, onPick, t }) {
+  const waited = (row) =>
+    t('desk.yearsShort', {
+      n: row.age.toLocaleString(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+    })
+
+  return (
+    <div className="spine-view">
+      {/* A group rather than a list, for the same reason the catalog wall is
+          one: role="listitem" on a button replaces the button role. */}
+      <div className="spine-wall short" role="group" aria-label={t('desk.neverOpened')}>
+        {rows.map((row) => {
+          const book = row.book
+          const name = byline(book, authors)
+          const why = intentWhy(row)
+          // Everything the row used to show, gathered into the one place a
+          // spine can carry it.
+          const label = [book.title, name, waited(row), why].filter(Boolean).join(' · ')
+          // The slot takes its width from the label rather than from the spine.
+          // A spine is 26px and the years above it are wider than that, so
+          // fixing the slot to the spine would set neighbouring labels
+          // overlapping each other.
+          return (
+            <div className="spine-slot labelled" key={book.id}>
+              <span className="waited-cell tabular">{waited(row)}</span>
+              <button
+                className="spine"
+                title={label}
+                aria-label={label}
+                onClick={() => onPick(book)}
+                style={{
+                  width: spineWidth(book),
+                  height: spineHeight(book),
+                  background: `var(--spine-${spineTint(book)})`,
+                  color: `var(--spine-${spineTint(book)}-ink)`,
+                }}
+              >
+                <span className="spine-title">{book.title}</span>
+              </button>
+            </div>
+          )
+        })}
+      </div>
+      <div className="shelf-board" />
+    </div>
   )
 }
 
@@ -254,28 +320,13 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             {stale.length === 0 ? (
               <p className="muted">{t('desk.nothingWaited')}</p>
             ) : (
-              (showAllStale ? stale : stale.slice(0, 5)).map((row) => (
-                <button
-                  className="forgotten-item spread"
-                  key={row.book.id}
-                  onClick={() => setSelected(row.book)}
-                >
-                  <span>
-                    <span className="title">{row.book.title}</span>
-                    <br />
-                    <span className="tiny muted">{byline(row.book, authors)}</span>
-                    {intentWhy(row) && <div className="why">{intentWhy(row)}</div>}
-                  </span>
-                  <span className="waited">
-                    {t('desk.yearsShort', {
-                      n: row.age.toLocaleString(language, {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 1,
-                      }),
-                    })}
-                  </span>
-                </button>
-              ))
+              <StaleWall
+                rows={showAllStale ? stale : stale.slice(0, 5)}
+                authors={authors}
+                language={language}
+                onPick={setSelected}
+                t={t}
+              />
             )}
 
             {stale.length > 5 && (

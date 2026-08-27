@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+### The waiting books stand as a shelf
+
+The pile the desk singles out is drawn the way the catalog draws a shelf, so a
+list of books looks like books. How long each one has waited sits above its
+spine, where the catalog puts the star: it is the reason the book is in the
+list and the order it stands in, so it stays in view rather than in a tooltip.
+The title, the author, the years and the reason are all still carried as the
+accessible name, and the slot takes its width from the years rather than from
+the spine, so neighbouring labels do not overlap.
+
+The note above the list said the same thing three ways. It now says only what
+cannot be worked out by looking: which books appear, and how many have no
+reading record at all.
+
+### The genre chart can be asked to name more
+
+The chart names the genres that carry the collection and folds the rest into
+one slice, which keeps a pie readable but leaves a real question unanswerable:
+what is actually in the tail. A control under the legend now opens it up from
+five named genres to eleven, changing the slices and the legend together, and
+closes it again.
+
+It appears only when there is something folded to open up, and it brings its
+own colours. The six-step ramp is spaced for six slices and would crowd at
+twelve, so a twelve-step ramp of the same hues serves the wider chart while the
+chart as it first appears is untouched.
+
 ### The shelf photograph is shown where it was chosen
 
 Choosing a photograph left the box looking exactly as it had before, so the only

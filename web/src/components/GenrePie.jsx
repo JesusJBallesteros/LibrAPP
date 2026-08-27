@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useT } from '../i18n/index.jsx'
 /**
  * What the collection is made of.
@@ -19,6 +20,12 @@ import { useT } from '../i18n/index.jsx'
 
 const NAMED_SHARE = 0.8
 const MAX_NAMED = 5
+
+// What "show more" opens the chart up to. Twice as many named genres and a
+// share high enough that the limit, rather than the share, is what stops it:
+// somebody asking for more has said they want the tail, not four fifths again.
+const WIDE_NAMED = 11
+const WIDE_SHARE = 0.98
 
 /** Genre counts, largest first, with the tail folded into one slice. */
 export function summarise(books, { share = NAMED_SHARE, maxNamed = MAX_NAMED } = {}) {
@@ -80,9 +87,18 @@ const percent = (share) => (share < 0.005 ? '<1%' : `${Math.round(share * 100)}%
 
 export default function GenrePie({ books, size = 168 }) {
   const { t } = useT()
-  const { slices, total, distinct } = summarise(books)
+  const [wide, setWide] = useState(false)
+  const { slices, total, distinct } = summarise(
+    books,
+    wide ? { share: WIDE_SHARE, maxNamed: WIDE_NAMED } : undefined,
+  )
   const other = slices.find((s) => s.isOther)
   const named = slices.filter((s) => !s.isOther)
+  // Which ramp the slices are painted from. The wide one is spaced for twelve
+  // slices, so it is used only once the chart is showing that many.
+  const colour = (slot) => `var(--series${wide ? '-wide' : ''}-${slot})`
+  // Nothing to open up when every genre is already named.
+  const canWiden = named.length < distinct
 
   if (!slices.length) {
     // A heading with one quiet line under it reads as a section that failed to
@@ -122,7 +138,7 @@ export default function GenrePie({ books, size = 168 }) {
           <path
             key={slice.label}
             d={slice.d}
-            fill={`var(--series-${slice.slot})`}
+            fill={colour(slice.slot)}
             /* No stroke between slices. The palette is a single ramp from dark
                to light, so neighbouring slices differ in lightness rather than
                hue and separate themselves. Every slice is still named and
@@ -145,7 +161,7 @@ export default function GenrePie({ books, size = 168 }) {
       <ul className="pie-legend">
         {slices.map((slice) => (
           <li key={slice.label}>
-            <span className="swatch" style={{ background: `var(--series-${slice.slot})` }} aria-hidden="true" />
+            <span className="swatch" style={{ background: colour(slice.slot) }} aria-hidden="true" />
             <span className="pie-label">
               {slice.isOther ? t('pie.other') : slice.label}
               {slice.isOther && (
@@ -168,6 +184,12 @@ export default function GenrePie({ books, size = 168 }) {
           })}
           {other.share > 0.5 && ` — ${t('pie.fragmented')}`}
         </p>
+      )}
+
+      {(canWiden || wide) && (
+        <button className="btn small pie-more" onClick={() => setWide((open) => !open)}>
+          {wide ? t('pie.showFewer') : t('pie.showMore')}
+        </button>
       )}
     </div>
   )

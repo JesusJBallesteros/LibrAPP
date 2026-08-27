@@ -84,6 +84,25 @@
   --series-5: #e8d3ba;
   --series-6: #f0e4d2;
 
+  /* The same ramp stretched over twice as many steps, for the chart once it has
+     been asked to name more genres. Kept apart from the six above rather than
+     replacing them, so the chart as it first appears is untouched: the six are
+     spaced for six slices and would crowd at twelve. Neighbouring steps here
+     are closer than neighbouring steps there, which is the cost of showing
+     more, and is why every slice is named and counted in the legend. */
+  --series-wide-1: #6b4023;
+  --series-wide-2: #774f33;
+  --series-wide-3: #845e44;
+  --series-wide-4: #906d54;
+  --series-wide-5: #9c7c64;
+  --series-wide-6: #a88b74;
+  --series-wide-7: #b59b85;
+  --series-wide-8: #c1aa95;
+  --series-wide-9: #cdb9a5;
+  --series-wide-10: #d9c8b5;
+  --series-wide-11: #e6d7c6;
+  --series-wide-12: #f2e6d6;
+
   /* Spine fills, indexed by a hash of the book id so a spine keeps its colour. */
   --spine-1: #7a4a2b;
   --spine-2: #d09a6e;
@@ -1041,6 +1060,23 @@ pre.snippet {
   background: linear-gradient(var(--tan), var(--spine-5));
   opacity: .55;
 }
+/* A wall standing inside a section rather than filling a view. The catalog
+   holds 280px open so a page of spines does not jump about as it is filtered;
+   a handful of waiting books needs no such room. */
+.spine-wall.short { min-height: 0; align-items: flex-end; }
+/* How long the book has waited, above its spine where the catalog puts the
+   star. It is the reason the book is in this list and the order it stands in,
+   so it stays visible rather than living in a tooltip. */
+.waited-cell {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  line-height: 1.2;
+}
+/* A slot wide enough for its label, with the spine at its own width inside it.
+   The spine sets its own width here rather than filling the slot, which is
+   what it does in the catalog wall where there is no label to make room for. */
+.spine-slot.labelled .spine { width: auto; }
 .spine-caption {
   margin: 12px 0 0;
   font-size: 12.5px;
@@ -1341,6 +1377,9 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 .pie-label { min-width: 0; overflow-wrap: anywhere; }
 .pie-value { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); white-space: nowrap; font-size: 12.5px; }
 .pie-note { flex: 1 1 100%; margin: 4px 0 0; }
+/* On its own row under the chart and its note, like the "show all" button that
+   opens up the lists above it. */
+.pie-more { flex: 0 0 auto; margin-top: 10px; }
 
 /* ----------------------------------------------------------- the stacks -- */
 
