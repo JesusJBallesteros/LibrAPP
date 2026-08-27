@@ -13,6 +13,7 @@ import {
   buildRequest,
   gapsByField,
   parseReply,
+  summarise,
 } from '../src/ai/gaps.js'
 import { EDITABLE } from '../src/core/overrides.js'
 
@@ -182,5 +183,55 @@ describe('reading the reply', () => {
     )
     expect(proposals.map((p) => p.id)).toEqual(['b1'])
     expect(ignored).toBe(2)
+  })
+})
+
+// The reply is JSON, and JSON tells a reader nothing they can weigh. What is
+// worth knowing before keeping any of it is how many books are affected and
+// which fields actually came back, since a request asking for five commonly
+// returns three and says nothing about the other two.
+describe('summarising what came back', () => {
+  const proposal = (id, set) => ({ id, title: `Book ${id}`, set })
+
+  it('counts the books', () => {
+    const out = summarise([proposal('1', { pages: 300 }), proposal('2', { pages: 400 })])
+    expect(out.books).toBe(2)
+  })
+
+  it('counts each field separately, not once per book', () => {
+    const out = summarise([
+      proposal('1', { pages: 300, published_year: 1974 }),
+      proposal('2', { pages: 400 }),
+    ])
+    expect(out.fields).toEqual([
+      { field: 'pages', n: 2 },
+      { field: 'published_year', n: 1 },
+    ])
+    expect(out.values).toBe(3)
+  })
+
+  it('puts the field that mostly succeeded first', () => {
+    const out = summarise([
+      proposal('1', { rating: 4 }),
+      proposal('2', { pages: 1 }),
+      proposal('3', { pages: 2 }),
+    ])
+    expect(out.fields[0].field).toBe('pages')
+  })
+
+  it('reads the same way twice for the same reply', () => {
+    // Two fields answered equally often must not swap places between renders.
+    const rows = [proposal('1', { pages: 1, rating: 4 }), proposal('2', { pages: 2, rating: 5 })]
+    expect(summarise(rows).fields).toEqual(summarise(rows).fields)
+    expect(summarise(rows).fields.map((f) => f.field)).toEqual(['pages', 'rating'])
+  })
+
+  it('says nothing rather than something empty when nothing came back', () => {
+    expect(summarise([])).toEqual({ books: 0, values: 0, fields: [] })
+    expect(summarise()).toEqual({ books: 0, values: 0, fields: [] })
+  })
+
+  it('survives a proposal carrying no changes', () => {
+    expect(summarise([proposal('1', undefined)]).fields).toEqual([])
   })
 })

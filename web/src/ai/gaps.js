@@ -133,6 +133,33 @@ export function parseReply(text, { books, fields }) {
 }
 
 /**
+ * What a reply amounts to, in counts.
+ *
+ * The raw document is JSON and shows a reader nothing they can weigh: a wall of
+ * braces beside a list of the same books. What is worth knowing before keeping
+ * any of it is how many books are affected and which fields were actually
+ * answered, since a request asking for five fields commonly comes back with
+ * three of them and no explanation.
+ */
+export function summarise(proposals = []) {
+  const byField = new Map()
+  for (const row of proposals) {
+    for (const field of Object.keys(row.set || {})) {
+      byField.set(field, (byField.get(field) || 0) + 1)
+    }
+  }
+  return {
+    books: proposals.length,
+    values: [...byField.values()].reduce((a, b) => a + b, 0),
+    // Largest first, so the field the request mostly succeeded at leads. Ties
+    // by name, so the same reply always reads the same way.
+    fields: [...byField.entries()]
+      .sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
+      .map(([field, n]) => ({ field, n })),
+  }
+}
+
+/**
  * Why a book was changed, recorded with the correction itself.
  *
  * The shelf path marks a recalled book with a flag on its source record, but a

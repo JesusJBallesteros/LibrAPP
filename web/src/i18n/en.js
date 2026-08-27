@@ -463,6 +463,10 @@ export default {
   'desk.fill.missing': '{n} missing',
   'desk.fill.pickOne': 'Pick at least one field.',
   'desk.fill.covers': 'This asks about {n} {n:book|books}. The cost goes up with that number.',
+  'desk.fill.working': 'Asking about {n} {n:book|books}. The answer arrives as a list to check, not as text.',
+  'desk.fill.forBooks': 'for {n} {n:book|books}',
+  'desk.fill.onBooks': 'on {n} {n:book|books}',
+  'desk.fill.written': 'Kept. {n} {n:book|books} updated.',
   'desk.fill.review': 'What came back',
   'desk.fill.reviewNote':
     '{n} {n:book|books} to update. {ignored} {ignored:answer was|answers were} dropped as unusable or already recorded.',
