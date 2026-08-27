@@ -674,6 +674,9 @@ export default {
     'Discard any tile that holds no readable spine \u2014 a wall, a lamp, the edge of a rug. Discarded tiles are not sent and not paid for.',
   'shelf.tileCountKept': '{kept} of {total} tiles',
   'shelf.noneKept': 'Every tile is discarded, so there is nothing to read. Keep at least one.',
+  'shelf.batchProgress': 'Batch {at} of {of}',
+  'shelf.someTilesFailed':
+    'Some tiles could not be read and are missing from what follows: {tiles}. {why}',
   'shelf.stop': 'Stop',
   'shelf.stopped': 'Stopped before a reply arrived.',
   'shelf.timedOut':

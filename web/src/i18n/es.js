@@ -681,6 +681,9 @@ export default {
   'shelf.tileCountKept': '{kept} de {total} fotos',
   'shelf.noneKept':
     'Están descartadas todas las fotos, así que no hay nada que leer. Deja al menos una.',
+  'shelf.batchProgress': 'Tanda {at} de {of}',
+  'shelf.someTilesFailed':
+    'Algunos recortes no se han podido leer y faltan en lo que sigue: {tiles}. {why}',
   'shelf.stop': 'Detener',
   'shelf.stopped': 'Detenido antes de que llegara una respuesta.',
   'shelf.timedOut':
