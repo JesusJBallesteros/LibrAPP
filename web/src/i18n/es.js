@@ -10,7 +10,9 @@ export default {
     'Fotografía una estantería y LibrAPP leerá los lomos para crear un catálogo que puedes consultar y editar. También puedes subir una tabla, una lista en PDF o un catálogo desde otro dispositivo, y combinarlo todo sin duplicados.',
   'landing.privacy.title': 'Tus libros se quedan contigo',
   'landing.privacy.body':
-    'No hay cuenta ni servidor. Tu catálogo se guarda en este dispositivo y no se sube nada. Una vez cargada, LibrAPP funciona sin conexión.',
+    'No hay cuenta ni servidor. Tu catálogo se guarda en este dispositivo y, una vez cargada, LibrAPP funciona sin conexión alguna.',
+  'landing.privacy.body2':
+    'Dos pasos opcionales pueden usar un servicio de IA, y son lo único que envía algo. Cada uno enseña antes el texto exacto: en el escritorio, Tu perfil de lectura muestra entero lo que se enviaría, con su recuento de caracteres, y un botón para copiar solo eso. No sale nada sin que puedas leerlo.',
   'landing.needs.title': 'Qué hace falta para que funcione',
   'landing.needs.storage':
     'Un lugar donde guardar tu catálogo: una carpeta que elijas o el almacenamiento que gestiona el navegador. Tú decides, y puedes cambiar de idea más adelante.',
@@ -255,6 +257,20 @@ export default {
   'list.theseAreNote': 'es solo un valor por defecto: las filas que indican su propio formato lo conservan.',
   'list.trustNote':
     'decide quién gana cuando dos fuentes discrepan sobre el mismo libro: un extracto verificado pesa más que una lista hecha a mano.',
+  'list.missingTitle': 'Esta lista no traía todo lo que LibrAPP puede aprovechar.',
+  'list.missing.read':
+    'Sin columna de lectura. Todos los libros de este archivo constan como no registrados, y la pila de pendientes del escritorio los deja fuera, porque adivinar la llenaría de libros que ya has leído.',
+  'list.missing.acquired_on':
+    'Sin columna de fecha. Nada de este archivo puede ordenarse por lo que lleva esperando, que es el orden de "Comprados y nunca abiertos".',
+  'list.missing.genre':
+    'Sin columna de género. Estos libros no aportan nada a "De qué se compone la colección". Rellenar huecos, en el escritorio, puede pedir géneros a un modelo.',
+  'list.missing.authors':
+    'Sin columna de autoría. Estos libros no se pueden agrupar por autor, y el mismo libro llegando de otra fuente es más difícil de reconocer.',
+  'list.missing.series':
+    'Sin columna de serie. Nada de este archivo se agrupa en saga, y se pierden los números de volumen.',
+  'list.missing.publisher': 'Sin columna de editorial.',
+  'list.missingHow':
+    'La importación no ha ido mal. Añade la columna y trae el mismo archivo otra vez: sustituirá a este en vez de duplicarlo.',
   'list.imported': '{n} registros importados.',
   'list.nowHolds': 'El catálogo tiene ahora {n} libros.',
   'list.declared':
@@ -838,6 +854,14 @@ export default {
   'catalog.viewMode': 'C\u00f3mo mostrar los libros',
   'catalog.mode.list': 'Lista',
   'catalog.mode.spines': 'Lomos',
+  'catalog.bulk.markAll': 'Marcar los {n} que se ven como',
+  'catalog.bulk.as.read': 'leídos',
+  'catalog.bulk.as.unread': 'sin leer',
+  'catalog.bulk.as.unknown': 'sin registrar',
+  'catalog.bulk.confirm': '¿Marcar {n} libros como {state}?',
+  'catalog.bulk.confirmWhy':
+    'Todos los libros que dejan a la vista los filtros, no solo los que caben en pantalla. Es una corrección como cualquier otra: se puede deshacer libro a libro, o de golpe desde Biblioteca.',
+  'catalog.bulk.doIt': 'Marcar los {n}',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesCaption':
     'El grosor sale del n\u00famero de p\u00e1ginas cuando consta; un libro sin \u00e9l se dibuja con el ancho intermedio en vez de adivinarlo. La altura sale de la longitud del t\u00edtulo y el color es fijo para cada libro, as\u00ed que ambos son decorativos.',

@@ -420,11 +420,12 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             </section>
           )}
 
-          <section className="desk-section">
-            <h3 className="section-head">{t('desk.madeOf')}</h3>
-            <GenrePie books={catalog.books} />
-          </section>
-
+          {/* The cloud leads and the chart follows. Both answer what the
+              collection is made of, and the cloud answers it better on a real
+              shelf: genre labels come from the sources uncontrolled, so a
+              catalog of any size fragments into a long tail and the chart's
+              largest wedge becomes "everything else". The cloud degrades into
+              a smaller cloud instead of into one meaningless slice. */}
           <section className="desk-section">
             <h3 className="section-head">{t('desk.themes')}</h3>
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.themesNote')}</p>
@@ -432,6 +433,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               books={catalog.books}
               onPick={(word) => onGo?.('catalog', { tag: word.key, label: word.value })}
             />
+          </section>
+
+          <section className="desk-section">
+            <h3 className="section-head">{t('desk.madeOf')}</h3>
+            <GenrePie books={catalog.books} />
           </section>
         </div>
 

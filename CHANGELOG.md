@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## v2.1.0
+
+Most of this came out of an adversarial review of the running app, and the
+review was right more often than not. What it got wrong is noted where it
+matters.
+
 
 ### A library to look around, before building one
 
@@ -64,6 +69,63 @@ less trustworthy for it.
 
 Existing catalogs pick this up on their next rebuild, from an import or from
 **Rebuild catalog** under Library.
+
+### Marking many books at once
+
+Clearing the tail of books nobody ever recorded meant opening, editing, saving
+and closing a dialog for each one, which on a real shelf is an afternoon rather
+than a job.
+
+The catalog can now set the read state of every book the filters have left on
+screen. There is no multi-select, because there does not need to be: the search
+and the filters above already say which books are meant. It asks before it
+writes and the asking names the number, since "mark all as read" over an
+unfiltered catalog is rarely what anybody meant, and it can put books back to
+not recorded as well as forward, because the third state is not a shade of no.
+
+Each one is a correction like any other, so the Library can undo them, and a
+book already reading that way is left alone rather than given a correction that
+changes nothing.
+
+### An import says what the file did not carry
+
+A spreadsheet with no read column quietly empties half the desk: every book from
+it counts as not recorded, and the unread pile leaves those out on purpose. The
+import said nothing about it, so the app looked broken rather than under-fed.
+This is the failure that prompted the review in the first place.
+
+It now names what the list did not bring and what each absence costs: no read
+column and the unread pile stays empty, no date column and nothing can be ranked
+by how long it has waited, no genre column and the composition chart gets
+nothing. Judged on the records rather than the header row, because a column
+that is present and empty in every row costs exactly the same and a reader would
+call both "it's not in there".
+
+### The desk leads with the cloud
+
+Both panels answer what the collection is made of, and on a real shelf the cloud
+answers it better: genre labels come from the sources uncontrolled, so a catalog
+of any size fragments into a long tail and the chart's largest wedge becomes
+everything else. The cloud degrades into a smaller cloud instead of into one
+meaningless slice. The chart keeps its place underneath.
+
+### The privacy claim is a conditional now, and points at its own answer
+
+"Nothing is uploaded" sat awkwardly beside two steps that send a reading profile
+to a third party. The app's real answer was already better than the claim and
+was invisible: at the desk, **Your reading profile** prints the exact block that
+would be sent, with its character count, and a button to copy that and nothing
+else. Anybody suspicious can read every byte before any byte moves, or take it
+elsewhere by hand.
+
+The front page says so now, and the README says it where the profile is
+described rather than leaving it to be discovered.
+
+### The browser table stops claiming what was never tested
+
+It answered "Everything works?" with Yes for Gecko and WebKit twenty lines above
+admitting both are untested. The cells say *should* now, and a column says what
+was actually checked.
 
 ### The shelf is what the catalog opens as
 

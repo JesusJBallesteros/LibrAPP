@@ -78,6 +78,11 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           <section>
             <h3 className="section-head">{t('landing.privacy.title')}</h3>
             <p className="tiny muted">{t('landing.privacy.body')}</p>
+            {/* The sharpest criticism of a local-first app that talks to a
+                model is that "nothing is uploaded" and "send this to Anthropic"
+                cannot both be true. They are not, and the honest version is a
+                better claim than the absolute was. */}
+            <p className="tiny muted">{t('landing.privacy.body2')}</p>
           </section>
 
           <section>

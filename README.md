@@ -104,11 +104,17 @@ back to English, so a partial translation still works.
 
 ## Browser support
 
-| Engine | Browsers | Everything works? |
-|---|---|---|
-| **Chromium** | Chrome, Edge, Brave, Opera, Vivaldi, Arc, Comet Samsung Internet | Yes |
-| **Gecko** | Firefox 113+ | Yes, except saving to a folder and installing as an app |
-| **WebKit** | Safari 16.4+, all iOS browsers | Yes, except saving to a folder; install via Add to Home Screen |
+| Engine | Browsers | Everything works? | Checked |
+|---|---|---|---|
+| **Chromium** | Chrome, Edge, Brave, Opera, Vivaldi, Arc, Comet, Samsung Internet | Yes | Chrome on Windows 11 and Android |
+| **Gecko** | Firefox 113+ | Should, except saving to a folder and installing as an app | Not yet |
+| **WebKit** | Safari 16.4+, all iOS browsers | Should, except saving to a folder; install via Add to Home Screen | Not yet |
+
+The last column is the honest one. Firefox and Safari meet every requirement
+listed below, so there is no known reason for them to fail, but *meets the
+requirements* is a reading of the documentation and not a test result. If you
+use one of them, the next section is the answer that does not depend on this
+table.
 
 Only Chromium browsers on a desktop can save your library to a folder you
 choose; everywhere else it goes into browser storage, which works identically
@@ -330,6 +336,12 @@ rather than letting it work out of sight.
 
 **Sort** by title, author, newest or oldest.
 
+**Mark many books at once.** Under the count is *Mark all N shown as read /
+unread / not recorded*, which applies to every book the search and filters have
+left on screen. There is no multi-select because the filters already say which
+books are meant. It asks first and names the number, and each one is a
+correction like any other, so any of them can be undone.
+
 **The catalog opens as a shelf.** Spines draws the filtered books standing
 side by side; **List** is one button away and is where searching and sorting are
 easiest to read.
@@ -530,6 +542,14 @@ not to recommend by resemblance.
 catalog, and only after you have seen what it wants to write.
 
 ### What it knows when it answers
+
+**You can read every byte of it before any of it is sent.** At the bottom of the
+desk, **Your reading profile** prints the exact block that would go to a model,
+with its character count and a scrollable preview, and **Copy just the profile**
+puts that text on your clipboard and nothing else. There is no separate summary
+of what is sent, because that block *is* what is sent. If you would rather not
+send it from here at all, copy it and paste it into an AI session yourself: the
+keyless route exists for exactly that.
 
 LibrAPP builds a profile of your reading and sends it with the question. In v2
 that profile carries:

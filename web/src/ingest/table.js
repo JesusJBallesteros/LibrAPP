@@ -272,6 +272,33 @@ export function rowsToRecords(rows, section = null) {
   return out
 }
 
+// Fields whose absence costs something a reader would notice, in the order the
+// cost is worth mentioning. A list can be missing a publisher and nobody minds;
+// a list missing its read column quietly empties half the desk, which is how
+// this came to be written.
+export const TELLING_FIELDS = ['read', 'acquired_on', 'genre', 'authors', 'series', 'publisher']
+
+/**
+ * Which of those a list turned out not to carry.
+ *
+ * Judged on the records rather than on the header row, because a column that is
+ * present and empty in every row costs exactly what an absent one costs, and a
+ * reader looking at their own spreadsheet would call both "it's not in there".
+ * Works the same for a spreadsheet, a CSV and an XML catalog, none of which
+ * present their columns alike.
+ */
+export function missingFields(records) {
+  const rows = records || []
+  if (!rows.length) return []
+  return TELLING_FIELDS.filter((field) =>
+    rows.every((r) => {
+      const value = r?.[field]
+      if (Array.isArray(value)) return value.length === 0
+      return value === null || value === undefined || value === ''
+    }),
+  )
+}
+
 /** Map a header row onto keyed rows. */
 function keyRows(table) {
   const headers = table[0].map(headerKey)

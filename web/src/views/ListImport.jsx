@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import { loadTable, readXlsx, readXml, xmlSections } from '../ingest/table.js'
+import { loadTable, missingFields, readXlsx, readXml, xmlSections } from '../ingest/table.js'
 import { parseKindle } from '../ingest/kindle.js'
 import { linesFromPdf } from '../ingest/pdftext.js'
 import { stemOf } from '../store/library.js'
@@ -112,7 +112,15 @@ export default function ListImport({ lib, onOwl }) {
       })
       const catalog = await library.rebuild()
       setPending(null)
-      setResult({ records: records.length, counts: catalog.counts, written })
+      setResult({
+        records: records.length,
+        counts: catalog.counts,
+        written,
+        // What this list did not carry. Said here rather than nowhere: a file
+        // with no read column empties the desk's unread pile without ever
+        // explaining itself, and the reader is left thinking the app is broken.
+        missing: missingFields(records),
+      })
       onOwl?.(arrival(before, catalog.counts?.books, records.length))
     })
 
@@ -231,6 +239,19 @@ export default function ListImport({ lib, onOwl }) {
               })}
             </p>
           ) : null}
+          {result.missing?.length > 0 && (
+            <div className="missing-columns">
+              <p className="tiny">
+                <strong>{t('list.missingTitle')}</strong>
+              </p>
+              <ul className="tiny">
+                {result.missing.map((field) => (
+                  <li key={field}>{t(`list.missing.${field}`)}</li>
+                ))}
+              </ul>
+              <p className="tiny faint">{t('list.missingHow')}</p>
+            </div>
+          )}
         </div>
       )}
     </div>

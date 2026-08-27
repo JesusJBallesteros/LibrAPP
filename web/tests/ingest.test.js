@@ -11,6 +11,7 @@ import {
   isCollapsed,
   parseDate,
   parseFormats,
+  missingFields,
   parseRead,
   readCsv,
   readXml,
@@ -212,5 +213,54 @@ describe('a transcription coming back', () => {
     const { records } = loadTranscription(good)
     expect(records[0].acquired_on).toBeUndefined()
     expect(records[0].read).toBeUndefined()
+  })
+})
+
+// A spreadsheet with no read column silently empties half the desk: every book
+// counts as not recorded, and the unread pile excludes those on purpose. The
+// import used to say nothing about it, so the app looked broken instead of
+// under-fed.
+describe('what a list did not carry', () => {
+  const rows = (over = {}) => [
+    { title: 'Dune', authors: ['Frank Herbert'], read: true, acquired_on: '2020-01-01',
+      genre: 'Science fiction', series: null, publisher: 'Ace', ...over },
+  ]
+
+  it('says nothing when the list carries everything', () => {
+    expect(missingFields(rows()).filter((f) => f !== 'series')).toEqual([])
+  })
+
+  it('names a column that is not there at all', () => {
+    expect(missingFields(rows({ read: null }))).toContain('read')
+  })
+
+  it('names a column that is there and empty in every row', () => {
+    // Costs exactly what an absent column costs, and a reader looking at their
+    // own file would call both "it's not in there".
+    expect(missingFields(rows({ genre: '' }))).toContain('genre')
+  })
+
+  it('counts an empty author list as no authors', () => {
+    expect(missingFields(rows({ authors: [] }))).toContain('authors')
+  })
+
+  it('does not name a column one row happens to fill', () => {
+    const some = [...rows({ read: null }), ...rows({ title: 'Foundation', read: false })]
+    expect(missingFields(some)).not.toContain('read')
+  })
+
+  it('treats false as a recorded value, since unread is an answer', () => {
+    expect(missingFields(rows({ read: false }))).not.toContain('read')
+  })
+
+  it('has nothing to say about an empty file', () => {
+    expect(missingFields([])).toEqual([])
+    expect(missingFields(null)).toEqual([])
+  })
+
+  it('only mentions fields whose absence costs something', () => {
+    // location and keywords are absent here and are deliberately not reported.
+    expect(missingFields(rows())).not.toContain('location')
+    expect(missingFields(rows())).not.toContain('keywords')
   })
 })

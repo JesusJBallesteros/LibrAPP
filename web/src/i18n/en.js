@@ -11,7 +11,9 @@ export default {
     'Photograph a shelf and LibrAPP reads the spines into a catalog you can search, filter and browse. You can also bring in a spreadsheet, a store export, or a catalog you built on another device — and combine them all without duplicates.',
   'landing.privacy.title': 'Your books stay with you',
   'landing.privacy.body':
-    'There is no account and no server. Your catalog is written to this device and nothing is uploaded. LibrAPP works with no connection at all once it has loaded.',
+    'There is no account and no server. Your catalog is written to this device, and once LibrAPP has loaded it works with no connection at all.',
+  'landing.privacy.body2':
+    'Two optional steps can use an AI service, and they are the only things that ever send anything. Each shows the exact text first: at the desk, Your reading profile prints the whole of what would be sent, with its character count, and a button to copy just that. Nothing goes anywhere unread.',
   'landing.needs.title': 'What it needs to work',
   'landing.needs.storage':
     'Somewhere to keep your catalog — a folder you pick, or storage the browser manages for you. You choose, and you can change your mind later.',
@@ -257,6 +259,20 @@ export default {
   'list.theseAreNote': 'is only a fallback: rows naming their own format keep it.',
   'list.trustNote':
     'decides who wins when two sources disagree about the same book — a verified export outranks a hand-kept list.',
+  'list.missingTitle': 'This list did not carry everything LibrAPP can use.',
+  'list.missing.read':
+    'No read column. Every book from this file counts as not recorded, and the unread pile at the desk leaves them all out, because guessing would bury it under books you have finished.',
+  'list.missing.acquired_on':
+    'No date column. Nothing from this file can be ranked by how long it has waited, which is what "Bought, and never opened" is ordered by.',
+  'list.missing.genre':
+    'No genre column. These books add nothing to "What the collection is made of". Fill in gaps, at the desk, can ask a model for genres.',
+  'list.missing.authors':
+    'No author column. These books cannot be grouped by author, and the same book arriving from another source is harder to recognise as the same book.',
+  'list.missing.series':
+    'No series column. Nothing from this file groups into a series, and volume numbers are lost.',
+  'list.missing.publisher': 'No publisher column.',
+  'list.missingHow':
+    'Nothing is wrong with the import. Add the column and bring the same file again and it replaces this one rather than duplicating it.',
   'list.imported': '{n} records imported.',
   'list.nowHolds': 'The catalog now holds {n} books.',
   'list.declared':
@@ -830,6 +846,14 @@ export default {
   'catalog.viewMode': 'How to show the books',
   'catalog.mode.list': 'List',
   'catalog.mode.spines': 'Spines',
+  'catalog.bulk.markAll': 'Mark all {n} shown as',
+  'catalog.bulk.as.read': 'read',
+  'catalog.bulk.as.unread': 'unread',
+  'catalog.bulk.as.unknown': 'not recorded',
+  'catalog.bulk.confirm': 'Mark {n} books as {state}?',
+  'catalog.bulk.confirmWhy':
+    'Every book the filters have left on screen, not only the ones in view. This is a correction like any other: it can be undone book by book, or all at once from Library.',
+  'catalog.bulk.doIt': 'Mark all {n}',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesCaption':
     'Thickness comes from the page count, where one was recorded; a book with none is drawn at the middle width rather than guessed at. Height comes from the length of the title and colour is fixed per book, so both are decoration.',

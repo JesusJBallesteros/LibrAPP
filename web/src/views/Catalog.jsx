@@ -22,6 +22,11 @@ import { useT } from '../i18n/index.jsx'
 
 const GROUPINGS = ['title', 'author', 'series']
 
+// Read is three-valued and the third is not a shade of no, so marking in bulk
+// has to be able to put books back to unrecorded as well as forward.
+const BULK_VALUE = { read: true, unread: false, unknown: null }
+const WHY_BULK = 'marked in bulk from the catalog'
+
 // The bucket books with no series fall into. Kept as a fixed key rather than a
 // translated one, so grouping does not reshuffle itself when the language does.
 const STANDALONE = 'Standalone'
@@ -53,6 +58,8 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)
   const [editing, setEditing] = useState(null) // an existing book, or 'new'
+  // Which bulk change has been asked for and not yet confirmed.
+  const [bulk, setBulk] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
 
@@ -119,6 +126,30 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     loan: 'catalog.whereIs',
     favourite: 'catalog.favourites',
   }
+  /**
+   * Set the read state of every book the filters have left on screen.
+   *
+   * Marking a shelf one book at a time means opening, editing, saving and
+   * closing a dialog for each, which for the tail of books nobody ever recorded
+   * is the difference between a job and an afternoon. There is no multi-select
+   * because there does not need to be: the filters above already say which
+   * books are meant, and that is what this applies to.
+   *
+   * It asks first, and the asking names the number, because "mark all as read"
+   * over an unfiltered catalog is not usually what anybody meant.
+   */
+  const markAllShown = (value) =>
+    lib?.run(async (library) => {
+      let overrides = await library.readOverrides()
+      for (const book of shown) {
+        if (book.read === value) continue
+        overrides = setOverride(overrides, book, { read: value }, WHY_BULK)
+      }
+      await library.writeOverrides(overrides)
+      await library.rebuild()
+      setBulk(null)
+    })
+
   /**
    * Turn the mark on or off, from wherever it was pressed.
    *
@@ -211,6 +242,22 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           </button>
         </div>
         <hr className="rule" />
+        {bulk && (
+          <div className="notice bulk-confirm">
+            <p>
+              <strong>{t('catalog.bulk.confirm', { n: shown.length, state: t(`catalog.bulk.as.${bulk}`) })}</strong>
+            </p>
+            <p className="tiny">{t('catalog.bulk.confirmWhy')}</p>
+            <span className="row" style={{ gap: 8, marginTop: 8 }}>
+              <button className="btn small primary" disabled={lib?.busy} onClick={() => markAllShown(BULK_VALUE[bulk])}>
+                {t('catalog.bulk.doIt', { n: shown.length })}
+              </button>
+              <button className="btn small" disabled={lib?.busy} onClick={() => setBulk(null)}>
+                {t('common.cancel')}
+              </button>
+            </span>
+          </div>
+        )}
         <p className="catalog-meta">
             {shown.length === prepared.length
               ? t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
@@ -228,6 +275,23 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
               ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
               : ''}
         </p>
+        {/* Beside the count rather than in a toolbar of its own, because the
+            count is what says which books this acts on. */}
+        {shown.length > 0 && !bulk && (
+          <p className="bulk-offer tiny">
+            <span className="faint">{t('catalog.bulk.markAll', { n: shown.length })}</span>{' '}
+            {['read', 'unread', 'unknown'].map((state) => (
+              <button
+                key={state}
+                className="btn link tiny"
+                disabled={lib?.busy}
+                onClick={() => setBulk(state)}
+              >
+                {t(`catalog.bulk.as.${state}`)}
+              </button>
+            ))}
+          </p>
+        )}
       </header>
 
       <div className="toolbar">

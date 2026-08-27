@@ -8,7 +8,8 @@
 
 import { describe, expect, it } from 'vitest'
 import { EDITABLE, applyOverrides, emptyOverrides, setOverride } from '../src/core/overrides.js'
-import { RECORD_FIELDS, normalise } from '../src/core/records.js'
+import { RECORD_FIELDS, makeSource, normalise, readSource } from '../src/core/records.js'
+import { build } from '../src/core/build.js'
 import { readerProfile } from '../src/core/profile.js'
 import { hiddenActiveFilters } from '../src/lib.js'
 import { toForm } from '../src/components/BookEditor.jsx'
@@ -129,5 +130,76 @@ describe('what the librarian is told', () => {
     const profile = readerProfile(catalogOf([{ id: '1', title: 'Beowulf', favourite: true }]))
     expect(profile).toContain('author not recorded')
     expect(profile).not.toContain('Beowulf  ·  —')
+  })
+})
+
+// Marking a shelf one book at a time means a dialog per book, which for the
+// tail nobody ever recorded is the difference between a job and an afternoon.
+// The filters already say which books are meant, so that is what bulk marking
+// applies to, and the three-valued read state has to move in both directions.
+describe('marking many books at once', () => {
+  const shelf = () =>
+    build([
+      readSource(
+        makeSource({
+          name: 'list',
+          kind: 'table',
+          origin: 'list.json',
+          format: 'physical',
+          confidence: 'high',
+          records: [
+            { title: 'One', authors: ['A'], read: null },
+            { title: 'Two', authors: ['B'], read: null },
+            { title: 'Three', authors: ['C'], read: true },
+          ],
+        }),
+        'list',
+      ),
+    ])
+
+  // What the view does: fold setOverride across the books on screen.
+  const markAll = (books, value, overrides) =>
+    books.reduce(
+      (acc, book) => (book.read === value ? acc : setOverride(acc, book, { read: value }, 'bulk')),
+      overrides,
+    )
+
+  it('marks every book it is given', () => {
+    const catalog = shelf()
+    const after = applyOverrides(shelf(), markAll(catalog.books, true, emptyOverrides()))
+    expect(after.books.every((b) => b.read === true)).toBe(true)
+  })
+
+  it('can put books back to not recorded, which is not a shade of unread', () => {
+    const catalog = shelf()
+    const after = applyOverrides(shelf(), markAll(catalog.books, null, emptyOverrides()))
+    expect(after.books.every((b) => b.read === null)).toBe(true)
+  })
+
+  it('leaves a book that already reads that way uncorrected', () => {
+    // Three is already read, so marking the shelf as read must not record a
+    // correction against it: the Library would then offer to undo a change
+    // that never happened.
+    const catalog = shelf()
+    const overrides = markAll(catalog.books, true, emptyOverrides())
+    expect(Object.keys(overrides.entries)).toHaveLength(2)
+  })
+
+  it('touches nothing but the read state', () => {
+    const catalog = shelf()
+    const before = catalog.books.find((b) => b.title === 'One')
+    const after = applyOverrides(shelf(), markAll(catalog.books, false, emptyOverrides())).books.find(
+      (b) => b.title === 'One',
+    )
+    expect(after.title).toBe(before.title)
+    expect(after.authors).toEqual(before.authors)
+    expect(after.favourite).toBe(before.favourite)
+  })
+
+  it('is a correction like any other, so each one can be undone', () => {
+    const catalog = shelf()
+    const overrides = markAll(catalog.books, true, emptyOverrides())
+    const after = applyOverrides(shelf(), overrides)
+    expect(after.books.filter((b) => b.overridden).length).toBe(2)
   })
 })
