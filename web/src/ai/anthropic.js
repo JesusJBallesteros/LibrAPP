@@ -1,7 +1,7 @@
 // Anthropic, through the official SDK.
 //
 // The other providers are reached with plain fetch, and this one could be too.
-// It keeps the SDK for two things: `messages.parse` with a zod schema, and
+// It keeps the SDK for two things: structured output against a zod schema, and
 // typed errors that carry enough detail to translate into a useful message.
 //
 // The SDK requires `dangerouslyAllowBrowser` to run in a browser. The name is
@@ -98,16 +98,26 @@ export const anthropic = {
 
   async readShelf({ apiKey, model, content, signal }) {
     try {
-      const response = await clientFor(apiKey).messages.parse(
-        {
-          model,
-          max_tokens: replyTokens('anthropic', 'shelf'),
-          thinking: { type: 'adaptive' },
-          messages: [{ role: 'user', content }],
-          output_config: { format: zodOutputFormat(Transcription) },
-        },
-        { signal },
-      )
+      // Streamed, though nothing here reads the stream. The SDK refuses to send
+      // a request it judges could run past ten minutes unless it is streamed,
+      // and it judges that from max_tokens alone before anything leaves the
+      // browser: (60 min * max_tokens) / 128000, refused above ten minutes.
+      // That puts the ceiling at 21333 tokens, and a shelf read asks for more.
+      //
+      // finalMessage returns the same parsed message the non-streaming call
+      // returned, so the schema still decides what counts as a valid reply.
+      const response = await clientFor(apiKey)
+        .messages.stream(
+          {
+            model,
+            max_tokens: replyTokens('anthropic', 'shelf'),
+            thinking: { type: 'adaptive' },
+            messages: [{ role: 'user', content }],
+            output_config: { format: zodOutputFormat(Transcription) },
+          },
+          { signal },
+        )
+        .finalMessage()
       if (response.stop_reason === 'refusal') {
         throw new Error('The model declined to answer this request.')
       }

@@ -250,3 +250,30 @@ describe('an SDK parse failure reaching the reader', () => {
     expect(explain(abort)).toBe(abort)
   })
 })
+
+// The SDK will not send a request it judges could run past ten minutes unless
+// it is streamed, and it judges that from max_tokens alone, before anything
+// leaves the browser. Raising the shelf budget to 32000 crossed that line and
+// broke every Anthropic read, including a single tile, until the read was
+// streamed. The arithmetic is the SDK's own, copied here so a later change to
+// the budget has to face it.
+describe('the ceiling on a request that is not streamed', () => {
+  // client.js: expectedTime = (60 min * maxTokens) / 128000, refused above 10.
+  const NON_STREAMING_CEILING = (10 * 60 * 1000) * 128000 / (60 * 60 * 1000)
+
+  it('sits at 21333 tokens', () => {
+    expect(Math.floor(NON_STREAMING_CEILING)).toBe(21333)
+  })
+
+  it('is one the shelf budget deliberately exceeds', () => {
+    // Not a mistake to correct by lowering it. A shelf read needs the room,
+    // which is why that call streams.
+    expect(replyTokens('anthropic', 'shelf')).toBeGreaterThan(NON_STREAMING_CEILING)
+  })
+
+  it('leaves the question budget under it, since that call is short', () => {
+    for (const family of ['anthropic', 'openai', 'google']) {
+      expect(replyTokens(family, 'ask'), family).toBeLessThan(NON_STREAMING_CEILING)
+    }
+  })
+})
