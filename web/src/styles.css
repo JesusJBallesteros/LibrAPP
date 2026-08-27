@@ -1218,7 +1218,23 @@ pre.snippet {
   color: var(--ink-faint);
 }
 
-.forgotten-item { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); }
+/* The rows on the desk open the book they name, so they are buttons and have
+   to be told they are not the browser's idea of one. Storage uses the same
+   class for rows that hold their own controls and stay divs. */
+.forgotten-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+}
+button.forgotten-item { cursor: pointer; transition: background .12s; }
+button.forgotten-item:hover { background: var(--accent-soft); }
 .forgotten-item:last-child { border-bottom: 0; }
 .forgotten-item .title { font: 400 17px/1.3 var(--serif); }
 .forgotten-item .tiny.muted { font-size: 12.5px; color: var(--ink-soft); }

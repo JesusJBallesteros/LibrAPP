@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { authorNames, byline, copyText, forgotten, intentWhy, onLoan } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
+import BookPanel from '../components/BookPanel.jsx'
 import GenrePie from '../components/GenrePie.jsx'
 import WordCloud from '../components/WordCloud.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
@@ -86,6 +87,9 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
   // What the last accepted request changed, kept after the review closes so
   // pressing Keep leaves something behind rather than an empty panel.
   const [written, setWritten] = useState(null)
+  // A book opened from one of the lists below. The same panel the catalog
+  // opens, because a book listed here is the same book.
+  const [selected, setSelected] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
@@ -251,7 +255,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               <p className="muted">{t('desk.nothingWaited')}</p>
             ) : (
               (showAllStale ? stale : stale.slice(0, 5)).map((row) => (
-                <div className="forgotten-item spread" key={row.book.id}>
+                <button
+                  className="forgotten-item spread"
+                  key={row.book.id}
+                  onClick={() => setSelected(row.book)}
+                >
                   <span>
                     <span className="title">{row.book.title}</span>
                     <br />
@@ -266,7 +274,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                       }),
                     })}
                   </span>
-                </div>
+                </button>
               ))
             )}
 
@@ -297,7 +305,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                 <div key={heading} style={{ marginTop: 10 }}>
                   <p className="group-label">{t(heading, { n: rows.length })}</p>
                   {rows.map((row) => (
-                    <div className="forgotten-item spread" key={row.book.id}>
+                    <button
+                      className="forgotten-item spread"
+                      key={row.book.id}
+                      onClick={() => setSelected(row.book)}
+                    >
                       <span>
                         <span className="title">{row.book.title}</span>
                         <br />
@@ -314,7 +326,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                               }),
                             })}
                       </span>
-                    </div>
+                    </button>
                   ))}
                 </div>
               ) : null,
@@ -329,7 +341,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               </div>
               <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
               {favourites.map((book) => (
-                <div className="forgotten-item spread" key={book.id}>
+                <button
+                  className="forgotten-item spread"
+                  key={book.id}
+                  onClick={() => setSelected(book)}
+                >
                   <span>
                     <span className="title">
                       <span className="star" aria-hidden="true">{'\u2605'}</span>
@@ -341,7 +357,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                     </span>
                     {book.notes && <div className="why">{book.notes}</div>}
                   </span>
-                </div>
+                </button>
               ))}
               <button
                 className="btn link"
@@ -610,6 +626,13 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
           )}
         </div>
       </div>
+
+      <BookPanel
+        book={selected}
+        authors={authors}
+        lib={lib}
+        onClose={() => setSelected(null)}
+      />
     </div>
   )
 }

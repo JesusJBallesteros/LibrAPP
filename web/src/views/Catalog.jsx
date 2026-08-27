@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import BookDetail from '../components/BookDetail.jsx'
 import BookEditor from '../components/BookEditor.jsx'
-import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
+import BookPanel from '../components/BookPanel.jsx'
+import { setOverride } from '../core/overrides.js'
 import {
   authorNames,
   borrowed,
@@ -452,48 +452,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
         </div>
       )}
 
-      {selected && (
-        <BookDetail
-          book={selected}
-          authors={authors}
-          busy={lib?.busy}
-          onClose={() => setSelected(null)}
-          onEdit={(book) => {
-            setSelected(null)
-            setEditing(book)
-          }}
-          onRemove={(book) =>
-            lib.run(async (library) => {
-              await library.writeOverrides(setRemoved(await library.readOverrides(), book, true))
-              await library.rebuild()
-              setSelected(null)
-            })
-          }
-          onRevert={(book) =>
-            lib.run(async (library) => {
-              await library.writeOverrides(clearOverride(await library.readOverrides(), book.id))
-              await library.rebuild()
-              setSelected(null)
-            })
-          }
-        />
-      )}
-
-      {editing && editing !== 'new' && (
-        <BookEditor
-          book={editing}
-          authorNames={authors}
-          busy={lib?.busy}
-          onCancel={() => setEditing(null)}
-          onSave={(changes) =>
-            lib.run(async (library) => {
-              await library.writeOverrides(setOverride(await library.readOverrides(), editing, changes))
-              await library.rebuild()
-              setEditing(null)
-            })
-          }
-        />
-      )}
+      <BookPanel
+        book={selected}
+        authors={authors}
+        lib={lib}
+        onClose={() => setSelected(null)}
+      />
 
       {editing === 'new' && (
         <BookEditor
