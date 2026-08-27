@@ -59,7 +59,13 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             invented when no author is known. */}
         <div className="catalog-card">
           <span className="card-hole" aria-hidden="true" />
-          {mark && <p className="call-number">{mark}</p>}
+          {/* Named, because on its own it looks like a code the app knows the
+              meaning of and the reader does not. */}
+          {mark && (
+            <p className="call-number" title={t('book.callNumber')}>
+              {mark}
+            </p>
+          )}
 
           <h3>
             {book.favourite && (

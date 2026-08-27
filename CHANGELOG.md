@@ -2,6 +2,54 @@
 
 ## Unreleased
 
+### The shelf is what the catalog opens as
+
+It opened as a list, which is the right shape for searching and the wrong one
+for arriving: a catalog of books that first appears as rows of text looks like
+an export of itself. It opens on the spines now, and the list is one button
+away.
+
+### A spine is measured where there is a measurement
+
+Thickness now comes from the page count, in three bands: thin under 150 pages,
+medium to 300, thick above. That is the one number on a shelf that is a fact
+about the book, and it was previously spent on height, an axis nobody reads a
+shelf by, while thickness was decided by whether the book was physical, which
+says nothing about the book and only about how it was catalogued.
+
+Height now comes from the length of the title, and the caption says it is
+decoration. A long title wraps to a second line across the spine instead of
+making it taller or being cut off, and the thinnest band is wide enough to hold
+two lines: the type size was chosen against that floor rather than picked for
+looks, and it is the same size on every spine, so a thick book does not read as
+a more important one.
+
+A book with no page count is drawn at the middle width. Not because it is
+average, but because nothing is known, and drawing it thin would be inventing a
+fact about it.
+
+### Fixed: one genre could hold two slices of the chart
+
+Reported by a reader looking at the legend: *satire* in lower case sat beside
+*Literary fiction* capitalised, and the widened chart put *Comic fantasy* and
+*comic fantasy* next to each other as two separate genres.
+
+Tags have carried a folded key beside their value since they were introduced,
+with the accents and punctuation taken out and the case flattened, for exactly
+this comparison. The chart counted the values instead. On the shelf this was
+found on, that split 117 genres into 127 labels.
+
+The chart counts keys now, and names each genre by whichever spelling the shelf
+uses most, ties going the same way every time so a re-import cannot rename a
+slice. It does not rescue the chart on its own: with eleven genres named, the
+tail is still half the collection.
+
+### The shelf mark says what it is
+
+The letters and year on a book's card, `GAI 2017`, had nothing anywhere saying
+they are the first letters of the author name and the year the book was
+acquired. Hovering it now says so.
+
 ### The waiting books stand as a shelf
 
 The pile the desk singles out is drawn the way the catalog draws a shelf, so a

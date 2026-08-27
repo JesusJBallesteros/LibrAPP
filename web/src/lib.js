@@ -190,36 +190,56 @@ export function spineHash(id, range) {
 /** 1..8, matching the --spine-N custom properties. */
 export const spineTint = (book) => spineHash(book?.id, 8) + 1
 
-/** A physical book gets a wider spine, because on a shelf it would. */
-export const spineWidth = (book) => ((book?.formats || []).includes('physical') ? 34 : 26)
+// Where a book stops being thin and starts being thick, in pages. Three bands
+// rather than a smooth scale: a shelf is read by eye, and nobody looking at it
+// is measuring the difference between 260 pages and 280.
+export const PAGE_BANDS = { thin: 150, thick: 300 }
+
+// Wide enough for two lines of title at the size every spine uses. A thin book
+// with a long name still has to be readable, so this is the floor the type size
+// was chosen against rather than a number picked for looks.
+const THIN = 34
+const MEDIUM = 42
+const THICK = 52
+
+/**
+ * How thick to draw the spine, in pixels.
+ *
+ * From the page count, which is the only honest measure of thickness, and only
+ * where one was recorded. A book with no page count is drawn at the middle
+ * width: not because it is average, but because the app does not know, and
+ * guessing thin or thick would be inventing a fact about the book. The caption
+ * under the wall says so.
+ */
+export function spineWidth(book) {
+  const pages = Number(book?.pages)
+  if (!Number.isFinite(pages) || pages <= 0) return MEDIUM
+  if (pages <= PAGE_BANDS.thin) return THIN
+  if (pages <= PAGE_BANDS.thick) return MEDIUM
+  return THICK
+}
+
+/** Whether a spine's width came from a recorded page count or from not knowing. */
+export const spineMeasured = (book) => {
+  const pages = Number(book?.pages)
+  return Number.isFinite(pages) && pages > 0
+}
 
 /**
  * How tall to draw the spine, in pixels.
  *
- * A page count is the honest input, and a book has one only where somebody
- * asked for it while reading a photograph. Where there is none the height comes
- * from the length of the title instead, which is decoration rather than data.
- * A wall can therefore mix the two, which is why its caption says both rules
- * apply rather than claiming one.
+ * From the length of the title, which is decoration and says so: a taller spine
+ * means a longer name, not a bigger book. Thickness is where the real measure
+ * went, since a page count is a fact about the book and a title is not.
  *
- * Both scales are clamped to the same band, so a long book and a long title
- * never make a spine that towers over the shelf.
+ * Clamped to a band, so a book with a subtitle and two colons does not tower
+ * over the shelf. Past the top of the band the title wraps to a second line
+ * across the spine instead of making it taller.
  */
 export function spineHeight(book, { min = 150, max = 250 } = {}) {
-  const pages = Number(book?.pages)
-  if (Number.isFinite(pages) && pages > 0) {
-    const span = Math.min(Math.max(pages, 80), 900)
-    return Math.round(min + ((span - 80) / 820) * (max - min))
-  }
   const length = String(book?.title || '').length
   const span = Math.min(Math.max(length, 4), 60)
   return Math.round(min + ((span - 4) / 56) * (max - min))
-}
-
-/** Whether a spine's height came from a recorded page count or from its title. */
-export const spineMeasured = (book) => {
-  const pages = Number(book?.pages)
-  return Number.isFinite(pages) && pages > 0
 }
 
 /**

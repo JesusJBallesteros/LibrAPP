@@ -45,7 +45,10 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
   const [showMore, setShowMore] = useState(false)
-  const [mode, setMode] = useState('list')
+  // Spines first. A catalog opening as a list opens looking like a database
+  // export; opening as a shelf, it looks like the thing it describes. The list
+  // is a button away and is what search and sorting are read in.
+  const [mode, setMode] = useState('spines')
   const [group, setGroup] = useState('title')
   const [sort, setSort] = useState('title')
   const [selected, setSelected] = useState(null)

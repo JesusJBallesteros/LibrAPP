@@ -198,6 +198,7 @@ export default {
   'book.authorUnknown': 'Autor\u00eda sin registrar',
   'book.notedWhenRead': 'Tu nota',
   'book.panelFor': 'Ficha de {title}',
+  'book.callNumber': 'Signatura: las primeras letras del apellido y el año en que lo conseguiste',
   'book.favourite': 'Un favorito',
   'book.unknownNote': 'No consta si lo leíste.',
   'book.corrected': 'Corregido a mano.',
@@ -829,6 +830,6 @@ export default {
   'catalog.mode.spines': 'Lomos',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesCaption':
-    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale del n\u00famero de p\u00e1ginas cuando consta, y de la longitud del t\u00edtulo cuando no, as\u00ed que un estante puede mezclar ambas.',
+    'El grosor sale del n\u00famero de p\u00e1ginas cuando consta; un libro sin \u00e9l se dibuja con el ancho intermedio en vez de adivinarlo. La altura sale de la longitud del t\u00edtulo y el color es fijo para cada libro, as\u00ed que ambos son decorativos.',
   'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

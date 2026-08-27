@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { fold } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 /**
  * What the collection is made of.
@@ -27,19 +28,44 @@ const MAX_NAMED = 5
 const WIDE_NAMED = 11
 const WIDE_SHARE = 0.98
 
+/**
+ * Which spelling of a genre to put in the legend.
+ *
+ * The one the shelf uses most, so a genre written once in lower case and
+ * fifteen times capitalised is named the way it mostly appears. Ties go to the
+ * alphabet rather than to whichever book happened to be read first, so the
+ * legend does not change when a source is re-imported.
+ */
+const commonest = (spellings) =>
+  [...spellings.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0]
+
 /** Genre counts, largest first, with the tail folded into one slice. */
 export function summarise(books, { share = NAMED_SHARE, maxNamed = MAX_NAMED } = {}) {
+  // Counted by the folded key, not by the label. A tag already carries the
+  // comparison form of its own value, and counting by the label instead put
+  // "Comic fantasy" and "comic fantasy" in the legend as two genres, next to
+  // each other, each with its own wedge.
+  //
+  // The key is not shown to anyone: it has had its accents and punctuation
+  // taken out. Each genre is named by whichever spelling the shelf uses most.
   const counts = new Map()
   for (const book of books || []) {
     for (const tag of book.tags || []) {
       if (tag.kind !== 'genre') continue
-      counts.set(tag.value, (counts.get(tag.value) || 0) + 1)
+      // Falls back for a catalog built before tags carried a key.
+      const key = tag.key || fold(tag.value)
+      const entry = counts.get(key) || { count: 0, spellings: new Map() }
+      entry.count += 1
+      entry.spellings.set(tag.value, (entry.spellings.get(tag.value) || 0) + 1)
+      counts.set(key, entry)
     }
   }
-  const total = [...counts.values()].reduce((a, b) => a + b, 0)
+  const total = [...counts.values()].reduce((sum, e) => sum + e.count, 0)
   if (!total) return { slices: [], total: 0, distinct: 0 }
 
-  const ordered = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  const ordered = [...counts.entries()]
+    .map(([key, entry]) => [commonest(entry.spellings), entry.count, key])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
   const named = []
   let running = 0
   for (const [value, n] of ordered) {

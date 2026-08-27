@@ -325,11 +325,23 @@ rather than letting it work out of sight.
 
 **Sort** by title, author, newest or oldest.
 
-**Switch the view** between **List** and **Spines**. Spines draws the filtered
-books as a shelf: colour is fixed per book so a spine keeps it, and height comes
-from the page count where one was recorded and from the length of the title
-where none was. The wall says so underneath, because a height that looked like a
-measurement and was not would be the app inventing something about your books.
+**The catalog opens as a shelf.** Spines draws the filtered books standing
+side by side; **List** is one button away and is where searching and sorting are
+easiest to read.
+
+**Thickness is the one real measurement.** It comes from the page count, in
+three bands: under 150 pages is thin, 150 to 300 is medium, over 300 is thick.
+A book with no page count recorded is drawn at the middle width, because nothing
+is known about it and drawing it thin would be inventing a fact. Page counts
+arrive from the extras checklist while a photograph is read, or from **Fill in
+gaps** at the desk.
+
+**Height and colour are decoration, and the wall says so underneath.** Height
+comes from the length of the title, so a tall spine means a long name and not a
+big book. Colour is fixed per book so a spine keeps its own. A long title wraps
+to a second line across the spine rather than making it taller, and the type is
+the same size on every spine so a thick book does not look more important than
+a thin one.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. **More contrast** is a separate switch
@@ -474,9 +486,10 @@ it can be read, corrected or removed without going looking for it.
 **What the collection is made of** — the largest genres as a share of the
 whole, with the long tail grouped as *other*. Genre labels come from your
 sources and are not a controlled list, so the chart says how much of the
-collection the named genres actually cover. **Name more genres** opens it up
-from five to eleven, slices and legend together, and appears only when there is
-a tail to open up.
+collection the named genres actually cover. Genres are matched ignoring case
+and accents, so one written two ways is one slice, named by whichever spelling
+your shelf uses most. **Name more genres** opens it up from five to eleven,
+slices and legend together, and appears only when there is a tail to open up.
 
 **What it keeps coming back to** — a cloud of the keywords used by more than one
 book, drawn larger the more often they appear. Pick a word to open the catalog

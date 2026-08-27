@@ -199,6 +199,7 @@ export default {
   'book.authorUnknown': 'Author not recorded',
   'book.notedWhenRead': 'Your note',
   'book.panelFor': 'Details for {title}',
+  'book.callNumber': 'Shelf mark: the first letters of the author name, and the year you got it',
   'book.favourite': 'A favourite',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',
@@ -821,6 +822,6 @@ export default {
   'catalog.mode.spines': 'Spines',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesCaption':
-    'Colour is fixed per book so a spine keeps it. Height comes from the page count where one was recorded, and from the length of the title where none was, so a shelf can mix the two.',
+    'Thickness comes from the page count, where one was recorded; a book with none is drawn at the middle width rather than guessed at. Height comes from the length of the title and colour is fixed per book, so both are decoration.',
   'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

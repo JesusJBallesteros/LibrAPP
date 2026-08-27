@@ -1028,6 +1028,12 @@ pre.snippet {
 
 .spine {
   border: 0;
+  /* Centred across the thickness, near the top along the length, which is
+     where a title sits on a real spine. Without the centring the lettering
+     hangs off the left edge and a thick book looks mis-set. */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 12px 0 0;
   width: 100%;
   border-radius: 1px 1px 0 0;
@@ -1036,16 +1042,28 @@ pre.snippet {
      edge and a highlight down the left. */
   box-shadow: inset -3px 0 6px rgba(0, 0, 0, .16), inset 3px 0 4px rgba(255, 255, 255, .12);
 }
+/* Turned on its side, so the block axis runs across the spine and the inline
+   axis runs down it. That is what makes the two limits below mean what they
+   say: inline is how long one line may be, block is how many lines fit. */
 .spine-title {
   display: block;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font: 400 15px/1 var(--serif);
+  /* One size on every spine, thin or thick. Type that grew with the book would
+     make a thick book look important rather than long. 12px is the size two
+     lines of it fit inside the thinnest spine. */
+  font: 400 12px/1.25 var(--serif);
   /* Inherited from the spine, which picks the ink that suits its own fill. */
   color: inherit;
-  white-space: nowrap;
+  /* Wraps rather than running off the end. A long title becomes two lines
+     across the spine instead of a taller spine or a clipped name. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-inline-size: 100%;
+  /* Two lines: 2 x 1.25 x 12px. A third is cut off, the way a single line used
+     to be cut off when it outran the spine. */
+  max-block-size: 30px;
   overflow: hidden;
-  max-height: 100%;
 }
 .spine[aria-selected='true'] { outline: 2px solid var(--ink); outline-offset: 2px; }
 .spine:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }

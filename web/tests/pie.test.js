@@ -75,6 +75,79 @@ describe('what the chart names', () => {
   })
 })
 
+// Tags carry a folded key beside their value, and one genre is often written
+// two ways across a shelf. The chart counted labels rather than keys, which put
+// "Comic fantasy" and "comic fantasy" in the legend as two adjacent genres.
+describe('one genre written two ways', () => {
+  const tagged = (pairs) =>
+    pairs.map(([value, key]) => ({ tags: [{ kind: 'genre', value, key }] }))
+
+  it('counts both spellings as one genre', () => {
+    const result = summarise(
+      tagged([
+        ['Satire', 'satire'],
+        ['satire', 'satire'],
+        ['satire', 'satire'],
+      ]),
+    )
+    expect(result.slices).toHaveLength(1)
+    expect(result.slices[0].count).toBe(3)
+    expect(result.distinct).toBe(1)
+  })
+
+  it('names it by the spelling the shelf uses most', () => {
+    const result = summarise(
+      tagged([
+        ['satire', 'satire'],
+        ['satire', 'satire'],
+        ['Satire', 'satire'],
+      ]),
+    )
+    expect(result.slices[0].label).toBe('satire')
+  })
+
+  it('breaks a tie the same way whichever order the books arrive in', () => {
+    // Which spelling wins a tie matters less than that it is always the same
+    // one: a legend that renamed a genre on re-import would look like a change
+    // in the shelf. Collation puts lower case first, so the tie goes there.
+    const one = summarise(tagged([['Satire', 'satire'], ['satire', 'satire']]))
+    const other = summarise(tagged([['satire', 'satire'], ['Satire', 'satire']]))
+    expect(one.slices[0].label).toBe('satire')
+    expect(other.slices[0].label).toBe('satire')
+  })
+
+  it('folds accents and punctuation, not only case', () => {
+    const result = summarise(
+      tagged([
+        ['Ciencia ficción', 'ciencia ficcion'],
+        ['ciencia ficcion', 'ciencia ficcion'],
+      ]),
+    )
+    expect(result.slices).toHaveLength(1)
+    expect(result.slices[0].count).toBe(2)
+  })
+
+  it('keeps genuinely different genres apart', () => {
+    const result = summarise(
+      tagged([
+        ['Fantasy', 'fantasy'],
+        ['Comic fantasy', 'comic fantasy'],
+      ]),
+    )
+    expect(result.distinct).toBe(2)
+  })
+
+  it('falls back to folding the value when a tag carries no key', () => {
+    // A catalog built before tags carried one.
+    const result = summarise([
+      { tags: [{ kind: 'genre', value: 'Satire' }] },
+      { tags: [{ kind: 'genre', value: 'satire' }] },
+    ])
+    expect(result.slices).toHaveLength(1)
+    expect(result.slices[0].count).toBe(2)
+  })
+})
+
 describe('asking the chart to name more', () => {
   const wide = { share: 0.98, maxNamed: 11 }
   const many = shelf({
