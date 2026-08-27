@@ -40,10 +40,6 @@ export const RECORD_FIELDS = {
   formats: [],
   confidence: null,
   location: null,
-  // The piece of the photograph this book was read from, as a path inside the
-  // library folder. Only a shelf read sets it: a spreadsheet has no picture of
-  // anything. Null means the book is drawn rather than shown.
-  spine: null,
   collapsed: false,
   listed_volumes: null,
   flags: [],

@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSpines } from '../store/useSpines.js'
 import BookEditor from '../components/BookEditor.jsx'
 import BookPanel from '../components/BookPanel.jsx'
 import { setOverride } from '../core/overrides.js'
@@ -387,7 +386,6 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           onPick={setSelected}
           onToggle={toggleFavourite}
           busy={lib?.busy}
-          library={lib?.library}
           sort={sort}
           t={t}
         />
@@ -515,14 +513,8 @@ function Star({ book, onToggle, t, busy }) {
  * Colour and height are decoration, and the caption below says so, because a
  * height that looked like a page count and was not would be the app inventing
  * data about the books.
- *
- * A book read from a photograph is the exception: the piece of the picture it
- * was read from is shown in place of the drawn spine, so that part of the wall
- * is the shelf rather than a stand-in for it. Everything else keeps its colour,
- * and a crop that has gone missing falls back to one.
  */
-function SpineWall({ books, authors, selected, onPick, onToggle, busy, library, sort, t }) {
-  const spines = useSpines(books, library)
+function SpineWall({ books, authors, selected, onPick, onToggle, busy, sort, t }) {
   return (
     <div className="spine-view">
       {/* A group rather than a list: role="listitem" on a button replaces the
@@ -550,7 +542,7 @@ function SpineWall({ books, authors, selected, onPick, onToggle, busy, library, 
                   it sits over the spine rather than down on the shelf board. */}
               <Star book={book} onToggle={onToggle} t={t} busy={busy} />
               <button
-                className={`spine${spines.get(book.spine) ? ' photographed' : ''}`}
+                className="spine"
                 aria-selected={selected?.id === book.id}
                 title={name ? `${book.title} · ${name}` : book.title}
                 onClick={() => onPick(book)}
@@ -560,13 +552,7 @@ function SpineWall({ books, authors, selected, onPick, onToggle, busy, library, 
                   color: `var(--spine-${spineTint(book)}-ink)`,
                 }}
               >
-                {spines.get(book.spine) ? (
-                  // Decoration, and named by the button around it. Announcing
-                  // the title twice would make every spine say it twice.
-                  <img src={spines.get(book.spine)} alt="" loading="lazy" />
-                ) : (
-                  <span className="spine-title">{book.title}</span>
-                )}
+                <span className="spine-title">{book.title}</span>
               </button>
             </div>
           )

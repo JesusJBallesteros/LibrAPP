@@ -818,6 +818,6 @@ export default {
   'catalog.mode.spines': 'Spines',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesCaption':
-    'A book read from a photograph shows the piece of the photograph it was read from. Every other spine is drawn: colour is fixed per book so a spine keeps it, and height comes from the page count where one was recorded, and from the length of the title where none was.',
+    'Colour is fixed per book so a spine keeps it. Height comes from the page count where one was recorded, and from the length of the title where none was, so a shelf can mix the two.',
   'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

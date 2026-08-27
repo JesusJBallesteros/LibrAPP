@@ -429,7 +429,6 @@ function buildEntry(cluster, collapsed, authors, ids) {
     devices: firstFact('devices'),
     update_available: Boolean(firstFact('update_available')),
     location: firstFact('location'),
-    spine: firstFact('spine'),
     // Recalled by a model rather than read from a spine, and only present when
     // the extras checklist asked for them. They travel through the merge like
     // any other fact: the record with the highest confidence wins. Leaving them

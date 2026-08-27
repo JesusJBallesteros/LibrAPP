@@ -32,12 +32,6 @@ const Book = z.object({
   rating: z.number().nullable(),
   original_language: z.string().nullable(),
   pages: z.number().int().nullable(),
-  // Where the spine is, so the app can cut it out and show it.
-  tile: z.string().nullable().describe('the label of the tile this spine is in, e.g. "r2c3"'),
-  box: z
-    .array(z.number())
-    .nullable()
-    .describe('the spine within that tile as [left, top, right, bottom], each 0 to 1'),
   flags: z.array(z.string()),
 })
 const Shelf = z.object({
@@ -93,7 +87,7 @@ export const anthropic = {
   shelfContent({ tiles, tail }) {
     const content = []
     for (const tile of tiles) {
-      content.push({ type: 'text', text: `Tile r${tile.row}c${tile.column}:` })
+      content.push({ type: 'text', text: `Tile row ${tile.row}, column ${tile.column}:` })
       content.push({
         type: 'image',
         source: { type: 'base64', media_type: 'image/jpeg', data: tile.base64 },

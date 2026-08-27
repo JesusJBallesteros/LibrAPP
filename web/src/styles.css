@@ -1006,19 +1006,6 @@ pre.snippet {
   overflow: hidden;
   max-height: 100%;
 }
-/* A spine read from a photograph shows that piece of the photograph. The
-   padding above is for lettering this one does not have, and the fill behind
-   would show through the top of the picture without it. */
-.spine.photographed { padding: 0; overflow: hidden; }
-.spine.photographed img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  /* The slot is not the shape of the crop. Cover keeps the lettering upright
-     and the right way round, which contain would letterbox and stretching
-     would bend. */
-  object-fit: cover;
-}
 .spine[aria-selected='true'] { outline: 2px solid var(--ink); outline-offset: 2px; }
 .spine:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 

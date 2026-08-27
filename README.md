@@ -324,22 +324,11 @@ rather than letting it work out of sight.
 
 **Sort** by title, author, newest or oldest.
 
-**Switch the view** between **List** and **Spines**, which shows the filtered
-books as a shelf.
-
-A book read from a photograph shows the piece of that photograph it was read
-from, so that part of the wall is your shelf rather than a drawing of it. Books
-that came from a spreadsheet or a store export have no photograph to show and
-are drawn instead: colour is fixed per book so a spine keeps it, and height
-comes from the page count where one was recorded and from the length of the
-title where none was. The wall says which is which underneath, because a height
-that looked like a measurement and was not would be the app inventing something
-about your books.
-
-A photographed spine appears only where the read could place it. Where it could
-not, or where the box it gave was not usable, the book is drawn like the rest.
-That is deliberate: a crop taken from the wrong place would show you one book
-under the name of another.
+**Switch the view** between **List** and **Spines**. Spines draws the filtered
+books as a shelf: colour is fixed per book so a spine keeps it, and height comes
+from the page count where one was recorded and from the length of the title
+where none was. The wall says so underneath, because a height that looked like a
+measurement and was not would be the app inventing something about your books.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. **More contrast** is a separate switch
@@ -641,13 +630,9 @@ keep in a private repository:
 
 ```
 sources/       one file per import, exactly as it was read
-spines/        the pieces of your photographs, one per book read from one
 catalog.json   rebuilt from all of them
 overrides.json your corrections
 ```
-
-The crops under `spines/` belong to the source that produced them: reading the
-same photograph again replaces them, and deleting that source takes them away.
 
 **Browser storage** (phone, or if you prefer). Managed by the browser and
 private to LibrAPP. Not visible to other apps, so export is how a copy leaves

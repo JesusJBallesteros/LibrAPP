@@ -1,42 +1,5 @@
 # Changelog
 
-## Unreleased
-
-### The spines are the shelf
-
-[#11](https://github.com/JesusJBallesteros/LibrAPP/issues/11). A book read from
-a photograph now shows the piece of that photograph it was read from, in place
-of the coloured block that stood in for it.
-
-The picture was always on the device. A photograph is cut into tiles in the
-browser and a model reads them, and until now those tiles were thrown away the
-moment the read finished. What was missing was not the image but the position:
-the transcription said what each book was called and never where it stood, so
-there was nothing to cut out.
-
-So the read asks for it. Every tile arrives labelled, and each book comes back
-naming its tile and a box inside it, as fractions rather than pixels, which
-holds however the tile was scaled. When the read is accepted, and while the
-tiles are still in memory, each box is cut out and written beside the source
-that produced it. Nothing is fetched, nothing is uploaded, and no picture is
-kept that was not already there.
-
-Where a box cannot be trusted it is dropped rather than repaired: no tile, not
-four numbers, not inside the tile, or enclosing no area at all. A box naming a
-tile that was set aside before the read goes the same way. The book is then
-drawn the way every book was drawn before, which is a worse picture and not a
-wrong one, where a crop taken from the wrong place would show one book under
-another book's name.
-
-Books from a spreadsheet or a store export are unchanged. There is no
-photograph of them to show, and the caption under the wall now says which
-spines are pictures and which are drawn.
-
-The crops belong to the source that produced them: reading the same photograph
-again replaces them, and deleting the source takes them away.
-
----
-
 ## v2.0.2
 
 An accessibility pass, a field that could never arrive, and three things found

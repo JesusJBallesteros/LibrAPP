@@ -2,7 +2,6 @@
 // them.
 //
 //     sources/<name>.json    one per ingested source, exactly as it was read
-//     spines/<name>/*.jpg    the piece of a photograph one book was read from
 //     catalog.json           rebuilt from all of them, never edited by hand
 //
 // The same layout the command-line tools use, so a folder written here can be
@@ -14,7 +13,6 @@ import { applyOverrides, emptyOverrides, readOverrides } from '../core/overrides
 import { makeSource, normalise, readSource, SourceError } from '../core/records.js'
 
 const SOURCES = 'sources'
-const SPINES = 'spines'
 const CATALOG = 'catalog.json'
 const OVERRIDES = 'overrides.json'
 const MANUAL = 'manual'
@@ -94,53 +92,7 @@ export class Library {
   }
 
   async deleteSource(file) {
-    const stem = safeName(file.replace(/\.json$/, ''))
-    await this.backend.remove(`${SOURCES}/${stem}.json`)
-    // The crops belong to the source that produced them. Leaving them behind
-    // would fill the folder with pieces of a photograph nothing points at.
-    await this.clearSpines(stem)
-  }
-
-  // -- spine crops --------------------------------------------------------
-
-  /**
-   * Throw away the crops of a source, before writing the next set.
-   *
-   * Crops are named by position in the read, so reading the same photograph
-   * again and finding fewer books would leave the tail of the previous read
-   * behind, referenced by nothing and taking up room forever.
-   */
-  async clearSpines(source) {
-    const folder = `${SPINES}/${safeName(source)}`
-    for (const name of await this.backend.list(folder)) {
-      await this.backend.remove(`${folder}/${name}`).catch(() => {})
-    }
-  }
-
-  /**
-   * The piece of a photograph one book was read from.
-   *
-   * Written once, when a shelf read is accepted, and named after the source
-   * and the position in it rather than the book, because the book has no id
-   * until the catalog is built.
-   */
-  async putSpine(source, name, blob) {
-    const path = `${SPINES}/${safeName(source)}/${safeName(name)}.jpg`
-    await this.backend.writeBlob(path, blob)
-    return path
-  }
-
-  /**
-   * One crop, or null when it was never written or has been deleted.
-   *
-   * The path comes off a record, and a record can be edited by hand or arrive
-   * in an imported bundle, so it is checked rather than followed: inside the
-   * crops folder, and no step that climbs back out of it.
-   */
-  async readSpine(path) {
-    if (typeof path !== 'string' || !path.startsWith(`${SPINES}/`)) return null
-    if (path.split('/').includes('..')) return null
-    return await this.backend.readBlob(path)
+    await this.backend.remove(`${SOURCES}/${safeName(file.replace(/\.json$/, ''))}.json`)
   }
 
   // -- catalog ------------------------------------------------------------

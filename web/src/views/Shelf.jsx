@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import { cutSpines, loadTranscription, tileImage } from '../ingest/shelf.js'
+import { loadTranscription, tileImage } from '../ingest/shelf.js'
 import { stemOf } from '../store/library.js'
 import { copyText } from '../lib.js'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
@@ -178,24 +178,12 @@ export default function Shelf({ lib, onOwl }) {
 
   const acceptProposed = () =>
     lib.run(async (library) => {
-      const { records, placements, stats } = loadTranscription(proposed.transcription)
+      const { records, stats } = loadTranscription(proposed.transcription)
       // Named after the photograph, so a second shelf does not overwrite the
       // first and re-reading the same one still replaces it.
       const origin = stats.photo || tiles.photo
-      const name = await library.nameFor(`shelf-${stemOf(origin)}`, origin)
-
-      // The tiles are still in memory from the read that has just finished, and
-      // this is the last moment they are: cutting the spines out now is the
-      // difference between a wall of real books and a wall of coloured blocks.
-      // A book that could not be placed keeps its null and is drawn instead.
-      const crops = await cutSpines(placements, kept)
-      await library.clearSpines(name)
-      for (const [index, crop] of crops.entries()) {
-        if (crop) records[index].spine = await library.putSpine(name, `${index}`, crop)
-      }
-
       await library.putSource({
-        name,
+        name: await library.nameFor(`shelf-${stemOf(origin)}`, origin),
         kind: 'photo',
         origin,
         format: 'physical',
