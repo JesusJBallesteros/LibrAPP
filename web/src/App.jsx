@@ -13,6 +13,7 @@ import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
+import ContrastToggle from './components/ContrastToggle.jsx'
 
 const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
 
@@ -186,6 +187,7 @@ export default function App() {
             </button>
           </div>
           <ThemeToggle />
+        <ContrastToggle />
 
           <nav className="sidebar-links">
             {[
