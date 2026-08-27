@@ -61,6 +61,30 @@ class DirectoryBackend {
     await writable.close()
   }
 
+  /**
+   * A file that is not text. Returns a Blob, or null when it is not there.
+   *
+   * Spine crops are the only binary the app stores, and they are read one at a
+   * time as a wall is drawn rather than all at once.
+   */
+  async readBlob(path) {
+    try {
+      const [dir, name] = await this.#dir(path)
+      return await (await dir.getFileHandle(name)).getFile()
+    } catch (err) {
+      if (err?.name === 'NotFoundError') return null
+      throw err
+    }
+  }
+
+  async writeBlob(path, blob) {
+    const [dir, name] = await this.#dir(path, true)
+    const handle = await dir.getFileHandle(name, { create: true })
+    const writable = await handle.createWritable()
+    await writable.write(blob)
+    await writable.close()
+  }
+
   async list(path) {
     try {
       const parts = path.split('/').filter(Boolean)

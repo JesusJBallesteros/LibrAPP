@@ -59,6 +59,19 @@ again in the next. Record it once. Books lying flat on top of a row are still
 books. A spine you can see but not read is still worth an entry with
 `confidence: "low"` and whatever colour or size detail helps find it again.
 
+**Say where each spine is.** Each tile arrives labelled `Tile r2c3`. For every
+book, give `tile` as that label without the word, so `"r2c3"`, and `box` as
+where the spine sits inside that tile: `[left, top, right, bottom]`, each a
+fraction of the tile from 0 to 1, with 0,0 at the top left. A spine standing
+upright a third of the way across a tile might be `[0.31, 0.08, 0.36, 0.92]`.
+
+The app cuts that rectangle out and shows it, so the box should hold the whole
+spine and as little of its neighbours as possible. Give the tile where the spine
+is most fully visible, since tiles overlap. Where you cannot place a book, or a
+book was recorded from a tile you are no longer looking at, give `null` for
+both. A book with no box is drawn instead of shown, which is fine. A box around
+the wrong book is not: leave it null rather than guess.
+
 **Do not fill in what a photograph cannot see.** No acquisition dates, no read
 flags, no ISBNs, and no genre of your own unless the checklist below asks for
 one or the spine states a collection. The catalog
@@ -80,13 +93,17 @@ Write one JSON file:
           "title": "Ethics in the Conflicts of Modernity",
           "authors": ["Alasdair MacIntyre"],
           "publisher": "Cambridge",
-          "confidence": "high"
+          "confidence": "high",
+          "tile": "r1c2",
+          "box": [0.31, 0.08, 0.36, 0.92]
         },
         {
           "title": "La ciencia del último umbral",
           "authors": ["Álex Gómez-Marín"],
           "confidence": "medium",
-          "notes": "lower half of the spine is in shadow"
+          "notes": "lower half of the spine is in shadow",
+          "tile": "r1c2",
+          "box": [0.37, 0.09, 0.42, 0.9]
         }
       ]
     }

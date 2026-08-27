@@ -59,6 +59,8 @@ export const TRANSCRIPTION_SCHEMA = {
                 'rating',
                 'original_language',
                 'pages',
+                'tile',
+                'box',
                 'flags',
               ],
               properties: {
@@ -80,6 +82,18 @@ export const TRANSCRIPTION_SCHEMA = {
                 rating: { type: ['number', 'null'] },
                 original_language: { type: ['string', 'null'] },
                 pages: { type: ['integer', 'null'] },
+                // Where the spine is, so the app can cut it out of the
+                // photograph and show it. Null when it cannot be placed.
+                tile: {
+                  type: ['string', 'null'],
+                  description: 'the label of the tile this spine is in, e.g. "r2c3"',
+                },
+                box: {
+                  type: ['array', 'null'],
+                  items: { type: 'number' },
+                  description:
+                    'the spine within that tile as [left, top, right, bottom], each 0 to 1',
+                },
                 flags: { type: 'array', items: { type: 'string' } },
               },
             },

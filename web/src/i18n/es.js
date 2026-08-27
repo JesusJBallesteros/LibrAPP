@@ -826,6 +826,6 @@ export default {
   'catalog.mode.spines': 'Lomos',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesCaption':
-    'El color es fijo para cada libro, as\u00ed que un lomo lo conserva. La altura sale del n\u00famero de p\u00e1ginas cuando consta, y de la longitud del t\u00edtulo cuando no, as\u00ed que un estante puede mezclar ambas.',
+    'Un libro le\u00eddo de una foto muestra el trozo de foto del que se ley\u00f3. Los dem\u00e1s lomos est\u00e1n dibujados: el color es fijo para cada libro, as\u00ed que un lomo lo conserva, y la altura sale del n\u00famero de p\u00e1ginas cuando consta, y de la longitud del t\u00edtulo cuando no.',
   'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

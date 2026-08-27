@@ -148,6 +148,92 @@ const RECALLED_FLAG = 'recalled_details'
 
 export class TranscriptionError extends Error {}
 
+// How much of the neighbouring picture to keep around a spine. A model places
+// a box approximately, and a crop cut exactly on its estimate loses the edge of
+// the lettering more often than it gains anything.
+const PADDING = 0.02
+
+/**
+ * Where one book was seen, or null when it cannot be placed.
+ *
+ * A box is only usable if it is four numbers inside the tile that enclose some
+ * area. Anything else is dropped rather than repaired: a book without a crop
+ * is drawn the way every book was drawn before, which is a worse picture and
+ * not a wrong one. A box cut from the wrong place would be a wrong one.
+ */
+export function placement(book) {
+  const tile = typeof book?.tile === 'string' ? book.tile.trim() : ''
+  const box = book?.box
+  if (!tile || !Array.isArray(box) || box.length !== 4) return null
+  if (!box.every((n) => typeof n === 'number' && Number.isFinite(n) && n >= 0 && n <= 1)) return null
+  const [left, top, right, bottom] = box
+  if (right <= left || bottom <= top) return null
+  return {
+    tile,
+    box: [
+      Math.max(0, left - PADDING),
+      Math.max(0, top - PADDING),
+      Math.min(1, right + PADDING),
+      Math.min(1, bottom + PADDING),
+    ],
+  }
+}
+
+/**
+ * Cut one spine out of the tile it was seen in.
+ *
+ * The tile is already a JPEG in memory from the read that has just finished,
+ * so this is the same photograph the model looked at and no larger. Nothing is
+ * fetched and nothing is uploaded.
+ */
+export async function cropSpine(blob, box, { width = 220, quality = 0.85 } = {}) {
+  const bitmap = await createImageBitmap(blob)
+  const [left, top, right, bottom] = box
+  const x = Math.round(left * bitmap.width)
+  const y = Math.round(top * bitmap.height)
+  const cropWidth = Math.max(1, Math.round((right - left) * bitmap.width))
+  const cropHeight = Math.max(1, Math.round((bottom - top) * bitmap.height))
+  const scale = cropWidth > width ? width / cropWidth : 1
+  const outWidth = Math.max(1, Math.round(cropWidth * scale))
+  const outHeight = Math.max(1, Math.round(cropHeight * scale))
+
+  const canvas = new OffscreenCanvas(outWidth, outHeight)
+  const context = canvas.getContext('2d')
+  context.imageSmoothingQuality = 'high'
+  context.drawImage(bitmap, x, y, cropWidth, cropHeight, 0, 0, outWidth, outHeight)
+  const out = await canvas.convertToBlob({ type: 'image/jpeg', quality })
+  bitmap.close?.()
+  return out
+}
+
+/** The r2c3 in "r2c3", "Tile r2c3" or "tile-r2c3.jpg", so a near miss still lands. */
+export const tileKey = (name) => {
+  const found = /r(\d+)\s*c(\d+)/i.exec(String(name || ''))
+  return found ? `r${Number(found[1])}c${Number(found[2])}` : null
+}
+
+/**
+ * Cut every placed spine out of the tiles it was read from.
+ *
+ * Aligned with the records the placements came from, so index n is the crop for
+ * record n, or null where the book could not be placed or names a tile that was
+ * not part of the read. A tile dropped before reading is one such case: the
+ * model never saw it, but a stale box could still name it.
+ */
+export async function cutSpines(placements, tiles) {
+  const byKey = new Map()
+  for (const tile of tiles || []) byKey.set(`r${tile.row}c${tile.column}`, tile.blob)
+
+  const crops = []
+  for (const place of placements || []) {
+    const blob = place && byKey.get(tileKey(place.tile))
+    // One bad box must not cost the whole read: the source is worth keeping
+    // even when a picture of it is not.
+    crops.push(blob ? await cropSpine(blob, place.box).catch(() => null) : null)
+  }
+  return crops
+}
+
 /**
  * Validate a transcription and turn it into source records.
  *
@@ -167,6 +253,10 @@ export function loadTranscription(payload) {
   }
 
   const records = []
+  // Index-aligned with records: where each book was seen, for the crop that
+  // happens once a read is accepted. Not part of the record, which holds the
+  // path of a crop already written and refuses fields it does not know.
+  const placements = []
   let uncertain = 0
   let recalledBooks = 0
   for (const group of groups) {
@@ -186,6 +276,7 @@ export function loadTranscription(payload) {
       const recalled = RECALLED_FIELDS.filter((field) => book[field] != null)
       if (recalled.length) recalledBooks += 1
 
+      placements.push(placement(book))
       records.push({
         title,
         authors: (book.authors || []).map((a) => clean(String(a))).filter(Boolean),
@@ -212,6 +303,7 @@ export function loadTranscription(payload) {
 
   return {
     records,
+    placements,
     stats: {
       photo: payload.photo ?? null,
       shelves: groups.length,
