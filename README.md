@@ -23,6 +23,11 @@ shelves as context: what to read next and why, which books by an author you have
 collected unevenly are missing, what threads run through what you own, a list for
 a long flight. The answers are about your books rather than books in general.
 
+Not sure yet? **Look around a demo library** on the front page opens an invented
+shelf of 91 books straight away, with nothing to install and nothing to fetch.
+It is held in memory, so nothing is saved and nothing already on your device is
+touched, and it is gone when you reload.
+
 Your books stay on your device. There is no account, no server and no sync.
 
 The interface is available in English and Spanish, chosen on the opening page.

@@ -450,6 +450,14 @@ function buildEntry(cluster, collapsed, authors, ids) {
     formats,
     publisher: firstFact('publisher'),
     acquired_on: firstFact('acquired_on'),
+    // Where the book is, when it is not on its shelf. These are usually written
+    // by hand, and a correction reaches the entry after the build, which is why
+    // the desk has always shown loans despite the builder dropping them. A
+    // source is allowed to carry them too, and one that did was being ignored.
+    lent_to: firstFact('lent_to'),
+    lent_on: firstFact('lent_on'),
+    borrowed_from: firstFact('borrowed_from'),
+    borrowed_on: firstFact('borrowed_on'),
     read: readValue,
     collections: firstFact('collections'),
     devices: firstFact('devices'),

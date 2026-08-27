@@ -903,6 +903,11 @@ main:focus { outline: none; }
   font-size: 13px;
   color: var(--ink-soft);
 }
+/* Stays put on every page for as long as the demo is open, so it is marked in
+   the colour that means attention rather than the one that means something went
+   wrong. */
+.notice.demo-notice { border-left-color: var(--tan); }
+.landing-demo { margin-top: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .notice.bad { border-left-color: var(--bad); color: var(--bad); }
 .notice.good { border-left-color: var(--good); color: var(--good); }
 .notice p { margin: 0; }

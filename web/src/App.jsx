@@ -131,6 +131,10 @@ export default function App() {
           hasCatalog={Boolean(counts?.books)}
           bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
           browserUsable={capabilities.usable}
+          onDemo={async () => {
+            await lib.useDemo()
+            go('catalog')
+          }}
         />
         <Librarian
           view="home"
@@ -224,6 +228,28 @@ export default function App() {
       </aside>
 
       <main className="main" id="content" tabIndex={-1}>
+        {/* Above everything, on every page, for as long as the demo is open.
+            Somebody who forgets which library they are in and starts correcting
+            books would lose the work on the next reload, so this does not
+            dismiss. */}
+        {lib.isDemo && (
+          <div className="view" style={{ paddingBottom: 0 }}>
+            <div className="notice demo-notice">
+              <p>
+                <strong>{t('demo.banner')}</strong>
+              </p>
+              <p className="tiny">{t('demo.bannerWhy')}</p>
+              <button
+                className="btn small"
+                style={{ marginTop: 8 }}
+                onClick={() => window.location.reload()}
+              >
+                {t('demo.leave')}
+              </button>
+            </div>
+          </div>
+        )}
+
         {lib.error && (
           <div className="view" style={{ paddingBottom: 0 }}>
             <div className="notice bad">

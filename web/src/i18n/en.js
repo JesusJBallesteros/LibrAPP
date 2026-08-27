@@ -34,6 +34,15 @@ export default {
   'landing.option.browse.hint': 'Go straight to the books you already have here.',
   'landing.option.browse.empty': 'There is nothing here yet — start with one of the options above.',
 
+  'landing.demo.action': 'Look around a demo library',
+  'landing.demo.hint':
+    'An invented shelf of {n} books, opened here and now. Nothing is saved and nothing of yours is touched.',
+
+  'demo.banner': 'You are looking around a demo library.',
+  'demo.bannerWhy':
+    'These books are invented. Everything works, including editing and importing, and all of it is gone when you reload. Your own catalog is untouched.',
+  'demo.leave': 'Leave the demo',
+
   'landing.language': 'Language',
   'landing.learnMore': 'More about LibrAPP',
   'landing.browserWarning':

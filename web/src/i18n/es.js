@@ -33,6 +33,15 @@ export default {
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.empty': 'Aquí todavía no hay nada: empieza por una de las opciones de arriba.',
 
+  'landing.demo.action': 'Echa un vistazo a una biblioteca de muestra',
+  'landing.demo.hint':
+    'Una estantería inventada de {n} libros, aquí mismo. No se guarda nada y no se toca nada tuyo.',
+
+  'demo.banner': 'Estás viendo una biblioteca de muestra.',
+  'demo.bannerWhy':
+    'Estos libros son inventados. Todo funciona, incluidas las ediciones y las importaciones, y todo desaparece al recargar. Tu catálogo no se toca.',
+  'demo.leave': 'Salir de la muestra',
+
   'landing.language': 'Idioma',
   'landing.learnMore': 'Más sobre LibrAPP',
   'landing.browserWarning':

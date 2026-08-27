@@ -149,3 +149,46 @@ describe('what the desk tells a model', () => {
     expect(readerProfile(catalogOf())).not.toContain('Not on the shelf right now')
   })
 })
+
+// Loans are usually written by hand, and a correction reaches the entry after
+// the build, which is why the desk showed them while the builder was dropping
+// them. A source is allowed to carry them, and one that did was ignored.
+describe('a loan recorded by a source', () => {
+  const built = (record) =>
+    build([
+      readSource(
+        makeSource({
+          name: 'list',
+          kind: 'table',
+          origin: 'list.json',
+          format: 'physical',
+          confidence: 'high',
+          records: [record],
+        }),
+        'list',
+      ),
+    ]).books[0]
+
+  it('reaches the catalog rather than being dropped', () => {
+    const book = built({ title: 'Piranesi', authors: ['Clarke'], lent_to: 'Marta', lent_on: '2025-11-03' })
+    expect(book.lent_to).toBe('Marta')
+    expect(book.lent_on).toBe('2025-11-03')
+  })
+
+  it('carries a borrowed book the same way', () => {
+    const book = built({
+      title: 'The Long Goodbye',
+      authors: ['Chandler'],
+      borrowed_from: 'Elena',
+      borrowed_on: '2025-02-09',
+    })
+    expect(book.borrowed_from).toBe('Elena')
+    expect(book.borrowed_on).toBe('2025-02-09')
+  })
+
+  it('leaves a book that is on its shelf alone', () => {
+    const book = built({ title: 'Dune', authors: ['Herbert'] })
+    expect(book.lent_to).toBeNull()
+    expect(book.borrowed_from).toBeNull()
+  })
+})

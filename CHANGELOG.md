@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+### A library to look around, before building one
+
+Every door on the front page asked for something the visitor had to go and
+fetch: a photograph, a spreadsheet, a store export, a catalog from another
+device. Which meant everything worth seeing, the shelf, the unread pile with its
+reasoning on every row, the chart, the keyword cloud, sat behind the evening of
+work rather than in front of it, and the only way to find out whether the app
+was worth that evening was to spend it.
+
+**Look around a demo library** opens an invented one, here and now. Ninety-one
+books that behave like a real shelf rather than a tidy one: some nobody recorded
+a read state for, a couple with no genre, two lent out and one borrowed back,
+and twenty-seven bought years ago and never opened. Everything works, including
+editing, importing and the desk.
+
+It is held in memory, which is what makes it safe rather than a mode the rest of
+the app has to remember to check. There is nowhere for a write to land, so
+nothing already on the device can be reached or changed, and everything done
+while looking around is gone on reload. A banner says so on every page for as
+long as it is open.
+
+### Fixed: a loan recorded by a source never arrived
+
+Found while building the demo. Where a book is when it is not on its shelf,
+lent to whom and borrowed from whom, is part of what a source may record, and
+the builder was not carrying any of the four fields into the catalog.
+
+Loans have always worked, because they are usually written by hand and a
+correction is applied after the build, which is the path that reaches the desk.
+A source that carried them was ignored in silence.
+
 ### A floor under what a tidy file can claim
 
 A source says how far it is to be trusted, and every row in it inherited that

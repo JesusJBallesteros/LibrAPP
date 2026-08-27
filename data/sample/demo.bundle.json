@@ -1,0 +1,1525 @@
+{
+ "librapp_bundle": 1,
+ "exported_at": "2026-08-27T00:00:00.000Z",
+ "demo": true,
+ "sources": [
+  {
+   "file": "shelf-photo.json",
+   "payload": {
+    "librapp_source": 1,
+    "source": {
+     "name": "shelf-photo",
+     "kind": "photo",
+     "origin": "living-room-shelf.jpg",
+     "format": "physical",
+     "confidence": "medium"
+    },
+    "stats": {
+     "photo": "living-room-shelf.jpg",
+     "shelves": 4,
+     "uncertain_spines": 0
+    },
+    "records": [
+     {
+      "title": "La sombra del viento",
+      "authors": [
+       "Carlos Ruiz Zafón"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "barcelona, mystery, books about books",
+      "pages": 576,
+      "published_year": 2001,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2015-10-20",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Cien años de soledad",
+      "authors": [
+       "Gabriel García Márquez"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "magical realism, family saga, colombia",
+      "pages": 471,
+      "published_year": 1967,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2013-09-22",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "El nombre de la rosa",
+      "authors": [
+       "Umberto Eco"
+      ],
+      "genre": "Historical fiction",
+      "keywords": "monastery, semiotics, mystery",
+      "pages": 536,
+      "published_year": 1980,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2019-09-21",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Rayuela",
+      "authors": [
+       "Julio Cortázar"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "argentina, experimental, paris",
+      "pages": 635,
+      "published_year": 1963,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2016-03-02",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Dune",
+      "authors": [
+       "Frank Herbert"
+      ],
+      "genre": "Science fiction",
+      "keywords": "desert, ecology, empire",
+      "pages": 412,
+      "published_year": 1965,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2013-10-02",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Left Hand of Darkness",
+      "authors": [
+       "Ursula K. Le Guin"
+      ],
+      "genre": "Science fiction",
+      "keywords": "gender, anthropology, winter",
+      "pages": 304,
+      "published_year": 1969,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2016-12-24",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Dispossessed",
+      "authors": [
+       "Ursula K. Le Guin"
+      ],
+      "genre": "Science fiction",
+      "keywords": "anarchism, physics, utopia",
+      "pages": 341,
+      "published_year": 1974,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2021-11-18",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Foundation",
+      "authors": [
+       "Isaac Asimov"
+      ],
+      "genre": "Science fiction",
+      "keywords": "empire, psychohistory, galaxy",
+      "pages": 255,
+      "published_year": 1951,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2013-05-21",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Solaris",
+      "authors": [
+       "Stanisław Lem"
+      ],
+      "genre": "Science fiction",
+      "keywords": "first contact, ocean, memory",
+      "pages": 204,
+      "published_year": 1961,
+      "original_language": "Polish",
+      "read": false,
+      "acquired_on": "2017-03-01",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Roadside Picnic",
+      "authors": [
+       "Arkady Strugatsky",
+       "Boris Strugatsky"
+      ],
+      "genre": "Science fiction",
+      "keywords": "zone, artefacts, soviet",
+      "pages": 224,
+      "published_year": 1972,
+      "original_language": "Russian",
+      "read": false,
+      "acquired_on": "2015-07-26",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Good Omens",
+      "authors": [
+       "Terry Pratchett",
+       "Neil Gaiman"
+      ],
+      "genre": "Comic fantasy",
+      "keywords": "apocalypse, angels, england",
+      "pages": 400,
+      "published_year": 1990,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2022-03-25",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Small Gods",
+      "authors": [
+       "Terry Pratchett"
+      ],
+      "genre": "Comic fantasy",
+      "keywords": "discworld, religion, tortoise",
+      "pages": 389,
+      "published_year": 1992,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2014-12-28",
+      "formats": [
+       "physical"
+      ],
+      "lent_to": "Diego",
+      "lent_on": "2024-06-18"
+     },
+     {
+      "title": "Guards! Guards!",
+      "authors": [
+       "Terry Pratchett"
+      ],
+      "genre": "Comic fantasy",
+      "keywords": "discworld, watch, dragon",
+      "pages": 355,
+      "published_year": 1989,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2023-08-13",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Mort",
+      "authors": [
+       "Terry Pratchett"
+      ],
+      "genre": "Comic fantasy",
+      "keywords": "discworld, death, apprentice",
+      "pages": 272,
+      "published_year": 1987,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2024-12-28",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "American Gods",
+      "authors": [
+       "Neil Gaiman"
+      ],
+      "genre": "Dark fantasy",
+      "keywords": "myth, road novel, immigration",
+      "pages": 465,
+      "published_year": 2001,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2020-07-07",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Ocean at the End of the Lane",
+      "authors": [
+       "Neil Gaiman"
+      ],
+      "genre": "Dark fantasy",
+      "keywords": "childhood, memory, folklore",
+      "pages": 181,
+      "published_year": 2013,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2019-08-14",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Jonathan Strange & Mr Norrell",
+      "authors": [
+       "Susanna Clarke"
+      ],
+      "genre": "Historical fantasy",
+      "keywords": "regency, magic, footnotes",
+      "pages": 782,
+      "published_year": 2004,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2016-04-19",
+      "formats": [
+       "physical"
+      ],
+      "devices": 4
+     },
+     {
+      "title": "Piranesi",
+      "authors": [
+       "Susanna Clarke"
+      ],
+      "genre": "Fantasy",
+      "keywords": "labyrinth, statues, solitude",
+      "pages": 245,
+      "published_year": 2020,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2017-10-26",
+      "formats": [
+       "physical"
+      ],
+      "lent_to": "Marta",
+      "lent_on": "2025-11-03"
+     },
+     {
+      "title": "The Name of the Wind",
+      "authors": [
+       "Patrick Rothfuss"
+      ],
+      "genre": "Fantasy",
+      "keywords": "music, university, storytelling",
+      "pages": 662,
+      "published_year": 2007,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2017-10-07",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "A Wizard of Earthsea",
+      "authors": [
+       "Ursula K. Le Guin"
+      ],
+      "genre": "Fantasy",
+      "keywords": "islands, names, shadow",
+      "pages": 183,
+      "published_year": 1968,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2024-04-16",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Meditations",
+      "authors": [
+       "Marcus Aurelius"
+      ],
+      "genre": "Philosophy",
+      "keywords": "stoicism, rome, journal",
+      "pages": 254,
+      "published_year": 180,
+      "original_language": "Greek",
+      "read": null,
+      "acquired_on": "2026-09-18",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Republic",
+      "authors": [
+       "Plato"
+      ],
+      "genre": "Philosophy",
+      "keywords": "justice, cave, city",
+      "pages": 416,
+      "published_year": -375,
+      "original_language": "Greek",
+      "read": false,
+      "acquired_on": "2015-07-26",
+      "formats": [
+       "physical"
+      ],
+      "devices": 2
+     },
+     {
+      "title": "Nicomachean Ethics",
+      "authors": [
+       "Aristotle"
+      ],
+      "genre": "Philosophy",
+      "keywords": "virtue, happiness, habit",
+      "pages": 329,
+      "published_year": -340,
+      "original_language": "Greek",
+      "read": true,
+      "acquired_on": "2017-11-04",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Ética para Amador",
+      "authors": [
+       "Fernando Savater"
+      ],
+      "genre": "Philosophy",
+      "keywords": "ethics, letters, youth",
+      "pages": 192,
+      "published_year": 1991,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2020-05-25",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "After Virtue",
+      "authors": [
+       "Alasdair MacIntyre"
+      ],
+      "genre": "Political philosophy",
+      "keywords": "virtue, modernity, tradition",
+      "pages": 286,
+      "published_year": 1981,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2013-01-02",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Structure of Scientific Revolutions",
+      "authors": [
+       "Thomas S. Kuhn"
+      ],
+      "genre": "Philosophy of science",
+      "keywords": "paradigm, science, history",
+      "pages": 264,
+      "published_year": 1962,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2015-03-28",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Gödel, Escher, Bach",
+      "authors": [
+       "Douglas R. Hofstadter"
+      ],
+      "genre": "Philosophy of mind",
+      "keywords": "recursion, consciousness, formal systems",
+      "pages": 777,
+      "published_year": 1979,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2014-03-20",
+      "formats": [
+       "physical"
+      ],
+      "collections": "Someday",
+      "devices": 2
+     },
+     {
+      "title": "The Sciences of the Artificial",
+      "authors": [
+       "Herbert A. Simon"
+      ],
+      "genre": "Philosophy of science",
+      "keywords": "design, complexity, bounded rationality",
+      "pages": 231,
+      "published_year": 1969,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2021-07-08",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Sapiens",
+      "authors": [
+       "Yuval Noah Harari"
+      ],
+      "genre": "History",
+      "keywords": "prehistory, agriculture, money",
+      "pages": 443,
+      "published_year": 2011,
+      "original_language": "Hebrew",
+      "read": false,
+      "acquired_on": "2020-12-19",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "SPQR",
+      "authors": [
+       "Mary Beard"
+      ],
+      "genre": "History",
+      "keywords": "rome, republic, citizenship",
+      "pages": 606,
+      "published_year": 2015,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2022-10-11",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Making of the Atomic Bomb",
+      "authors": [
+       "Richard Rhodes"
+      ],
+      "genre": "History",
+      "keywords": "physics, manhattan project, war",
+      "pages": 886,
+      "published_year": 1986,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2015-01-25",
+      "formats": [
+       "physical"
+      ],
+      "collections": "History, To read",
+      "devices": 2
+     },
+     {
+      "title": "Guns, Germs, and Steel",
+      "authors": [
+       "Jared Diamond"
+      ],
+      "genre": "History",
+      "keywords": "geography, agriculture, empire",
+      "pages": 480,
+      "published_year": 1997,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2014-01-15",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Homenaje a Cataluña",
+      "authors": [
+       "George Orwell"
+      ],
+      "genre": "Memoir",
+      "keywords": "spanish civil war, militia, barcelona",
+      "pages": 232,
+      "published_year": 1938,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2025-11-08",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Periodic Table",
+      "authors": [
+       "Primo Levi"
+      ],
+      "genre": "Memoir",
+      "keywords": "chemistry, holocaust, elements",
+      "pages": 233,
+      "published_year": 1975,
+      "original_language": "Italian",
+      "read": false,
+      "acquired_on": "2025-02-22",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "H is for Hawk",
+      "authors": [
+       "Helen Macdonald"
+      ],
+      "genre": "Memoir",
+      "keywords": "grief, falconry, nature",
+      "pages": 300,
+      "published_year": 2014,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2025-02-23",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Los renglones torcidos de Dios",
+      "authors": [
+       "Torcuato Luca de Tena"
+      ],
+      "genre": "Thriller",
+      "keywords": "asylum, investigation, madness",
+      "pages": 496,
+      "published_year": 1979,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2024-12-17",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "El día de la lechuza",
+      "authors": [
+       "Leonardo Sciascia"
+      ],
+      "genre": "Thriller",
+      "keywords": "sicily, mafia, investigation",
+      "pages": 136,
+      "published_year": 1961,
+      "original_language": "Italian",
+      "read": false,
+      "acquired_on": "2018-06-09",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Gone Girl",
+      "authors": [
+       "Gillian Flynn"
+      ],
+      "genre": "Thriller",
+      "keywords": "marriage, unreliable narrator, media",
+      "pages": 415,
+      "published_year": 2012,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2015-08-14",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Big Sleep",
+      "authors": [
+       "Raymond Chandler"
+      ],
+      "genre": "Crime",
+      "keywords": "noir, los angeles, detective",
+      "pages": 231,
+      "published_year": 1939,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2024-04-09",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Long Goodbye",
+      "authors": [
+       "Raymond Chandler"
+      ],
+      "genre": "Crime",
+      "keywords": "noir, friendship, los angeles",
+      "pages": 379,
+      "published_year": 1953,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2014-08-23",
+      "formats": [
+       "physical"
+      ],
+      "borrowed_from": "Elena",
+      "borrowed_on": "2025-02-09"
+     },
+     {
+      "title": "El túnel",
+      "authors": [
+       "Ernesto Sabato"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "obsession, argentina, confession",
+      "pages": 143,
+      "published_year": 1948,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2023-02-20",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Pedro Páramo",
+      "authors": [
+       "Juan Rulfo"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "ghosts, mexico, fragmentary",
+      "pages": 124,
+      "published_year": 1955,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2018-11-24",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Things Fall Apart",
+      "authors": [
+       "Chinua Achebe"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "nigeria, colonialism, tradition",
+      "pages": 209,
+      "published_year": 1958,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2021-10-01",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Beloved",
+      "authors": [
+       "Toni Morrison"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "slavery, memory, haunting",
+      "pages": 324,
+      "published_year": 1987,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2020-04-02",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "Never Let Me Go",
+      "authors": [
+       "Kazuo Ishiguro"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "clones, boarding school, memory",
+      "pages": 288,
+      "published_year": 2005,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2024-10-20",
+      "formats": [
+       "physical"
+      ]
+     },
+     {
+      "title": "The Remains of the Day",
+      "authors": [
+       "Kazuo Ishiguro"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "butler, regret, england",
+      "pages": 258,
+      "published_year": 1989,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2025-02-28",
+      "formats": [
+       "physical"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "file": "store-export.json",
+   "payload": {
+    "librapp_source": 1,
+    "source": {
+     "name": "store-export",
+     "kind": "store-export",
+     "origin": "my-ebooks.xlsx",
+     "format": "ebook",
+     "confidence": "high"
+    },
+    "stats": {
+     "rows": 45
+    },
+    "records": [
+     {
+      "title": "Project Hail Mary",
+      "authors": [
+       "Andy Weir"
+      ],
+      "genre": "Science fiction",
+      "keywords": "first contact, problem solving, amnesia",
+      "pages": 496,
+      "published_year": 2021,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2023-03-26",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Martian",
+      "authors": [
+       "Andy Weir"
+      ],
+      "genre": "Science fiction",
+      "keywords": "mars, survival, engineering",
+      "pages": 369,
+      "published_year": 2011,
+      "original_language": "English",
+      "read": null,
+      "acquired_on": "2026-02-12",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Children of Time",
+      "authors": [
+       "Adrian Tchaikovsky"
+      ],
+      "genre": "Science fiction",
+      "keywords": "spiders, evolution, generation ship",
+      "pages": 600,
+      "published_year": 2015,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2017-12-24",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "A Fire Upon the Deep",
+      "authors": [
+       "Vernor Vinge"
+      ],
+      "genre": "Science fiction",
+      "keywords": "galaxy, packs, transcendence",
+      "pages": 613,
+      "published_year": 1992,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2015-01-22",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Blindsight",
+      "authors": [
+       "Peter Watts"
+      ],
+      "genre": "Science fiction",
+      "keywords": "consciousness, first contact, vampires",
+      "pages": 384,
+      "published_year": 2006,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2023-12-20",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Exhalation",
+      "authors": [
+       "Ted Chiang"
+      ],
+      "genre": "Science fiction",
+      "keywords": "short stories, time, free will",
+      "pages": 350,
+      "published_year": 2019,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2023-08-21",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Stories of Your Life and Others",
+      "authors": [
+       "Ted Chiang"
+      ],
+      "genre": "Science fiction",
+      "keywords": "short stories, linguistics, determinism",
+      "pages": 281,
+      "published_year": 2002,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2019-10-06",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Ancillary Justice",
+      "authors": [
+       "Ann Leckie"
+      ],
+      "genre": "Science fiction",
+      "keywords": "empire, identity, ships",
+      "pages": 386,
+      "published_year": 2013,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2019-05-27",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Three-Body Problem",
+      "authors": [
+       "Liu Cixin"
+      ],
+      "genre": "Science fiction",
+      "keywords": "physics, contact, cultural revolution",
+      "pages": 400,
+      "published_year": 2008,
+      "original_language": "Chinese",
+      "read": true,
+      "acquired_on": "2021-12-08",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Klara and the Sun",
+      "authors": [
+       "Kazuo Ishiguro"
+      ],
+      "genre": "Science fiction",
+      "keywords": "artificial intelligence, care, sunlight",
+      "pages": 303,
+      "published_year": 2021,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2017-12-18",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Snow Crash",
+      "authors": [
+       "Neal Stephenson"
+      ],
+      "genre": "Science fiction",
+      "keywords": "metaverse, language, pizza",
+      "pages": 440,
+      "published_year": 1992,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2022-02-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Anathem",
+      "authors": [
+       "Neal Stephenson"
+      ],
+      "genre": "Science fiction",
+      "keywords": "monastery, mathematics, many worlds",
+      "pages": 937,
+      "published_year": 2008,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2016-05-22",
+      "formats": [
+       "ebook"
+      ],
+      "collections": "Bought for the flight",
+      "devices": 3
+     },
+     {
+      "title": "The City & the City",
+      "authors": [
+       "China Miéville"
+      ],
+      "genre": "Science fiction",
+      "keywords": "cities, perception, crime",
+      "pages": 312,
+      "published_year": 2009,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2016-12-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Thinking, Fast and Slow",
+      "authors": [
+       "Daniel Kahneman"
+      ],
+      "genre": "Psychology",
+      "keywords": "heuristics, bias, decisions",
+      "pages": 499,
+      "published_year": 2011,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2024-07-22",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Righteous Mind",
+      "authors": [
+       "Jonathan Haidt"
+      ],
+      "genre": "Psychology",
+      "keywords": "morality, politics, intuition",
+      "pages": 419,
+      "published_year": 2012,
+      "original_language": "English",
+      "read": null,
+      "acquired_on": "2020-01-22",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Descartes' Error",
+      "authors": [
+       "Antonio Damasio"
+      ],
+      "genre": "Neuroscience",
+      "keywords": "emotion, reason, brain",
+      "pages": 312,
+      "published_year": 1994,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2025-01-12",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Man Who Mistook His Wife for a Hat",
+      "authors": [
+       "Oliver Sacks"
+      ],
+      "genre": "Neuroscience",
+      "keywords": "case studies, perception, identity",
+      "pages": 243,
+      "published_year": 1985,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2019-10-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Musicophilia",
+      "authors": [
+       "Oliver Sacks"
+      ],
+      "genre": "Neuroscience",
+      "keywords": "music, brain, case studies",
+      "pages": 381,
+      "published_year": 2007,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2023-03-23",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Consciousness Explained",
+      "authors": [
+       "Daniel C. Dennett"
+      ],
+      "genre": "Philosophy of mind",
+      "keywords": "consciousness, illusion, heterophenomenology",
+      "pages": 511,
+      "published_year": 1991,
+      "original_language": "English",
+      "read": null,
+      "acquired_on": "2019-08-16",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Selfish Gene",
+      "authors": [
+       "Richard Dawkins"
+      ],
+      "genre": "Biology",
+      "keywords": "evolution, genes, memes",
+      "pages": 360,
+      "published_year": 1976,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2017-10-22",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Entangled Life",
+      "authors": [
+       "Merlin Sheldrake"
+      ],
+      "genre": "Biology",
+      "keywords": "fungi, networks, symbiosis",
+      "pages": 358,
+      "published_year": 2020,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2023-02-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Order of Time",
+      "authors": [
+       "Carlo Rovelli"
+      ],
+      "genre": "Physics",
+      "keywords": "time, entropy, relativity",
+      "pages": 240,
+      "published_year": 2017,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2021-06-04",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Seven Brief Lessons on Physics",
+      "authors": [
+       "Carlo Rovelli"
+      ],
+      "genre": "Physics",
+      "keywords": "relativity, quanta, essays",
+      "pages": 96,
+      "published_year": 2014,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2018-10-17",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Six Easy Pieces",
+      "authors": [
+       "Richard P. Feynman"
+      ],
+      "genre": null,
+      "keywords": "lectures, atoms, gravity",
+      "pages": 176,
+      "published_year": 1994,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2016-02-23",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Surely You're Joking, Mr. Feynman!",
+      "authors": [
+       "Richard P. Feynman"
+      ],
+      "genre": "Memoir",
+      "keywords": "anecdotes, physics, safecracking",
+      "pages": 391,
+      "published_year": 1985,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2023-10-09",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Art of Statistics",
+      "authors": [
+       "David Spiegelhalter"
+      ],
+      "genre": "Statistics",
+      "keywords": "data, inference, uncertainty",
+      "pages": 448,
+      "published_year": 2019,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2015-05-19",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "How to Lie with Statistics",
+      "authors": [
+       "Darrell Huff"
+      ],
+      "genre": null,
+      "keywords": "charts, persuasion, numbers",
+      "pages": 144,
+      "published_year": 1954,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2018-04-26",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Pragmatic Programmer",
+      "authors": [
+       "Andrew Hunt",
+       "David Thomas"
+      ],
+      "genre": "Software",
+      "keywords": "craft, practice, tools",
+      "pages": 352,
+      "published_year": 1999,
+      "original_language": "English",
+      "read": false,
+      "acquired_on": "2022-03-22",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Structure and Interpretation of Computer Programs",
+      "authors": [
+       "Harold Abelson",
+       "Gerald Jay Sussman"
+      ],
+      "genre": "Software",
+      "keywords": "lisp, abstraction, interpreters",
+      "pages": 657,
+      "published_year": 1985,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2019-10-17",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Designing Data-Intensive Applications",
+      "authors": [
+       "Martin Kleppmann"
+      ],
+      "genre": "Software",
+      "keywords": "distributed systems, storage, consistency",
+      "pages": 616,
+      "published_year": 2017,
+      "original_language": "English",
+      "read": null,
+      "acquired_on": "2021-09-09",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Mythical Man-Month",
+      "authors": [
+       "Frederick P. Brooks Jr."
+      ],
+      "genre": "Software",
+      "keywords": "project management, teams, schedule",
+      "pages": 322,
+      "published_year": 1975,
+      "original_language": "English",
+      "read": true,
+      "acquired_on": "2025-01-10",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Refactoring",
+      "authors": [
+       "Martin Fowler"
+      ],
+      "genre": "Software",
+      "keywords": "design, code smells, tests",
+      "pages": 448,
+      "published_year": 1999,
+      "original_language": "English",
+      "read": null,
+      "acquired_on": "2017-09-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Norwegian Wood",
+      "authors": [
+       "Haruki Murakami"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "tokyo, loss, student",
+      "pages": 296,
+      "published_year": 1987,
+      "original_language": "Japanese",
+      "read": true,
+      "acquired_on": "2017-03-07",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Kafka on the Shore",
+      "authors": [
+       "Haruki Murakami"
+      ],
+      "genre": "Magical realism",
+      "keywords": "cats, oedipus, library",
+      "pages": 505,
+      "published_year": 2002,
+      "original_language": "Japanese",
+      "read": true,
+      "acquired_on": "2015-05-01",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "The Wind-Up Bird Chronicle",
+      "authors": [
+       "Haruki Murakami"
+      ],
+      "genre": "Magical realism",
+      "keywords": "wells, war, marriage",
+      "pages": 607,
+      "published_year": 1994,
+      "original_language": "Japanese",
+      "read": false,
+      "acquired_on": "2020-05-07",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Convenience Store Woman",
+      "authors": [
+       "Sayaka Murata"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "work, conformity, tokyo",
+      "pages": 163,
+      "published_year": 2016,
+      "original_language": "Japanese",
+      "read": true,
+      "acquired_on": "2025-10-25",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "La ridícula idea de no volver a verte",
+      "authors": [
+       "Rosa Montero"
+      ],
+      "genre": "Memoir",
+      "keywords": "grief, marie curie, writing",
+      "pages": 232,
+      "published_year": 2013,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2015-04-06",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Patria",
+      "authors": [
+       "Fernando Aramburu"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "basque country, terrorism, families",
+      "pages": 648,
+      "published_year": 2016,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2025-11-11",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Los detectives salvajes",
+      "authors": [
+       "Roberto Bolaño"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "poets, mexico, road novel",
+      "pages": 609,
+      "published_year": 1998,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2023-12-04",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "2666",
+      "authors": [
+       "Roberto Bolaño"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "juarez, critics, evil",
+      "pages": 1125,
+      "published_year": 2004,
+      "original_language": "Spanish",
+      "read": false,
+      "acquired_on": "2017-07-26",
+      "formats": [
+       "ebook"
+      ],
+      "collections": "Bolaño, Long ones",
+      "devices": 2
+     },
+     {
+      "title": "El infinito en un junco",
+      "authors": [
+       "Irene Vallejo"
+      ],
+      "genre": "History",
+      "keywords": "books, antiquity, libraries",
+      "pages": 452,
+      "published_year": 2019,
+      "original_language": "Spanish",
+      "read": true,
+      "acquired_on": "2026-07-24",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Sostiene Pereira",
+      "authors": [
+       "Antonio Tabucchi"
+      ],
+      "genre": "Historical fiction",
+      "keywords": "lisbon, salazar, journalism",
+      "pages": 136,
+      "published_year": 1994,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2017-11-27",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Il barone rampante",
+      "authors": [
+       "Italo Calvino"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "trees, enlightenment, rebellion",
+      "pages": 216,
+      "published_year": 1957,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2018-08-26",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Le città invisibili",
+      "authors": [
+       "Italo Calvino"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "cities, marco polo, catalogue",
+      "pages": 165,
+      "published_year": 1972,
+      "original_language": "Italian",
+      "read": false,
+      "acquired_on": "2016-04-21",
+      "formats": [
+       "ebook"
+      ]
+     },
+     {
+      "title": "Si una noche de invierno un viajero",
+      "authors": [
+       "Italo Calvino"
+      ],
+      "genre": "Literary fiction",
+      "keywords": "reading, metafiction, beginnings",
+      "pages": 260,
+      "published_year": 1979,
+      "original_language": "Italian",
+      "read": true,
+      "acquired_on": "2021-04-02",
+      "formats": [
+       "ebook"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "overrides": {
+  "librapp_overrides": 1,
+  "entries": {}
+ }
+}

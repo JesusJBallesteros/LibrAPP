@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Library } from './library.js'
+import { openDemo } from './demo.js'
 import { browserStorage, canPickFolder, chooseFolder, forgetFolder, recallKind, reopenFolder, requestPersistence } from './fs.js'
 
 /**
@@ -73,6 +74,22 @@ export function useLibrary() {
     }
   }, [adopt])
 
+  /**
+   * Look around an invented library instead of building one.
+   *
+   * Held in memory, so nothing here can reach a folder or the browser's
+   * storage, and nothing that was already there is touched. Leaving is a
+   * reload: there is no state to unwind.
+   */
+  const useDemo = useCallback(async () => {
+    setError(null)
+    try {
+      await adopt(await openDemo())
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [adopt])
+
   const useBrowserStorage = useCallback(async () => {
     setError(null)
     try {
@@ -119,8 +136,9 @@ export function useLibrary() {
 
   return {
     status, library, catalog, sources, error, busy,
+    isDemo: library?.kind === 'demo',
     canPickFolder: canPickFolder(),
-    useFolder, useBrowserStorage, grantPermission, forget,
+    useFolder, useBrowserStorage, useDemo, grantPermission, forget,
     rebuild, run, refresh: () => library && load(library),
     setError,
   }

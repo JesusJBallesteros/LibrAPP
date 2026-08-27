@@ -1,6 +1,11 @@
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import ContrastToggle from '../components/ContrastToggle.jsx'
+import { demoSize } from '../store/demo.js'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
+
+// Counted from the bundle rather than written down, so the offer cannot come to
+// disagree with what opening it actually shows.
+const DEMO_BOOKS = demoSize()
 
 /**
  * The front door.
@@ -21,7 +26,7 @@ const OPTIONS = [
   { id: 'browse', view: 'catalog', needsCatalog: true },
 ]
 
-export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) {
+export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo }) {
   const { t, language, setLanguage } = useT()
 
   return (
@@ -125,6 +130,18 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable }) 
               )
             })}
           </div>
+
+          {/* Offered under the five doors rather than among them: those five ask
+              for something the visitor has to go and fetch, and this one asks
+              for nothing. Left out once there is a real catalog to look at. */}
+          {!hasCatalog && onDemo && (
+            <div className="landing-demo">
+              <button className="btn" onClick={onDemo}>
+                {t('landing.demo.action')}
+              </button>
+              <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
+            </div>
+          )}
         </section>
 
         <section className="landing-next">
