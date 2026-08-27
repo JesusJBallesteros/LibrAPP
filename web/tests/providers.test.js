@@ -9,11 +9,14 @@
 // shape a service will ever issue.
 
 import { describe, expect, it } from 'vitest'
+import { explain } from '../src/ai/anthropic.js'
 import {
   PROVIDERS,
+  ReplyTruncated,
   TRANSCRIPTION_SCHEMA,
   pricesFor,
   providerById,
+  replyTokens,
   toGeminiSchema,
 } from '../src/ai/providers.js'
 import { estimateAskCost, estimateShelfCost, visualTokens } from '../src/ai/model.js'
@@ -171,5 +174,79 @@ describe('what a shelf will cost', () => {
     expect(pricesFor('anthropic', 'claude-opus-5')).toEqual({ in: 5, out: 25 })
     expect(pricesFor('anthropic', 'some-model-invented-later')).toBeNull()
     expect(pricesFor('custom', 'llama-on-my-laptop')).toBeNull()
+  })
+})
+
+// A reply that runs out of room does not come back short, it comes back
+// unparseable: a JSON document that stops mid-string. Every route has to
+// recognise that and say the same thing, because the cause and the remedy are
+// the same wherever it happens.
+describe('running out of room for the reply', () => {
+  it('gives a shelf read more room than a question', () => {
+    // A shelf read returns one document covering every tile; a question returns
+    // prose. They are not the same size of answer.
+    for (const family of ['anthropic', 'openai', 'google']) {
+      expect(replyTokens(family, 'shelf'), family).toBeGreaterThan(replyTokens(family, 'ask'))
+    }
+  })
+
+  it('has a budget for every family in the registry', () => {
+    for (const provider of PROVIDERS) {
+      expect(replyTokens(provider.family, 'shelf'), provider.id).toBeGreaterThan(0)
+      expect(replyTokens(provider.family, 'ask'), provider.id).toBeGreaterThan(0)
+    }
+  })
+
+  it('falls back rather than returning nothing for a family it does not know', () => {
+    // A budget of undefined reaches the API as a missing field and the request
+    // behaves differently per host. A wrong number is better than no number.
+    expect(replyTokens('a-family-added-later', 'shelf')).toBeGreaterThan(0)
+  })
+
+  it('says what happened and what to do about it', () => {
+    const message = new ReplyTruncated().message
+    expect(message).toMatch(/cut off/i)
+    expect(message).toMatch(/fewer tiles|untick/i)
+    // No offsets, no parser vocabulary: the reader cannot act on either.
+    expect(message).not.toMatch(/JSON|position \d+/)
+  })
+
+  it('is recognisable as its own kind of failure', () => {
+    // The shelf view needs to tell this apart from a rejected key.
+    expect(new ReplyTruncated()).toBeInstanceOf(Error)
+    expect(new ReplyTruncated().name).toBe('ReplyTruncated')
+  })
+})
+
+// The Anthropic route hands the reply to the SDK, which parses it internally.
+// A document that stopped mid-string therefore arrives as a parser complaint
+// with a byte offset in it, and that is what a reader saw reported in issue 12.
+describe('an SDK parse failure reaching the reader', () => {
+  it('maps the message from the field report onto something actionable', () => {
+    const reported = new Error(
+      'Failed to parse structured output as JSON: Unterminated string in JSON at position 25599',
+    )
+    expect(explain(reported)).toBeInstanceOf(ReplyTruncated)
+  })
+
+  it('maps the other shapes a JSON parser produces', () => {
+    for (const message of [
+      'Unexpected end of JSON input',
+      'Failed to parse structured output as JSON: Unexpected token } in JSON at position 8',
+    ]) {
+      expect(explain(new Error(message)), message).toBeInstanceOf(ReplyTruncated)
+    }
+  })
+
+  it('leaves an unrelated error alone rather than blaming the length', () => {
+    // Calling every failure a truncation would send people to shorten a request
+    // that was never too long.
+    const other = new Error('The network connection was lost.')
+    expect(explain(other)).toBe(other)
+  })
+
+  it('does not swallow a stop the caller already recognised', () => {
+    const abort = Object.assign(new Error('aborted'), { name: 'AbortError' })
+    expect(explain(abort)).toBe(abort)
   })
 })

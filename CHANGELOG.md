@@ -1,5 +1,98 @@
 # Changelog
 
+## v2.0.1
+
+Three things reported by testers reading real shelves with a real key, and one
+change to how the desk shows its work.
+
+### Fixed: everything the extras checklist asked for was thrown away
+
+Reported as [#13](https://github.com/JesusJBallesteros/LibrAPP/issues/13).
+
+`buildEntry` names the fields it keeps when it merges records into a book, and
+`abstract`, `published_year`, `rating`, `original_language` and `pages` were not
+among them. The request went out correctly and the model answered; the answer
+was discarded on the way into the catalog. Every provider, every read, since the
+checklist existed.
+
+The flag beside those fields was carried, so a book could say it held recalled
+details and show none of them, which is what made it look like a storage
+problem rather than a merge one.
+
+No test caught it because none asserted that a record carrying those fields
+still has them once merged. One does now.
+
+The Anthropic route also had a schema commented as matching the shared contract
+while missing the page count, so that field was stripped before the ingester saw
+it, on that route only.
+
+### Fixed: a long read failed with a parser error
+
+Reported as [#12](https://github.com/JesusJBallesteros/LibrAPP/issues/12).
+
+A shelf read returns one JSON document covering every tile in the request, and
+it grows with the tile count and again with every extra ticked. The ceiling was
+16000 tokens on all three routes, shared with thinking on the Anthropic one.
+Past that the document stops mid-string, which is not a short answer but an
+unreadable one, and the SDK parses before any of our code runs. What reached the
+reader was a parser complaint with a byte offset in it.
+
+- Ceilings now live in one place, per provider family, because they differ and
+  asking for more than a model allows is refused outright.
+- All three routes check why the reply ended and say the same thing when it ran
+  out of room: what happened, and that fewer tiles or fewer extras will fix it.
+- The exact message from the report is a test case, so it cannot reach a reader
+  raw again.
+
+### A long shelf is now read in batches
+
+The above makes running out of room fail clearly. This stops it happening.
+Tiles go four at a time, each its own request, and the replies are joined back
+into one reading.
+
+Splitting them broke something the single request had for free. The prompt tells
+the model that a book showing in two overlapping tiles is one book, and it can
+obey that only as far as the request it is in. The builder is no help, since it
+treats two rows from one source as two copies rather than as a duplicate, which
+is right for a spreadsheet and wrong here. So the joining happens in the reader,
+while this is still one read that merely travelled in pieces: same title and
+same author is one book, and the more confident reading wins.
+
+- A failed batch no longer costs the whole read. What arrived is kept and the
+  missing tiles are named, so a partial reading is never imported as though it
+  were the whole shelf.
+- Nothing coming back at all still raises, because a silent empty result would
+  import as an empty shelf.
+- A cancelled read stops at once rather than paying for the batches after it.
+- The button says which batch is running.
+
+### Fill in gaps reports what it found, instead of printing its reply
+
+The request returns JSON and the panel was printing it, so a wall of braces sat
+beside a review listing the same books. It looked like the feature produced
+text, the way a synopsis does, when what it produces is changes to the catalog.
+
+The document is now collected for the parser and never shown. In its place are
+the counts worth having before keeping anything: how many books are affected,
+and which fields actually came back, since a request asking for five commonly
+returns three and says nothing about the other two. The same counts appear again
+after accepting, so the panel says what changed rather than emptying itself.
+
+The answer panel, its copy button and its cost line belong to the two prose
+requests and are now shown only for them. Switching between the three tabs
+clears the previous answer, review, error and cost.
+
+The write path is unchanged: still parsed, still reviewed, still written through
+the corrections layer, still undone one book at a time.
+
+### Still open
+
+[#3](https://github.com/JesusJBallesteros/LibrAPP/issues/3), a tester reporting
+that the read button produced no result, predates all of the above. If it was a
+reply running out of room it now says so plainly.
+
+---
+
 ## v2.0
 
 Everything below is the difference from v1.0. Nothing in a v1 library needs

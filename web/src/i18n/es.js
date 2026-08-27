@@ -464,6 +464,10 @@ export default {
   'desk.fill.missing': 'faltan {n}',
   'desk.fill.pickOne': 'Elige al menos un campo.',
   'desk.fill.covers': 'Esto pregunta por {n} {n:libro|libros}. El coste sube con esa cifra.',
+  'desk.fill.working': 'Preguntando por {n} {n:libro|libros}. La respuesta llega como una lista que revisar, no como texto.',
+  'desk.fill.forBooks': 'para {n} {n:libro|libros}',
+  'desk.fill.onBooks': 'en {n} {n:libro|libros}',
+  'desk.fill.written': 'Guardado. {n} {n:libro|libros} actualizados.',
   'desk.fill.review': 'Lo que ha llegado',
   'desk.fill.reviewNote':
     '{n} {n:libro|libros} por actualizar. Se {ignored:ha|han} descartado {ignored} por no servir o por constar ya.',
@@ -681,6 +685,9 @@ export default {
   'shelf.tileCountKept': '{kept} de {total} fotos',
   'shelf.noneKept':
     'Están descartadas todas las fotos, así que no hay nada que leer. Deja al menos una.',
+  'shelf.batchProgress': 'Tanda {at} de {of}',
+  'shelf.someTilesFailed':
+    'Algunos recortes no se han podido leer y faltan en lo que sigue: {tiles}. {why}',
   'shelf.stop': 'Detener',
   'shelf.stopped': 'Detenido antes de que llegara una respuesta.',
   'shelf.timedOut':

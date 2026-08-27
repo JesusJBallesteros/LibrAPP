@@ -14,6 +14,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod'
 import { z } from 'zod'
 import { KeyRejected } from './rest.js'
+import { ReplyTruncated, replyTokens } from './providers.js'
 
 /** The same contract as TRANSCRIPTION_SCHEMA, in the form this SDK wants. */
 const Book = z.object({
@@ -29,6 +30,7 @@ const Book = z.object({
   published_year: z.number().int().nullable(),
   rating: z.number().nullable(),
   original_language: z.string().nullable(),
+  pages: z.number().int().nullable(),
   flags: z.array(z.string()),
 })
 const Shelf = z.object({
@@ -41,8 +43,15 @@ const Transcription = z.object({
 })
 
 /** Turn an SDK error into a message a person can act on. */
-function explain(error) {
+export function explain(error) {
   if (error?.name === 'AbortError' || error?.name === 'TimeoutError') return error
+  if (error instanceof ReplyTruncated) return error
+  // The SDK parses the structured reply itself, so a document that stops
+  // mid-string surfaces as a JSON syntax error with an offset in it. That says
+  // nothing a reader can act on, and the cause is always the same.
+  if (/JSON/i.test(error?.message || '') && /parse|unterminated|unexpected/i.test(error.message)) {
+    return new ReplyTruncated()
+  }
   if (error instanceof Anthropic.AuthenticationError) {
     return new KeyRejected(
       'That key was rejected. Check it was copied whole, and that it is still active.',
@@ -92,7 +101,7 @@ export const anthropic = {
       const response = await clientFor(apiKey).messages.parse(
         {
           model,
-          max_tokens: 16000,
+          max_tokens: replyTokens('anthropic', 'shelf'),
           thinking: { type: 'adaptive' },
           messages: [{ role: 'user', content }],
           output_config: { format: zodOutputFormat(Transcription) },
@@ -102,6 +111,7 @@ export const anthropic = {
       if (response.stop_reason === 'refusal') {
         throw new Error('The model declined to answer this request.')
       }
+      if (response.stop_reason === 'max_tokens') throw new ReplyTruncated()
       if (!response.parsed_output) {
         throw new Error('The reply did not match the transcription format. Nothing was imported.')
       }
@@ -116,7 +126,7 @@ export const anthropic = {
       const stream = clientFor(apiKey).messages.stream(
         {
           model,
-          max_tokens: 8000,
+          max_tokens: replyTokens('anthropic', 'ask'),
           thinking: { type: 'adaptive' },
           messages: [{ role: 'user', content: request }],
         },

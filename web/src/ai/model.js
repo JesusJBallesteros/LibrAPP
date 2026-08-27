@@ -9,6 +9,7 @@ import { anthropic } from './anthropic.js'
 import { google, openai } from './rest.js'
 import { pricesFor } from './providers.js'
 import { usableConfig } from './key.js'
+import { fold } from '../core/textmatch.js'
 
 const ADAPTERS = { anthropic, openai, google }
 
@@ -98,20 +99,108 @@ async function chosen() {
  * were read correctly, so the result is shown for review rather than imported
  * directly.
  */
-export async function readShelf({ tiles, photo, instructions, signal }) {
+export async function readShelf({ tiles, photo, instructions, signal, onProgress }) {
   const { adapter, provider, apiKey, model, baseUrl, host } = await chosen()
-  const withData = []
-  for (const tile of tiles) {
-    withData.push({ ...tile, base64: await toBase64(tile.blob) })
+  const groups = batches(tiles)
+
+  const shelves = []
+  const usage = { input_tokens: 0, output_tokens: 0 }
+  const failures = []
+  let done = 0
+
+  for (const group of groups) {
+    onProgress?.({ done, total: groups.length })
+    const withData = []
+    for (const tile of group) withData.push({ ...tile, base64: await toBase64(tile.blob) })
+    const content = adapter.shelfContent({ tiles: withData, tail: tail(instructions, photo) })
+    try {
+      const reply = await adapter.readShelf({
+        provider, apiKey, model, baseUrl, host, content, signal,
+      })
+      shelves.push(...(reply.transcription?.shelves || []))
+      usage.input_tokens += reply.usage?.input_tokens || 0
+      usage.output_tokens += reply.usage?.output_tokens || 0
+    } catch (error) {
+      // A cancelled read is not a failed batch, and carrying on after one would
+      // spend money the reader has already asked to stop spending.
+      if (error?.name === 'AbortError' || error?.name === 'TimeoutError') throw error
+      failures.push({ tiles: group.map((t) => t.tile), error })
+    }
+    done += 1
+    onProgress?.({ done, total: groups.length })
   }
-  const tail =
-    `${instructions}\n\n---\n\n` +
-    `The photograph is named ${JSON.stringify(photo)}. Use that as "photo".\n` +
-    `Read every tile above. Tiles overlap, so a book showing in two of them is ` +
-    `one book: record it once. Group books by the shelf they stand on.\n` +
-    `Reply only with the transcription, in the format required.`
-  const content = adapter.shelfContent({ tiles: withData, tail })
-  return adapter.readShelf({ provider, apiKey, model, baseUrl, host, content, signal })
+
+  // Nothing came back at all, so there is no partial result to offer and the
+  // first failure is the one worth reporting.
+  if (!shelves.length && failures.length) throw failures[0].error
+
+  return {
+    transcription: { photo, shelves: dedupe(shelves) },
+    usage,
+    failures,
+    batches: groups.length,
+  }
+}
+
+/**
+ * How many tiles go in one request.
+ *
+ * The reply is one JSON document covering every tile in the request, so its
+ * length grows with this number and again with every extra ticked. Four keeps
+ * the largest honest reply well inside what any of the models will return,
+ * which is what stops a long shelf coming back truncated and unreadable.
+ */
+export const TILES_PER_BATCH = 4
+
+const batches = (tiles, size = TILES_PER_BATCH) => {
+  const out = []
+  for (let i = 0; i < tiles.length; i += size) out.push(tiles.slice(i, i + size))
+  return out
+}
+
+const tail = (instructions, photo) =>
+  `${instructions}\n\n---\n\n` +
+  `The photograph is named ${JSON.stringify(photo)}. Use that as "photo".\n` +
+  `Read every tile above. Tiles overlap, so a book showing in two of them is ` +
+  `one book: record it once. Group books by the shelf they stand on.\n` +
+  `Reply only with the transcription, in the format required.`
+
+/**
+ * One book seen in two batches is still one book.
+ *
+ * Within a single request the model is told to record an overlapping book once,
+ * and it can, because it sees both tiles together. Split across requests it
+ * cannot: each reply is honest about what its own tiles showed. The builder is
+ * no help either, since it treats two rows from one source as two copies rather
+ * than as a duplicate, which is the right rule for a spreadsheet and the wrong
+ * one here.
+ *
+ * So the joining happens here, while this is still one read that merely
+ * travelled in pieces. Same folded title and same folded author is the test;
+ * the more confident record wins, and its shelf keeps the entry.
+ */
+function dedupe(shelves) {
+  const rank = { high: 3, medium: 2, low: 1 }
+  const seen = new Map()
+  const out = shelves.map((shelf) => ({ ...shelf, books: [] }))
+
+  shelves.forEach((shelf, at) => {
+    for (const book of shelf.books || []) {
+      const key = `${fold(book.title)}\u0000${fold((book.authors || [])[0] || '')}`
+      const already = seen.get(key)
+      if (!already) {
+        seen.set(key, { at, index: out[at].books.length })
+        out[at].books.push(book)
+        continue
+      }
+      const kept = out[already.at].books[already.index]
+      if ((rank[book.confidence] || 0) > (rank[kept.confidence] || 0)) {
+        out[already.at].books[already.index] = book
+      }
+    }
+  })
+
+  return out.filter((shelf) => shelf.books.length)
 }
 
 /**

@@ -171,3 +171,76 @@ describe('an empty build', () => {
     expect(catalog.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/)
   })
 })
+
+// The extras checklist asks a model for details no spine carries, and the
+// reader pays for the answer. Those fields have to survive the merge, or the
+// whole checklist charges for something the catalog throws away. They did not:
+// buildEntry names the fields it keeps, and these five were absent from that
+// list while the recalled_details flag beside them was carried, so a book could
+// claim to hold recalled details and show none.
+describe('what a model recalled reaches the catalog', () => {
+  const RECALLED = {
+    abstract: 'Two or three sentences about the book.',
+    published_year: 1974,
+    rating: 4.2,
+    original_language: 'English',
+    pages: 341,
+  }
+
+  const shelf = (over = {}) =>
+    source({ name: 'shelf', kind: 'photo' }, [
+      {
+        title: 'The Dispossessed',
+        authors: ['Ursula K. Le Guin'],
+        flags: ['recalled_details'],
+        ...RECALLED,
+        ...over,
+      },
+    ])
+
+  it('keeps every recalled field', () => {
+    const book = find(build([shelf()]), 'Dispossessed')
+    for (const [field, value] of Object.entries(RECALLED)) {
+      expect(book[field], field).toBe(value)
+    }
+  })
+
+  it('does not flag a book as carrying recalled details while dropping them', () => {
+    // The flag and the fields have to agree. One arriving without the other is
+    // the catalog saying two different things about the same book.
+    const book = find(build([shelf()]), 'Dispossessed')
+    expect(book.flags).toContain('recalled_details')
+    expect(Object.keys(RECALLED).some((f) => book[f] != null)).toBe(true)
+  })
+
+  it('leaves them unset for a book nobody asked about', () => {
+    const catalog = build([
+      source({ name: 'list' }, [{ title: 'Plain Entry', authors: ['Nobody'] }]),
+    ])
+    const book = find(catalog, 'Plain Entry')
+    for (const field of Object.keys(RECALLED)) expect(book[field], field).toBe(null)
+  })
+
+  it('prefers the more trusted source when two disagree', () => {
+    const catalog = build([
+      source({ name: 'guess', kind: 'photo', confidence: 'low' }, [
+        { title: 'The Dispossessed', authors: ['Ursula K. Le Guin'], published_year: 1999 },
+      ]),
+      source({ name: 'sure', kind: 'photo', confidence: 'high' }, [
+        { title: 'The Dispossessed', authors: ['Ursula K. Le Guin'], published_year: 1974 },
+      ]),
+    ])
+    expect(find(catalog, 'Dispossessed').published_year).toBe(1974)
+  })
+
+  it('takes a recalled field from whichever source has one', () => {
+    // A photograph read with extras and a spreadsheet without: the merged entry
+    // should carry what the photograph recalled.
+    const catalog = build([
+      source({ name: 'list' }, [{ title: 'The Dispossessed', authors: ['Ursula K. Le Guin'] }]),
+      shelf(),
+    ])
+    expect(catalog.books).toHaveLength(1)
+    expect(find(catalog, 'Dispossessed').pages).toBe(341)
+  })
+})

@@ -463,6 +463,10 @@ export default {
   'desk.fill.missing': '{n} missing',
   'desk.fill.pickOne': 'Pick at least one field.',
   'desk.fill.covers': 'This asks about {n} {n:book|books}. The cost goes up with that number.',
+  'desk.fill.working': 'Asking about {n} {n:book|books}. The answer arrives as a list to check, not as text.',
+  'desk.fill.forBooks': 'for {n} {n:book|books}',
+  'desk.fill.onBooks': 'on {n} {n:book|books}',
+  'desk.fill.written': 'Kept. {n} {n:book|books} updated.',
   'desk.fill.review': 'What came back',
   'desk.fill.reviewNote':
     '{n} {n:book|books} to update. {ignored} {ignored:answer was|answers were} dropped as unusable or already recorded.',
@@ -674,6 +678,9 @@ export default {
     'Discard any tile that holds no readable spine \u2014 a wall, a lamp, the edge of a rug. Discarded tiles are not sent and not paid for.',
   'shelf.tileCountKept': '{kept} of {total} tiles',
   'shelf.noneKept': 'Every tile is discarded, so there is nothing to read. Keep at least one.',
+  'shelf.batchProgress': 'Batch {at} of {of}',
+  'shelf.someTilesFailed':
+    'Some tiles could not be read and are missing from what follows: {tiles}. {why}',
   'shelf.stop': 'Stop',
   'shelf.stopped': 'Stopped before a reply arrived.',
   'shelf.timedOut':

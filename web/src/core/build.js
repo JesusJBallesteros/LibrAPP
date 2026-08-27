@@ -429,6 +429,17 @@ function buildEntry(cluster, collapsed, authors, ids) {
     devices: firstFact('devices'),
     update_available: Boolean(firstFact('update_available')),
     location: firstFact('location'),
+    // Recalled by a model rather than read from a spine, and only present when
+    // the extras checklist asked for them. They travel through the merge like
+    // any other fact: the record with the highest confidence wins. Leaving them
+    // out here was silently throwing away every answer the checklist paid for,
+    // while the recalled_details flag on the record still arrived, so a book
+    // could say it carried recalled details and show none.
+    abstract: firstFact('abstract'),
+    published_year: firstFact('published_year'),
+    rating: firstFact('rating'),
+    original_language: firstFact('original_language'),
+    pages: firstFact('pages'),
     genre,
     tags: splitTags(genre, keywords),
     sources: [...cluster.sources()].sort(byCodePoint),

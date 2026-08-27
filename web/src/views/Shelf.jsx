@@ -56,6 +56,9 @@ export default function Shelf({ lib, onOwl }) {
   // to read has to appear beside the button that caused it: shown at the top of
   // the page it is below the fold on a phone, and looks like nothing happened.
   const [readError, setReadError] = useState(null)
+  // Which batch is in flight. A long shelf is read in several requests, and a
+  // button that says nothing for two minutes looks like a button that failed.
+  const [progress, setProgress] = useState(null)
   const failure = useRef(null)
   const inFlight = useRef(null)
 
@@ -134,23 +137,41 @@ export default function Shelf({ lib, onOwl }) {
       READ_TIMEOUT_MS,
     )
     try {
-      const { transcription, usage } = await readShelf({
+      const { transcription, usage, failures } = await readShelf({
         tiles: kept,
         photo: tiles.photo,
         instructions,
         signal: controller.signal,
+        onProgress: setProgress,
       })
       const books = (transcription.shelves || []).flatMap((s) => s.books || [])
       const recalled = books.filter(
-        (b) => b.abstract != null || b.published_year != null || b.rating != null,
+        (b) =>
+          b.abstract != null ||
+          b.published_year != null ||
+          b.rating != null ||
+          b.original_language != null ||
+          b.pages != null,
       ).length
       setProposed({ transcription, usage, counted: books.length, recalled })
+      // Some tiles came back and some did not. What arrived is worth keeping,
+      // and the reader has to know the rest is missing before importing it as
+      // though it were the whole shelf.
+      if (failures?.length) {
+        setReadError(
+          t('shelf.someTilesFailed', {
+            tiles: failures.flatMap((f) => f.tiles).join(', '),
+            why: describeFailure(failures[0].error),
+          }),
+        )
+      }
     } catch (err) {
       setReadError(describeFailure(err))
     } finally {
       clearTimeout(timer)
       inFlight.current = null
       setReading(false)
+      setProgress(null)
       onOwl?.(null)
     }
   }
@@ -372,6 +393,11 @@ export default function Shelf({ lib, onOwl }) {
                   >
                     {reading ? t('shelf.reading') : t('shelf.readForMe')}
                   </button>
+                  {reading && progress && progress.total > 1 && (
+                    <span className="tiny faint tabular">
+                      {t('shelf.batchProgress', { at: progress.done + 1, of: progress.total })}
+                    </span>
+                  )}
                   {reading && (
                     <button className="btn" onClick={() => inFlight.current?.abort()}>
                       {t('shelf.stop')}

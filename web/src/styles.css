@@ -1358,6 +1358,26 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 .fill-picker .check { justify-content: flex-start; gap: 9px; }
 .fill-picker .check .tabular { margin-left: auto; }
 
+/* What a reply answered, and for how many books. Ruled rows rather than a
+   sentence, so five fields can be taken in without reading them. */
+.field-counts {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+.field-counts li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.field-counts li:last-child { border-bottom: 0; }
+.field-counts .tabular { color: var(--ink-faint); white-space: nowrap; }
+.notice .field-counts { margin-bottom: 0; }
+
 .fill-review { border-top: 1px solid var(--rule); margin-top: 18px; }
 .fill-review .forgotten-item { display: block; }
 .fill-review .why { overflow-wrap: anywhere; }

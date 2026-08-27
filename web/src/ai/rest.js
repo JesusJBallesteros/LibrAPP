@@ -14,7 +14,7 @@
 // "the server refused the origin" apart from "there is no server", since both
 // arrive as a bare TypeError, so one message has to cover both.
 
-import { TRANSCRIPTION_SCHEMA, toGeminiSchema } from './providers.js'
+import { ReplyTruncated, TRANSCRIPTION_SCHEMA, replyTokens, toGeminiSchema } from './providers.js'
 
 export class KeyRejected extends Error {}
 
@@ -131,7 +131,7 @@ export const openai = {
       body: {
         model,
         messages: [{ role: 'user', content }],
-        ...tokenCap(provider, 16000),
+        ...tokenCap(provider, replyTokens(provider.family, 'shelf')),
         response_format: {
           type: 'json_schema',
           json_schema: { name: 'transcription', strict: true, schema: TRANSCRIPTION_SCHEMA },
@@ -141,6 +141,9 @@ export const openai = {
     const body = await response.json()
     const choice = body.choices?.[0]
     if (choice?.message?.refusal) throw new Error(choice.message.refusal)
+    // Said before the empty and unparseable checks below, because both are
+    // symptoms of this and neither names the cause.
+    if (choice?.finish_reason === 'length') throw new ReplyTruncated()
     const text = choice?.message?.content
     if (!text) throw new Error('The reply was empty. Nothing was imported.')
     let transcription
@@ -160,7 +163,7 @@ export const openai = {
       body: {
         model,
         messages: [{ role: 'user', content: request }],
-        ...tokenCap(provider, 8000),
+        ...tokenCap(provider, replyTokens(provider.family, 'ask')),
         stream: true,
         stream_options: { include_usage: true },
       },
@@ -207,7 +210,7 @@ export const google = {
       body: {
         contents: [{ role: 'user', parts: content }],
         generationConfig: {
-          maxOutputTokens: 16000,
+          maxOutputTokens: replyTokens('google', 'shelf'),
           responseMimeType: 'application/json',
           responseSchema: toGeminiSchema(TRANSCRIPTION_SCHEMA),
         },
@@ -215,6 +218,9 @@ export const google = {
     })
     const body = await response.json()
     const text = googleText(body)
+    // Google reports the cut in the candidate rather than in the body, and it
+    // reports it whether or not any text came back, so this is asked first.
+    if (body?.candidates?.[0]?.finishReason === 'MAX_TOKENS') throw new ReplyTruncated()
     if (!text) {
       const why = body?.candidates?.[0]?.finishReason
       throw new Error(
@@ -239,7 +245,7 @@ export const google = {
       host,
       body: {
         contents: [{ role: 'user', parts: [{ text: request }] }],
-        generationConfig: { maxOutputTokens: 8000 },
+        generationConfig: { maxOutputTokens: replyTokens('google', 'ask') },
       },
     })
     let text = ''

@@ -26,6 +26,7 @@ import {
   buildRequest,
   gapsByField,
   parseReply,
+  summarise,
 } from '../ai/gaps.js'
 import { useT } from '../i18n/index.jsx'
 
@@ -50,6 +51,29 @@ const EXTRA_ID = {
   pages: 'pages',
 }
 
+/**
+ * Which fields a reply actually answered, and for how many books.
+ *
+ * A request asking for five fields commonly comes back with three of them.
+ * Naming what arrived is the difference between a reader knowing what they are
+ * about to keep and guessing at it.
+ */
+function FieldCounts({ summary, t, written = false }) {
+  if (!summary.fields.length) return null
+  return (
+    <ul className="field-counts">
+      {summary.fields.map(({ field, n }) => (
+        <li key={field}>
+          <span>{t(`shelf.extra.${EXTRA_ID[field]}`)}</span>
+          <span className="tabular">
+            {written ? t('desk.fill.onBooks', { n }) : t('desk.fill.forBooks', { n })}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 export default function Desk({ catalog, onGo, onOwl, lib }) {
   const { t, language } = useT()
   const [ask, setAsk] = useState('synopsis')
@@ -68,6 +92,9 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
   // and what came back, held until it is accepted or discarded.
   const [fields, setFields] = useState(['published_year', 'pages'])
   const [proposed, setProposed] = useState(null)
+  // What the last accepted request changed, kept after the review closes so
+  // pressing Keep leaves something behind rather than an empty panel.
+  const [written, setWritten] = useState(null)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
   const stale = useMemo(() => forgotten(catalog?.books || [], minYears), [catalog, minYears])
@@ -120,7 +147,10 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
         request: assembled,
         onText: (chunk) => {
           whole += chunk
-          setAnswer((prior) => prior + chunk)
+          // The structured ask returns JSON, and a reader can do nothing with a
+          // wall of braces sitting beside a review of the same books. It is
+          // collected for the parser and shown as counts instead.
+          if (!chosen.structured) setAnswer((prior) => prior + chunk)
         },
       })
       setSpent(actualCost(usage, pricesForChoice(keyStatus)))
@@ -151,6 +181,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
       }
       await library.writeOverrides(overrides)
       await library.rebuild()
+      setWritten(summarise(proposed.proposals))
       setProposed(null)
       setAnswer('')
     })
@@ -353,7 +384,20 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                 questions to put, not a setting being switched. */}
             <div className="ask-tabs" role="group" aria-label={t('desk.ask')}>
               {ASKS.map((a) => (
-                <button key={a.id} aria-pressed={ask === a.id} onClick={() => setAsk(a.id)}>
+                <button
+                  key={a.id}
+                  aria-pressed={ask === a.id}
+                  onClick={() => {
+                    setAsk(a.id)
+                    // Each tab answers a different question. Leaving the last
+                    // one on screen makes it look like the answer to this one.
+                    setAnswer('')
+                    setProposed(null)
+                    setWritten(null)
+                    setAskError(null)
+                    setSpent(null)
+                  }}
+                >
                   {t(`desk.${a.id}`)}
                 </button>
               ))}
@@ -451,7 +495,15 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               </div>
             )}
 
-            {(answer || asking) && (
+            {/* The structured ask has no prose to show. While it is out it says so,
+                and when it lands the review takes over. */}
+            {chosen.structured && asking && (
+              <p className="tiny faint" style={{ marginTop: 14 }}>
+                {t('desk.fill.working', { n: toFill.length })}
+              </p>
+            )}
+
+            {!chosen.structured && (answer || asking) && (
               <div style={{ marginTop: 14 }}>
                 <div className="spread">
                   <strong className="tiny">{t('desk.answer')}</strong>
@@ -474,15 +526,25 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               </div>
             )}
 
+            {written && !proposed && (
+              <div className="notice good" style={{ marginTop: 16 }}>
+                <p className="tiny">
+                  <strong>{t('desk.fill.written', { n: written.books })}</strong>
+                </p>
+                <FieldCounts summary={written} t={t} written />
+              </div>
+            )}
+
             {proposed && (
               <div className="fill-review">
                 <p className="eyebrow" style={{ marginTop: 18 }}>{t('desk.fill.review')}</p>
-                <p className="tiny faint" style={{ margin: '4px 0 10px' }}>
+                <p className="tiny faint" style={{ margin: '4px 0 6px' }}>
                   {t('desk.fill.reviewNote', {
                     n: proposed.proposals.length,
                     ignored: proposed.ignored,
                   })}
                 </p>
+                <FieldCounts summary={summarise(proposed.proposals)} t={t} />
                 {proposed.proposals.map((row) => (
                   <div className="forgotten-item" key={row.id}>
                     <span className="title">{row.title}</span>
