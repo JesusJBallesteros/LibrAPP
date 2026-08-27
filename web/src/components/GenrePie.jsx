@@ -85,7 +85,15 @@ export default function GenrePie({ books, size = 168 }) {
   const named = slices.filter((s) => !s.isOther)
 
   if (!slices.length) {
-    return <p className="muted tiny">{t('pie.noGenres')}</p>
+    // A heading with one quiet line under it reads as a section that failed to
+    // load rather than one with nothing to show. Say why it is empty, and where
+    // the genres can be got.
+    return (
+      <>
+        <p className="muted tiny">{t('pie.noGenres')}</p>
+        <p className="tiny faint" style={{ marginTop: 6 }}>{t('pie.noGenresHow')}</p>
+      </>
+    )
   }
 
   const r = size / 2 - 6

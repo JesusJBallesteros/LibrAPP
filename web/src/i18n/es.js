@@ -550,6 +550,8 @@ export default {
 
   // -- el quesito de géneros ------------------------------------------------
   'pie.noGenres': 'Todavía no hay géneros anotados.',
+  'pie.noGenresHow':
+    'Una foto solo lo registra si la lista de extras lo pidió, y una hoja de cálculo solo si tenía esa columna. Rellenar huecos, aquí arriba, puede pedir el resto.',
   'pie.other': 'otros',
   'pie.more': '{n} más',
   'pie.note':

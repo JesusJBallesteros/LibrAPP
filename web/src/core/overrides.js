@@ -18,6 +18,7 @@
 // is reported rather than dropped.
 
 import { authorTokens, fold, slugify, tokenKey } from './textmatch.js'
+import { splitTags } from './build.js'
 
 export const OVERRIDES_VERSION = 1
 
@@ -211,6 +212,15 @@ export function applyOverrides(catalog, overrides) {
       } else {
         next[field] = set[field]
       }
+    }
+    // tags are not stored, they are cut from genre and keywords when the
+    // catalog is built, and everything that counts genres reads them rather
+    // than the field: the chart, the word cloud, the tag filter. An override
+    // that set a genre therefore changed the book and not one of those, so a
+    // genre added by hand or by the desk was visible on the card and nowhere
+    // else. Whatever a correction touches, its derived form goes with it.
+    if (fields.includes('genre') || fields.includes('keywords')) {
+      next.tags = splitTags(next.genre, next.keywords)
     }
     next.overridden = { fields, was, at: override.at || null, why: override.why || null }
     next.flags = [...new Set([...(book.flags || []), 'corrected'])].sort()

@@ -547,6 +547,8 @@ export default {
 
   // -- the genre pie --------------------------------------------------------
   'pie.noGenres': 'No genres recorded yet.',
+  'pie.noGenresHow':
+    'A photograph records one only where the checklist asked for it, and a spreadsheet only where it had a column. Fill in gaps, above, can ask for the rest.',
   'pie.other': 'other',
   'pie.more': '{n} more',
   'pie.note':

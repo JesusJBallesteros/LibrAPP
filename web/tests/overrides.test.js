@@ -149,3 +149,71 @@ describe('reading a corrections file', () => {
     expect(() => readOverrides({ librapp_overrides: 99 })).toThrow(/expected librapp_overrides 1/)
   })
 })
+
+// tags are not stored, they are cut from genre and keywords when the catalog is
+// built. Everything that counts genres reads them rather than the field: the
+// chart, the word cloud, the tag filter. So a correction that set a genre
+// changed the book and none of those, and the genre showed on the card and
+// nowhere else. It cost nothing to write and was invisible until somebody
+// looked at the chart afterwards.
+describe('a corrected genre reaches the things that count genres', () => {
+  const book = (over = {}) => ({
+    id: 'b1',
+    title: 'The Dispossessed',
+    genre: null,
+    keywords: null,
+    tags: [],
+    authors: [],
+    ...over,
+  })
+  const catalogOf = (books) => ({ books, authors: [], counts: {} })
+
+  const corrected = (start, changes) =>
+    applyOverrides(catalogOf([start]), setOverride(emptyOverrides(), start, changes)).books[0]
+
+  it('puts the genre into the tags, not only into the field', () => {
+    const out = corrected(book(), { genre: 'Science fiction' })
+    expect(out.genre).toBe('Science fiction')
+    expect(out.tags).toEqual([{ kind: 'genre', value: 'Science fiction', key: 'science fiction' }])
+  })
+
+  it('splits several genres the way the builder does', () => {
+    const out = corrected(book(), { genre: 'Philosophy, Ethics' })
+    expect(out.tags.map((t) => t.value)).toEqual(['Philosophy', 'Ethics'])
+  })
+
+  it('replaces the tags rather than adding to them', () => {
+    // Correcting a wrong genre has to take the wrong one off the chart.
+    const start = book({ genre: 'Cookery', tags: [{ kind: 'genre', value: 'Cookery', key: 'cookery' }] })
+    const out = corrected(start, { genre: 'Philosophy' })
+    expect(out.tags.map((t) => t.value)).toEqual(['Philosophy'])
+  })
+
+  it('clears the tags when a genre is corrected away', () => {
+    const start = book({ genre: 'Cookery', tags: [{ kind: 'genre', value: 'Cookery', key: 'cookery' }] })
+    expect(corrected(start, { genre: null }).tags).toEqual([])
+  })
+
+  it('leaves the tags alone when the correction was about something else', () => {
+    const start = book({ genre: 'Philosophy', tags: [{ kind: 'genre', value: 'Philosophy', key: 'philosophy' }] })
+    const out = corrected(start, { publisher: 'Gollancz' })
+    expect(out.tags.map((t) => t.value)).toEqual(['Philosophy'])
+  })
+
+  it('keeps the keywords a source recorded when only the genre changed', () => {
+    const start = book({
+      genre: null,
+      keywords: 'empire, revolution',
+      tags: [
+        { kind: 'keyword', value: 'empire', key: 'empire' },
+        { kind: 'keyword', value: 'revolution', key: 'revolution' },
+      ],
+    })
+    const out = corrected(start, { genre: 'Science fiction' })
+    expect(out.tags.filter((t) => t.kind === 'keyword').map((t) => t.value)).toEqual([
+      'empire',
+      'revolution',
+    ])
+    expect(out.tags.filter((t) => t.kind === 'genre').map((t) => t.value)).toEqual(['Science fiction'])
+  })
+})
