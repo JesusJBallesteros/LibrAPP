@@ -35,7 +35,7 @@ export default {
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.empty': 'Aquí todavía no hay nada: empieza por una de las opciones de arriba.',
 
-  'landing.demo.action': 'Echa un vistazo a una biblioteca de muestra',
+  'landing.demo.action': 'Mira este ejemplo',
   'landing.demo.hint':
     'Una estantería inventada de {n} libros, aquí mismo. No se guarda nada y no se toca nada tuyo.',
 

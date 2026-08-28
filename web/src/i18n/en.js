@@ -36,7 +36,7 @@ export default {
   'landing.option.browse.hint': 'Go straight to the books you already have here.',
   'landing.option.browse.empty': 'There is nothing here yet. Start with one of the options above.',
 
-  'landing.demo.action': 'Look around a demo library',
+  'landing.demo.action': 'Check out this example',
   'landing.demo.hint':
     'An invented shelf of {n} books, opened here and now. Nothing is saved and nothing of yours is touched.',
 

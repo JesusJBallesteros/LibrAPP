@@ -531,13 +531,19 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: 0;
   border-bottom: 1px solid var(--control-line);
   border-radius: 0;
-  background: none;
+  /* The page colour rather than none. A select with no background of its own
+     opens a list drawn in the browser's default white, whatever the theme says,
+     because the list takes its colour from the control. Painting it the colour
+     it already sits on changes nothing on the page and everything in the list. */
+  background: var(--paper);
   padding: 4px 2px;
   font: 400 13.5px/1.3 var(--sans);
   letter-spacing: normal;
   text-transform: none;
   color: var(--ink);
 }
+/* And the rows in that list, for the browsers that colour those separately. */
+.field select option { background: var(--paper-raised); color: var(--ink); }
 
 .more-filters { align-self: flex-end; padding-bottom: 5px; }
 .filter-count {

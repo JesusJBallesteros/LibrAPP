@@ -65,6 +65,20 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           <p className="eyebrow">{t('app.strapline')}</p>
 
           <p className="landing-tagline">{t('landing.tagline')}</p>
+
+          {/* The first thing offered, and the only one that asks for nothing.
+              Everything below wants a photograph or a spreadsheet the visitor
+              has to go and find; somebody deciding whether to bother should not
+              have to read to the bottom of the page to find the way in that
+              costs them nothing. Gone once there is a real catalog. */}
+          {!hasCatalog && onDemo && (
+            <div className="landing-demo">
+              <button className="btn primary" onClick={onDemo}>
+                {t('landing.demo.action')}
+              </button>
+              <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
+            </div>
+          )}
           <p className="landing-intro">{t('landing.intro')}</p>
         </header>
 
@@ -136,17 +150,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             })}
           </div>
 
-          {/* Offered under the five doors rather than among them: those five ask
-              for something the visitor has to go and fetch, and this one asks
-              for nothing. Left out once there is a real catalog to look at. */}
-          {!hasCatalog && onDemo && (
-            <div className="landing-demo">
-              <button className="btn" onClick={onDemo}>
-                {t('landing.demo.action')}
-              </button>
-              <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
-            </div>
-          )}
         </section>
 
         <section className="landing-next">
