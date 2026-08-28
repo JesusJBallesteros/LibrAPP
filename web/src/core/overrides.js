@@ -66,6 +66,35 @@ export function readOverrides(payload) {
   return { ...emptyOverrides(), ...payload, entries: payload.entries || {} }
 }
 
+// Nothing recorded. Null is the app's word for unknown and an empty box in the
+// editor means the same thing, so the two are one value here. False is not one
+// of them: for a read state it means unread, which is an answer.
+const blank = (value) => value === null || value === undefined || value === ''
+
+/**
+ * Whether a corrected value is the same as the one underneath it.
+ *
+ * Arrays are compared by their contents because authors and formats are lists,
+ * and two lists of the same ids in the same order are the same list.
+ */
+export function sameValue(a, b) {
+  if (blank(a) && blank(b)) return true
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((value, i) => value === b[i])
+  }
+  return a === b
+}
+
+/**
+ * What the sources say about one field of a book that may already be corrected.
+ *
+ * A book handed back from the catalog carries its corrections already applied,
+ * so its own value is no guide to what is underneath. Where it was corrected it
+ * also carries what it was before, which is.
+ */
+const beneath = (book, field) =>
+  book?.overridden?.was && field in book.overridden.was ? book.overridden.was[field] : book?.[field]
+
 /**
  * Record a correction against one entry.
  *
@@ -77,8 +106,23 @@ export function setOverride(overrides, book, changes, why = null) {
   const set = { ...(previous.set || {}) }
   for (const [field, value] of Object.entries(changes)) {
     if (!EDITABLE.includes(field)) throw new Error(`${field} cannot be overridden`)
-    set[field] = value
+    // Putting a value back to what the sources say is not a correction, it is
+    // the absence of one. Starring a book and then unstarring it used to leave
+    // the book listed among the corrections, saying favourite: false, which is
+    // what it said before anybody touched it.
+    //
+    // Authors are exempt: a correction holds display names and a built book
+    // holds ids, so the two cannot be compared here. The comparison at the
+    // point of applying can, and does.
+    if (field !== 'authors' && sameValue(value, beneath(book, field))) delete set[field]
+    else set[field] = value
   }
+
+  // Nothing left to say about this book. Removing the entry rather than storing
+  // an empty one keeps the count of corrections honest and the file readable.
+  const previousRemoved = previous.removed ?? false
+  if (!Object.keys(set).length && !previousRemoved) return clearOverride(overrides, book.id)
+
   return {
     ...overrides,
     entries: {
@@ -86,7 +130,7 @@ export function setOverride(overrides, book, changes, why = null) {
       [book.id]: {
         ...previous,
         set,
-        removed: previous.removed ?? false,
+        removed: previousRemoved,
         why: why ?? previous.why ?? null,
         at: new Date().toISOString().slice(0, 10),
         title: book.title,
@@ -222,10 +266,28 @@ export function applyOverrides(catalog, overrides) {
     if (fields.includes('genre') || fields.includes('keywords')) {
       next.tags = splitTags(next.genre, next.keywords)
     }
-    next.overridden = { fields, was, at: override.at || null, why: override.why || null }
+
+    // Which of them actually changed anything. A stored correction that agrees
+    // with its source is a correction in name only: it should not mark the book,
+    // should not be counted, and should not be listed as work somebody did.
+    // Judged here rather than only where corrections are written, because this
+    // is the one place the value underneath is in hand, and because files
+    // written before this existed carry entries of exactly that kind.
+    const changed = fields.filter((field) => !sameValue(next[field], book[field]))
+    if (!changed.length) {
+      books.push(book)
+      continue
+    }
+
+    next.overridden = {
+      fields: changed,
+      was: Object.fromEntries(changed.map((field) => [field, was[field]])),
+      at: override.at || null,
+      why: override.why || null,
+    }
     next.flags = [...new Set([...(book.flags || []), 'corrected'])].sort()
     books.push(next)
-    corrected.push({ id: book.id, title: next.title, fields })
+    corrected.push({ id: book.id, title: next.title, fields: changed })
   }
 
   // An override whose id no longer resolves is reported, never dropped: the id

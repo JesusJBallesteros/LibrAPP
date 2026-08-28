@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Fixed: undoing a change still counted as a change
+
+[#9](https://github.com/JesusJBallesteros/LibrAPP/issues/9). Star a book and
+unstar it and the book was left listed among the corrections, saying
+favourite: false, which is what it said before anybody touched it.
+
+Putting a value back to what the sources say is not a correction, it is the
+absence of one. A correction that agrees with the value underneath it is now
+dropped when it is written, and ignored when it is applied. Both, because the
+second is what the value underneath is actually in hand for, and because files
+written before this carry entries of exactly that kind: they clean themselves up
+on the next rebuild rather than needing anybody to go and find them.
+
+An emptied box and a field nobody recorded count as the same thing. Unread and
+not recorded do not, because for a read state false is an answer.
+
+Underneath it was a smaller thing. The builder never stated whether a book was a
+favourite, since a favourite is marked by the reader and never by a source, so
+the property was simply absent and nothing could be compared against it. It now
+says false, and a source claiming otherwise is still ignored.
+
 ### Barcodes on a desktop too
 
 Chrome on Android has a barcode reader and uses it. No desktop browser has one,

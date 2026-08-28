@@ -464,6 +464,12 @@ function buildEntry(cluster, collapsed, authors, ids) {
     update_available: Boolean(firstFact('update_available')),
     location: firstFact('location'),
     isbn: firstFact('isbn'),
+    // Always false here, never read from a record. A favourite is marked by the
+    // reader and arrives through the correction layer, so a source claiming one
+    // is ignored. It is stated rather than left off because a correction that
+    // sets it back to false has to have something to compare against, and a
+    // missing property compares equal to nothing.
+    favourite: false,
     // Recalled by a model rather than read from a spine, and only present when
     // the extras checklist asked for them. They travel through the merge like
     // any other fact: the record with the highest confidence wins. Leaving them

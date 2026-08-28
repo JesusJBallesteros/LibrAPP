@@ -217,3 +217,105 @@ describe('a corrected genre reaches the things that count genres', () => {
     expect(out.tags.filter((t) => t.kind === 'genre').map((t) => t.value)).toEqual(['Science fiction'])
   })
 })
+
+// Putting a value back to what the sources say is not a correction, it is the
+// absence of one. Starring a book and unstarring it left the book listed among
+// the corrections, saying favourite: false, which is what it said before
+// anybody touched it. Reported as issue 9.
+describe('a correction that corrects nothing', () => {
+  const star = (overrides, book) => setOverride(overrides, book, { favourite: true })
+
+  it('records the star', () => {
+    const book = pick(catalogOf(BOOKS), 'Dune')
+    const after = star(emptyOverrides(), book)
+    expect(Object.keys(after.entries)).toEqual([book.id])
+  })
+
+  it('leaves nothing behind when the star is taken off again', () => {
+    const catalog = catalogOf(BOOKS)
+    const book = pick(catalog, 'Dune')
+    const starred = applyOverrides(catalogOf(BOOKS), star(emptyOverrides(), book))
+    const nowStarred = pick(starred, 'Dune')
+
+    const after = setOverride(star(emptyOverrides(), book), nowStarred, { favourite: false })
+    expect(after.entries[book.id]).toBeUndefined()
+  })
+
+  it('keeps the other corrections on a book when one of them is undone', () => {
+    const catalog = catalogOf(BOOKS)
+    const book = pick(catalog, 'Dune')
+    let overrides = setOverride(emptyOverrides(), book, { favourite: true, genre: 'Space opera' })
+    const corrected = pick(applyOverrides(catalogOf(BOOKS), overrides), 'Dune')
+
+    overrides = setOverride(overrides, corrected, { favourite: false })
+    expect(overrides.entries[book.id].set).toEqual({ genre: 'Space opera' })
+  })
+
+  it('compares against the source, not against the corrected value', () => {
+    // The book handed back by the catalog already has the correction on it, so
+    // its own genre is no guide to what the sources said.
+    const catalog = catalogOf(BOOKS)
+    const book = pick(catalog, 'Dune')
+    const overrides = setOverride(emptyOverrides(), book, { genre: 'Space opera' })
+    const corrected = pick(applyOverrides(catalogOf(BOOKS), overrides), 'Dune')
+
+    const after = setOverride(overrides, corrected, { genre: 'Science fiction' })
+    expect(after.entries[book.id]).toBeUndefined()
+  })
+
+  it('treats an emptied box and nothing recorded as the same', () => {
+    const book = pick(catalogOf(BOOKS), 'Dune')
+    expect(book.publisher).toBeNull()
+    expect(setOverride(emptyOverrides(), book, { publisher: '' }).entries[book.id]).toBeUndefined()
+  })
+
+  it('does not treat unread as nothing recorded', () => {
+    // Read is three-valued and false is an answer, not an absence.
+    const book = pick(catalogOf(BOOKS), 'Dune')
+    expect(book.read).toBeNull()
+    const after = setOverride(emptyOverrides(), book, { read: false })
+    expect(after.entries[book.id].set).toEqual({ read: false })
+  })
+
+  it('keeps a removal even when nothing else is set', () => {
+    const catalog = catalogOf(BOOKS)
+    const book = pick(catalog, 'Dune')
+    let overrides = setRemoved(emptyOverrides(), book, true)
+    overrides = setOverride(overrides, book, { favourite: false })
+    expect(overrides.entries[book.id].removed).toBe(true)
+  })
+
+  it('ignores a stored correction that agrees with its source', () => {
+    // Files written before this was noticed carry entries of exactly that kind.
+    const stale = {
+      ...emptyOverrides(),
+      entries: {
+        [pick(catalogOf(BOOKS), 'Dune').id]: {
+          set: { favourite: false, genre: 'Science fiction' },
+          removed: false,
+          at: '2026-01-01',
+        },
+      },
+    }
+    const catalog = applyOverrides(catalogOf(BOOKS), stale)
+    const book = pick(catalog, 'Dune')
+    expect(book.overridden).toBeUndefined()
+    expect(book.flags).not.toContain('corrected')
+    expect(catalog.review.corrected).toEqual([])
+  })
+
+  it('reports only the fields that actually differ', () => {
+    const id = pick(catalogOf(BOOKS), 'Dune').id
+    const mixed = {
+      ...emptyOverrides(),
+      entries: {
+        [id]: { set: { favourite: false, genre: 'Space opera' }, removed: false, at: '2026-01-01' },
+      },
+    }
+    const catalog = applyOverrides(catalogOf(BOOKS), mixed)
+    const book = pick(catalog, 'Dune')
+    expect(book.overridden.fields).toEqual(['genre'])
+    expect(book.overridden.was).toEqual({ genre: 'Science fiction' })
+    expect(catalog.review.corrected[0].fields).toEqual(['genre'])
+  })
+})
