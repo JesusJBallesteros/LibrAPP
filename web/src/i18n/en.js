@@ -8,7 +8,7 @@ export default {
   // -- landing ------------------------------------------------------------
   'landing.tagline': 'Your full library catalog and your own personal librarian, at hand.',
   'landing.intro':
-    'Photograph a shelf and LibrAPP reads the spines into a catalog you can search, filter and browse. You can also bring in a spreadsheet, a store export, or a catalog you built on another device — and combine them all without duplicates.',
+    'Photograph a shelf and LibrAPP reads the spines into a catalog you can search, filter and browse. You can also bring in a spreadsheet, a store export, or a catalog you built on another device, and combine them all without duplicates.',
   'landing.privacy.title': 'Your books stay with you',
   'landing.privacy.body':
     'There is no account and no server. Your catalog is written to this device, and once LibrAPP has loaded it works with no connection at all.',
@@ -16,7 +16,7 @@ export default {
     'Two optional steps can use an AI service, and they are the only things that ever send anything. Each shows the exact text first: at the desk, Your reading profile prints the whole of what would be sent, with its character count, and a button to copy just that. Nothing goes anywhere unread.',
   'landing.needs.title': 'What it needs to work',
   'landing.needs.storage':
-    'Somewhere to keep your catalog — a folder you pick, or storage the browser manages for you. You choose, and you can change your mind later.',
+    'Somewhere to keep your catalog: a folder you pick, or storage the browser manages for you. You choose, and you can change your mind later.',
   'landing.needs.source':
     'At least one source of books: a photograph, a list you already keep, or a catalog exported from another device.',
   'landing.needs.ai':
@@ -34,7 +34,7 @@ export default {
   'landing.option.import.hint': 'Bring in a file you exported from LibrAPP elsewhere.',
   'landing.option.browse': 'I want to see my catalog',
   'landing.option.browse.hint': 'Go straight to the books you already have here.',
-  'landing.option.browse.empty': 'There is nothing here yet — start with one of the options above.',
+  'landing.option.browse.empty': 'There is nothing here yet. Start with one of the options above.',
 
   'landing.demo.action': 'Look around a demo library',
   'landing.demo.hint':
@@ -48,7 +48,7 @@ export default {
   'landing.language': 'Language',
   'landing.learnMore': 'More about LibrAPP',
   'landing.browserWarning':
-    'This browser is missing something LibrAPP needs. Open the Library tab once you are in for the details.',
+    'This browser is missing something LibrAPP needs. Open The stacks once you are in for the details.',
 
   // -- shell --------------------------------------------------------------
   // -- the LibrAPPrian ------------------------------------------------------
@@ -169,10 +169,10 @@ export default {
   'setup.folder.action': 'Choose a folder',
   'setup.browser.title': 'Storage the browser manages',
   'setup.browser.body':
-    'Nothing to choose and nothing to configure, but the files are not visible to other apps — an export is how a copy leaves this device.',
+    'Nothing to choose and nothing to configure, but the files are not visible to other apps. An export is how a copy leaves this device.',
   'setup.browser.action': 'Use browser storage',
   'setup.noPicker':
-    'This browser has no folder picker — on a phone that is normal. Browser storage below works the same from inside the app.',
+    'This browser has no folder picker, which is normal on a phone. Browser storage below works the same from inside the app.',
   'setup.either': 'Either can be changed later, and a catalog can be moved from one to the other.',
 
   'permit.title': 'Reopen your catalog',
@@ -184,7 +184,7 @@ export default {
   // -- errors -------------------------------------------------------------
   'error.noKeyActive': 'No key is switched on.',
   'error.notAnExport':
-    '{name} is not a LibrAPP export. Choose the file you exported from Library → Export on the other device.',
+    '{name} is not a LibrAPP export. Choose the file you exported from The stacks → Export on the other device.',
   'error.notJson': '{name} is not readable as JSON. It may have been renamed, or downloaded only in part.',
 
   // -- a book ---------------------------------------------------------------
@@ -250,7 +250,7 @@ export default {
   'list.reading': 'Reading it…',
   'list.whatIsIn': 'What is in {name}?',
   'list.manyLists':
-    'This file holds more than one list. Pick the one you actually own — importing a wishlist as your library is the mistake worth one extra question.',
+    'This file holds more than one list. Pick the one you own: a wishlist imported as your library is hard to separate out afterwards.',
   'list.whichList': 'Which list',
   'list.callIt': 'Call it',
   'list.theseAre': 'These are',
@@ -258,10 +258,10 @@ export default {
   'list.importAction': 'Import and rebuild',
   'list.theseAreNote': 'is only a fallback: rows naming their own format keep it.',
   'list.trustNote':
-    'decides who wins when two sources disagree about the same book — a verified export outranks a hand-kept list.',
+    'decides who wins when two sources disagree about the same book. A verified export outranks a hand-kept list.',
   'list.missingTitle': 'This list did not carry everything LibrAPP can use.',
   'list.missing.read':
-    'No read column. Every book from this file counts as not recorded, and the unread pile at the desk leaves them all out, because guessing would bury it under books you have finished.',
+    'No read column. Every book from this file counts as not recorded, and the unread pile at the desk excludes books with no read state.',
   'list.missing.acquired_on':
     'No date column. Nothing from this file can be ranked by how long it has waited, which is what "Bought, and never opened" is ordered by.',
   'list.missing.genre':
@@ -276,12 +276,12 @@ export default {
   'list.imported': '{n} records imported.',
   'list.nowHolds': 'The catalog now holds {n} books.',
   'list.declared':
-    'The export declares {declared} items and {read} were read — a difference of {difference}.',
+    'The export declares {declared} items and {read} were read, a difference of {difference}.',
 
   // -- catalog --------------------------------------------------------------
   'catalog.empty.title': 'No catalog yet',
   'catalog.empty.body':
-    'Nothing has been ingested. Start with a photograph of a shelf, or with a list you already keep — either one on its own is enough to build a catalog.',
+    'Nothing has been ingested. Start with a photograph of a shelf, or with a list you already keep. Either one on its own is enough to build a catalog.',
   'catalog.empty.shelf': 'Read a shelf photograph',
   'catalog.empty.list': 'Upload a list',
   'catalog.typeIn': 'Type a book in',
@@ -320,15 +320,15 @@ export default {
   'storage.eyebrow': 'Housekeeping',
   'storage.kindUnknown': 'not recorded',
   'storage.where': 'Storage',
-  'storage.kind.folder': 'a folder you chose — plain files you can open, back up or commit',
-  'storage.kind.browser': 'browser storage — private to LibrAPP, and only leaves by export',
+  'storage.kind.folder': 'a folder you chose, holding plain files you can open, back up or commit',
+  'storage.kind.browser': 'browser storage, private to LibrAPP and leaving only by export',
   'storage.kind.unknown': 'unknown',
   'storage.using': 'Using {used} of about {quota} the browser allows this app.',
   'storage.notPersistent': 'This storage is not marked persistent.',
   'storage.notPersistentBody':
     'The browser may clear it if the device runs short of space, and your library would go with it. Installing LibrAPP usually earns persistence; until then, keep an export.',
   'storage.askPersistent': 'Ask for persistent storage',
-  'storage.persistent': 'Marked persistent — the browser will not clear it to reclaim space.',
+  'storage.persistent': 'Marked persistent. The browser will not clear it to reclaim space.',
   'storage.elsewhere': 'Use a different location',
   'storage.forgetNote': 'This forgets where the library is; it does not delete anything.',
 
@@ -345,7 +345,7 @@ export default {
 
   'storage.browser': 'Your browser',
   'storage.browserNote':
-    'Checked by trying each feature, not by reading the browser name — so this is what your browser can actually do, whichever one it is.',
+    'Checked by trying each feature, not by reading the browser name, so this is what your browser can actually do, whichever one it is.',
   'storage.allSupported': 'everything supported',
   'storage.someMissing': '{n} feature(s) unavailable',
   'storage.notSupported': 'not supported',
@@ -386,14 +386,14 @@ export default {
 
   'storage.corrections': 'Corrections you have made',
   'storage.correctionsNote':
-    'Kept apart from your sources and applied after every rebuild. Removing a book cannot delete it — the next rebuild reads the same sources and would put it back — so a removal is recorded here instead, and can be undone.',
+    'Kept apart from your sources and applied after every rebuild. A removal is recorded here rather than deleted from the source, because the next rebuild reads the same sources and would restore it. Any correction can be undone.',
   'storage.noCorrections': 'Nothing corrected yet.',
   'storage.removedGroup': 'Removed ({n})',
   'storage.editedGroup': 'Edited ({n})',
   'storage.changed': 'changed {fields}',
   'storage.orphaned': '{n} correction(s) no longer match any book.',
   'storage.orphanedNote':
-    'An entry is identified by its author and title, so this happens when a better source supplies a fuller title and the identity changes. They are listed rather than dropped, because silence would look like the correction had stopped mattering.',
+    'An entry is identified by its author and title, so this happens when a source supplies a fuller title and the identity changes. They are listed rather than removed, so a correction that no longer matches anything stays visible.',
   'storage.wasRemoved': 'was removed',
   'storage.wasEdited': 'was edited',
   'storage.forgetIt': 'Forget it',
@@ -402,10 +402,10 @@ export default {
 
   'storage.move': 'Move this library elsewhere',
   'storage.moveNote':
-    'An export holds the sources, not the catalog. The catalog is rebuilt from them on the other side, so the two copies cannot drift into disagreeing about which is current.',
+    'An export holds the sources, not the catalog. The catalog is rebuilt from them on the other device, so both copies are built from the same records.',
   'storage.exported': 'Exported {n} source(s).',
   'storage.importTitle': 'Import an export',
-  'storage.importHint': 'choose the .json file you exported — it is added, then rebuilt',
+  'storage.importHint': 'choose the .json file you exported: it is added, then rebuilt',
   'storage.imported': 'Imported {n} source(s) and rebuilt.',
 
   // -- shelf picture --------------------------------------------------------
@@ -413,7 +413,7 @@ export default {
   'common.save': 'Save',
 
   'shelf.intro':
-    'Photograph a shelf straight on, at your camera’s full resolution. This matters more than anything else here: a whole bookcase at one megapixel is unreadable, and the same shelf at fifty is not.',
+    'Photograph the shelf straight on, at your camera’s full resolution. Resolution determines how much of the lettering can be read, so a larger photograph produces a better transcription.',
   'shelf.whatItIsFor': 'reading a shelf',
   'shelf.eyebrow': 'Accessions',
   'list.listsFound': '{n} lists found',
@@ -436,7 +436,7 @@ export default {
   'shelf.lessDown': '− down',
   'shelf.moreDown': '+ down',
   'shelf.gridNote':
-    'Aim for tiles holding a handful of whole spines, with the title readable top to bottom. No setting suits every shelf: a wide bookcase wants several tiles across, and a close-up of three books wants one and nothing more.',
+    'Aim for tiles holding a handful of whole spines, with the title readable top to bottom. A wide bookcase needs several tiles across. A close-up of three books needs only one.',
   'shelf.gridWarning': 'Adding rows is what splits a title in half',
   'shelf.gridWarningTail':
     ', so add those only when the photograph really shows shelves stacked above one another.',
@@ -454,13 +454,13 @@ export default {
   'shelf.bookCount': '{n} book(s)',
   'shelf.cost': 'cost {amount}',
   'shelf.checkNote':
-    'Nothing has been imported yet. A model reading a spine can be wrong in a way the catalog cannot detect later, so this is the moment to look. Anything marked uncertain is worth checking against the tiles above.',
+    'Nothing has been imported yet. Check the list now: a misread spine cannot be detected once it is in the catalog. Entries marked uncertain are the ones to compare against the tiles above.',
   'shelf.unplaced': 'unplaced',
   'shelf.importThese': 'Import these {n} books',
   'shelf.discard': 'Discard',
   'shelf.stepBring': '{n} · Bring a transcription back yourself',
   'shelf.bringNote':
-    'The route that needs no key: read the tiles in any AI session with the instructions above, and drop the JSON here. The import refuses a file with an untitled book or an unknown confidence value — a bad read should stop here rather than turn up in your catalog later.',
+    'The route that needs no key. Read the tiles in any AI session using the instructions above, then drop the JSON here. A file containing an untitled book or an unknown confidence value is refused at this point rather than imported.',
   'shelf.dropTranscription': 'Drop the transcription',
   'shelf.dropTranscriptionHint': 'the JSON file the model wrote',
   'shelf.result': '{n} books read from the photograph.',
@@ -469,9 +469,9 @@ export default {
     'A photograph cannot see a purchase date or whether you read something, so those stay unknown until another source says.',
 
   // -- the desk -------------------------------------------------------------
-  'desk.nothingYet': 'Nothing to work with yet — build a catalog first.',
+  'desk.nothingYet': 'Nothing to work with yet. Build a catalog first.',
   'desk.intro':
-    'Where the catalog stops being a list and starts being an argument. Everything on the left is computed locally. The right-hand side prepares a question for a model — your shelf is what makes the answer yours rather than generic.',
+    'Everything on the left is computed on this device from the catalog. The right-hand side prepares a question for a model, with a summary of your catalog included so the answer covers the books you own.',
   'desk.neverOpened': 'Bought, and never opened',
   'desk.waitingAtLeast': 'waiting at least',
   'desk.year': '{n} year',
@@ -521,12 +521,12 @@ export default {
   'desk.synopsis': 'Synopsis',
   'desk.synopsis.placeholder': 'Which book? It does not have to be one you own.',
   'desk.synopsis.blurb':
-    'Describes a book to someone whose shelf is in front of you — what it argues, what it is reacting against, and how it stands against books you already have.',
+    'Describes a book with your catalog as context: what it argues, what it responds to, and how it relates to books you already own.',
   'desk.recommend': 'Recommendation',
   'desk.recommend.placeholder':
     'Anything to steer it? “something for a long flight”, or leave blank.',
   'desk.recommend.blurb':
-    'Two or three books, never more, chosen against where your reading is going rather than where it has been — and it checks the unread pile before suggesting a purchase.',
+    'Two or three books, chosen from the direction your recent reading has taken. Books already unread on your shelf are checked before anything new is suggested.',
   'desk.askService': 'Ask {service}',
   'desk.askForMe': 'Ask for me',
   'desk.thinking': 'thinking…',
@@ -536,20 +536,20 @@ export default {
   'desk.answer': 'Answer',
   'desk.streaming': 'streaming…',
   'desk.withKey':
-    'With a key, LibrAPP asks on your behalf. Without one it assembles the request for you to paste into any AI session — the same instructions, the same profile, the same question.',
+    'With a key, LibrAPP sends the request. Without one it assembles the same request for you to paste into any AI session: the same instructions, profile and question.',
   'desk.withoutKey':
-    'LibrAPP assembles the instructions, your reading profile and your question into one block — paste it into any AI session you already use. Add a key below and it can ask for you instead.',
+    'LibrAPP assembles the instructions, your reading profile and your question into one block, ready to paste into any AI session. Add a key below to send it from here instead.',
   'desk.promptsNote': 'The prompts are kept as plain text, so you can edit how it asks.',
   'desk.profile': 'Your reading profile',
   'desk.characters': '{n} characters',
   'desk.profileNote':
-    'Deliberately not the whole catalog — a few hundred titles crowd out the question. This is the shape of the collection and how it has moved, with enough named books to argue from.',
+    'Not the whole catalog. A few hundred titles would take up most of the request, so this is a summary of the collection and how it has changed, with a sample of named books.',
 
   'isbn.title': 'Look a book up by its barcode',
   'isbn.note':
-    'The number under the barcode identifies the exact edition. Where a library catalogue holds that edition, this fills in the title, the authors, the publisher, the year and the page count without anybody guessing at them.',
+    'The number under the barcode identifies the exact edition. Where a library catalogue holds that edition, the title, authors, publisher, year and page count are taken from its record.',
   'isbn.privacy':
-    'This is the one part of LibrAPP that asks something of a service it does not control. What leaves this device is a list of numbers: no titles, no notes, nothing about your shelf and nothing about you. A record that comes back is shown here before any of it is written.',
+    'This step sends a request to an external service. What leaves the device is a list of ISBNs and nothing else: no titles, no notes and no other catalog data. Records that come back are shown here before anything is written.',
   'isbn.paste': 'Codes, one per line or separated by commas',
   'isbn.format': 'These are',
   'isbn.format.physical': 'books on paper',
@@ -571,7 +571,7 @@ export default {
   'isbn.foundN': '{n} {n:book|books} found.',
   'isbn.missingN': '{n} not known to the service.',
   'isbn.checkThese':
-    'Worth a look before keeping. A service asked for a number it does not hold answers with a different book rather than with an error, so a wrong number gives a wrong book that looks perfectly ordinary.',
+    'Check these before keeping them. When the service does not hold an ISBN it returns a different book rather than an error, so an incorrect number produces a plausible but wrong record.',
   'isbn.missingWhich': 'Nothing came back for:',
   'isbn.noAuthor': 'no author recorded',
   'isbn.pages': '{n} pages',
@@ -634,20 +634,20 @@ export default {
   'key.modelPlaceholder': 'the model name your service uses',
   'key.address': 'Address',
   'key.addressNote':
-    'Anything that speaks the OpenAI chat interface — Groq, Mistral, DeepSeek, Together, or a server on your own machine. Give the address ending in /v1. A local server has to be configured to accept requests from this page before a browser may reach it.',
+    'Anything that speaks the OpenAI chat interface: Groq, Mistral, DeepSeek, Together, or a server on your own machine. Give the address ending in /v1. A local server has to be configured to accept requests from this page before a browser may reach it.',
   'key.thisFeature': 'this',
   'key.optional':
-    'Optional. Without a key, {what} still works — LibrAPP prepares everything for you to paste into an AI session yourself. With one, it can do it here.',
+    'Optional. Without a key, {what} still works: LibrAPP prepares everything for you to paste into an AI session yourself. With one, it can do it here.',
   'key.whereToGet': 'Where to get a key',
   'key.fieldLabel': 'API key for {service}',
   'key.save': 'Save key',
   'key.pasteFirst': 'Paste a key first.',
   'key.wrongShape':
-    'That does not look like a key for {service}, whose keys usually look like {hint}. If you are sure it is right, press again to save it — a service can change the shape of its keys at any time.',
+    'That does not look like a key for {service}, whose keys usually look like {hint}. If you are sure it is right, press again to save it. A service can change the shape of its keys at any time.',
   'key.privacy':
     'Kept in this browser’s storage on this device, sent only to {where}, and never written into your catalog or an export. Anything running on this page could read it, so use a key scoped to its own project or workspace, with a spend limit.',
-  'key.activeNote': '— LibrAPP may send requests to {where} to read spines and answer questions.',
-  'key.offNote': '— stored, but LibrAPP will not use it. The copy-and-paste route still works.',
+  'key.activeNote': 'is in use. LibrAPP may send requests to {where} to read spines and answer questions.',
+  'key.offNote': 'is stored, but LibrAPP will not use it. The copy-and-paste route still works.',
   'key.switchOn': 'Switch on',
   'key.switchOff': 'Switch off',
   'key.delete': 'Delete',
@@ -674,7 +674,7 @@ export default {
   'about.librarianBody':
     'The desk answers three kinds of request. A synopsis of any book, owned or not, described to somebody whose shelf is already known. A recommendation of two or three books, weighed against where the reading is going rather than where it has been. And filling in gaps: asking for the details the catalog is missing, for books already on the shelf, which is the only one that writes anything back. Nothing it proposes is kept without being shown first, and everything it writes can be undone one book at a time.',
   'about.librarianOwl':
-    'The badge in the corner is the same librarian, with up to three things to say about the page you are on, stepped through one at a time. What is worth acting on first: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. After those comes how the page itself works, which is what a first visit needs. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from the Library tab.',
+    'The badge in the corner is the same librarian, with up to three things to say about the page you are on, stepped through one at a time. What is worth acting on first: what is owed back to somebody, what has been waiting unread the longest, what has no read state recorded. Following a line filters the catalog to it. After those comes how the page itself works, which is what a first visit needs. There is nowhere to type, on purpose, because a question worth asking belongs at the desk where it gets the catalog as context and the cost is shown before it is spent. It can be sent away for good from its own bubble, and brought back from The stacks.',
   'about.librarianYours':
     'Starring a book and writing a note on one are the two things in a record that come from nobody else. Both are sent with every question, quoted as yours rather than as a description of the book, and the desk is told to weigh them above anything it worked out by counting.',
   'about.librarianHonest':
@@ -694,7 +694,7 @@ export default {
   'about.privacy.account':
     'No account, no sign-up, no profile. There is nothing to log in to.',
   'about.privacy.device':
-    'Your catalog is written to this device — a folder you chose, or storage the browser keeps for this app. It is never uploaded.',
+    'Your catalog is written to this device: a folder you chose, or storage the browser keeps for this app. It is never uploaded.',
   'about.privacy.key':
     'If you provide an AI key, it stays in this browser and is sent only to the service you chose. It is never written into your catalog and never included in an export. Photographs are cut into tiles here; only the tiles go, and only when you ask.',
   'about.privacy.cookies':
@@ -703,7 +703,7 @@ export default {
     'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends the barcode number and nothing else: no title, no note, nothing about your shelf. The photograph of a barcode is read here and never leaves.',
   'about.privacy.offline':
     'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
-  'about.privacyCheck': 'You do not have to take any of that on trust — the code is public.',
+  'about.privacyCheck': 'You do not have to take any of that on trust. The code is public.',
   'about.readSource': 'Read it',
 
   'about.licence': 'Licence',
@@ -716,12 +716,12 @@ export default {
 
   'about.contact': 'Getting in touch',
   'about.contactBody':
-    'There is no contact form, because there is no server to receive one. Anything about the app itself — a bug, something confusing, an idea — belongs on GitHub, where it is public and does not get lost. Anything else can go through the contact details on my own site.',
+    'There is no contact form, because there is no server to receive one. Anything about the app itself, whether a bug, something confusing or an idea, belongs on GitHub, where it is public and does not get lost. Anything else can go through the contact details on my own site.',
   'about.reportProblem': 'Report a problem',
   'about.contactMe': 'Contact me',
 
   'about.version': 'Version {build}',
-  'about.updateNote': 'the Library tab can force a fresh copy if this looks out of date',
+  'about.updateNote': 'The stacks can force a fresh copy if this looks out of date',
 
   // -- version, in the library tab ------------------------------------------
   'version.title': 'Version',
@@ -740,7 +740,7 @@ export default {
     'LibrAPP was written by one person working with an AI assistant, over a series of sessions. Most of the code was typed by the model. Every decision about what to build was the person’s.',
   'about.ai.author': 'Jesús J. Ballesteros',
   'about.ai.author.did':
-    'conceived the app and decided every step of it — what to build next, which of the proposed approaches to take, what to leave out, and when to stop. He supplied everything it was tested against: his own shelves, his own exports, his own devices. He reviewed the results, and corrected them.',
+    'conceived the app and decided every step of it: what to build next, which of the proposed approaches to take, what to leave out, and when to stop. He supplied everything it was tested against: his own shelves, his own exports, his own devices. He reviewed the results, and corrected them.',
   'about.ai.assistant': 'Claude, an AI assistant',
   'about.ai.assistant.did':
     'proposed approaches when asked and occasionally when not, wrote the code and the documentation, and carried out the changes he decided on.',
@@ -748,7 +748,7 @@ export default {
   'about.ai.testers.did':
     'used it and said what did not work. More than one thing here exists because of that.',
   'about.aiReview':
-    'The review was not a formality. The assistant got things wrong — it once reported that a cut-off title had been repaired when it had not, and it chose a way of splitting photographs that fell apart on a close-up of three books. Both were caught by someone checking the output against the actual shelf. That experience is why this app shows you what a model read and waits for you to approve it, rather than importing it quietly.',
+    'The review was not a formality. The assistant got things wrong. It once reported that a cut-off title had been repaired when it had not, and it chose a way of splitting photographs that fell apart on a close-up of three books. Both were caught by someone checking the output against the actual shelf. That experience is why this app shows you what a model read and waits for you to approve it, rather than importing it quietly.',
   'about.aiNotYourBooks':
     'All of that is about how the program was written. It has nothing to do with the contents of your catalog: no entry is invented, every book comes from a source you provided, and the AI features inside the app are optional, off until you add a key, and always show you the result before anything is kept.',
 
@@ -891,7 +891,7 @@ export default {
   'catalog.bulk.as.unknown': 'not recorded',
   'catalog.bulk.confirm': 'Mark {n} books as {state}?',
   'catalog.bulk.confirmWhy':
-    'Every book the filters have left on screen, not only the ones in view. This is a correction like any other: it can be undone book by book, or all at once from Library.',
+    'Every book the filters have left on screen, not only the ones in view. This is a correction like any other: it can be undone book by book, or all at once from The stacks.',
   'catalog.bulk.doIt': 'Mark all {n}',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesCaption':

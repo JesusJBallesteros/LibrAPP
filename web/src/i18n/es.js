@@ -47,7 +47,7 @@ export default {
   'landing.language': 'Idioma',
   'landing.learnMore': 'Más sobre LibrAPP',
   'landing.browserWarning':
-    'A este navegador le falta algo que LibrAPP necesita. Abre la pestaña Biblioteca cuando entres para ver los detalles.',
+    'A este navegador le falta algo que LibrAPP necesita. Abre El depósito cuando entres para ver los detalles.',
 
   // -- shell --------------------------------------------------------------
   // -- la BibliotecAPPri@ ---------------------------------------------------
@@ -183,7 +183,7 @@ export default {
   // -- errors -------------------------------------------------------------
   'error.noKeyActive': 'No hay ninguna clave activada.',
   'error.notAnExport':
-    '{name} no es una exportación de LibrAPP. Elige el archivo que exportaste desde Biblioteca → Exportar en el otro dispositivo.',
+    '{name} no es una exportación de LibrAPP. Elige el archivo que exportaste desde El depósito → Exportar en el otro dispositivo.',
   'error.notJson': '{name} no se puede leer como JSON. Puede que se haya renombrado o descargado a medias.',
 
   // -- un libro -------------------------------------------------------------
@@ -216,7 +216,7 @@ export default {
   'book.correctedOn': 'Corregido a mano el {date}.',
   'book.changed': 'Modificado después de leer las fuentes.',
   'book.changedOn': 'Modificado el {date}, después de leer las fuentes.',
-  'book.correctedFields': '{fields} — por encima de lo que dicen las fuentes.',
+  'book.correctedFields': '{fields}, por encima de lo que dicen las fuentes.',
   'book.wasUnset': 'sin registrar',
   'book.before': 'Antes:',
   'book.undoCorrection': 'Deshacer esta corrección',
@@ -259,7 +259,7 @@ export default {
     'decide quién gana cuando dos fuentes discrepan sobre el mismo libro: un extracto verificado pesa más que una lista hecha a mano.',
   'list.missingTitle': 'Esta lista no traía todo lo que LibrAPP puede aprovechar.',
   'list.missing.read':
-    'Sin columna de lectura. Todos los libros de este archivo constan como no registrados, y la pila de pendientes del escritorio los deja fuera, porque adivinar la llenaría de libros que ya has leído.',
+    'Sin columna de lectura. Todos los libros de este archivo constan como no registrados, y la pila de pendientes del escritorio excluye los libros sin estado de lectura.',
   'list.missing.acquired_on':
     'Sin columna de fecha. Nada de este archivo puede ordenarse por lo que lleva esperando, que es el orden de "Comprados y nunca abiertos".',
   'list.missing.genre':
@@ -319,9 +319,9 @@ export default {
   'storage.kindUnknown': 'sin registrar',
   'storage.where': 'Almacenamiento',
   'storage.kind.folder':
-    'una carpeta que elegiste — archivos normales que puedes abrir, copiar o versionar',
+    'una carpeta que elegiste, con archivos normales que puedes abrir, copiar o versionar',
   'storage.kind.browser':
-    'almacenamiento del navegador — privado para LibrAPP; solo sale de aquí exportando',
+    'almacenamiento del navegador, privado para LibrAPP; solo sale de aquí exportando',
   'storage.kind.unknown': 'desconocido',
   'storage.using': 'Usando {used} de los {quota} que el navegador concede a esta app.',
   'storage.notPersistent': 'Este almacenamiento no está marcado como persistente.',
@@ -388,14 +388,14 @@ export default {
 
   'storage.corrections': 'Correcciones que has hecho',
   'storage.correctionsNote':
-    'Se guardan aparte de tus fuentes y se aplican después de cada reconstrucción. Quitar un libro no puede borrarlo — la siguiente reconstrucción lee las mismas fuentes y volvería a ponerlo — así que la retirada se anota aquí y se puede deshacer.',
+    'Se guardan aparte de tus fuentes y se aplican después de cada reconstrucción. Una retirada se anota aquí en vez de borrarse de la fuente, porque la siguiente reconstrucción lee las mismas fuentes y volvería a ponerlo. Cualquier corrección se puede deshacer.',
   'storage.noCorrections': 'Todavía no has corregido nada.',
   'storage.removedGroup': 'Retirados ({n})',
   'storage.editedGroup': 'Editados ({n})',
   'storage.changed': 'cambiado: {fields}',
   'storage.orphaned': '{n} corrección(es) ya no corresponden a ningún libro.',
   'storage.orphanedNote':
-    'Una entrada se identifica por su autor y su título, así que esto ocurre cuando una fuente mejor aporta un título más completo y cambia la identidad. Se listan en vez de descartarse, porque el silencio parecería decir que la corrección ha dejado de importar.',
+    'Una entrada se identifica por su autor y su título, así que esto ocurre cuando una fuente aporta un título más completo y cambia la identidad. Se listan en vez de descartarse, para que una corrección que ya no encaja con nada siga a la vista.',
   'storage.wasRemoved': 'fue retirado',
   'storage.wasEdited': 'fue editado',
   'storage.forgetIt': 'Olvidar',
@@ -404,7 +404,7 @@ export default {
 
   'storage.move': 'Llevar esta biblioteca a otro sitio',
   'storage.moveNote':
-    'Una exportación contiene las fuentes, no el catálogo. El catálogo se reconstruye a partir de ellas al otro lado, de modo que las dos copias no pueden acabar discrepando sobre cuál es la buena.',
+    'Una exportación contiene las fuentes, no el catálogo. El catálogo se reconstruye a partir de ellas en el otro dispositivo, así que ambas copias se construyen con los mismos registros.',
   'storage.exported': '{n} fuente(s) exportadas.',
   'storage.importTitle': 'Importar',
   'storage.importHint': 'elige el archivo .json que exportaste; se añade y se reconstruye',
@@ -414,7 +414,7 @@ export default {
   'common.copied': 'Copiado',
   'common.save': 'Guardar',
 
-  'shelf.intro': 'Fotografía la estantería de frente a una resolución alta.',
+  'shelf.intro': 'Fotografía la estantería de frente, a la resolución máxima de tu cámara. La resolución determina cuánto texto se puede leer, así que una foto más grande da una transcripción mejor.',
   'shelf.whatItIsFor': 'leer una estantería',
   'shelf.eyebrow': 'Ingresos',
   'list.listsFound': '{n} listas encontradas',
@@ -437,7 +437,7 @@ export default {
   'shelf.lessDown': '- filas',
   'shelf.moreDown': '+ filas',
   'shelf.gridNote':
-    'Trata de tener unos pocos lomos enteros y el título legible. Ningún ajuste vale para todas las estanterías: una ancha pide más columnas a lo ancho, y un primer plano de tres libros pide una y nada más.',
+    'Trata de tener unos pocos lomos enteros y el título legible. Una estantería ancha necesita varios recortes a lo ancho. Un primer plano de tres libros necesita uno solo.',
   'shelf.gridWarning': 'Añadir filas puede cortar un título por la mitad',
   'shelf.gridWarningTail':
     ', así que añádelas solo cuando la foto muestre de verdad baldas una encima de otra.',
@@ -455,7 +455,7 @@ export default {
   'shelf.bookCount': '{n} libro(s)',
   'shelf.cost': 'coste {amount}',
   'shelf.checkNote':
-    'Todavía no se ha importado nada. Un modelo leyendo un lomo puede equivocarse de una forma que el catálogo ya no podrá detectar después, así que este es el momento de mirar. Lo marcado como dudoso merece un contraste con las fotos de arriba.',
+    'Todavía no se ha importado nada. Revisa la lista ahora: un lomo mal leído ya no se puede detectar una vez está en el catálogo. Lo marcado como dudoso es lo que conviene contrastar con las fotos de arriba.',
   'shelf.unplaced': 'sin ubicar',
   'shelf.importThese': 'Importar estos {n} libros',
   'shelf.discard': 'Descartar',
@@ -472,7 +472,7 @@ export default {
   // -- el escritorio --------------------------------------------------------
   'desk.nothingYet': 'Aún no hay con qué trabajar: construye primero un catálogo.',
   'desk.intro':
-    'Donde tu catálogo deja de ser simplemente una lista y empieza a ser un recurso. A la derecha se prepara una pregunta para un modelo de IA: tu catálogo es lo que hace que la respuesta sea tuya y no genérica.',
+    'Todo lo de la izquierda se calcula en este dispositivo a partir del catálogo. A la derecha se prepara una pregunta para un modelo de IA, con un resumen de tu catálogo incluido para que la respuesta trate de los libros que tienes.',
   'desk.neverOpened': 'Comprados y nunca abiertos',
   'desk.waitingAtLeast': 'esperando al menos',
   'desk.year': '{n} año',
@@ -522,12 +522,12 @@ export default {
   'desk.synopsis': 'Sinopsis',
   'desk.synopsis.placeholder': '¿Qué libro? No hace falta que sea tuyo.',
   'desk.synopsis.blurb':
-    'Describe un libro a alguien que tiene tu estantería delante: qué sostiene, contra qué reacciona y cómo se sitúa frente a los libros que ya tienes.',
+    'Describe un libro con tu catálogo como contexto: qué sostiene, a qué responde y cómo se relaciona con los libros que ya tienes.',
   'desk.recommend': 'Recomendación',
   'desk.recommend.placeholder':
     '¿Algo que la oriente? «algo para un vuelo largo», o déjalo en blanco.',
   'desk.recommend.blurb':
-    'Dos o tres libros, nunca más, elegidos por dónde va tu lectura y no por dónde ha estado; y antes de proponerte una compra mira lo que tienes sin leer.',
+    'Dos o tres libros, elegidos según la dirección que ha tomado tu lectura reciente. Antes de proponer una compra se revisa lo que ya tienes sin leer.',
   'desk.askService': 'Preguntar a {service}',
   'desk.askForMe': 'Pregunta por mí',
   'desk.thinking': 'pensando…',
@@ -539,20 +539,20 @@ export default {
   'desk.withKey':
     'Con una clave, LibrAPP pregunta en tu nombre. Sin ella, monta la petición para que la pegues en cualquier sesión de IA: las mismas instrucciones, el mismo perfil, la misma pregunta.',
   'desk.withoutKey':
-    'LibrAPP reúne las instrucciones, tu perfil de lectura y tu pregunta en un solo bloque: pégalo en la sesión de IA que ya uses. Añade abajo una clave y podrá preguntar por ti.',
+    'LibrAPP reúne las instrucciones, tu perfil de lectura y tu pregunta en un solo bloque, listo para pegar en cualquier sesión de IA. Añade abajo una clave para enviarlo desde aquí.',
   'desk.promptsNote':
     'Las instrucciones se guardan como texto plano, así que puedes cambiar cómo pregunta.',
   'desk.profile': 'Tu perfil de lectura',
   'desk.characters': '{n} caracteres',
   'desk.profileNote':
-    'No usa tu catálogo entero a propósito: cientos de títulos ahogarían la pregunta. Esto es la forma de la colección y cómo se ha movido, con suficientes libros con nombre como para argumentar.',
+    'No es el catálogo entero. Cientos de títulos ocuparían casi toda la petición, así que esto es un resumen de la colección y de cómo ha cambiado, con una muestra de libros concretos.',
 
   // -- escribir un libro, corregir otro -------------------------------------
   'isbn.title': 'Busca un libro por su código de barras',
   'isbn.note':
-    'El número que hay bajo el código de barras identifica la edición exacta. Si un catálogo bibliotecario tiene esa edición, esto rellena el título, la autoría, la editorial, el año y las páginas sin que nadie tenga que adivinarlos.',
+    'El número que hay bajo el código de barras identifica la edición exacta. Si un catálogo bibliotecario tiene esa edición, el título, la autoría, la editorial, el año y las páginas se toman de su registro.',
   'isbn.privacy':
-    'Esta es la única parte de LibrAPP que pide algo a un servicio ajeno. De este dispositivo sale una lista de números: ni títulos, ni notas, nada de tu estantería y nada sobre ti. Lo que vuelve se enseña aquí antes de escribir nada.',
+    'Este paso envía una petición a un servicio externo. De este dispositivo sale una lista de ISBN y nada más: ni títulos, ni notas, ni ningún otro dato del catálogo. Lo que vuelve se enseña aquí antes de escribir nada.',
   'isbn.paste': 'Códigos, uno por línea o separados por comas',
   'isbn.format': 'Son',
   'isbn.format.physical': 'libros en papel',
@@ -574,7 +574,7 @@ export default {
   'isbn.foundN': '{n} {n:libro encontrado|libros encontrados}.',
   'isbn.missingN': '{n} que el servicio no conoce.',
   'isbn.checkThese':
-    'Conviene mirarlo antes de guardar. Un servicio al que se le pide un número que no tiene responde con otro libro en vez de con un error, así que un número equivocado da un libro equivocado con toda la apariencia de ser correcto.',
+    'Revísalos antes de guardarlos. Cuando el servicio no tiene un ISBN, responde con otro libro en vez de con un error, así que un número equivocado produce un registro verosímil pero incorrecto.',
   'isbn.missingWhich': 'No ha vuelto nada de:',
   'isbn.noAuthor': 'sin autoría anotada',
   'isbn.pages': '{n} páginas',
@@ -650,9 +650,9 @@ export default {
   'key.privacy':
     'Se guarda en el almacenamiento de este navegador, en este dispositivo; se envía solo a {where} y nunca se escribe en tu catálogo ni en una exportación. Cualquier cosa que se ejecute en esta página podría leerla, así que usa una clave limitada a su propio proyecto o espacio, con un límite de gasto.',
   'key.activeNote':
-    '— LibrAPP puede enviar peticiones a {where} para leer lomos y responder preguntas.',
+    'está en uso. LibrAPP puede enviar peticiones a {where} para leer lomos y responder preguntas.',
   'key.offNote':
-    '— guardada, pero LibrAPP no la usará. La vía de copiar y pegar sigue funcionando.',
+    'está guardada, pero LibrAPP no la usará. La vía de copiar y pegar sigue funcionando.',
   'key.switchOn': 'Activar',
   'key.switchOff': 'Desactivar',
   'key.delete': 'Borrar',
@@ -679,7 +679,7 @@ export default {
   'about.librarianBody':
     'El escritorio responde a tres tipos de petici\u00f3n. Una sinopsis de cualquier libro, est\u00e9 en el cat\u00e1logo o no, contada a alguien de quien ya se conocen las estanter\u00edas. Una recomendaci\u00f3n de dos o tres libros, medida por hacia d\u00f3nde va la lectura y no por d\u00f3nde ha estado. Y rellenar huecos: pedir los datos que faltan en el cat\u00e1logo, para libros que ya est\u00e1n en la estanter\u00eda, que es la \u00fanica que escribe algo. Nada de lo que propone se guarda sin ense\u00f1arlo antes, y todo lo que escribe se puede deshacer libro a libro.',
   'about.librarianOwl':
-    'El distintivo de la esquina es la misma bibliotecaria, con hasta tres cosas que decir sobre la p\u00e1gina en la que est\u00e1s, de una en una. Primero lo que merece una acci\u00f3n: qu\u00e9 hay que devolver, qu\u00e9 lleva m\u00e1s tiempo sin abrir, de qu\u00e9 no consta si est\u00e1 le\u00eddo. Al seguir una l\u00ednea, el cat\u00e1logo se filtra por ella. Despu\u00e9s viene c\u00f3mo funciona la p\u00e1gina, que es lo que hace falta la primera vez. No hay d\u00f3nde escribir, y es a prop\u00f3sito: una pregunta que merezca la pena va en el escritorio, donde recibe el cat\u00e1logo como contexto y el coste se ve antes de gastarlo. Se puede despedir para siempre desde su propio globo, y recuperar desde la pesta\u00f1a Biblioteca.',
+    'El distintivo de la esquina es la misma bibliotecaria, con hasta tres cosas que decir sobre la p\u00e1gina en la que est\u00e1s, de una en una. Primero lo que merece una acci\u00f3n: qu\u00e9 hay que devolver, qu\u00e9 lleva m\u00e1s tiempo sin abrir, de qu\u00e9 no consta si est\u00e1 le\u00eddo. Al seguir una l\u00ednea, el cat\u00e1logo se filtra por ella. Despu\u00e9s viene c\u00f3mo funciona la p\u00e1gina, que es lo que hace falta la primera vez. No hay d\u00f3nde escribir, y es a prop\u00f3sito: una pregunta que merezca la pena va en el escritorio, donde recibe el cat\u00e1logo como contexto y el coste se ve antes de gastarlo. Se puede despedir para siempre desde su propio globo, y recuperar desde El depósito.',
   'about.librarianYours':
     'Marcar un libro como favorito y escribir una nota sobre \u00e9l son las dos cosas de una ficha que no vienen de nadie m\u00e1s. Ambas se env\u00edan con cada pregunta, citadas como tuyas y no como descripci\u00f3n del libro, y el escritorio tiene instrucciones de darles m\u00e1s peso que a nada que haya deducido contando.',
   'about.librarianHonest':
@@ -721,15 +721,15 @@ export default {
 
   'about.contact': 'Cómo contactar',
   'about.contactBody':
-    'No hay formulario de contacto, porque no hay servidor que lo reciba. Todo lo que tenga que ver con la app — un fallo, algo confuso, una idea — va en GitHub, donde queda público y no se pierde. Lo demás puede ir por los datos de contacto de mi propia web.',
+    'No hay formulario de contacto, porque no hay servidor que lo reciba. Todo lo que tenga que ver con la app, sea un fallo, algo confuso o una idea, va en GitHub, donde queda público y no se pierde. Lo demás puede ir por los datos de contacto de mi propia web.',
   'about.reportProblem': 'Informar de un problema',
   'about.contactMe': 'Contactar conmigo',
 
   'about.version': 'Versión {build}',
   'about.updateNote':
-    'la pestaña Biblioteca puede forzar una copia nueva si esto parece anticuado',
+    'El depósito puede forzar una copia nueva si esto parece anticuado',
 
-  // -- versión, en la pestaña Biblioteca ------------------------------------
+  // -- versión, en El depósito ------------------------------------
   'version.title': 'Versión',
   'version.built': 'Compilada el {when}.',
   'version.body':
@@ -899,7 +899,7 @@ export default {
   'catalog.bulk.as.unknown': 'sin registrar',
   'catalog.bulk.confirm': '¿Marcar {n} libros como {state}?',
   'catalog.bulk.confirmWhy':
-    'Todos los libros que dejan a la vista los filtros, no solo los que caben en pantalla. Es una corrección como cualquier otra: se puede deshacer libro a libro, o de golpe desde Biblioteca.',
+    'Todos los libros que dejan a la vista los filtros, no solo los que caben en pantalla. Es una corrección como cualquier otra: se puede deshacer libro a libro, o de golpe desde El depósito.',
   'catalog.bulk.doIt': 'Marcar los {n}',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesCaption':

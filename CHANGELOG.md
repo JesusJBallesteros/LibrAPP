@@ -2,6 +2,39 @@
 
 ## Unreleased
 
+### The interface stops explaining itself
+
+The copy in the working views had drifted into argument. "This matters more
+than anything else here: a whole bookcase at one megapixel is unreadable, and
+the same shelf at fifty is not" says less than "resolution determines how much
+of the lettering can be read", and takes three times as long to say it. The
+desk introduced itself as "where the catalog stops being a list and starts
+being an argument", which describes nothing anybody can act on.
+
+Twenty-two strings rewritten in English and nineteen in Spanish, across the
+shelf, the desk, the list import, the barcode lookup, the stacks and the
+catalog. They state what a thing does and what it affects, and stop. The
+landing pitch and the About page are left as they are, being prose on purpose.
+
+All twenty-nine em dashes are gone from the interface copy in both languages,
+in favour of a colon, a comma or a full stop, whichever the sentence wanted.
+
+### Grouping means something in the spine view now
+
+The Title, Author and Series control sat above the shelf, showed itself
+pressed, and changed nothing, because grouping was only ever drawn in the list.
+
+The wall already separates books with bands, by first letter, so it now bands
+by whatever the control says: by author it puts an author's books together
+under their name, by series it gathers a series under its own. Ungrouped it
+bands by letter as before. The list is unchanged.
+
+### Also
+
+Renaming the tab left the old name in the copy: three places in English and
+four in Spanish still said Library or Biblioteca, including the line telling a
+reader where to go when their browser is missing something.
+
 ### Fixed: grouping by author took the catalog down
 
 Reported as the grouping control doing nothing in the spine view. It was worse
