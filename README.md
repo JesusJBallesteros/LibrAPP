@@ -240,16 +240,16 @@ Photograph the shelf straight on at your camera's **full resolution**.
 
 1. Open **Shelf picture** and choose the photo. It appears in the box you
    chose it from, and that box is also how to swap it for a different one.
+
+![The Shelf picture page: the AI service box, the chosen photograph, and the grid control showing two tiles across by three down](docs/images/photo-steps.png)
+
 2. LibrAPP cuts it into tiles at full resolution. A close-up of a few books
    stays whole; a wide bookcase is split into several tiles. Adjust the grid
    with the **across** and **down** buttons if the default does not suit your
    shelf.
-
-![The Shelf picture page: the AI service box, the chosen photograph, and the grid control showing two tiles across by three down](docs/images/photo-steps.png)
-
-The key box at the top is optional and the page works without it. Everything up
-to this point has happened on your device: the photograph has been read, sized
-and cut, and nothing has been sent anywhere.
+    The key box at the top is optional and the page works without it. Everything up
+    to this point has happened on your device: the photograph has been read, sized
+    and cut, and nothing has been sent anywhere.
 3. Check the tiles. Any that hold no readable spine, a wall, a lamp, the edge
    of a rug, can be **discarded**: they are not sent and not counted in the cost.
 4. Read the tiles:
@@ -260,7 +260,7 @@ and cut, and nothing has been sent anywhere.
 
 ![The tiles cut from the photograph, two of them greyed out and struck through as discarded, beside the checklist of extra fields to ask for](docs/images/photo-tiles.png)
 
-Two tiles here hold a plant pot and a paper bag rather than books, and have been
+Two tiles here are of no interest and have been
 set aside. The checklist on the right decides what is asked for beyond the
 titles, split into what is printed on the spine and what the model would be
 recalling from elsewhere. Anything recalled is marked on the book afterwards.
