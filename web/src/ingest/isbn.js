@@ -165,14 +165,15 @@ export function toRecord(code, entry, { subjects = 8 } = {}) {
 const BARCODE_FORMATS = ['ean_13', 'upc_a']
 
 /**
- * Whether this browser can read a barcode out of a picture.
+ * Whether the browser brings its own barcode reader.
  *
- * Chrome on Android can. Chrome and Brave on a desktop, as of writing, cannot:
- * the constructor is simply absent. So this is asked rather than assumed, and
- * the answer decides whether the camera is offered at all, because a button
- * that throws when pressed is worse than a button that is not there.
+ * Chrome on Android does. Chrome, Brave and the rest on a desktop, as of
+ * writing, do not: the constructor is simply absent. Where it is missing the
+ * app carries its own, which works as well and has to be fetched once, so this
+ * is asked in order to say which of the two is about to happen rather than to
+ * decide whether the camera is offered at all.
  */
-export async function canReadBarcodes() {
+export async function nativeBarcodes() {
   if (typeof globalThis.BarcodeDetector === 'undefined') return false
   try {
     const formats = await globalThis.BarcodeDetector.getSupportedFormats()
@@ -180,6 +181,35 @@ export async function canReadBarcodes() {
   } catch {
     return false
   }
+}
+
+// The reader the app carries, once it has been fetched. Kept so a second
+// photograph does not fetch it again.
+let carried = null
+
+/**
+ * A barcode reader, whichever kind this browser can have.
+ *
+ * The fallback is a megabyte of compiled decoder, so it is imported only when
+ * something is actually going to be read, and only where the browser has none
+ * of its own. Nothing about it is loaded by a visit that never scans anything.
+ *
+ * Its own default is to fetch that megabyte from a public CDN, which would be
+ * the app quietly making a third-party request on a page that promises it does
+ * not. The file is served from here instead, next to the fonts, for the same
+ * reason the fonts are.
+ */
+export async function barcodeReader() {
+  if (await nativeBarcodes()) return globalThis.BarcodeDetector
+  if (!carried) {
+    const module = await import('barcode-detector/ponyfill')
+    module.setZXingModuleOverrides({
+      locateFile: (path, prefix) =>
+        path.endsWith('.wasm') ? `${import.meta.env.BASE_URL}zxing_reader.wasm` : prefix + path,
+    })
+    carried = module.BarcodeDetector
+  }
+  return carried
 }
 
 /**
@@ -195,11 +225,9 @@ export async function canReadBarcodes() {
  * returned. Anything that decodes but is not a book, a cereal packet in the
  * background, fails the checksum and is dropped.
  */
-export async function readBarcodes(file) {
-  if (!(await canReadBarcodes())) {
-    throw new LookupError('this browser cannot read barcodes from a picture')
-  }
-  const detector = new globalThis.BarcodeDetector({ formats: BARCODE_FORMATS })
+export async function readBarcodes(file, { reader } = {}) {
+  const Reader = reader || (await barcodeReader())
+  const detector = new Reader({ formats: BARCODE_FORMATS })
   const bitmap = await createImageBitmap(file)
   try {
     const results = await detector.detect(bitmap)

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { canReadBarcodes, lookup, parseCodes, readBarcodes } from '../ingest/isbn.js'
+import { lookup, nativeBarcodes, parseCodes, readBarcodes } from '../ingest/isbn.js'
 import { useT } from '../i18n/index.jsx'
 
 // One code per line is how the box reads and how a person writes them.
@@ -29,16 +29,18 @@ export default function IsbnLookup({ lib, onDone }) {
   const [error, setError] = useState(null)
   const [found, setFound] = useState(null)
   const [written, setWritten] = useState(null)
-  // Whether this browser can read a barcode at all. Null until it has been
-  // asked, so the camera is neither offered nor ruled out while unknown.
-  const [canScan, setCanScan] = useState(null)
+  // Whether the browser has a reader of its own. Null until asked. Where it
+  // has none the app uses the one it carries, which is a megabyte and is
+  // fetched the first time something is scanned, so this only decides whether
+  // to warn about that.
+  const [native, setNative] = useState(null)
   const [scanning, setScanning] = useState(false)
   const [scanned, setScanned] = useState(null)
   const inFlight = useRef(null)
 
   useEffect(() => {
     let alive = true
-    canReadBarcodes().then((yes) => alive && setCanScan(yes))
+    nativeBarcodes().then((yes) => alive && setNative(yes))
     return () => {
       alive = false
     }
@@ -144,23 +146,21 @@ export default function IsbnLookup({ lib, onDone }) {
                 <option value="audio">{t('isbn.format.audio')}</option>
               </select>
             </label>
-            {canScan && (
-              <label className="btn small file-button">
-                {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  multiple
-                  hidden
-                  disabled={scanning || busy}
-                  onChange={(e) => {
-                    onPhotos([...(e.target.files || [])])
-                    e.target.value = ''
-                  }}
-                />
-              </label>
-            )}
+            <label className="btn small file-button">
+              {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                multiple
+                hidden
+                disabled={scanning || busy}
+                onChange={(e) => {
+                  onPhotos([...(e.target.files || [])])
+                  e.target.value = ''
+                }}
+              />
+            </label>
             <label className="btn small file-button">
               {t('isbn.fromFile')}
               <input
@@ -175,8 +175,8 @@ export default function IsbnLookup({ lib, onDone }) {
             </label>
           </div>
 
-          {canScan === false && (
-            <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.noScanner')}</p>
+          {native === false && (
+            <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.carriedReader')}</p>
           )}
           {scanned && (
             <p className="tiny faint" aria-live="polite">

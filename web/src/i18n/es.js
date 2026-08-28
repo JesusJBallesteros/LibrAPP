@@ -562,8 +562,8 @@ export default {
   'isbn.reading': 'Leyendo la foto',
   'isbn.scanned': '{n} {n:código leído|códigos leídos} de {photos} {photos:foto|fotos}.',
   'isbn.scannedNone': 'No se ha encontrado ningún código en {photos} {photos:foto|fotos}. De frente y de cerca, con el código entero en el encuadre, es como mejor se lee.',
-  'isbn.noScanner':
-    'Este navegador no puede leer un código de barras de una imagen, así que los códigos hay que escribirlos o traerlos de un archivo. Chrome en Android sí puede, si tienes uno a mano.',
+  'isbn.carriedReader':
+    'Este navegador no trae lector de códigos, así que LibrAPP usa el suyo. Se descarga la primera vez que escaneas algo, y se sirve desde aquí y no desde ningún otro sitio.',
   'isbn.fromFile': 'Leerlos de un archivo',
   'isbn.ready': '{n} {n:código|códigos} {n:listo|listos}.',
   'isbn.noneFound': 'Todavía no hay códigos ahí.',

@@ -559,8 +559,8 @@ export default {
   'isbn.reading': 'Reading the photo',
   'isbn.scanned': '{n} {n:code|codes} read from {photos} {photos:photo|photos}.',
   'isbn.scannedNone': 'No barcode found in {photos} {photos:photo|photos}. Straight on and close, with the whole code in frame, reads best.',
-  'isbn.noScanner':
-    'This browser cannot read a barcode out of a picture, so the codes have to be typed or brought in from a file. Chrome on Android can, if you have one to hand.',
+  'isbn.carriedReader':
+    'This browser has no barcode reader of its own, so LibrAPP uses the one it carries. It is fetched the first time you scan something, and served from here rather than from anywhere else.',
   'isbn.fromFile': 'Read them from a file',
   'isbn.ready': '{n} {n:code|codes} ready.',
   'isbn.noneFound': 'No codes in there yet.',

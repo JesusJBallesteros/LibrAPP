@@ -9,7 +9,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   BATCH,
-  canReadBarcodes,
+  barcodeReader,
+  nativeBarcodes,
   LookupError,
   cleanIsbn,
   lookup,
@@ -348,9 +349,11 @@ describe('a lookup joins the shelf it belongs to', () => {
   })
 })
 
-// Reading the barcode itself. No test environment has a BarcodeDetector and
-// neither does a desktop browser as of writing, so the capability is asked
-// about rather than assumed, and these stub it to check both answers.
+// Reading the barcode itself. No desktop browser has a BarcodeDetector as of
+// writing and no test environment has one either, so where it is missing the app
+// carries its own reader. What is checked here is which of the two is chosen and
+// that the choice is invisible to everything downstream: the compiled reader
+// itself is a megabyte of WebAssembly and is exercised in a browser, not here.
 describe('reading a barcode out of a picture', () => {
   const stubDetector = (results, formats = ['ean_13', 'upc_a']) => {
     class FakeDetector {
@@ -364,68 +367,69 @@ describe('reading a barcode out of a picture', () => {
         return formats
       }
     }
-    vi.stubGlobal('BarcodeDetector', FakeDetector)
     vi.stubGlobal('createImageBitmap', async () => ({ width: 1000, height: 800, close() {} }))
     return FakeDetector
   }
 
   beforeEach(() => vi.unstubAllGlobals())
 
-  it('says no when the browser has no detector at all', async () => {
+  it('says the browser has none when the constructor is absent', async () => {
     vi.stubGlobal('BarcodeDetector', undefined)
-    expect(await canReadBarcodes()).toBe(false)
+    expect(await nativeBarcodes()).toBe(false)
   })
 
-  it('says no when the detector cannot do the format a book uses', async () => {
-    stubDetector([], ['qr_code'])
-    expect(await canReadBarcodes()).toBe(false)
+  it('says it has none when it cannot do the format a book uses', async () => {
+    vi.stubGlobal('BarcodeDetector', stubDetector([], ['qr_code']))
+    expect(await nativeBarcodes()).toBe(false)
   })
 
-  it('says no rather than throwing when asking itself fails', async () => {
+  it('says it has none rather than throwing when asking itself fails', async () => {
     class Broken {
       static async getSupportedFormats() {
         throw new Error('nope')
       }
     }
     vi.stubGlobal('BarcodeDetector', Broken)
-    expect(await canReadBarcodes()).toBe(false)
+    expect(await nativeBarcodes()).toBe(false)
   })
 
-  it('says yes when it can read an EAN-13', async () => {
-    stubDetector([])
-    expect(await canReadBarcodes()).toBe(true)
+  it('says it has one when it can read an EAN-13', async () => {
+    vi.stubGlobal('BarcodeDetector', stubDetector([]))
+    expect(await nativeBarcodes()).toBe(true)
   })
 
   it('returns the ISBN it read', async () => {
-    stubDetector([{ rawValue: '9780441013593' }])
-    expect(await readBarcodes({})).toEqual(['9780441013593'])
+    const reader = stubDetector([{ rawValue: '9780441013593' }])
+    expect(await readBarcodes({}, { reader })).toEqual(['9780441013593'])
   })
 
   it('reads every book in a photograph of a pile', async () => {
-    stubDetector([{ rawValue: '9780441013593' }, { rawValue: '9780547928227' }])
-    expect(await readBarcodes({})).toHaveLength(2)
+    const reader = stubDetector([{ rawValue: '9780441013593' }, { rawValue: '9780547928227' }])
+    expect(await readBarcodes({}, { reader })).toHaveLength(2)
   })
 
   it('drops a barcode that is not a book', async () => {
     // A cereal packet in the background is a perfectly good EAN-13 and is not
     // an ISBN, so it fails the same checksum a typo does.
-    stubDetector([{ rawValue: '5901234123457' }, { rawValue: '9780441013593' }])
-    expect(await readBarcodes({})).toEqual(['9780441013593'])
+    const reader = stubDetector([{ rawValue: '5901234123457' }, { rawValue: '9780441013593' }])
+    expect(await readBarcodes({}, { reader })).toEqual(['9780441013593'])
   })
 
   it('gives one code for a book photographed twice', async () => {
-    stubDetector([{ rawValue: '9780441013593' }, { rawValue: '978-0-441-01359-3' }])
-    expect(await readBarcodes({})).toHaveLength(1)
+    const reader = stubDetector([{ rawValue: '9780441013593' }, { rawValue: '978-0-441-01359-3' }])
+    expect(await readBarcodes({}, { reader })).toHaveLength(1)
   })
 
-  it('asks the detector only for the formats a book carries', async () => {
-    const Fake = stubDetector([])
-    await readBarcodes({})
-    expect(Fake.asked.formats).toEqual(['ean_13', 'upc_a'])
+  it('asks the reader only for the formats a book carries', async () => {
+    const reader = stubDetector([])
+    await readBarcodes({}, { reader })
+    expect(reader.asked.formats).toEqual(['ean_13', 'upc_a'])
   })
 
-  it('refuses plainly where the browser cannot, rather than throwing something odd', async () => {
-    vi.stubGlobal('BarcodeDetector', undefined)
-    await expect(readBarcodes({})).rejects.toThrow(LookupError)
+  it('uses the browser reader when there is one', async () => {
+    // Nothing is fetched in this case, which is the whole point of asking.
+    const native = stubDetector([{ rawValue: '9780441013593' }])
+    vi.stubGlobal('BarcodeDetector', native)
+    expect(await barcodeReader()).toBe(native)
   })
 })

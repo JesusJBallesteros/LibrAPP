@@ -627,8 +627,11 @@ picture is read on the device at its own resolution and never leaves: shrinking
 it would throw away the lines that carry the data, and there is nothing to save
 by shrinking something that is not being sent.
 
-Desktop browsers cannot do this yet, and the page says so where the button
-would otherwise be rather than offering one that fails.
+Chrome on Android has a barcode reader built in and uses it. Desktop browsers
+have none, so LibrAPP carries its own: about a megabyte of compiled decoder,
+fetched the first time you scan something and not before. It is served from
+LibrAPP itself, like the fonts, so scanning still makes no third-party request.
+The page says which of the two is in use.
 
 **What comes back is shown before any of it is kept**, for a reason worth
 knowing. Asked for an ISBN it does not hold, the service answers with a

@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+### Barcodes on a desktop too
+
+Chrome on Android has a barcode reader and uses it. No desktop browser has one,
+so scanning was offered only on a phone and the page said as much. LibrAPP now
+carries its own reader for the rest: a compiled decoder, imported the first time
+something is scanned and never by a visit that scans nothing. It is a separate
+43kB of code and about a megabyte of WebAssembly, so it stays out of the way of
+everyone who does not use it.
+
+Its own default is to fetch that megabyte from a public CDN, which would have
+the app quietly making a third-party request on a page that says it makes none.
+The file is served from LibrAPP instead, next to the fonts, for the same reason
+the fonts are. Checked in a browser: the only request is to LibrAPP's own
+address, and there is none to a CDN.
+
+Verified by generating a real EAN-13 rather than a picture of stripes, and
+reading it back on a desktop browser that has no reader of its own.
+
 ### The interface stops explaining itself
 
 The copy in the working views had drifted into argument. "This matters more
