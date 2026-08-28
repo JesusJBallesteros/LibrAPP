@@ -29,6 +29,22 @@ per book and they include *American literature* and *New York Times reviewed*,
 so the hope that a controlled vocabulary here would fix the genre chart does not
 survive looking at the data.
 
+### Barcodes from a photograph
+
+Where the browser can read one, and Chrome on Android can, a photograph of a
+barcode adds its code to the box beside the typed ones. One picture or several,
+and a photograph of a pile gives up every code in it. A barcode that is not a
+book fails the same checksum a typo does.
+
+The picture is read on the device at its own resolution. Shrinking it is the
+usual thing to do with a photograph and is exactly wrong here, since the detail
+thrown away is the lines that carry the data, and there is nothing to save by
+shrinking something that is never sent.
+
+Desktop browsers have no barcode reader as of writing, Chrome and Brave
+included, so the capability is asked about rather than assumed and the page says
+plainly what it cannot do instead of offering a button that throws.
+
 ### The privacy claim now lists what leaves
 
 "No third-party requests" was true when it was written and this makes it false.

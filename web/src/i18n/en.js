@@ -554,6 +554,12 @@ export default {
   'isbn.format.physical': 'books on paper',
   'isbn.format.ebook': 'ebooks',
   'isbn.format.audio': 'audiobooks',
+  'isbn.fromPhoto': 'Read a barcode from a photo',
+  'isbn.reading': 'Reading the photo',
+  'isbn.scanned': '{n} {n:code|codes} read from {photos} {photos:photo|photos}.',
+  'isbn.scannedNone': 'No barcode found in {photos} {photos:photo|photos}. Straight on and close, with the whole code in frame, reads best.',
+  'isbn.noScanner':
+    'This browser cannot read a barcode out of a picture, so the codes have to be typed or brought in from a file. Chrome on Android can, if you have one to hand.',
   'isbn.fromFile': 'Read them from a file',
   'isbn.ready': '{n} {n:code|codes} ready.',
   'isbn.noneFound': 'No codes in there yet.',

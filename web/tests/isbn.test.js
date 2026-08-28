@@ -6,15 +6,17 @@
 // hands back a plausible title with a publisher and a page count attached. The
 // check digit is the only thing standing between a typo and a confident lie.
 
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   BATCH,
+  canReadBarcodes,
   LookupError,
   cleanIsbn,
   lookup,
   lookupUrl,
   parseCodes,
   publishedYear,
+  readBarcodes,
   toIsbn13,
   toRecord,
   validIsbn,
@@ -343,5 +345,87 @@ describe('a lookup joins the shelf it belongs to', () => {
       shelf([{ title: 'Dune', authors: ['Frank Herbert'], isbn: '9780441013593' }], 'lookup', 'high'),
     ])
     expect(catalog.books[0].isbn).toBe('9780441013593')
+  })
+})
+
+// Reading the barcode itself. No test environment has a BarcodeDetector and
+// neither does a desktop browser as of writing, so the capability is asked
+// about rather than assumed, and these stub it to check both answers.
+describe('reading a barcode out of a picture', () => {
+  const stubDetector = (results, formats = ['ean_13', 'upc_a']) => {
+    class FakeDetector {
+      constructor(options) {
+        FakeDetector.asked = options
+      }
+      async detect() {
+        return results
+      }
+      static async getSupportedFormats() {
+        return formats
+      }
+    }
+    vi.stubGlobal('BarcodeDetector', FakeDetector)
+    vi.stubGlobal('createImageBitmap', async () => ({ width: 1000, height: 800, close() {} }))
+    return FakeDetector
+  }
+
+  beforeEach(() => vi.unstubAllGlobals())
+
+  it('says no when the browser has no detector at all', async () => {
+    vi.stubGlobal('BarcodeDetector', undefined)
+    expect(await canReadBarcodes()).toBe(false)
+  })
+
+  it('says no when the detector cannot do the format a book uses', async () => {
+    stubDetector([], ['qr_code'])
+    expect(await canReadBarcodes()).toBe(false)
+  })
+
+  it('says no rather than throwing when asking itself fails', async () => {
+    class Broken {
+      static async getSupportedFormats() {
+        throw new Error('nope')
+      }
+    }
+    vi.stubGlobal('BarcodeDetector', Broken)
+    expect(await canReadBarcodes()).toBe(false)
+  })
+
+  it('says yes when it can read an EAN-13', async () => {
+    stubDetector([])
+    expect(await canReadBarcodes()).toBe(true)
+  })
+
+  it('returns the ISBN it read', async () => {
+    stubDetector([{ rawValue: '9780441013593' }])
+    expect(await readBarcodes({})).toEqual(['9780441013593'])
+  })
+
+  it('reads every book in a photograph of a pile', async () => {
+    stubDetector([{ rawValue: '9780441013593' }, { rawValue: '9780547928227' }])
+    expect(await readBarcodes({})).toHaveLength(2)
+  })
+
+  it('drops a barcode that is not a book', async () => {
+    // A cereal packet in the background is a perfectly good EAN-13 and is not
+    // an ISBN, so it fails the same checksum a typo does.
+    stubDetector([{ rawValue: '5901234123457' }, { rawValue: '9780441013593' }])
+    expect(await readBarcodes({})).toEqual(['9780441013593'])
+  })
+
+  it('gives one code for a book photographed twice', async () => {
+    stubDetector([{ rawValue: '9780441013593' }, { rawValue: '978-0-441-01359-3' }])
+    expect(await readBarcodes({})).toHaveLength(1)
+  })
+
+  it('asks the detector only for the formats a book carries', async () => {
+    const Fake = stubDetector([])
+    await readBarcodes({})
+    expect(Fake.asked.formats).toEqual(['ean_13', 'upc_a'])
+  })
+
+  it('refuses plainly where the browser cannot, rather than throwing something odd', async () => {
+    vi.stubGlobal('BarcodeDetector', undefined)
+    await expect(readBarcodes({})).rejects.toThrow(LookupError)
   })
 })

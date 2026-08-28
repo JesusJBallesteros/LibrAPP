@@ -1,6 +1,9 @@
-import { useRef, useState } from 'react'
-import { lookup, parseCodes } from '../ingest/isbn.js'
+import { useEffect, useRef, useState } from 'react'
+import { canReadBarcodes, lookup, parseCodes, readBarcodes } from '../ingest/isbn.js'
 import { useT } from '../i18n/index.jsx'
+
+// One code per line is how the box reads and how a person writes them.
+const NEWLINE = '\n'
 
 /**
  * Fill a book in from the number printed on its own barcode.
@@ -26,7 +29,20 @@ export default function IsbnLookup({ lib, onDone }) {
   const [error, setError] = useState(null)
   const [found, setFound] = useState(null)
   const [written, setWritten] = useState(null)
+  // Whether this browser can read a barcode at all. Null until it has been
+  // asked, so the camera is neither offered nor ruled out while unknown.
+  const [canScan, setCanScan] = useState(null)
+  const [scanning, setScanning] = useState(false)
+  const [scanned, setScanned] = useState(null)
   const inFlight = useRef(null)
+
+  useEffect(() => {
+    let alive = true
+    canReadBarcodes().then((yes) => alive && setCanScan(yes))
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const { codes, rejected } = parseCodes(text)
 
@@ -67,6 +83,34 @@ export default function IsbnLookup({ lib, onDone }) {
     setFound(null)
   }
 
+  /**
+   * Read the barcodes out of photographs and add them to the box.
+   *
+   * Added rather than replacing, so a shelf can be done in several photographs,
+   * and shown in the same box as a typed code so there is one list to check
+   * before anything is sent.
+   */
+  const onPhotos = async (files) => {
+    if (!files?.length) return
+    setError(null)
+    setScanning(true)
+    setScanned(null)
+    try {
+      const codes = []
+      for (const file of files) {
+        for (const code of await readBarcodes(file)) {
+          if (!codes.includes(code)) codes.push(code)
+        }
+      }
+      setText((current) => [current.trim(), ...codes].filter(Boolean).join(NEWLINE))
+      setScanned({ photos: files.length, codes: codes.length })
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setScanning(false)
+    }
+  }
+
   return (
     <section className="desk-section">
       <h3 className="section-head">{t('isbn.title')}</h3>
@@ -100,6 +144,23 @@ export default function IsbnLookup({ lib, onDone }) {
                 <option value="audio">{t('isbn.format.audio')}</option>
               </select>
             </label>
+            {canScan && (
+              <label className="btn small file-button">
+                {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  multiple
+                  hidden
+                  disabled={scanning || busy}
+                  onChange={(e) => {
+                    onPhotos([...(e.target.files || [])])
+                    e.target.value = ''
+                  }}
+                />
+              </label>
+            )}
             <label className="btn small file-button">
               {t('isbn.fromFile')}
               <input
@@ -113,6 +174,17 @@ export default function IsbnLookup({ lib, onDone }) {
               />
             </label>
           </div>
+
+          {canScan === false && (
+            <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.noScanner')}</p>
+          )}
+          {scanned && (
+            <p className="tiny faint" aria-live="polite">
+              {scanned.codes
+                ? t('isbn.scanned', { n: scanned.codes, photos: scanned.photos })
+                : t('isbn.scannedNone', { photos: scanned.photos })}
+            </p>
+          )}
 
           <p className="tiny faint" style={{ marginTop: 10 }} aria-live="polite">
             {codes.length

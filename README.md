@@ -593,6 +593,17 @@ Paste the codes, one per line or out of a spreadsheet column, or read them from
 a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
 a 10 and a 13 is looked up once.
 
+**Or photograph the barcodes.** Where the browser can read one, and Chrome on
+Android can, **Read a barcode from a photo** takes one picture or several and
+adds what it finds to the same box. A photograph of a pile gives up every code
+in it, and a barcode that is not a book fails the same check a typo does. The
+picture is read on the device at its own resolution and never leaves: shrinking
+it would throw away the lines that carry the data, and there is nothing to save
+by shrinking something that is not being sent.
+
+Desktop browsers cannot do this yet, and the page says so where the button
+would otherwise be rather than offering one that fails.
+
 **What comes back is shown before any of it is kept**, for a reason worth
 knowing. Asked for an ISBN it does not hold, the service answers with a
 different book rather than with an error, so one wrong digit does not fail, it

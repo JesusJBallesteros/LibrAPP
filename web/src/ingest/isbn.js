@@ -156,6 +156,66 @@ export function toRecord(code, entry, { subjects = 8 } = {}) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Reading the barcode itself
+// ---------------------------------------------------------------------------
+
+// An ISBN barcode is an EAN-13. UPC-A is here because a few older American
+// printings carry one, and it costs nothing to look at.
+const BARCODE_FORMATS = ['ean_13', 'upc_a']
+
+/**
+ * Whether this browser can read a barcode out of a picture.
+ *
+ * Chrome on Android can. Chrome and Brave on a desktop, as of writing, cannot:
+ * the constructor is simply absent. So this is asked rather than assumed, and
+ * the answer decides whether the camera is offered at all, because a button
+ * that throws when pressed is worse than a button that is not there.
+ */
+export async function canReadBarcodes() {
+  if (typeof globalThis.BarcodeDetector === 'undefined') return false
+  try {
+    const formats = await globalThis.BarcodeDetector.getSupportedFormats()
+    return BARCODE_FORMATS.some((f) => formats.includes(f))
+  } catch {
+    return false
+  }
+}
+
+/**
+ * The ISBNs in a photograph.
+ *
+ * At the picture's own resolution, deliberately. Shrinking it would be the
+ * usual thing to do with a photograph and is exactly wrong here: a barcode is
+ * thin black lines, and the detail thrown away is the data. There is no cost
+ * argument for shrinking either, because the picture is read here and never
+ * leaves the device. Only the digits do.
+ *
+ * A photograph of a pile can hold several barcodes and all of them are
+ * returned. Anything that decodes but is not a book, a cereal packet in the
+ * background, fails the checksum and is dropped.
+ */
+export async function readBarcodes(file) {
+  if (!(await canReadBarcodes())) {
+    throw new LookupError('this browser cannot read barcodes from a picture')
+  }
+  const detector = new globalThis.BarcodeDetector({ formats: BARCODE_FORMATS })
+  const bitmap = await createImageBitmap(file)
+  try {
+    const results = await detector.detect(bitmap)
+    const codes = []
+    for (const { rawValue } of results) {
+      const cleaned = cleanIsbn(rawValue)
+      if (!validIsbn(cleaned)) continue
+      const code = toIsbn13(cleaned)
+      if (!codes.includes(code)) codes.push(code)
+    }
+    return codes
+  } finally {
+    bitmap.close?.()
+  }
+}
+
 export class LookupError extends Error {}
 
 /**
