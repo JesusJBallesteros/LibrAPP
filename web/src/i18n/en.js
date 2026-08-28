@@ -309,6 +309,7 @@ export default {
   'catalog.noMatch': 'Nothing matches.',
   'catalog.clearFilters': 'Clear the filters',
   'catalog.standalone': 'Standalone',
+  'catalog.uncredited': 'Nobody credited',
 
   // -- library --------------------------------------------------------------
   'storage.intro':

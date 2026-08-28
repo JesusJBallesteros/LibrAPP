@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### Fixed: grouping by author took the catalog down
+
+Reported as the grouping control doing nothing in the spine view. It was worse
+than nothing: it threw, and the whole catalog went with it.
+
+A book nobody is credited on has no byline, and byline returns null for it so
+the caller can name the gap in the reader's own language. Grouping by author
+used that null as the key of a bucket and then sorted the keys, which called
+localeCompare on null. Any real catalog has a book like that, an anthology, a
+reference work, a spine nobody could read, so the crash was one click away on
+most shelves.
+
+Books with nobody credited now gather under a group of their own, after the
+named ones, the way books in no series already gathered after the real series.
+
+The other half of that report stands: in the spine view the control changes
+nothing, because grouping is only drawn in the list. That is deliberate, since
+headings cut a wall of spines into pieces and it stops looking like a shelf, but
+a control that shows itself pressed and does nothing is not deliberate. It
+wants either hiding there or turning into an ordering.
+
 ### The shelf page stops leaving a hole in itself
 
 Step two runs long, a photograph does not, and the tiles were in a row of their

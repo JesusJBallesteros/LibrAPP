@@ -307,6 +307,7 @@ export default {
   'catalog.noMatch': 'No hay coincidencias.',
   'catalog.clearFilters': 'Quitar los filtros',
   'catalog.standalone': 'Sin serie',
+  'catalog.uncredited': 'Sin autoría anotada',
 
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':

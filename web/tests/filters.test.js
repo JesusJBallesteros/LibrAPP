@@ -40,3 +40,40 @@ describe('naming the filters that are hidden and on', () => {
     expect(hiddenActiveFilters({ loan: 'home' })).toEqual(['loan'])
   })
 })
+
+// Grouping the catalog by author used to take the whole view down. byline
+// returns null for a book nobody is credited on, so that null became a bucket
+// key, and sorting the keys called localeCompare on it. Any real catalog has
+// such a book, so the crash was one click away on most shelves.
+describe('grouping books that have no author or no series', () => {
+  // What the view does: bucket by a key, then sort the keys with the two
+  // catch-alls last.
+  const UNCREDITED = '\u0000uncredited'
+  const STANDALONE = 'Standalone'
+  const last = (key) => key === STANDALONE || key === UNCREDITED
+  const order = (keys) =>
+    [...keys].sort((a, b) => last(a) - last(b) || (last(a) ? 0 : a.localeCompare(b)))
+
+  it('sorts named groups alphabetically', () => {
+    expect(order(['Le Guin', 'Chiang', 'Herbert'])).toEqual(['Chiang', 'Herbert', 'Le Guin'])
+  })
+
+  it('puts the uncredited bucket last rather than throwing on it', () => {
+    expect(order([UNCREDITED, 'Le Guin', 'Chiang']).at(-1)).toBe(UNCREDITED)
+  })
+
+  it('puts standalones after every real series', () => {
+    expect(order([STANDALONE, 'Discworld', 'Earthsea']).at(-1)).toBe(STANDALONE)
+  })
+
+  it('survives a list that is nothing but catch-alls', () => {
+    expect(() => order([UNCREDITED, STANDALONE])).not.toThrow()
+  })
+
+  it('never compares a catch-all as though it were a name', () => {
+    // The marker starts with a NUL so it can never collide with a real author,
+    // and it is never shown: the view swaps in a translated label.
+    expect(UNCREDITED.startsWith('\u0000')).toBe(true)
+    expect(() => order([UNCREDITED])).not.toThrow()
+  })
+})
