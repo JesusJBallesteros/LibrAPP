@@ -9,7 +9,7 @@
 import { describe, expect, it } from 'vitest'
 import { demoSize, memoryBackend, openDemo } from '../src/store/demo.js'
 import { forgotten, onLoan } from '../src/lib.js'
-import { summarise } from '../src/components/GenrePie.jsx'
+import { summariseWords } from '../src/components/WordCloud.jsx'
 
 describe('the demo cannot reach real storage', () => {
   it('keeps its files in memory and nowhere else', async () => {
@@ -74,14 +74,18 @@ describe('the demo has something to show', () => {
     expect(Object.keys(overrides.entries).length).toBe(marked.length)
   })
 
-  it('has a chart worth drawing rather than one wedge of "other"', async () => {
+  it('has genres enough to draw a cloud from', async () => {
     const { books } = await (await openDemo()).readCatalog()
-    const pie = summarise(books)
-    const other = pie.slices.find((s) => s.isOther)
-    expect(pie.distinct).toBeGreaterThan(10)
-    // The named slices have to carry most of the shelf. A demo chart that is
-    // mostly "other" would be showing off the problem, not the feature.
-    expect(other ? 1 - other.share : 1).toBeGreaterThan(0.5)
+    const cloud = summariseWords(books, { kind: 'genre' })
+    expect(cloud.distinct).toBeGreaterThan(10)
+    // A cloud draws only the ones used more than once, so a demo whose genres
+    // were all used once would render an empty panel.
+    expect(cloud.drawn).toBeGreaterThan(3)
+  })
+
+  it('has keywords enough to draw the other cloud from', async () => {
+    const { books } = await (await openDemo()).readCatalog()
+    expect(summariseWords(books, { kind: 'keyword' }).drawn).toBeGreaterThan(10)
   })
 
   it('has page counts, so the shelf shows thick books and thin ones', async () => {

@@ -439,8 +439,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tiles figure.dropped figcaption { text-decoration: line-through; }
 .tiles figure.dropped .btn { text-decoration: none; }
 
-.word-cloud { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; }
-/* Every word in the accent. Size carries the count; colour never carried
+/* Centred rather than sat on a baseline, because roughly one word in five is
+   set on its side and a baseline would hang those off the bottom of the row. */
+.word-cloud { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+/* Every word in one colour. Size carries the count; colour never carried
    anything, and the ramp these used to cycle has a pale end that all but
    disappears against paper. */
 .word-cloud .word {
@@ -448,12 +450,30 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: none;
   padding: 0;
   cursor: pointer;
-  font-family: var(--serif);
   line-height: 1.15;
   color: var(--accent);
 }
 .word-cloud .word:hover { text-decoration: underline; }
 .word-cloud .word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* One word in five stands up, chosen from a hash of the word so it is the same
+   one every time rather than a different one on every rebuild. It is what makes
+   the block read as a cloud rather than as a paragraph of links. */
+.word-cloud .word.upright { writing-mode: vertical-rl; }
+
+/* The two clouds answer different questions and are set differently so they do
+   not read as the same panel twice. Keywords are what the collection returns
+   to: many, short, in the interface face. Genres are what it is made of: fewer,
+   longer, in the face the books themselves are set in. */
+.word-cloud.keyword .word { font-family: var(--sans); letter-spacing: -0.01em; }
+/* Small capitals rather than another colour: --accent and --tan are the same
+   value in the dark theme, so colour told the two clouds apart on paper and not
+   at night. The face and the capitals hold in both. */
+.word-cloud.genre .word {
+  font-family: var(--serif);
+  font-variant-caps: small-caps;
+  letter-spacing: 0.04em;
+}
 
 .check { display: flex; align-items: center; gap: 7px; padding: 3px 0; cursor: pointer; }
 .check input { accent-color: var(--accent); }

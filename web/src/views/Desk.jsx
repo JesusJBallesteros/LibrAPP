@@ -12,7 +12,6 @@ import {
 } from '../lib.js'
 import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
-import GenrePie from '../components/GenrePie.jsx'
 import IsbnLookup from '../components/IsbnLookup.jsx'
 import WordCloud from '../components/WordCloud.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
@@ -341,6 +340,42 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             )}
           </section>
 
+          {favourites.length > 0 && (
+            <section className="desk-section">
+              <div className="section-head spread">
+                <h3>{t('desk.favourites')}</h3>
+                <span className="tabular tiny faint">{favourites.length}</span>
+              </div>
+              <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
+              {favourites.map((book) => (
+                <button
+                  className="forgotten-item spread"
+                  key={book.id}
+                  onClick={() => setSelected(book)}
+                >
+                  <span>
+                    <span className="title">
+                      <span className="star" aria-hidden="true">{'\u2605'}</span>
+                      {book.title}
+                    </span>
+                    <br />
+                    <span className="tiny muted">
+                      {byline(book, authors) || t('book.authorUnknown')}
+                    </span>
+                    {book.notes && <div className="why">{book.notes}</div>}
+                  </span>
+                </button>
+              ))}
+              <button
+                className="btn link"
+                style={{ marginTop: 12, paddingLeft: 0 }}
+                onClick={() => onGo?.('catalog', { favourite: 'yes' })}
+              >
+                {t('desk.showFavourites')}
+              </button>
+            </section>
+          )}
+
           <section className="desk-section">
             <h3 className="section-head">{t('desk.away')}</h3>
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.awayNote')}</p>
@@ -385,42 +420,6 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             )}
           </section>
 
-          {favourites.length > 0 && (
-            <section className="desk-section">
-              <div className="section-head spread">
-                <h3>{t('desk.favourites')}</h3>
-                <span className="tabular tiny faint">{favourites.length}</span>
-              </div>
-              <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
-              {favourites.map((book) => (
-                <button
-                  className="forgotten-item spread"
-                  key={book.id}
-                  onClick={() => setSelected(book)}
-                >
-                  <span>
-                    <span className="title">
-                      <span className="star" aria-hidden="true">{'\u2605'}</span>
-                      {book.title}
-                    </span>
-                    <br />
-                    <span className="tiny muted">
-                      {byline(book, authors) || t('book.authorUnknown')}
-                    </span>
-                    {book.notes && <div className="why">{book.notes}</div>}
-                  </span>
-                </button>
-              ))}
-              <button
-                className="btn link"
-                style={{ marginTop: 12, paddingLeft: 0 }}
-                onClick={() => onGo?.('catalog', { favourite: 'yes' })}
-              >
-                {t('desk.showFavourites')}
-              </button>
-            </section>
-          )}
-
           {/* The cloud leads and the chart follows. Both answer what the
               collection is made of, and the cloud answers it better on a real
               shelf: genre labels come from the sources uncontrolled, so a
@@ -438,7 +437,12 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
 
           <section className="desk-section">
             <h3 className="section-head">{t('desk.madeOf')}</h3>
-            <GenrePie books={catalog.books} />
+            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.madeOfNote')}</p>
+            <WordCloud
+              books={catalog.books}
+              kind="genre"
+              onPick={(word) => onGo?.('catalog', { tag: word.key, label: word.value })}
+            />
           </section>
 
           {/* Not one of the requests on the right: those assemble a question
