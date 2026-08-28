@@ -1111,6 +1111,52 @@ pre.snippet {
   text-overflow: ellipsis;
   max-height: 100%;
 }
+/* Pulled out to be read. Scaled from the foot so the shelf line stays put, and
+   lifted above its neighbours rather than pushing them along, because a wall
+   that reflowed under the cursor would be unusable. */
+.spine {
+  position: relative;
+  transform-origin: bottom center;
+  transition: transform .14s ease;
+}
+.spine-slot:hover .spine,
+.spine-slot.peeked .spine {
+  transform: scale(1.75);
+  z-index: 6;
+  box-shadow:
+    inset -3px 0 6px rgba(0, 0, 0, .16),
+    inset 3px 0 4px rgba(255, 255, 255, .12),
+    0 6px 20px rgba(20, 18, 15, .45);
+}
+/* Hover does the pulling out on a mouse. A touch screen reports hover on the
+   last thing tapped and would leave a spine stuck out, so there the class does
+   it and a second tap opens the book. */
+@media (hover: none) {
+  .spine-slot:hover .spine { transform: none; z-index: auto; }
+}
+
+/* The author, beside the title across the thickness of the spine. Hidden until
+   the spine is out far enough to have room for it. */
+.spine-author {
+  display: none;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 400 11px/1.15 var(--sans);
+  color: inherit;
+  opacity: .75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 100%;
+  margin-inline-start: 3px;
+}
+.spine-slot:hover .spine-author,
+.spine-slot.peeked .spine-author { display: block; }
+@media (hover: none) {
+  .spine-slot:hover .spine-author { display: none; }
+  .spine-slot.peeked .spine-author { display: block; }
+}
+
 .spine[aria-selected='true'] { outline: 2px solid var(--ink); outline-offset: 2px; }
 .spine:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
@@ -1603,6 +1649,8 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .owl-eyes { animation: none; }
   .owl-bubble { animation: none; }
+  /* The spine still comes out, it just stops sliding out. */
+  .spine { transition: none; }
 }
 
 /* On a phone the sidebar is a bar across the top and the owl would sit over

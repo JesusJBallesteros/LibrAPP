@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import BookEditor from '../components/BookEditor.jsx'
 import BookPanel from '../components/BookPanel.jsx'
 import { setOverride } from '../core/overrides.js'
@@ -212,14 +212,11 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // series it bands on the group; ungrouped it bands on the first letter, which
   // is what the sort is showing. The control used to change neither, because
   // grouping was only ever drawn in the list.
-  const wall = useMemo(
-    () =>
-      group === 'title'
-        ? withBands(shown, sort)
-        : groups.flatMap(({ key, books }) => [{ band: groupName(key) }, ...books.map((book) => ({ book }))]),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [group, groups, shown, sort, t],
-  )
+  // The wall bands by first letter and by nothing else. Grouping it by author
+  // or by series cut it into a heading every book or two, which is a list with
+  // pictures rather than a shelf. Grouping stays in the list, where a heading
+  // is what the shape is for; searching and filtering narrow both.
+  const wall = useMemo(() => withBands(shown, sort), [shown, sort])
 
   if (!catalog) {
     return (
@@ -340,13 +337,15 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           )}
         </div>
 
-        <div className="segmented" role="group" aria-label={t('catalog.groupBy')}>
-          {GROUPINGS.map((g) => (
-            <button key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>
-              {t(`catalog.group.${g}`)}
-            </button>
-          ))}
-        </div>
+        {mode === 'list' && (
+          <div className="segmented" role="group" aria-label={t('catalog.groupBy')}>
+            {GROUPINGS.map((g) => (
+              <button key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>
+                {t(`catalog.group.${g}`)}
+              </button>
+            ))}
+          </div>
+        )}
 
         <label className="field">
           {t('book.read')}
@@ -614,6 +613,13 @@ function Star({ book, onToggle, t, busy }) {
  * data about the books.
  */
 function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t }) {
+  // Which spine a finger has pulled out. A mouse does this with hover and needs
+  // no state; a touch screen has no hover, so the first tap reads the spine and
+  // the second opens it. Without that, a tap would open a book whose title the
+  // reader had not been able to read yet, which is what the wall is for.
+  const [peeked, setPeeked] = useState(null)
+  const pointer = useRef('mouse')
+
   return (
     <div className="spine-view">
       {/* A group rather than a list: role="listitem" on a button replaces the
@@ -633,7 +639,9 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
           return (
             <div
               key={book.id}
-              className={`spine-slot${book.favourite ? ' marked' : ''}`}
+              className={`spine-slot${book.favourite ? ' marked' : ''}${
+                peeked === book.id ? ' peeked' : ''
+              }`}
               style={{ width: spineWidth(book) }}
             >
               {/* Above the spine rather than on it: a spine is 26 pixels wide
@@ -644,7 +652,19 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
                 className="spine"
                 aria-selected={selected?.id === book.id}
                 title={name ? `${book.title} · ${name}` : book.title}
-                onClick={() => onPick(book)}
+                onPointerDown={(e) => {
+                  pointer.current = e.pointerType || 'mouse'
+                }}
+                onClick={() => {
+                  // A finger reads first and opens second. A mouse has already
+                  // read it by hovering, so it opens on the first click.
+                  if (pointer.current === 'touch' && peeked !== book.id) {
+                    setPeeked(book.id)
+                    return
+                  }
+                  setPeeked(null)
+                  onPick(book)
+                }}
                 style={{
                   height: spineHeight(book),
                   background: `var(--spine-${spineTint(book)})`,
@@ -652,6 +672,10 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
                 }}
               >
                 <span className="spine-title">{book.title}</span>
+                {/* Beside the title across the thickness, the way a spine
+                    prints it, and only worth the room once the spine is pulled
+                    out far enough to read. */}
+                {name && <span className="spine-author">{name}</span>}
               </button>
             </div>
           )
