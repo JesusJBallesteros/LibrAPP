@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### Library is now The stacks
+
+Two sections were called something close to "your books" and only one of them
+held any: the catalog, and a tab called Library that holds none. What it holds
+is where the catalog lives, what it was built from, the corrections made to it,
+the browser check, the version and the export.
+
+The stacks is what a library calls the part of itself the public does not
+browse, where the collection is actually kept, which is what that tab is. It was
+already the eyebrow above the heading, so the app had been calling it that all
+along while the navigation said otherwise. In Spanish, El deposito. The eyebrow
+becomes Housekeeping, since the name it was using has moved down.
+
+### A link that opens the demo
+
+`#demo` on the address opens the demo library and lands in the catalog with no
+clicks, so a link from the README or from anywhere else arrives at a working
+library rather than at a page asking for a photograph. It cannot harm a library
+already on the device: the demo is held in memory and has nowhere to write.
+
 ### Looking a book up by its barcode
 
 The number under a barcode names the exact edition, so where a library

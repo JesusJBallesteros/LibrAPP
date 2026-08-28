@@ -113,7 +113,7 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
     <div className="view">
       <div className="view-head">
         <p className="eyebrow">{t('storage.eyebrow')}</p>
-        <h2>{t('nav.library')}</h2>
+        <h2>{t('nav.stacks')}</h2>
         <hr className="rule" />
         <p>{t('storage.intro')}</p>
       </div>

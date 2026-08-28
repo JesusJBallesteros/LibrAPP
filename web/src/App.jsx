@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
@@ -19,7 +19,7 @@ const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
 
 const NAV_KEY = {
   catalog: 'catalog', shelf: 'shelf', list: 'list',
-  desk: 'desk', storage: 'library', about: 'about',
+  desk: 'desk', storage: 'stacks', about: 'about',
 }
 
 export default function App() {
@@ -41,6 +41,19 @@ export default function App() {
   const [pendingView, setPendingView] = useState(null)
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
+  const demoAsked = useRef(false)
+
+  // #demo in the address opens the demo library straight away, so a link from
+  // the README or from anywhere else lands in a populated app rather than on a
+  // page asking for a photograph. Once only, and never over a demo already
+  // open. It cannot harm an existing library: the demo is held in memory and
+  // has nowhere to write.
+  useEffect(() => {
+    if (demoAsked.current || lib.status === 'opening' || lib.isDemo) return
+    if (!/(^|[?&#])demo(=|&|$)/.test(window.location.search + window.location.hash)) return
+    demoAsked.current = true
+    lib.useDemo().then(() => setView('catalog'))
+  }, [lib])
 
   /** Go to a view, stopping for the storage question only if it is unanswered. */
   // A single page app changes what it shows without changing what it is

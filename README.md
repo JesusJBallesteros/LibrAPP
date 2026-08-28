@@ -4,33 +4,44 @@
 [![Deploy](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml)
 [![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20NC%201.0.0-blue)](LICENSE.md)
 
-### Your full library catalog and your own personal librarian, at hand.
+### Photograph your shelves. Get a catalog that answers questions.
 
-## → [**Open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/) ←
+[![The catalog drawn as a shelf, ninety-one spines standing side by side, thick books wider than thin ones](docs/images/shelf.png)](https://jesusjballesteros.github.io/LibrAPP/#demo)
 
-Build the catalog from a photograph of your shelves, then ask it about your own
-books. No account, no signup, nothing to install first. Works offline once
-loaded, and installs as an app on Windows, Linux and Android.
+## → [**See it with books in it**](https://jesusjballesteros.github.io/LibrAPP/#demo) ←
+
+That link opens a working library of 91 invented books: browse the shelf, open a
+book, ask the desk something. Nothing to install, nothing to sign up for, nothing
+saved to your device. Reload and it is gone.
+
+When you want your own in it, [**open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/)
+and photograph a shelf.
 
 ---
 
-Photograph a shelf and LibrAPP reads the spines into a catalog you can search,
-filter and browse. You can also import a spreadsheet, a CSV, or a store export,
-and combine all of them into one catalog with no duplicates.
+**Point a camera at a bookcase.** LibrAPP cuts the photograph up on your device
+and reads the spines into a catalog you can search, filter and browse. Bring in a
+spreadsheet, a store export or a barcode as well, and the same book arriving from
+three places becomes one entry rather than three.
 
-Then ask it things. The **[LibrAPPrian's desk](#the-desk)** takes your own
+**Then ask it things.** The [LibrAPPrian's desk](#the-desk) takes your own
 shelves as context: what to read next and why, which books by an author you have
 collected unevenly are missing, what threads run through what you own, a list for
-a long flight. The answers are about your books rather than books in general.
+a long flight. The answers are about your books, not about books.
 
-Not sure yet? **Look around a demo library** on the front page opens an invented
-shelf of 91 books straight away, with nothing to install and nothing to fetch.
-It is held in memory, so nothing is saved and nothing already on your device is
-touched, and it is gone when you reload.
+**It also tells you things you did not ask.** Which books you bought years ago
+and never opened, ranked by how long they have waited and by how much you
+evidently wanted them at the time. What is lent out and to whom. What the
+collection keeps coming back to.
 
-Your books stay on your device. There is no account, no server and no sync.
+![The desk: books bought and never opened drawn as a shelf with the years each has waited above it, beside a cloud of the words the collection keeps returning to](docs/images/desk.png)
 
-The interface is available in English and Spanish, chosen on the opening page.
+**Your books stay on your device.** No account, no server, no sync. It works
+offline once loaded and installs as an app on Windows, Linux and Android. Three
+optional steps can send something, all of them listed [below](#about-privacy-and-version), and each
+shows you what it is sending first.
+
+The interface is in English and Spanish, chosen on the opening page.
 
 ---
 
@@ -121,7 +132,7 @@ choose; everywhere else it goes into browser storage, which works identically
 from inside the app but is not visible to other programs. See [where your
 library lives](#where-your-library-lives).
 
-**Not sure about yours?** Open LibrAPP and go to **Library → Your browser**. It
+**Not sure about yours?** Open LibrAPP and go to **The stacks → Your browser**. It
 tests each feature and tells you what works, which is more reliable than any
 table — including this one.
 
@@ -133,7 +144,7 @@ delete a library kept in browser storage.** If you use those settings:
 
 - prefer saving to a folder (Chromium desktop), or
 - allow LibrAPP's storage as an exception, or
-- keep an export — **Library → Export**.
+- keep an export — **The stacks → Export**.
 
 LibrAPP warns you when its storage is not marked persistent.
 
@@ -453,7 +464,7 @@ rebuilt from your sources every time, a removal is stored as a decision rather
 than a deletion — otherwise the next rebuild would bring the book straight
 back.
 
-Everything you have corrected is listed under **Library → Corrections you have
+Everything you have corrected is listed under **The stacks → Corrections you have
 made**, where removals can be restored and edits undone.
 
 Three other things land here, because they are corrections in the same sense:
@@ -710,7 +721,7 @@ it cannot count. If your books have no read state recorded, it says that, rather
 than congratulating you on having read them all.
 
 **Press *Not again* in its bubble to dismiss it for good.** That choice survives
-reloads. The way back is in **Library**, with the other settings, and appears
+reloads. The way back is in **The stacks**, with the other settings, and appears
 only once there is something to undo.
 
 ---
@@ -732,18 +743,18 @@ overrides.json your corrections
 private to LibrAPP. Not visible to other apps, so export is how a copy leaves
 the device.
 
-Either can be changed later from **Library**.
+Either can be changed later from **The stacks**.
 
 ### Moving between devices
 
-**Library → Export** writes one file holding your sources and corrections.
+**The stacks → Export** writes one file holding your sources and corrections.
 Import it on the other device and the catalog is rebuilt there.
 
 This is a copy, not a sync. Changes on one device do not appear on the other.
 
 ### Backups
 
-To move a catalog between devices, use **Export** in the **Library** tab and
+To move a catalog between devices, use **Export** in **The stacks** and
 bring the file to the other device — either through the same tab, or from
 *I have a catalog from another device* on the opening page. The file is judged
 by what is in it rather than by what your file picker calls it, so a phone that
@@ -847,7 +858,7 @@ The barcode case is the smallest of the three by a distance. A photograph of a
 barcode is decoded on the device and never leaves it; what goes out is thirteen
 digits that are printed on the back of a book anybody can buy.
 
-**Version.** The **Library** tab shows which build you are running, when it was
+**Version.** **The stacks** shows which build you are running, when it was
 made, and a button that throws the cached copy away and fetches the current one.
 An installed app keeps a copy of itself so it can open offline, and that copy can
 occasionally be older than what is published. The button discards only the app —
