@@ -22,12 +22,26 @@ export function useLibrary() {
   const [busy, setBusy] = useState(false)
   const regrant = useRef(null)
 
+  // Which library the interface is currently showing. Held as a ref as well as
+  // as state, because a read that started before the library changed has to be
+  // able to tell that it is now answering about the wrong one.
+  const showing = useRef(null)
+
   const load = useCallback(async (lib) => {
-    setCatalog(await lib.readCatalog())
-    setSources(await lib.readSources())
+    const catalog = await lib.readCatalog()
+    const sources = await lib.readSources()
+    // Another library was adopted while this one was being read, so this answer
+    // is stale and dropping it is the whole point. Reading a folder is slow and
+    // reading memory is not, which is how the demo came to be opened over a
+    // real catalog and then have that catalog land back on top of it: the
+    // banner said demo while the books on screen were the reader's own.
+    if (showing.current !== lib) return
+    setCatalog(catalog)
+    setSources(sources)
   }, [])
 
   const adopt = useCallback(async (lib) => {
+    showing.current = lib
     setLibrary(lib)
     setStatus('ready')
     await load(lib)
@@ -108,6 +122,7 @@ export function useLibrary() {
 
   const forget = useCallback(async () => {
     await forgetFolder()
+    showing.current = null
     setLibrary(null)
     setCatalog(null)
     setSources([])

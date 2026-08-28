@@ -22,6 +22,26 @@ clicks, so a link from the README or from anywhere else arrives at a working
 library rather than at a page asking for a photograph. It cannot harm a library
 already on the device: the demo is held in memory and has nowhere to write.
 
+Two things had to be fixed before that was true for somebody who already has
+books in the app.
+
+**A read of the old library could land on top of the new one.** Adopting a
+library marks it ready before it has finished being read, so the demo opened
+over a real catalog and then that catalog's own read, still in flight and slower
+because it comes off disk rather than out of memory, arrived afterwards and
+replaced it. What the reader saw was the demo banner sitting above their own
+books, which is the worst of both. A read now checks that its library is still
+the one on screen before it applies, so a stale answer is dropped instead.
+
+**Leaving the demo walked back into it.** Leaving is a reload, and a reload with
+`#demo` still on the address opens the demo again, so the way out was shut for
+as long as the tab lived. The marker is taken out of the address once it has
+been acted on.
+
+The first of those is a race and is not covered by a test: the project has no
+React testing library and is not worth adding one to for a single hook, so it is
+covered by a comment at the place it happened instead.
+
 ### Looking a book up by its barcode
 
 The number under a barcode names the exact edition, so where a library

@@ -52,7 +52,13 @@ export default function App() {
     if (demoAsked.current || lib.status === 'opening' || lib.isDemo) return
     if (!/(^|[?&#])demo(=|&|$)/.test(window.location.search + window.location.hash)) return
     demoAsked.current = true
-    lib.useDemo().then(() => setView('catalog'))
+    lib.useDemo().then(() => {
+      setView('catalog')
+      // Take the marker back out of the address. Leaving the demo is a reload,
+      // and a reload with #demo still on it walks straight back in, so the way
+      // out would be shut for as long as the tab lived.
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    })
   }, [lib])
 
   /** Go to a view, stopping for the storage question only if it is unanswered. */
