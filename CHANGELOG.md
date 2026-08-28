@@ -1,5 +1,48 @@
 # Changelog
 
+## Unreleased
+
+### Looking a book up by its barcode
+
+The number under a barcode names the exact edition, so where a library
+catalogue holds it there is nothing to guess at. Paste the codes or read them
+from a file, and the title, authors, publisher, year and page count come back as
+recorded facts. No AI, no key, no cost.
+
+A lookup is a source like a photograph or a spreadsheet, so the merge that
+already exists does the attaching: a book you have takes the new details rather
+than becoming a second entry, and anything that matched nothing is added. No new
+matching was written for this.
+
+**It is not the deterministic cousin of asking a model, and it was worth finding
+that out before building on it.** Asked for an ISBN it does not hold, the
+service answers with a real record belonging to some other book rather than with
+an error: 0000000000000 returns a French novel, 9999999999999 an Argentine
+painter's retrospective. That fails more quietly than a model does, because the
+answer arrives with a publisher and a page count and looks authoritative. So a
+code whose own check digit disagrees is refused before anything is sent, and
+what does come back is shown and accepted rather than written, the same ending
+the desk already gives a model's reply.
+
+Subjects arrive as keywords rather than as a genre. There are twenty to ninety
+per book and they include *American literature* and *New York Times reviewed*,
+so the hope that a controlled vocabulary here would fix the genre chart does not
+survive looking at the data.
+
+### The privacy claim now lists what leaves
+
+"No third-party requests" was true when it was written and this makes it false.
+The About page and the README now name the three things that can leave the
+device, all optional and none of them on by default: the tiles of a shelf
+photograph, the reading profile the desk prints in full first, and an ISBN.
+
+The barcode case is the smallest by a distance, and the honest version is better
+than the absolute was: a photograph of a barcode is decoded on the device and
+never leaves, and what goes out is thirteen digits printed on the back of a book
+anybody can buy.
+
+---
+
 ## v2.1.0
 
 Most of this came out of an adversarial review of the running app, and the

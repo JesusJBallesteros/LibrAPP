@@ -911,6 +911,24 @@ main:focus { outline: none; }
 /* A change about to be made to many books at once, so it is marked for
    attention rather than as something that went wrong. */
 .notice.bulk-confirm { border-left-color: var(--warn); }
+
+/* What a lookup brought back, waiting to be accepted. Rows rather than cards:
+   the reader is checking a list of titles against what they meant to scan, and
+   a list is what that job wants. */
+.lookup-review { margin-top: 14px; }
+.lookup-list { list-style: none; margin: 10px 0; padding: 0; }
+.lookup-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.lookup-list .title { font: 400 16px/1.3 var(--serif); }
+/* A file input is unstyleable, so the label is the button and the input hides
+   inside it. Keeps the keyboard path: the label still labels the control. */
+.file-button { cursor: pointer; display: inline-flex; align-items: center; }
 .bulk-offer { margin: 6px 0 0; }
 .bulk-offer .btn.link { margin-left: 8px; }
 .notice.bad { border-left-color: var(--bad); color: var(--bad); }

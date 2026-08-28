@@ -134,7 +134,7 @@ export default function About({ onBack, focus, inShell = false }) {
           <h3 className="section-head">{t('about.privacy')}</h3>
           <p className="muted tiny">{t('about.privacyBody')}</p>
           <ul className="landing-needs" style={{ marginTop: 10 }}>
-            {['account', 'device', 'key', 'cookies', 'offline'].map((id) => (
+            {['account', 'device', 'key', 'requests', 'cookies', 'offline'].map((id) => (
               <li key={id}>
                 <span className="glyph" aria-hidden="true">
                   ·

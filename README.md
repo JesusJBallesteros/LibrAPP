@@ -581,6 +581,35 @@ genre's share. It is the same every time for the same catalog.
 The prompts are told this is a sample, so absence from it is never treated as
 proof you do not own something.
 
+### Looking a book up by its barcode
+
+The number under a barcode identifies the exact edition, so where a library
+catalogue holds that edition there is nothing to guess at: the title, the
+authors, the publisher, the year and the page count come back as recorded facts.
+No AI, no key and no cost. It is the one part of LibrAPP that asks anything of a
+service it does not control.
+
+Paste the codes, one per line or out of a spreadsheet column, or read them from
+a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
+a 10 and a 13 is looked up once.
+
+**What comes back is shown before any of it is kept**, for a reason worth
+knowing. Asked for an ISBN it does not hold, the service answers with a
+different book rather than with an error, so one wrong digit does not fail, it
+succeeds wrongly and hands back a title with a publisher and a page count
+attached. A code whose own check digit disagrees is refused before anything is
+sent, which catches a mistyped or transposed digit, and you catch the rest by
+reading the list.
+
+A book already on your shelf takes the new details rather than becoming a second
+entry: a lookup is a source like a photograph or a spreadsheet, and the same
+merge applies. Anything that matched nothing is added.
+
+Subjects come back as **keywords**, not as a genre. There are twenty to ninety
+of them per book and they include things like *American literature* and *New
+York Times reviewed*; calling one of them the genre would be the app choosing
+rather than recording.
+
 ### Filling gaps in the records
 
 The extras checklist is offered once, while a photograph is being read. Anything
@@ -792,8 +821,20 @@ is public and does not get lost; anything else goes through the contact details
 on [my own site](https://jesusjballesteros.github.io/).
 
 There is no cookie banner either, because there are no cookies, no analytics and
-no third-party requests. The only things remembered about you are which language
-you chose and where your library is.
+no trackers. The only things remembered about you are which language you chose
+and where your library is.
+
+Three things can leave the device, all optional and none of them on by default:
+
+| Step | What is sent | What is not |
+|---|---|---|
+| Reading a shelf photograph | The tiles of that photograph | Anything else about your catalog |
+| Asking the desk a question | Your reading profile, printed in full first | The rest of the catalog |
+| Looking a book up by barcode | The ISBN, and nothing else | The title, your notes, your shelf, you |
+
+The barcode case is the smallest of the three by a distance. A photograph of a
+barcode is decoded on the device and never leaves it; what goes out is thirteen
+digits that are printed on the back of a book anybody can buy.
 
 **Version.** The **Library** tab shows which build you are running, when it was
 made, and a button that throws the cached copy away and fetches the current one.

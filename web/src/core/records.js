@@ -10,7 +10,11 @@ import { clean } from './textmatch.js'
 
 export const SCHEMA_VERSION = 1
 
-export const KINDS = new Set(['store-export', 'photo', 'table', 'manual'])
+// Where a source came from. A closed set, so a typo in an ingester is refused
+// at the door rather than becoming a category nothing knows how to display.
+// `lookup` is a bibliographic record fetched by ISBN: not read off a spine and
+// not typed by hand, and the only kind that came from off the device.
+export const KINDS = new Set(['store-export', 'photo', 'table', 'manual', 'lookup'])
 export const FORMATS = new Set(['ebook', 'physical', 'audio'])
 export const CONFIDENCE = { high: 3, medium: 2, low: 1 }
 
@@ -40,6 +44,10 @@ export const RECORD_FIELDS = {
   formats: [],
   confidence: null,
   location: null,
+  // The edition's own number, where one is known. Kept so a book that has been
+  // looked up is not looked up again, and so a later lookup can be matched back
+  // to the entry it belongs to.
+  isbn: null,
   collapsed: false,
   listed_volumes: null,
   flags: [],

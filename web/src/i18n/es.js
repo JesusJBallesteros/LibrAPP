@@ -547,6 +547,36 @@ export default {
     'No usa tu catálogo entero a propósito: cientos de títulos ahogarían la pregunta. Esto es la forma de la colección y cómo se ha movido, con suficientes libros con nombre como para argumentar.',
 
   // -- escribir un libro, corregir otro -------------------------------------
+  'isbn.title': 'Busca un libro por su código de barras',
+  'isbn.note':
+    'El número que hay bajo el código de barras identifica la edición exacta. Si un catálogo bibliotecario tiene esa edición, esto rellena el título, la autoría, la editorial, el año y las páginas sin que nadie tenga que adivinarlos.',
+  'isbn.privacy':
+    'Esta es la única parte de LibrAPP que pide algo a un servicio ajeno. De este dispositivo sale una lista de números: ni títulos, ni notas, nada de tu estantería y nada sobre ti. Lo que vuelve se enseña aquí antes de escribir nada.',
+  'isbn.paste': 'Códigos, uno por línea o separados por comas',
+  'isbn.format': 'Son',
+  'isbn.format.physical': 'libros en papel',
+  'isbn.format.ebook': 'libros electrónicos',
+  'isbn.format.audio': 'audiolibros',
+  'isbn.fromFile': 'Leerlos de un archivo',
+  'isbn.ready': '{n} {n:código|códigos} {n:listo|listos}.',
+  'isbn.noneFound': 'Todavía no hay códigos ahí.',
+  'isbn.rejected': '{n} rechazados, porque el dígito de control no cuadra:',
+  'isbn.lookUp': 'Buscar {n} {n:libro|libros}',
+  'isbn.lookingUp': 'Buscando',
+  'isbn.looking': 'Buscando {done} de {total}',
+  'isbn.foundN': '{n} {n:libro encontrado|libros encontrados}.',
+  'isbn.missingN': '{n} que el servicio no conoce.',
+  'isbn.checkThese':
+    'Conviene mirarlo antes de guardar. Un servicio al que se le pide un número que no tiene responde con otro libro en vez de con un error, así que un número equivocado da un libro equivocado con toda la apariencia de ser correcto.',
+  'isbn.missingWhich': 'No ha vuelto nada de:',
+  'isbn.noAuthor': 'sin autoría anotada',
+  'isbn.pages': '{n} páginas',
+  'isbn.keep': 'Guardar {n}',
+  'isbn.kept': '{n} {n:libro guardado|libros guardados}.',
+  'isbn.nowHolds': 'El catálogo tiene ya {n}.',
+  'isbn.merged':
+    'Un libro que ya estaba en tu estantería toma los datos nuevos en vez de convertirse en una segunda entrada. Lo que no estaba se añade.',
+
   'editor.add': 'Añadir un libro',
   'editor.correct': 'Corregir esta entrada',
   'editor.addNote':
@@ -666,7 +696,9 @@ export default {
   'about.privacy.key':
     'Si das una clave de IA, se queda en este navegador y solo se envía al servicio que hayas elegido. Nunca se escribe en tu catálogo ni se incluye en una exportación. Las fotos se recortan en este mismo dispositivo; solo salen los recortes, y solo cuando tú lo pides.',
   'about.privacy.cookies':
-    'Sin cookies, sin analítica, sin rastreadores, sin peticiones a terceros. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
+    'Sin cookies, sin analítica y sin rastreadores. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
+  'about.privacy.requests':
+    'Tres cosas pueden salir de este dispositivo, todas opcionales y ninguna activada de antemano. Leer la foto de una estantería envía los recortes de esa foto. Preguntar en el escritorio envía tu perfil de lectura, que el escritorio muestra entero antes. Buscar un libro por su código de barras envía el número y nada más: ni título, ni notas, nada de tu estantería. La foto de un código se lee aquí y no sale nunca.',
   'about.privacy.offline':
     'Una vez cargada funciona sin ninguna conexión, que es la prueba más sencilla de que no se está enviando nada a ninguna parte.',
   'about.privacyCheck': 'No hace falta que te fies de nada de esto: el código es público.',

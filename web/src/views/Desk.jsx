@@ -13,6 +13,7 @@ import {
 import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
 import GenrePie from '../components/GenrePie.jsx'
+import IsbnLookup from '../components/IsbnLookup.jsx'
 import WordCloud from '../components/WordCloud.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
@@ -439,6 +440,12 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             <h3 className="section-head">{t('desk.madeOf')}</h3>
             <GenrePie books={catalog.books} />
           </section>
+
+          {/* Not one of the requests on the right: those assemble a question
+              for a model and are priced per request, and this asks a catalogue
+              for a record it already holds. No key and no cost, so it does not
+              belong behind the key box. */}
+          <IsbnLookup lib={lib} />
         </div>
 
         <div>

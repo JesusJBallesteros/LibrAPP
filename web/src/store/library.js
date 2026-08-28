@@ -16,6 +16,7 @@ const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
 const OVERRIDES = 'overrides.json'
 const MANUAL = 'manual'
+const LOOKUP = 'isbn'
 
 export class Library {
   constructor(backend) {
@@ -146,6 +147,40 @@ export class Library {
       kind: 'manual',
       origin: 'typed in',
       format: 'physical',
+      confidence: 'high',
+      records: kept,
+      stats: { entries: kept.length },
+    })
+  }
+
+  /**
+   * Add books looked up by their own ISBN.
+   *
+   * One source that grows, rather than a new file per lookup, so a shelf done
+   * in several sittings reads as one thing afterwards. Keyed by the ISBN, so
+   * looking the same book up again corrects its entry instead of adding a
+   * second one.
+   *
+   * High confidence, and honestly so: this is a published record of a specific
+   * edition, not a reading of a spine. What it cannot vouch for is that the
+   * number was the right number, which is why nothing reaches here until
+   * somebody has seen what came back.
+   */
+  async addLookupRecords(records, { format = 'physical' } = {}) {
+    const text = await this.backend.readText(`${SOURCES}/${LOOKUP}.json`)
+    const existing = text ? readSource(JSON.parse(text), `${LOOKUP}.json`).records : []
+    const byIsbn = new Map()
+    for (const record of existing) {
+      const { _source, ...rest } = record
+      byIsbn.set(rest.isbn, rest)
+    }
+    for (const record of records) byIsbn.set(record.isbn, normalise(record))
+    const kept = [...byIsbn.values()]
+    return this.putSource({
+      name: LOOKUP,
+      kind: 'lookup',
+      origin: 'openlibrary.org',
+      format,
       confidence: 'high',
       records: kept,
       stats: { entries: kept.length },

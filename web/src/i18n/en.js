@@ -544,6 +544,36 @@ export default {
   'desk.profileNote':
     'Deliberately not the whole catalog — a few hundred titles crowd out the question. This is the shape of the collection and how it has moved, with enough named books to argue from.',
 
+  'isbn.title': 'Look a book up by its barcode',
+  'isbn.note':
+    'The number under the barcode identifies the exact edition. Where a library catalogue holds that edition, this fills in the title, the authors, the publisher, the year and the page count without anybody guessing at them.',
+  'isbn.privacy':
+    'This is the one part of LibrAPP that asks something of a service it does not control. What leaves this device is a list of numbers: no titles, no notes, nothing about your shelf and nothing about you. A record that comes back is shown here before any of it is written.',
+  'isbn.paste': 'Codes, one per line or separated by commas',
+  'isbn.format': 'These are',
+  'isbn.format.physical': 'books on paper',
+  'isbn.format.ebook': 'ebooks',
+  'isbn.format.audio': 'audiobooks',
+  'isbn.fromFile': 'Read them from a file',
+  'isbn.ready': '{n} {n:code|codes} ready.',
+  'isbn.noneFound': 'No codes in there yet.',
+  'isbn.rejected': '{n} refused, because the check digit does not agree:',
+  'isbn.lookUp': 'Look up {n} {n:book|books}',
+  'isbn.lookingUp': 'Looking up',
+  'isbn.looking': 'Looking up {done} of {total}',
+  'isbn.foundN': '{n} {n:book|books} found.',
+  'isbn.missingN': '{n} not known to the service.',
+  'isbn.checkThese':
+    'Worth a look before keeping. A service asked for a number it does not hold answers with a different book rather than with an error, so a wrong number gives a wrong book that looks perfectly ordinary.',
+  'isbn.missingWhich': 'Nothing came back for:',
+  'isbn.noAuthor': 'no author recorded',
+  'isbn.pages': '{n} pages',
+  'isbn.keep': 'Keep {n}',
+  'isbn.kept': '{n} {n:book|books} kept.',
+  'isbn.nowHolds': 'The catalog now holds {n}.',
+  'isbn.merged':
+    'A book already on your shelf takes the new details rather than becoming a second entry. Anything new is added.',
+
   // -- typing a book in, correcting one -------------------------------------
   'editor.add': 'Add a book',
   'editor.correct': 'Correct this entry',
@@ -661,7 +691,9 @@ export default {
   'about.privacy.key':
     'If you provide an AI key, it stays in this browser and is sent only to the service you chose. It is never written into your catalog and never included in an export. Photographs are cut into tiles here; only the tiles go, and only when you ask.',
   'about.privacy.cookies':
-    'No cookies, no analytics, no trackers, no third-party requests. The only thing remembered about you is which language you picked and where your library is.',
+    'No cookies, no analytics and no trackers. The only thing remembered about you is which language you picked and where your library is.',
+  'about.privacy.requests':
+    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends the barcode number and nothing else: no title, no note, nothing about your shelf. The photograph of a barcode is read here and never leaves.',
   'about.privacy.offline':
     'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
   'about.privacyCheck': 'You do not have to take any of that on trust — the code is public.',
