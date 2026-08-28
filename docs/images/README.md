@@ -1,14 +1,5 @@
 # Images for the README
 
-Every picture here is taken from **the demo library**, never from a real one.
-The books in it are invented, so a screenshot can be published without anybody's
-shelf being published with it. That is most of the reason the demo exists.
-
-## Taking them again
-
-Open <https://jesusjballesteros.github.io/LibrAPP/#demo>, or `#demo` on a local
-build, which loads the demo and lands in the catalog with no clicks. Then:
-
 | File | View | What should be in frame |
 |---|---|---|
 | `shelf.png` | Catalog, Spines | The wall of spines, several rows deep, with the sidebar and its counts down the left. Scroll so the demo banner is above the frame. |
@@ -18,11 +9,8 @@ build, which loads the demo and lands in the catalog with no clicks. Then:
 | `photo-steps.png` | Shelf picture | Cut from `photo.png`: heading, key box, the chosen photograph, the grid control. |
 | `photo-tiles.png` | Shelf picture | Cut from `photo.png`: the tiles with at least one discarded, and the extras checklist. |
 
-**Night, at 1500 or so wide.** The dark theme is the one the app was drawn for
+**Night, at 1500** The dark theme is the one the app was drawn for
 and it reproduces better in both GitHub themes than the light one does.
-
-Trim the browser chrome. A screenshot that includes an address bar dates itself
-and says nothing about the app.
 
 ## Crops
 
@@ -40,9 +28,3 @@ im.crop((270, 1055, W, 2530)).save('docs/images/photo-tiles.png', optimize=True)
 
 The 270 takes the sidebar off. The vertical numbers are read off the source and
 move when the page does.
-
-## Naming
-
-Lower case, one word where possible, `.png`. The name says what is in the
-picture, not where it goes: `shelf.png`, not `hero.png`, so moving it in the
-README does not make the filename a lie.
