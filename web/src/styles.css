@@ -1243,12 +1243,25 @@ pre.snippet {
 
 /* The photograph and the reading of it, side by side. Step two appears only
    once there are tiles, so step one has the row to itself until then. */
+/* Before a photograph is cut there is only step one, and it takes the width.
+   After, three areas rather than two columns: step two runs long, the
+   photograph does not, and putting the tiles in a row of their own below both
+   left the space under the photograph empty on a wide screen. */
 .shelf-steps { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: start; }
-@media (min-width: 900px) { .shelf-steps { grid-template-columns: 1fr 1fr; } }
+.shelf-steps.cut { grid-template-areas: 'one' 'two' 'tiles'; }
+.shelf-steps.cut > .shelf-one { grid-area: one; }
+.shelf-steps.cut > .shelf-two { grid-area: two; }
+.shelf-steps.cut > .shelf-tiles { grid-area: tiles; min-width: 0; }
 
-/* Until a photograph has been cut there is no step two, and a lone step in a
-   two column grid leaves half the row empty. */
-.shelf-steps > .shelf-step:only-child { grid-column: 1 / -1; }
+@media (min-width: 900px) {
+  .shelf-steps.cut {
+    grid-template-columns: 1fr 1fr;
+    /* Step two spans both rows; the tiles sit under the photograph. */
+    grid-template-areas:
+      'one two'
+      'tiles two';
+  }
+}
 
 .shelf-step > .eyebrow { margin: 0 0 12px; }
 .shelf-step .spread > .eyebrow { margin: 0; }

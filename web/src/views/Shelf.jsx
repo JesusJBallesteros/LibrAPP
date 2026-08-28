@@ -304,8 +304,14 @@ export default function Shelf({ lib, onOwl }) {
       {/* The two steps sit side by side. Step two appears only once a
           photograph has been cut into tiles, so before that step one has the
           row to itself. */}
-      <div className="shelf-steps">
-        <section className="shelf-step">
+      <ApiKeyBox what={t('shelf.whatItIsFor')} onChange={setKeyStatus} />
+
+      {/* Three areas rather than two rows. Step two is long, the photograph is
+          not, and the tiles were sitting in a third row below both, which left
+          the space under the photograph empty on a wide screen. The tiles go
+          there instead. */}
+      <div className={`shelf-steps${tiles ? ' cut' : ''}`}>
+        <section className="shelf-step shelf-one">
           <p className="eyebrow">{t('shelf.stepOne')}</p>
           <DropZone
             mark="camera"
@@ -320,7 +326,7 @@ export default function Shelf({ lib, onOwl }) {
         </section>
 
         {tiles && (
-          <section className="shelf-step">
+          <section className="shelf-step shelf-two">
             <div className="spread">
               <p className="eyebrow">{t('shelf.stepTwo')}</p>
               <span className="tabular tiny faint">
@@ -481,12 +487,8 @@ export default function Shelf({ lib, onOwl }) {
 
           </section>
         )}
-      </div>
-
-      <ApiKeyBox what={t('shelf.whatItIsFor')} onChange={setKeyStatus} />
-
-      {tiles && (
-        <>
+        {tiles && (
+          <div className="shelf-tiles">
           <p className="tiny faint" style={{ margin: '26px 0 0' }}>
             {t('shelf.discardHint')}
           </p>
@@ -523,7 +525,12 @@ export default function Shelf({ lib, onOwl }) {
                 )
               })}
             </div>
+          </div>
+        )}
+      </div>
 
+      {tiles && (
+        <>
           {proposed && (
             <section className="shelf-step" style={{ marginTop: 34 }}>
               <div className="spread">

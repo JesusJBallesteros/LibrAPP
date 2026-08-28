@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### The shelf page stops leaving a hole in itself
+
+Step two runs long, a photograph does not, and the tiles were in a row of their
+own below both, so on a wide screen the space under the photograph was empty
+from the moment a picture was chosen: about five hundred pixels of nothing
+beside the tallest column on the page.
+
+Three areas now, rather than two columns and a row. Step two spans both rows on
+the right, and the tiles sit under the photograph on the left, which is the
+space they were leaving empty. On a narrow screen it is one column in the order
+the work happens: photograph, then the reading, then the tiles.
+
+The key box moves to the top, where it reads as the precondition it is: nothing
+in step two can be pressed without it. It used to sit between the two steps and
+the tiles, taking a full row to say so.
+
 ### Library is now The stacks
 
 Two sections were called something close to "your books" and only one of them
