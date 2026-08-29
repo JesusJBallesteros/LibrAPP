@@ -1,4 +1,4 @@
-import { byline, callNumber, readState } from '../lib.js'
+import { byline, callNumber, readState, stillToRecord } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 import Overlay from './Overlay.jsx'
 
@@ -38,6 +38,8 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
     [t('book.devices'), book.devices],
     [t('book.sources'), (book.sources || []).join(', ')],
   ].filter(([, value]) => value !== null && value !== undefined && value !== '')
+
+  const toRecord = stillToRecord(book)
 
   // A correction carrying a reason did not come from the reader typing it, so
   // the notice must not call it a correction by hand.
@@ -108,6 +110,27 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
         </div>
 
         {state === 'unknown' && <p className="tiny faint" style={{ marginTop: 14 }}>{t('book.unknownNote')}</p>}
+
+        {onEdit && toRecord.length > 0 && (
+          <div style={{ marginTop: 16 }}>
+            <p className="eyebrow">{t('book.notRecorded')}</p>
+            <div className="row" style={{ gap: 8, marginTop: 7, flexWrap: 'wrap' }}>
+              {toRecord.map((field) => (
+                <button
+                  key={field}
+                  className="btn small"
+                  disabled={busy}
+                  /* Straight to the box, because the form is long and the
+                     hunt through it is most of the work of recording one
+                     line. */
+                  onClick={() => onEdit(book, field)}
+                >
+                  {t(`book.record.${field}`)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {book.overridden && (
           <div className="notice" style={{ marginTop: 14 }}>

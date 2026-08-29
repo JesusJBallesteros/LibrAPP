@@ -16,6 +16,9 @@ import { clearOverride, setOverride, setRemoved } from '../core/overrides.js'
  * that has moved on.
  */
 export default function BookPanel({ book, authors, lib, onClose }) {
+  // false, or the field the editor should open at. The card can ask for one
+  // thing to be recorded as well as offer to correct the whole book, and the
+  // two open the same form at different places in it.
   const [editing, setEditing] = useState(false)
 
   if (!book) return null
@@ -34,6 +37,7 @@ export default function BookPanel({ book, authors, lib, onClose }) {
         book={book}
         authorNames={authors}
         busy={lib?.busy}
+        focusField={typeof editing === 'string' ? editing : null}
         // Back to the book rather than out of it. Cancelling an edit is not a
         // reason to lose the entry that was being read.
         onCancel={() => setEditing(false)}
@@ -48,7 +52,7 @@ export default function BookPanel({ book, authors, lib, onClose }) {
       authors={authors}
       busy={lib?.busy}
       onClose={onClose}
-      onEdit={() => setEditing(true)}
+      onEdit={(_book, field) => setEditing(field || true)}
       onRemove={(b) => write((overrides) => setRemoved(overrides, b, true))}
       onRevert={(b) => write((overrides) => clearOverride(overrides, b.id))}
     />

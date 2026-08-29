@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { EDITABLE } from '../core/overrides.js'
 import { useT } from '../i18n/index.jsx'
 import Overlay from './Overlay.jsx'
@@ -57,9 +57,20 @@ export const toForm = (book, names) => ({
   formats: book?.formats?.length ? [...book.formats] : ['physical'],
 })
 
-export default function BookEditor({ book, authorNames, onSave, onCancel, busy }) {
+export default function BookEditor({ book, authorNames, onSave, onCancel, busy, focusField }) {
   const { t } = useT()
   const editing = Boolean(book)
+  // Opened at a field, when the panel was asked to record one thing rather
+  // than to correct the book. The form is long enough that landing at the top
+  // of it and hunting for the loan boxes is most of the effort of recording a
+  // loan, which is the reason the loans go unrecorded.
+  const opensAt = useRef(null)
+  useEffect(() => {
+    const control = opensAt.current
+    if (!control) return
+    control.focus({ preventScroll: true })
+    control.scrollIntoView({ block: 'center' })
+  }, [])
   const [form, setForm] = useState(() => toForm(book, authorNames))
   const [error, setError] = useState(null)
 
@@ -221,7 +232,12 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
           <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
             <div style={{ flex: '1 1 130px' }}>
               <Row label={t('book.read')} hint={t('editor.readHint')}>
-                <select style={field} value={form.read} onChange={set('read')}>
+                <select
+                  ref={focusField === 'read' ? opensAt : null}
+                  style={field}
+                  value={form.read}
+                  onChange={set('read')}
+                >
                   <option value="unknown">{t('read.unknown')}</option>
                   <option value="read">{t('read.read')}</option>
                   <option value="unread">{t('read.unread')}</option>
@@ -253,7 +269,12 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
           <div className="row" style={{ gap: 10, alignItems: 'flex-start' }}>
             <div style={{ flex: '2 1 150px' }}>
               <Row label={t('editor.lentTo')}>
-                <input style={field} value={form.lent_to} onChange={set('lent_to')} />
+                <input
+                  ref={focusField === 'lent_to' ? opensAt : null}
+                  style={field}
+                  value={form.lent_to}
+                  onChange={set('lent_to')}
+                />
               </Row>
             </div>
             <div style={{ flex: '1 1 120px' }}>
@@ -304,6 +325,7 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy }
 
           <Row label={t('editor.notes')} hint={t('editor.notesHint')}>
             <textarea
+              ref={focusField === 'notes' ? opensAt : null}
               style={{ ...field, minHeight: 110, resize: 'vertical' }}
               value={form.notes}
               onChange={set('notes')}

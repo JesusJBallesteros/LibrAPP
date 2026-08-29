@@ -6,12 +6,13 @@
 // rebuild and must reach the librarian labelled as opinion rather than as
 // catalog data.
 
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { EDITABLE, applyOverrides, emptyOverrides, setOverride } from '../src/core/overrides.js'
 import { RECORD_FIELDS, makeSource, normalise, readSource } from '../src/core/records.js'
 import { build } from '../src/core/build.js'
 import { readerProfile } from '../src/core/profile.js'
-import { hiddenActiveFilters } from '../src/lib.js'
+import { hiddenActiveFilters, stillToRecord } from '../src/lib.js'
 import { toForm } from '../src/components/BookEditor.jsx'
 
 const names = new Map([['ursula', { id: 'ursula', display_name: 'Ursula K. Le Guin' }]])
@@ -201,5 +202,48 @@ describe('marking many books at once', () => {
     const overrides = markAll(catalog.books, true, emptyOverrides())
     const after = applyOverrides(shelf(), overrides)
     expect(after.books.filter((b) => b.overridden).length).toBe(2)
+  })
+})
+
+// What the card asks for. Read state, a loan and a note are the three fields
+// no import can supply, and before this nothing in the app ever asked: the
+// editor held them, and the editor is behind a button called Correct.
+describe('the three things only the reader knows', () => {
+  const bare = { id: 'b1', title: 'Middlemarch', read: null, notes: null }
+
+  it('asks for all three when a book carries none of them', () => {
+    expect(stillToRecord(bare)).toEqual(['read', 'lent_to', 'notes'])
+  })
+
+  it('asks for nothing once all three are recorded', () => {
+    expect(stillToRecord({ ...bare, read: true, lent_to: 'Marta', notes: 'Slow start.' })).toEqual([])
+  })
+
+  it('counts unread as recorded, because it is', () => {
+    // The whole point of the three-valued field is that false is an answer.
+    expect(stillToRecord({ ...bare, read: false })).not.toContain('read')
+    expect(stillToRecord({ ...bare, read: null })).toContain('read')
+  })
+
+  it('counts a borrowed book as having its loan recorded', () => {
+    // The loan runs the other way, but it is recorded, and asking who has a
+    // book that is on loan from somebody else is asking the wrong question.
+    expect(stillToRecord({ ...bare, borrowed_from: 'Elena' })).not.toContain('lent_to')
+    expect(stillToRecord({ ...bare, lent_to: 'Marta' })).not.toContain('lent_to')
+  })
+
+  it('does not count whitespace as a note', () => {
+    expect(stillToRecord({ ...bare, notes: '   ' })).toContain('notes')
+    expect(stillToRecord({ ...bare, notes: 'Finished on the train.' })).not.toContain('notes')
+  })
+
+  it('names fields the editor can actually open at', () => {
+    // Each name is a prompt on the card and a control in the form, and the two
+    // are joined by a string. A rename on one side only would leave the button
+    // opening the form at the top with no sign anything was wrong.
+    const editor = readFileSync(new URL('../src/components/BookEditor.jsx', import.meta.url), 'utf8')
+    for (const field of stillToRecord(bare)) {
+      expect(editor).toContain(`focusField === '${field}'`)
+    }
   })
 })

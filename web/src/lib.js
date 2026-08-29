@@ -86,6 +86,26 @@ export const borrowed = (book) =>
   book?.borrowed_from ? { who: book.borrowed_from, since: book.borrowed_on ?? null } : null
 
 /**
+ * The fields on a book that only the reader can fill, and has not.
+ *
+ * Read state, a loan and a note are the three things no import can supply:
+ * a spreadsheet, a store export and a barcode lookup all describe the book,
+ * and none of them knows whether it was read, who has it or what was thought
+ * of it. A field the app never asks about is a field that stays empty, so the
+ * book's own card asks.
+ *
+ * Only what is absent, and "absent" is read strictly. An unread book has a
+ * recorded read state and is not listed; a borrowed book has a recorded loan,
+ * in the other direction, and is not listed either.
+ */
+export const stillToRecord = (book) =>
+  [
+    readState(book) === 'unknown' && 'read',
+    !lentOut(book) && !borrowed(book) && 'lent_to',
+    !String(book?.notes || '').trim() && 'notes',
+  ].filter(Boolean)
+
+/**
  * Books away from their shelf, longest gone first.
  *
  * Undated loans sort last rather than being dropped. Knowing a book is with

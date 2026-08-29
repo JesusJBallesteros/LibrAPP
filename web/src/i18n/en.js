@@ -229,6 +229,13 @@ export default {
   'book.favourite': 'A favourite',
   'book.unknownNote':
     'Nothing has ever recorded whether this was read. That is not the same as unread, so it is left blank rather than guessed.',
+  // The three the reader has to supply. Named as things rather than as
+  // instructions, because the heading above them already says they are
+  // missing.
+  'book.notRecorded': 'Still to record',
+  'book.record.read': 'Whether it has been read',
+  'book.record.lent_to': 'A loan',
+  'book.record.notes': 'A note',
   'book.corrected': 'Corrected by hand.',
   'book.correctedOn': 'Corrected by hand on {date}.',
   'book.changed': 'Changed after the sources were read.',
