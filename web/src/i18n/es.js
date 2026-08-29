@@ -531,6 +531,7 @@ export default {
     'Una estanter\u00eda ancha necesita varias columnas; un primer plano de tres libros necesita un solo recorte. Las filas son las que parten un t\u00edtulo por la mitad, as\u00ed que a\u00f1ade una solo cuando la foto muestre de verdad baldas una encima de otra.',
   'shelf.backToSuggested': 'volver a la sugerida de {cols}×{rows}',
   'shelf.reading': 'leyendo los lomos…',
+  'shelf.needsKey': 'Guarda una clave en el recuadro de servicio de IA, arriba, para leerlos aqu\u00ed.',
   'shelf.readForMe': 'Lee estas fotos por mí',
   'shelf.tokensOnly': 'unos {k}k tokens de entrada, a tu tarifa',
   'shelf.youApprove': 'apruebas el resultado antes de que se importe nada',

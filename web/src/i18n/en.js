@@ -545,6 +545,7 @@ export default {
     'A wide bookcase needs several columns; a close-up of three books needs one piece and no more. Rows are what split a title in half, so add one only where the photograph really shows shelves stacked above one another.',
   'shelf.backToSuggested': 'back to the suggested {cols}×{rows}',
   'shelf.reading': 'reading the spines…',
+  'shelf.needsKey': 'Store a key in the AI service box at the top of this page to read them here.',
   'shelf.readForMe': 'Read these pieces for me',
   'shelf.tokensOnly': 'about {k}k tokens in, at your own rate',
   'shelf.youApprove': 'you approve the result before anything is imported',

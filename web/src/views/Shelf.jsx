@@ -558,13 +558,15 @@ export default function Shelf({ lib, onOwl }) {
             <p>{t('shelf.stepFour.how')}</p>
           </TellMeHow>
 
-            {keyStatus?.usable && (
-              <>
+            {/* Shown whether or not a key is stored. Hiding it left a step
+                called Read the spines with no way to read them on it, which
+                reads as a missing feature rather than as a missing key. */}
+            <>
                 <div className="row" style={{ marginTop: 12 }}>
                   <button
                     className="btn primary"
                     onClick={readWithKey}
-                    disabled={reading || lib.busy || !kept.length}
+                    disabled={reading || lib.busy || !kept.length || !keyStatus?.usable}
                   >
                     {reading ? t('shelf.reading') : t('shelf.readForMe')}
                   </button>
@@ -584,10 +586,16 @@ export default function Shelf({ lib, onOwl }) {
                       : t('shelf.tileCountKept', {
                           kept: kept.length,
                           total: tiles.tiles.length,
-                        })}{' '}
-                    · {estimateLabel} · {t('shelf.youApprove')}
+                        })}
+                    {keyStatus?.usable ? ` · ${estimateLabel} · ${t('shelf.youApprove')}` : ''}
                   </span>
                 </div>
+
+                {!keyStatus?.usable && (
+                  <p className="tiny faint" style={{ marginTop: 8 }}>
+                    {t('shelf.needsKey')}
+                  </p>
+                )}
 
                 {!kept.length && (
                   <p className="tiny faint" style={{ marginTop: 8 }}>
@@ -614,8 +622,7 @@ export default function Shelf({ lib, onOwl }) {
                     </button>
                   </div>
                 )}
-              </>
-            )}
+            </>
 
             <div className="row" style={{ marginTop: 10 }}>
               <button className="btn small" onClick={() => flash('prompt', instructions)}>
