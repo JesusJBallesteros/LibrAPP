@@ -520,7 +520,7 @@ export default {
   'shelf.stepFour': 'Step four · Read the spines',
   'shelf.stepFour.note': 'Read the pieces with a key, or take them to an AI session yourself.',
   'shelf.stepFour.how':
-    'With a key stored, LibrAPP sends the pieces to the service you chose and brings the answer back here. Without one, nothing is sent: copy the instructions, save the pieces, and paste both into whatever AI session you already use. Either way the reading is the same, and either way you see the books before any of them are kept.',
+    'With a key stored, LibrAPP sends the pieces to the service you chose and brings the answer back here. Without one, nothing is sent: copy the prompt, save the pieces, and paste both into whatever AI session you already use. Either way the reading is the same, and either way you see the books before any of them are kept.',
   'shelf.stepFive': 'Step five · Bring a transcription back',
   'shelf.checkWhatItRead': 'Check what it read',
   'shelf.step1': '1 · The photograph',
@@ -532,7 +532,7 @@ export default {
   'shelf.step2': '2 · Read the spines',
   'shelf.tileCount': '{n} piece(s)',
   'shelf.piecesNote':
-    'Give these pieces to an AI along with the instructions below, and have it write the transcription.',
+    'Give these pieces to an AI along with the prompt below, and have it write the transcription.',
   'shelf.piecesNote.how':
     'The photograph is cut up because a whole bookcase in one image is too small to read. Each piece keeps the resolution of the original, and they overlap, so a book falling on a seam is whole in one of them.',
   'shelf.grid': 'Grid · {cols} across × {rows} down',
@@ -549,9 +549,9 @@ export default {
   'shelf.readForMe': 'Read these pieces for me',
   'shelf.tokensOnly': 'about {k}k tokens in, at your own rate',
   'shelf.youApprove': 'you approve the result before anything is imported',
-  'shelf.copyInstructions': 'Copy the instructions',
-  'shelf.hideThem': 'Hide them',
-  'shelf.readThem': 'Read them',
+  'shelf.copyInstructions': 'Copy the prompt',
+  'shelf.hideThem': 'Hide the prompt',
+  'shelf.readThem': 'Read the prompt',
   'shelf.saveAll': 'Save all pieces',
   'shelf.tileAlt': 'Piece at row {row}, column {column}',
   'shelf.step3': '3 · Check what it read',
@@ -564,8 +564,9 @@ export default {
   'shelf.importThese': 'Import these {n} books',
   'shelf.discard': 'Discard the whole reading',
   'shelf.stepBring': '{n} · Bring a transcription back yourself',
+  'shelf.bringNote.optional': '(optional, and no key is needed)',
   'shelf.bringNote':
-    'Read the pieces in any AI session using the instructions above, then drop the JSON here.',
+    'Read the pieces in any AI session using the prompt above, then drop the JSON here.',
   'shelf.bringNote.how':
     'This is the route that needs no key: the reading happens wherever you already have an AI session, and LibrAPP only takes the result. A file holding an untitled book or an unknown confidence value is refused here rather than imported.',
   'shelf.dropTranscription': 'Drop the transcription',

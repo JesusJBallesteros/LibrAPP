@@ -1,5 +1,42 @@
 # Changelog
 
+## v2.5.1
+
+### The shelf page is five steps, in the order they are done
+
+Step two held the grid, the pieces cut by it, the checklist of extras, the key
+box and the read button, and the pieces were a column of their own that stacked
+last on a phone. So the order there was: cut the photograph, decide what to ask
+for, read it, and then finally see what had been cut.
+
+Each step is named for what is done at it. Two is the grid and the pieces it
+makes, with the pieces directly under the controls that shape them. Three is
+what to ask for beyond the titles. Four is reading, with a key or without one.
+Five is bringing back a transcription read somewhere else, and says it is
+optional and needs no key. Checking what it read is not numbered: it is the
+result of four or of five, and appears when there is something to check.
+
+The grid controls said which way rather than what they do, and they add and
+remove rows and columns now. The buttons for the text a model is given call it
+the prompt, which is what it is called everywhere else, and so does every line
+about it.
+
+Two explanations fold behind Tell me how. The grid keeps one line saying what to
+aim for. Step four says plainly what a key changes: with one stored LibrAPP
+sends the pieces and brings the answer back, without one nothing is sent and the
+pieces and the prompt go to whatever AI session you already use. That is the
+first thing anybody asks about this page and nothing on it said so.
+
+### Fixed: a step called Read the spines with no way to read them
+
+The button was drawn only when a usable key was stored, which it has been since
+long before the page was split into steps. On a page whose second heading was
+Read the spines, and in a demo where no key exists, the effect was a feature
+that looked missing. It is always drawn, disabled without a key, and says where
+to put one.
+
+---
+
 ## v2.5.0
 
 Almost all of this came from twelve issues opened after testing on a phone, and

@@ -506,7 +506,7 @@ export default {
   'shelf.stepFour': 'Paso cuatro \u00b7 Leer los lomos',
   'shelf.stepFour.note': 'Lee los recortes con una clave, o ll\u00e9valos t\u00fa a una sesi\u00f3n de IA.',
   'shelf.stepFour.how':
-    'Con una clave guardada, LibrAPP env\u00eda los recortes al servicio que hayas elegido y trae aqu\u00ed la respuesta. Sin clave no sale nada: copia las instrucciones, guarda los recortes y pega ambos en la sesi\u00f3n de IA que ya uses. La lectura es la misma en los dos casos, y en los dos ves los libros antes de guardar ninguno.',
+    'Con una clave guardada, LibrAPP env\u00eda los recortes al servicio que hayas elegido y trae aqu\u00ed la respuesta. Sin clave no sale nada: copia el prompt, guarda los recortes y pega ambos en la sesi\u00f3n de IA que ya uses. La lectura es la misma en los dos casos, y en los dos ves los libros antes de guardar ninguno.',
   'shelf.stepFive': 'Paso cinco \u00b7 Trae una transcripci\u00f3n',
   'shelf.checkWhatItRead': 'Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
@@ -518,7 +518,7 @@ export default {
   'shelf.step2': '2 · Leer los lomos',
   'shelf.tileCount': '{n} foto(s)',
   'shelf.piecesNote':
-    'Pásale estos recortes a una IA junto con las instrucciones de abajo y pídele que escriba la transcripción.',
+    'Pásale estos recortes a una IA junto con el prompt de abajo y pídele que escriba la transcripción.',
   'shelf.piecesNote.how':
     'La foto se recorta porque una estantería entera en una sola imagen queda demasiado pequeña para leerse. Cada recorte conserva la resolución del original, y se solapan, así que un libro que cae en una junta aparece entero en alguno.',
   'shelf.grid': 'Cuadrícula · {cols} × {rows}',
@@ -535,9 +535,9 @@ export default {
   'shelf.readForMe': 'Lee estas fotos por mí',
   'shelf.tokensOnly': 'unos {k}k tokens de entrada, a tu tarifa',
   'shelf.youApprove': 'apruebas el resultado antes de que se importe nada',
-  'shelf.copyInstructions': 'Copiar las instrucciones',
-  'shelf.hideThem': 'Ocultarlas',
-  'shelf.readThem': 'Leerlas',
+  'shelf.copyInstructions': 'Copiar el prompt',
+  'shelf.hideThem': 'Ocultar el prompt',
+  'shelf.readThem': 'Leer el prompt',
   'shelf.saveAll': 'Guardar todas las fotos',
   'shelf.tileAlt': 'Foto fila {row}, columna {column}',
   'shelf.step3': '3 · Comprueba lo que ha leído',
@@ -550,8 +550,9 @@ export default {
   'shelf.importThese': 'Importar estos {n} libros',
   'shelf.discard': 'Descartar la lectura entera',
   'shelf.stepBring': '{n} · Trae tú la transcripción',
+  'shelf.bringNote.optional': '(opcional, y no hace falta clave)',
   'shelf.bringNote':
-    'Lee los recortes en cualquier sesión de IA con las instrucciones de arriba y suelta aquí el JSON.',
+    'Lee los recortes en cualquier sesión de IA con el prompt de arriba y suelta aquí el JSON.',
   'shelf.bringNote.how':
     'Esta es la vía que no necesita clave: la lectura ocurre donde ya tengas una sesión de IA, y LibrAPP solo recoge el resultado. Un archivo con un libro sin título o con un valor de confianza desconocido se rechaza aquí, no se importa.',
   'shelf.dropTranscription': 'Suelta aquí la transcripción',

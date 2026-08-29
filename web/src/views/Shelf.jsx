@@ -736,9 +736,13 @@ export default function Shelf({ lib, onOwl }) {
             </section>
           )}
 
-          <div className="card">
+          {/* The heading and its note stand where the other four do; only the
+              drop target is a box. */}
+          <section className="shelf-step" style={{ marginTop: 34 }}>
             <h3 className="step-head">{t('shelf.stepFive')}</h3>
-            <p>{t('shelf.bringNote')}</p>
+            <p style={{ marginTop: 8 }}>
+              {t('shelf.bringNote')} <span className="faint">{t('shelf.bringNote.optional')}</span>
+            </p>
             <TellMeHow>
               <p>{t('shelf.bringNote.how')}</p>
             </TellMeHow>
@@ -754,7 +758,7 @@ export default function Shelf({ lib, onOwl }) {
                 <p className="tiny">{saveError}</p>
               </div>
             )}
-          </div>
+          </section>
         </>
       )}
 
