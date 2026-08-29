@@ -46,7 +46,7 @@ const INSTRUCTIONS = {
   language: 'Record the language the title is printed in, in `notes`.',
   series: 'Record the series name and volume number wherever the spine shows them.',
   duplicates:
-    'If the same book appears twice across the tiles because they overlap, record it once.',
+    'If the same book appears twice across the pieces because they overlap, record it once.',
   abstract: 'Add a two or three sentence `abstract` of the book from your own knowledge.',
   published: 'Add the year the work was first published as `published_year`.',
   rating: 'Add a general reader rating out of 5 as `rating`, to one decimal place.',

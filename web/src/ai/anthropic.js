@@ -87,7 +87,7 @@ export const anthropic = {
   shelfContent({ tiles, tail }) {
     const content = []
     for (const tile of tiles) {
-      content.push({ type: 'text', text: `Tile row ${tile.row}, column ${tile.column}:` })
+      content.push({ type: 'text', text: `Piece at row ${tile.row}, column ${tile.column}:` })
       content.push({
         type: 'image',
         source: { type: 'base64', media_type: 'image/jpeg', data: tile.base64 },

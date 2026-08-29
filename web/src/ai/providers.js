@@ -154,7 +154,7 @@ export class ReplyTruncated extends Error {
     super(
       'The reply was cut off before it finished, so none of it could be read. ' +
         'This happens when one request covers more books than a single answer has room for. ' +
-        'Read fewer tiles at a time, or untick some of the extras, and try again.',
+        'Read fewer pieces at a time, or untick some of the extras, and try again.',
     )
     this.name = 'ReplyTruncated'
   }

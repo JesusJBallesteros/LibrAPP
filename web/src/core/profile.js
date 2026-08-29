@@ -104,6 +104,23 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now(), samp
     '',
   )
 
+  // How to read what follows.
+  //
+  // Five rules that describe this document rather than any request made with
+  // it. They lived in the prompts, where two were copied into both, three were
+  // in one only, and fill-gaps received the same data with none of them. A rule
+  // about the data belongs beside the data: it cannot then be true of one
+  // request and missing from the next.
+  //
+  // The two conditional ones are stated only where the section they describe is
+  // in this profile. A rule about a heading that is not here would be the same
+  // mistake as a prompt asking for a vocabulary nobody sent.
+  const reading = [
+    '- The cross-section is a sample chosen to match the shape of the collection, not a list of it. A book missing from it is not evidence the reader does not own it.',
+    '- A field left blank across the whole shelf means nobody recorded it, not that the answer is no.',
+    '- Never recorded is not the same as unread. The counts above separate books marked read, books marked unread, and books nobody has recorded either way.',
+  ]
+
   out.push('## What the collection is made of', '')
   for (const [value, n] of mostCommon(tagValues(books, 'genre'), 12)) out.push(`- ${value}: ${n}`)
   out.push('')
@@ -153,6 +170,11 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now(), samp
     if (rated.length) {
       const mean = rated.reduce((a, b) => a + b, 0) / rated.length
       out.push(`- Rated books: ${rated.length}, averaging ${mean.toFixed(1)} out of 5`)
+      // A book line carries "rated 4.2" with nothing to say where it came from,
+      // and a model reading that will answer as though the reader had liked it.
+      reading.push(
+        '- A rating is a general reader consensus recalled by a model, not the reader\u2019s own score. It says nothing about this reader.',
+      )
     }
     if (languages.length) {
       out.push(`- Written originally in: ${languages.map(([l, n]) => `${l} (${n})`).join(', ')}`)
@@ -238,6 +260,9 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now(), samp
   const borrowedIn = books.filter((b) => b.borrowed_from)
   if (lent.length || borrowedIn.length) {
     out.push('')
+    reading.push(
+      '- Not on the shelf right now lists what has been lent out and what was borrowed from somebody else. A book at a friend\u2019s house cannot be picked up tonight.',
+    )
     out.push('## Not on the shelf right now', '')
     for (const book of lent) {
       const when = book.lent_on ? ` on ${book.lent_on}` : ''
@@ -248,6 +273,10 @@ export function readerProfile(catalog, { recentYears = 2, now = Date.now(), samp
       out.push(`- ${describe(book, names)}: borrowed from ${book.borrowed_from}${when}`)
     }
   }
+
+  // After the counts and before the first section: the rules for the
+  // document come before the document.
+  out.splice(4, 0, '## How to read this document', '', ...reading, '')
 
   return out.join('\n') + '\n'
 }

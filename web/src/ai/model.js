@@ -75,7 +75,7 @@ export const pricesForChoice = (choice) =>
 const toBase64 = (blob) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader()
-    reader.onerror = () => reject(new Error('Could not read a tile.'))
+    reader.onerror = () => reject(new Error('Could not read a piece.'))
     reader.onload = () => resolve(String(reader.result).split(',')[1])
     reader.readAsDataURL(blob)
   })
@@ -161,7 +161,7 @@ const batches = (tiles, size = TILES_PER_BATCH) => {
 const tail = (instructions, photo) =>
   `${instructions}\n\n---\n\n` +
   `The photograph is named ${JSON.stringify(photo)}. Use that as "photo".\n` +
-  `Read every tile above. Tiles overlap, so a book showing in two of them is ` +
+  `Read every piece above. Pieces overlap, so a book showing in two of them is ` +
   `one book: record it once. Group books by the shelf they stand on.\n` +
   `Reply only with the transcription, in the format required.`
 

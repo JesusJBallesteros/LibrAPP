@@ -1,13 +1,13 @@
 # Reading a shelf photograph
 
-Turn tiles of a bookshelf photograph into a transcription file.
+Turn pieces of a bookshelf photograph into a transcription file.
 
-Read **every** tile, one at a time, at full size. Do not work from a
+Read **every** piece, one at a time, at full size. Do not work from a
 scaled-down view of the whole shelf: at that size spine text is a few pixels
 tall and you will invent titles that look plausible.
 
-A close-up of three books is often a single tile, and a wide bookcase may be
-eight. If a tile arrives with a title cut in half across its top or bottom
+A close-up of three books is often a single piece, and a wide bookcase may be
+eight. If a piece arrives with a title cut in half across its top or bottom
 edge, say so rather than guessing the rest — the grid can be changed and the
 photograph cut again.
 
@@ -54,10 +54,27 @@ their lettering runs.
 transliteration or a translation, put it in `notes`. Do not replace the title
 with a translation.
 
-**Count carefully.** Tiles overlap, so a book at the edge of one tile appears
+**Count carefully.** Pieces overlap, so a book at the edge of one piece appears
 again in the next. Record it once. Books lying flat on top of a row are still
 books. A spine you can see but not read is still worth an entry with
 `confidence: "low"` and whatever colour or size detail helps find it again.
+
+**Shelves hold things that are not books.** DVDs, box files, magazines, framed
+photographs, a plant. Record books. A boxed set is one entry unless the
+individual spines are visible, and say in `notes` that it is a set.
+
+**Do not extrapolate along a run.** Volumes 1, 2 and 4 of a uniform edition are
+three books, not four. Record what you can see.
+
+**A spine can be blocked as well as dark.** Where a book in front hides part of
+a spine, record what is visible, mark it `low`, and say in `notes` what is in
+the way. Whoever took the photograph can move the book and take another.
+
+**The same author is not always printed the same way.** `T. Pratchett` on one
+spine and `Terry Pratchett` on another are both transcribed as printed, which is
+the rule above. Where both appear in what you have been given, say so in
+`notes`. Only within what you have been given: a long shelf is read in several
+requests, so you cannot see what was on the pieces in another one.
 
 **Do not fill in what a photograph cannot see.** No acquisition dates, no read
 flags, no ISBNs, and no genre of your own unless the checklist below asks for

@@ -116,7 +116,7 @@ export const openai = {
   shelfContent({ tiles, tail }) {
     const content = []
     for (const tile of tiles) {
-      content.push({ type: 'text', text: `Tile row ${tile.row}, column ${tile.column}:` })
+      content.push({ type: 'text', text: `Piece at row ${tile.row}, column ${tile.column}:` })
       content.push({ type: 'image_url', image_url: { url: dataUrl(tile.base64) } })
     }
     content.push({ type: 'text', text: tail })
@@ -195,7 +195,7 @@ export const google = {
   shelfContent({ tiles, tail }) {
     const parts = []
     for (const tile of tiles) {
-      parts.push({ text: `Tile row ${tile.row}, column ${tile.column}:` })
+      parts.push({ text: `Piece at row ${tile.row}, column ${tile.column}:` })
       parts.push({ inline_data: { mime_type: 'image/jpeg', data: tile.base64 } })
     }
     parts.push({ text: tail })
