@@ -1,6 +1,204 @@
 # Changelog
 
-## Unreleased
+## v2.2.0
+
+A second adversarial review of the running app drove most of this. The barcode
+lookup gets a page of its own and learns to read from the camera, the shelf says
+which books have been read, and a book's card asks for the three things no
+import can supply.
+
+### The card asks for what only the reader knows
+
+Read state, a loan and a note are the only fields on a book that have to come
+from the reader. A spreadsheet, a store export and a barcode lookup all describe
+the book, and none of them knows whether it was read, who has it, or what was
+thought of it.
+
+Nothing asked for them. They lived in the editor, and the editor is behind a
+button called Edit, which is where a correction goes rather than where a first
+answer goes. A book's card now lists the ones it is missing and offers to take
+each of them, and shows nothing at all once all three are recorded.
+
+Absent is read strictly. An unread book has a recorded read state, and a
+borrowed book has a recorded loan running the other way. Neither is listed.
+
+Each prompt opens the form at its own control rather than at the top, because
+the form is long and the hunt down it for the loan boxes is most of the work of
+writing one name into one of them.
+
+### A stamp on the spines that have been read
+
+The catalog opens as a shelf and read state was invisible on it. Colouring the
+spine by it was the other way to do this, and it would have cost the wall its
+identity: the eight fills are how a book is recognised across a re-sort or a
+filter, and cutting them to two would have made the shelf a bar chart.
+
+So a mark on top instead. A ring, a milled edge and a check, at the foot of the
+spine, drawn in the ink that fill already uses for its lettering. That ink is
+paired with each of the eight at 4.5:1, so the stamp is legible on all of them
+without a palette of its own, and shape carries it as well as colour does.
+
+Only read is stamped. Unread and not recorded are different answers and a check
+cannot give either one, so both are left blank and the difference stays where it
+is stated: the read filter, and the book's own record.
+
+It costs the lettering some room. A read spine reserves 26px at its foot, and on
+the 91-book demo that takes seven more titles to an ellipsis, 18 of the 57
+rather than 11. The whole title is still in the tooltip and on the spine pulled
+out to be read.
+
+The favourite star is larger in both places it appears.
+
+### Read barcodes, and doors that name what they do
+
+Scan a barcode named one of the three ways that page works and not the other
+two: a barcode can be photographed or typed in as well as scanned. It is Read
+barcodes now, in the navigation and on the front page.
+
+The doors on the front page were sentences that had to be read to the end. "I
+have a picture of my shelf", "I have a list of the books I own". The heading is
+the verb now and the hint under it carries the rest, so a door can be picked out
+at a glance.
+
+The owl had nothing to say on the barcode page and has three lines for it now.
+One of the lines it already had said the spine view draws the same books as a
+shelf, which was written when the list opened first. The catalog opens as a
+shelf and the guide says so.
+
+The word clouds ran some of their words vertically. Reading those meant turning
+the head, so every word lies flat again.
+
+### Three more things a tidy file cannot claim
+
+Confidence grades where a value came from and not whether it is plausible, and
+two checks already sat under that. Three more:
+
+The catalogue abbreviations for an unnamed author, s.n., s.a. and sine nomine,
+join the stand-in words already caught. They reach a spreadsheet by being copied
+out of a library record.
+
+The publisher's name in the author column, compared in the form the app compares
+names in, so a difference of case or accent does not hide it. A source that puts
+it there has filled the field rather than left it empty, which reads as an answer
+and is not one.
+
+A first-published year that has not happened yet. Only the future: the field is
+when the work first appeared, and the obvious check, a floor at the invention of
+printing, would demote Plato and Marcus Aurelius, both of whom are in this app's
+own demo at -375 and 180. Next year is allowed, because a book can be announced.
+
+Each demotes to medium and says why. Run against the demo, none of the three
+fires on any of its ninety-one books.
+
+Not done, deliberately: the same value repeated across an implausible share of
+rows. A specialist collection legitimately has one publisher throughout, and a
+check that fires on real data is worse than no check.
+
+### The camera reads barcodes as they pass
+
+Photographing a barcode, opening the file, waiting for it to decode and doing
+that again for the next book is slower per book than typing the number, which
+made the fast path the slow one. The same reader is now pointed at a live
+picture, so a shelf of paper books is a few minutes rather than an evening.
+Codes land in the same box the typed ones do, the same book twice counts once,
+and nothing is written until the same review step as before.
+
+The camera is a permission the app had never asked for, so the privacy notes
+say what it does: barcodes are read on the device whether they come from a
+picture or from the camera, neither the picture nor the view leaves or is
+recorded, and what goes out is still thirteen digits.
+
+It is handed back the moment it is not in use, including when the tab is
+hidden. A camera light left on is the one bug that would cost this app the
+trust the rest of it is built on, so that is checked rather than assumed: with
+a stand-in stream the track reads live while open, ended when the tab hides,
+and ended on close.
+
+Where the camera cannot start, the reason says what to do about it: refused,
+none fitted, or already in use by something else. "The camera could not be
+started" is true of all three and useful for none.
+
+### Fixed: an error with no message read as "[object Object]"
+
+Both the shelf reader and the new camera fell back to stringifying the error
+itself when it carried no message, which puts "[object Object]" in front of the
+reader. Found by a test written for the camera, and the same line was already in
+the shelf.
+
+### A way out of the demo that goes somewhere
+
+The demo showed what the app is for and then offered one door: leave, which
+returned to the same five the visitor had already declined. Being persuaded and
+being set up were two pages with nothing between them.
+
+**Try yours now** leaves the demo and opens the front page at the ways in, with
+the heading focused so it reaches a screen reader as well as an eye. A flag
+through the reload, because leaving is a reload: the demo lives in memory and
+starting the page again is the only way to be rid of it. The flag is taken as
+it is read, so a later reload does not do it again.
+
+### And a warning where it can cost something
+
+The banner says the demo is discarded on reload, and says it before the reader
+has done anything. The natural move for somebody the demo has persuaded is to
+bring their real export in and watch it work, and lose it.
+
+The three pages that write, the photograph, the list and the barcode, now say
+so where the choice is made: what you bring in is read and merged exactly as it
+would be in your own library, and it goes with the invented books. The way out
+that keeps the work is offered in the same breath.
+
+### The barcode lookup is a way in, and is filed as one
+
+It was at the foot of the desk, under the enquiries, below the charts, at the
+end of a long scroll. The nav offered two ways of getting books in, a photograph
+and a list, and the third one, the exact one that costs nothing and needs no
+key, was not among them. Somebody with a stack of paper books would photograph
+the lot, pay for it, proof-read what came back, and never find out the other
+path was there.
+
+It has a page of its own now, beside the other two, and a door on the front
+page: I have the books in front of me.
+
+### A lookup says whether it joins a book or adds one
+
+Both already happened: a lookup is a source like a photograph or a spreadsheet,
+so the same clustering decides whether it merges into a book already on the
+shelf or arrives as a new entry. What was missing is that the review step said
+nothing about which, so the reader accepted a batch without knowing whether it
+was about to add ten books or fill in ten they had.
+
+Each row now says. Worked out by building the catalog that keeping them would
+produce, rather than by matching titles at the point of asking: an
+approximation of the clusterer that disagreed with the clusterer would be worse
+than no answer, because it would be wrong exactly where it was being relied on.
+
+Looking the same book up twice is a correction to that entry and is not
+reported as joining anything, since saying otherwise would misdescribe where the
+reader's copy came from.
+
+### The service has a name
+
+Every AI provider in the app is named: Anthropic, OpenAI, Gemini, OpenRouter.
+The barcode lookup said "an external service" three times over, which is a
+privacy assurance about a recipient the reader is not allowed to identify, and
+a claim nobody can weigh. It is Open Library, the free catalogue run by the
+Internet Archive, and it says so where it matters: on the page, in the note
+about what leaves the device, and in the README's table of the same.
+
+### Offer the example first, and stop the filter lists opening white
+
+The demo was the last thing on the front page, under five doors that all ask for
+a photograph or a spreadsheet the visitor has to go and find. It is the only way
+in that costs them nothing, so it is the first thing under the tagline, and it
+says what it is: check out this example.
+
+The filter selects opened a list drawn in the browser's default white whatever
+the theme said. The colour scheme is inherited correctly and the list is not
+drawn from that: it takes the colour of the control, and the control had no
+background of its own. It is painted the colour it already sits on, which
+changes nothing on the page and everything in the list, and the options carry
+the same colours for the browsers that draw those separately.
 
 ### Fixed: undoing a change still counted as a change
 
@@ -205,128 +403,6 @@ The barcode case is the smallest by a distance, and the honest version is better
 than the absolute was: a photograph of a barcode is decoded on the device and
 never leaves, and what goes out is thirteen digits printed on the back of a book
 anybody can buy.
-
----
-
-## Unreleased
-
-### Three more things a tidy file cannot claim
-
-Confidence grades where a value came from and not whether it is plausible, and
-two checks already sat under that. Three more:
-
-The catalogue abbreviations for an unnamed author, s.n., s.a. and sine nomine,
-join the stand-in words already caught. They reach a spreadsheet by being copied
-out of a library record.
-
-The publisher's name in the author column, compared in the form the app compares
-names in, so a difference of case or accent does not hide it. A source that puts
-it there has filled the field rather than left it empty, which reads as an answer
-and is not one.
-
-A first-published year that has not happened yet. Only the future: the field is
-when the work first appeared, and the obvious check, a floor at the invention of
-printing, would demote Plato and Marcus Aurelius, both of whom are in this app's
-own demo at -375 and 180. Next year is allowed, because a book can be announced.
-
-Each demotes to medium and says why. Run against the demo, none of the three
-fires on any of its ninety-one books.
-
-Not done, deliberately: the same value repeated across an implausible share of
-rows. A specialist collection legitimately has one publisher throughout, and a
-check that fires on real data is worse than no check.
-
-### The camera reads barcodes as they pass
-
-Photographing a barcode, opening the file, waiting for it to decode and doing
-that again for the next book is slower per book than typing the number, which
-made the fast path the slow one. The same reader is now pointed at a live
-picture, so a shelf of paper books is a few minutes rather than an evening.
-Codes land in the same box the typed ones do, the same book twice counts once,
-and nothing is written until the same review step as before.
-
-The camera is a permission the app had never asked for, so the privacy notes
-say what it does: barcodes are read on the device whether they come from a
-picture or from the camera, neither the picture nor the view leaves or is
-recorded, and what goes out is still thirteen digits.
-
-It is handed back the moment it is not in use, including when the tab is
-hidden. A camera light left on is the one bug that would cost this app the
-trust the rest of it is built on, so that is checked rather than assumed: with
-a stand-in stream the track reads live while open, ended when the tab hides,
-and ended on close.
-
-Where the camera cannot start, the reason says what to do about it: refused,
-none fitted, or already in use by something else. "The camera could not be
-started" is true of all three and useful for none.
-
-### Fixed: an error with no message read as "[object Object]"
-
-Both the shelf reader and the new camera fell back to stringifying the error
-itself when it carried no message, which puts "[object Object]" in front of the
-reader. Found by a test written for the camera, and the same line was already in
-the shelf.
-
-### A way out of the demo that goes somewhere
-
-The demo showed what the app is for and then offered one door: leave, which
-returned to the same five the visitor had already declined. Being persuaded and
-being set up were two pages with nothing between them.
-
-**Try yours now** leaves the demo and opens the front page at the ways in, with
-the heading focused so it reaches a screen reader as well as an eye. A flag
-through the reload, because leaving is a reload: the demo lives in memory and
-starting the page again is the only way to be rid of it. The flag is taken as
-it is read, so a later reload does not do it again.
-
-### And a warning where it can cost something
-
-The banner says the demo is discarded on reload, and says it before the reader
-has done anything. The natural move for somebody the demo has persuaded is to
-bring their real export in and watch it work, and lose it.
-
-The three pages that write, the photograph, the list and the barcode, now say
-so where the choice is made: what you bring in is read and merged exactly as it
-would be in your own library, and it goes with the invented books. The way out
-that keeps the work is offered in the same breath.
-
-### The barcode lookup is a way in, and is filed as one
-
-It was at the foot of the desk, under the enquiries, below the charts, at the
-end of a long scroll. The nav offered two ways of getting books in, a photograph
-and a list, and the third one, the exact one that costs nothing and needs no
-key, was not among them. Somebody with a stack of paper books would photograph
-the lot, pay for it, proof-read what came back, and never find out the other
-path was there.
-
-It has a page of its own now, beside the other two, and a door on the front
-page: I have the books in front of me.
-
-### A lookup says whether it joins a book or adds one
-
-Both already happened: a lookup is a source like a photograph or a spreadsheet,
-so the same clustering decides whether it merges into a book already on the
-shelf or arrives as a new entry. What was missing is that the review step said
-nothing about which, so the reader accepted a batch without knowing whether it
-was about to add ten books or fill in ten they had.
-
-Each row now says. Worked out by building the catalog that keeping them would
-produce, rather than by matching titles at the point of asking: an
-approximation of the clusterer that disagreed with the clusterer would be worse
-than no answer, because it would be wrong exactly where it was being relied on.
-
-Looking the same book up twice is a correction to that entry and is not
-reported as joining anything, since saying otherwise would misdescribe where the
-reader's copy came from.
-
-### The service has a name
-
-Every AI provider in the app is named: Anthropic, OpenAI, Gemini, OpenRouter.
-The barcode lookup said "an external service" three times over, which is a
-privacy assurance about a recipient the reader is not allowed to identify, and
-a claim nobody can weigh. It is Open Library, the free catalogue run by the
-Internet Archive, and it says so where it matters: on the page, in the note
-about what leaves the device, and in the README's table of the same.
 
 ---
 
