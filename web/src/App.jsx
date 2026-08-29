@@ -9,16 +9,17 @@ import About from './views/About.jsx'
 import Catalog from './views/Catalog.jsx'
 import Shelf from './views/Shelf.jsx'
 import ListImport from './views/ListImport.jsx'
+import Barcode from './views/Barcode.jsx'
 import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
 import ContrastToggle from './components/ContrastToggle.jsx'
 
-const VIEWS = ['catalog', 'shelf', 'list', 'desk', 'storage', 'about']
+const VIEWS = ['catalog', 'shelf', 'list', 'barcode', 'desk', 'storage', 'about']
 
 const NAV_KEY = {
-  catalog: 'catalog', shelf: 'shelf', list: 'list',
+  catalog: 'catalog', shelf: 'shelf', list: 'list', barcode: 'barcode',
   desk: 'desk', storage: 'stacks', about: 'about',
 }
 
@@ -288,6 +289,8 @@ export default function App() {
           <Shelf lib={lib} onOwl={setOwlEvent} />
         ) : view === 'list' ? (
           <ListImport lib={lib} onOwl={setOwlEvent} />
+        ) : view === 'barcode' ? (
+          <Barcode lib={lib} />
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
         ) : view === 'about' ? (

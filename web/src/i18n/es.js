@@ -29,6 +29,8 @@ export default {
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
   'landing.option.list': 'Ya tengo una lista de mis libros',
   'landing.option.list.hint': 'Una hoja de cálculo, un CSV, un XML o una lista en PDF.',
+  'landing.option.barcode': 'Tengo los libros delante',
+  'landing.option.barcode.hint': 'Escanea o escribe el código de barras. Gratis, exacto y sin clave.',
   'landing.option.import': 'Tengo un catálogo de otro dispositivo',
   'landing.option.import.hint': 'Trae el archivo que exportaste desde LibrAPP en otro sitio.',
   'landing.option.browse': 'Quiero ver mi catálogo',
@@ -127,12 +129,14 @@ export default {
   'nav.catalog': 'Catálogo',
   'nav.shelf': 'Foto de estantería',
   'nav.list': 'Subir lista',
+  'nav.barcode': 'Escanear un código',
   'nav.desk': 'BibliotecAPPri@',
   'nav.stacks': 'El depósito',
   'nav.home.hint': 'la página de bienvenida',
   'nav.catalog.hint': 'todo lo que tienes',
   'nav.shelf.hint': 'leer una fotografía',
   'nav.list.hint': 'un archivo que ya tienes',
+  'nav.barcode.hint': 'el número del libro',
   'nav.desk.hint': 'preguntar sobre ello',
   'nav.stacks.hint': 'dónde se guarda todo',
 
@@ -419,6 +423,9 @@ export default {
   'shelf.eyebrow': 'Ingresos',
   'list.listsFound': '{n} listas encontradas',
   'list.eyebrow': 'Ingresos',
+  'barcode.eyebrow': 'Adquisiciones',
+  'barcode.intro':
+    'El número bajo un código de barras nombra la edición exacta, así que si un catálogo bibliotecario la tiene, el título, la autoría, la editorial, el año y las páginas se leen de su registro en vez de adivinarse. Sin IA y sin clave, y no se escribe nada hasta que lo hayas visto.',
   'shelf.stepOne': 'Paso uno \u00b7 La foto',
   'shelf.stepTwo': 'Paso dos \u00b7 Leer los lomos',
   'shelf.stepThree': 'Paso tres \u00b7 Comprueba lo que ha le\u00eddo',
@@ -552,9 +559,9 @@ export default {
   // -- escribir un libro, corregir otro -------------------------------------
   'isbn.title': 'Busca un libro por su código de barras',
   'isbn.note':
-    'El número que hay bajo el código de barras identifica la edición exacta. Si un catálogo bibliotecario tiene esa edición, el título, la autoría, la editorial, el año y las páginas se toman de su registro.',
+    'El número que hay bajo el código de barras identifica la edición exacta. Si Open Library tiene esa edición, el título, la autoría, la editorial, el año y las páginas se toman de su registro.',
   'isbn.privacy':
-    'Este paso envía una petición a un servicio externo. De este dispositivo sale una lista de ISBN y nada más: ni títulos, ni notas, ni ningún otro dato del catálogo. Lo que vuelve se enseña aquí antes de escribir nada.',
+    'Este paso pregunta a Open Library, un catálogo libre del Internet Archive, en openlibrary.org. De este dispositivo sale una lista de ISBN y nada más: ni títulos, ni notas, ni ningún otro dato del catálogo. Lo que vuelve se enseña aquí antes de escribir nada.',
   'isbn.paste': 'Códigos, uno por línea o separados por comas',
   'isbn.format': 'Son',
   'isbn.format.physical': 'libros en papel',
@@ -576,7 +583,7 @@ export default {
   'isbn.foundN': '{n} {n:libro encontrado|libros encontrados}.',
   'isbn.missingN': '{n} que el servicio no conoce.',
   'isbn.checkThese':
-    'Revísalos antes de guardarlos. Cuando el servicio no tiene un ISBN, responde con otro libro en vez de con un error, así que un número equivocado produce un registro verosímil pero incorrecto.',
+    'Revísalos antes de guardarlos. Cuando Open Library no tiene un ISBN, responde con otro libro en vez de con un error, así que un número equivocado produce un registro verosímil pero incorrecto.',
   'isbn.missingWhich': 'No ha vuelto nada de:',
   'isbn.noAuthor': 'sin autoría anotada',
   'isbn.pages': '{n} páginas',
@@ -707,7 +714,7 @@ export default {
   'about.privacy.cookies':
     'Sin cookies, sin analítica y sin rastreadores. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
   'about.privacy.requests':
-    'Tres cosas pueden salir de este dispositivo, todas opcionales y ninguna activada de antemano. Leer la foto de una estantería envía los recortes de esa foto. Preguntar en el escritorio envía tu perfil de lectura, que el escritorio muestra entero antes. Buscar un libro por su código de barras envía el número y nada más: ni título, ni notas, nada de tu estantería. La foto de un código se lee aquí y no sale nunca.',
+    'Tres cosas pueden salir de este dispositivo, todas opcionales y ninguna activada de antemano. Leer la foto de una estantería envía los recortes de esa foto. Preguntar en el escritorio envía tu perfil de lectura, que el escritorio muestra entero antes. Buscar un libro por su código de barras envía ese número a Open Library y nada más: ni título, ni notas, nada de tu estantería. La foto de un código se lee aquí y no sale nunca.',
   'about.privacy.offline':
     'Una vez cargada funciona sin ninguna conexión, que es la prueba más sencilla de que no se está enviando nada a ninguna parte.',
   'about.privacyCheck': 'No hace falta que te fies de nada de esto: el código es público.',

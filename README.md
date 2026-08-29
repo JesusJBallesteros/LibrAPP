@@ -607,13 +607,16 @@ genre's share. It is the same every time for the same catalog.
 The prompts are told this is a sample, so absence from it is never treated as
 proof you do not own something.
 
-### Looking a book up by its barcode
+### Scanning a barcode
 
-The number under a barcode identifies the exact edition, so where a library
-catalogue holds that edition there is nothing to guess at: the title, the
-authors, the publisher, the year and the page count come back as recorded facts.
-No AI, no key and no cost. It is the one part of LibrAPP that asks anything of a
-service it does not control.
+The number under a barcode identifies the exact edition, so where **[Open
+Library](https://openlibrary.org)** holds that edition there is nothing to guess
+at: the title, the authors, the publisher, the year and the page count come back
+as recorded facts. No AI, no key and no cost.
+
+Open Library is a free catalogue run by the Internet Archive, and it is the one
+service LibrAPP asks anything of. What it is sent is a list of ISBNs and nothing
+else.
 
 Paste the codes, one per line or out of a spreadsheet column, or read them from
 a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
@@ -870,7 +873,7 @@ Three things can leave the device, all optional and none of them on by default:
 |---|---|---|
 | Reading a shelf photograph | The tiles of that photograph | Anything else about your catalog |
 | Asking the desk a question | Your reading profile, printed in full first | The rest of the catalog |
-| Looking a book up by barcode | The ISBN, and nothing else | The title, your notes, your shelf, you |
+| Scanning a barcode | The ISBN, to Open Library | The title, your notes, your shelf, you |
 
 The barcode case is the smallest of the three by a distance. A photograph of a
 barcode is decoded on the device and never leaves it; what goes out is thirteen

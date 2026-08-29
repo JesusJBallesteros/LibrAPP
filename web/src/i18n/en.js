@@ -30,6 +30,8 @@ export default {
   'landing.option.photo.hint': 'The quickest way to catalog books you own on paper.',
   'landing.option.list': 'I have a list of the books I own',
   'landing.option.list.hint': 'A spreadsheet, a CSV, an XML file, or a store export as PDF.',
+  'landing.option.barcode': 'I have the books in front of me',
+  'landing.option.barcode.hint': 'Scan or type the barcode number. Free, exact, and no key needed.',
   'landing.option.import': 'I have a catalog from another device',
   'landing.option.import.hint': 'Bring in a file you exported from LibrAPP elsewhere.',
   'landing.option.browse': 'I want to see my catalog',
@@ -128,12 +130,14 @@ export default {
   'nav.catalog': 'Catalog',
   'nav.shelf': 'Shelf picture',
   'nav.list': 'Upload list',
+  'nav.barcode': 'Scan a barcode',
   'nav.desk': "LibrAPPrian's desk",
   'nav.stacks': 'The stacks',
   'nav.home.hint': 'the welcome page',
   'nav.catalog.hint': 'everything you own',
   'nav.shelf.hint': 'read a photograph',
   'nav.list.hint': 'a file you already keep',
+  'nav.barcode.hint': 'the number on the book',
   'nav.desk.hint': 'ask about it',
   'nav.stacks.hint': 'where it all lives',
 
@@ -418,6 +422,9 @@ export default {
   'shelf.eyebrow': 'Accessions',
   'list.listsFound': '{n} lists found',
   'list.eyebrow': 'Accessions',
+  'barcode.eyebrow': 'Accessions',
+  'barcode.intro':
+    'The number under a barcode names the exact edition, so where a library catalogue holds it the title, authors, publisher, year and page count are read from its record rather than guessed at. No AI and no key, and nothing is written until you have seen it.',
   'shelf.stepOne': 'Step one · The photograph',
   'shelf.stepTwo': 'Step two · Read the spines',
   'shelf.stepThree': 'Step three · Check what it read',
@@ -549,9 +556,9 @@ export default {
 
   'isbn.title': 'Look a book up by its barcode',
   'isbn.note':
-    'The number under the barcode identifies the exact edition. Where a library catalogue holds that edition, the title, authors, publisher, year and page count are taken from its record.',
+    'The number under the barcode identifies the exact edition. Where Open Library holds that edition, the title, authors, publisher, year and page count are taken from its record.',
   'isbn.privacy':
-    'This step sends a request to an external service. What leaves the device is a list of ISBNs and nothing else: no titles, no notes and no other catalog data. Records that come back are shown here before anything is written.',
+    'This step asks Open Library, a free catalogue run by the Internet Archive, at openlibrary.org. What leaves the device is a list of ISBNs and nothing else: no titles, no notes and no other catalog data. Records that come back are shown here before anything is written.',
   'isbn.paste': 'Codes, one per line or separated by commas',
   'isbn.format': 'These are',
   'isbn.format.physical': 'books on paper',
@@ -573,7 +580,7 @@ export default {
   'isbn.foundN': '{n} {n:book|books} found.',
   'isbn.missingN': '{n} not known to the service.',
   'isbn.checkThese':
-    'Check these before keeping them. When the service does not hold an ISBN it returns a different book rather than an error, so an incorrect number produces a plausible but wrong record.',
+    'Check these before keeping them. When Open Library does not hold an ISBN it returns a different book rather than an error, so an incorrect number produces a plausible but wrong record.',
   'isbn.missingWhich': 'Nothing came back for:',
   'isbn.noAuthor': 'no author recorded',
   'isbn.pages': '{n} pages',
@@ -702,7 +709,7 @@ export default {
   'about.privacy.cookies':
     'No cookies, no analytics and no trackers. The only thing remembered about you is which language you picked and where your library is.',
   'about.privacy.requests':
-    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends the barcode number and nothing else: no title, no note, nothing about your shelf. The photograph of a barcode is read here and never leaves.',
+    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends that number to Open Library and nothing else: no title, no note, nothing about your shelf. The photograph of a barcode is read here and never leaves.',
   'about.privacy.offline':
     'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
   'about.privacyCheck': 'You do not have to take any of that on trust. The code is public.',

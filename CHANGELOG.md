@@ -208,6 +208,31 @@ anybody can buy.
 
 ---
 
+## Unreleased
+
+### The barcode lookup is a way in, and is filed as one
+
+It was at the foot of the desk, under the enquiries, below the charts, at the
+end of a long scroll. The nav offered two ways of getting books in, a photograph
+and a list, and the third one, the exact one that costs nothing and needs no
+key, was not among them. Somebody with a stack of paper books would photograph
+the lot, pay for it, proof-read what came back, and never find out the other
+path was there.
+
+It has a page of its own now, beside the other two, and a door on the front
+page: I have the books in front of me.
+
+### The service has a name
+
+Every AI provider in the app is named: Anthropic, OpenAI, Gemini, OpenRouter.
+The barcode lookup said "an external service" three times over, which is a
+privacy assurance about a recipient the reader is not allowed to identify, and
+a claim nobody can weigh. It is Open Library, the free catalogue run by the
+Internet Archive, and it says so where it matters: on the page, in the note
+about what leaves the device, and in the README's table of the same.
+
+---
+
 ## v2.1.0
 
 Most of this came out of an adversarial review of the running app, and the

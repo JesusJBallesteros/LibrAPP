@@ -22,6 +22,7 @@ const OPTIONS = [
   { id: 'storage', view: 'storage' },
   { id: 'photo', view: 'shelf' },
   { id: 'list', view: 'list' },
+  { id: 'barcode', view: 'barcode' },
   { id: 'import', view: 'storage', focus: 'import' },
   { id: 'browse', view: 'catalog', needsCatalog: true },
 ]
