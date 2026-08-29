@@ -897,6 +897,18 @@ export default {
   'shelf.copyFailure': 'Copy this message',
   'shelf.usingService': 'Service: {service} \u00b7 model: {model}',
 
+  // Two questions that arrive as one: how do I get the app there, and how
+  // do I get my books there. The second is the one people mean.
+  'phone.title': 'On your phone',
+  'phone.body':
+    'LibrAPP is a web page that installs like an app. Once it is on the home screen it opens full screen, works with no connection, and keeps its catalog on that device like any other.',
+  'phone.install': 'Install LibrAPP',
+  'phone.already': 'Installed. This is the app rather than a browser tab.',
+  'phone.byHand':
+    'No offer to install here? On an iPhone: Share, then Add to Home Screen. On Android: the browser menu, then Install app. Both do the same thing.',
+  'phone.catalog':
+    'A catalog does not travel by itself. Each device keeps its own, so move one across with a file:',
+  'phone.catalogAction': 'export it, and bring it over',
   'landing.next.title': 'Then ask it things',
   'landing.next.body':
     'A catalog is a starting point, not the end of it. The desk uses your shelves as context: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through what you own, a list for a long flight or a summer. It answers about your books rather than books in general.',

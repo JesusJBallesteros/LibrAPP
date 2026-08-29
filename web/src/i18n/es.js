@@ -886,6 +886,16 @@ export default {
   'shelf.copyFailure': 'Copiar este mensaje',
   'shelf.usingService': 'Servicio: {service} \u00b7 modelo: {model}',
 
+  'phone.title': 'En el móvil',
+  'phone.body':
+    'LibrAPP es una página web que se instala como una aplicación. Una vez en la pantalla de inicio se abre a pantalla completa, funciona sin conexión y guarda su catálogo en ese dispositivo como cualquier otra.',
+  'phone.install': 'Instalar LibrAPP',
+  'phone.already': 'Instalada. Esto es la aplicación, no una pestaña del navegador.',
+  'phone.byHand':
+    '¿No aparece la opción de instalar? En iPhone: Compartir y luego Añadir a pantalla de inicio. En Android: el menú del navegador y luego Instalar aplicación. Hacen lo mismo.',
+  'phone.catalog':
+    'Un catálogo no viaja solo. Cada dispositivo guarda el suyo, así que se lleva de uno a otro con un archivo:',
+  'phone.catalogAction': 'expórtalo y tráelo',
   'landing.next.title': 'Y luego preg\u00fantale',
   'landing.next.body':
     'Un cat\u00e1logo es un punto de partida, no el final. El escritorio usa tus estanter\u00edas como contexto: qu\u00e9 leer a continuaci\u00f3n y por qu\u00e9, qu\u00e9 te falta de un autor que has ido reuniendo a medias, qu\u00e9 hilos recorren lo que tienes, una lista para un vuelo largo o para el verano. Responde sobre tus libros, no sobre los libros en general.',

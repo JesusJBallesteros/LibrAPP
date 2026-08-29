@@ -1,17 +1,36 @@
 {
   "name": "LibrAPP: your catalog and your librarian",
   "short_name": "LibrAPP",
-  "description": "Your full library catalog and your own personal librarian, at hand. Works offline; your books stay on your device.",
+  "description": "Photograph your shelves and get a catalog that answers questions. It reads the spines and builds the catalog on your device; your books stay with you.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#faf7f2",
   "theme_color": "#23201c",
-  "categories": ["books", "productivity", "utilities"],
+  "categories": [
+    "books",
+    "productivity",
+    "utilities"
+  ],
   "icons": [
-    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

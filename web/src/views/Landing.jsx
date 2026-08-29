@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import ThemeToggle from '../components/ThemeToggle.jsx'
+import OnYourPhone from '../components/OnYourPhone.jsx'
 import ContrastToggle from '../components/ContrastToggle.jsx'
 import { demoSize } from '../store/demo.js'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
@@ -193,6 +194,8 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             </button>
           </p>
         </section>
+
+        <OnYourPhone onGo={onGo} />
 
         <section className="landing-next">
           <h2>{t('landing.next.title')}</h2>
