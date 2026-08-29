@@ -51,9 +51,9 @@ export default {
   'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
   'landing.storageFirst': 'Storage is set up on the way, whichever of these you pick.',
 
-  'landing.demo.action': 'Open a catalog of {n} books',
+  'landing.demo.action': 'Try a demo library',
   'landing.demo.hint':
-    'The whole app, working: search, filters, the shelf, the desk, editing, imports. The books are invented, nothing is saved, and nothing of yours is touched.',
+    '{n} invented books. Nothing is saved and nothing of yours is touched.',
 
   'demo.banner': 'You are looking around a demo library.',
   'demo.bannerWhy':
@@ -514,7 +514,8 @@ export default {
   'shelf.stepTwo': 'Step two · Read the spines',
   'shelf.stepThree': 'Step three · Check what it read',
   'shelf.step1': '1 · The photograph',
-  'shelf.dropPhoto': 'Take or choose a photograph',
+  'shelf.dropPhoto': 'Choose a photograph',
+  'shelf.takePhoto': 'Take a photograph',
   'shelf.dropPhotoHint': 'JPEG or PNG · nothing is uploaded',
   'shelf.photoReplace': 'Choose a different photograph',
   'shelf.cutting': 'Cutting it into tiles…',

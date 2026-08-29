@@ -40,9 +40,9 @@ export default {
   'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
   'landing.storageFirst': 'El almacenamiento se configura por el camino, elijas la que elijas.',
 
-  'landing.demo.action': 'Abre un catálogo de {n} libros',
+  'landing.demo.action': 'Prueba una biblioteca de muestra',
   'landing.demo.hint':
-    'La aplicación entera, funcionando: búsqueda, filtros, el estante, el escritorio, edición e importaciones. Los libros son inventados, no se guarda nada y no se toca nada tuyo.',
+    '{n} libros inventados. No se guarda nada y no se toca nada tuyo.',
 
   'demo.banner': 'Estás viendo una biblioteca de muestra.',
   'demo.bannerWhy':
@@ -499,7 +499,8 @@ export default {
   'shelf.stepTwo': 'Paso dos \u00b7 Leer los lomos',
   'shelf.stepThree': 'Paso tres \u00b7 Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
-  'shelf.dropPhoto': 'Haz o elige una foto',
+  'shelf.dropPhoto': 'Elige una foto',
+  'shelf.takePhoto': 'Haz una foto',
   'shelf.dropPhotoHint': 'JPEG o PNG · no se sube nada',
   'shelf.photoReplace': 'Elige otra foto',
   'shelf.cutting': 'Recortando las fotos…',

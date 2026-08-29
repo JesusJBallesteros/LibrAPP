@@ -33,6 +33,15 @@ import { useT } from '../i18n/index.jsx'
 // for as long as the page stays open, which is indistinguishable from a button
 // that does nothing at all.
 const READ_TIMEOUT_MS = 4 * 60 * 1000
+// Whether to offer taking a photograph as well as choosing one.
+//
+// A coarse pointer means a finger, which means a phone or a tablet, which is
+// where `capture` does anything at all: a desktop browser ignores it and opens
+// the same file dialog the box already opens, so the button would be a second
+// way to do the one thing.
+const HAS_CAMERA =
+  typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches === true
+
 export default function Shelf({ lib, onOwl }) {
   const { t } = useT()
   const [photo, setPhoto] = useState(null)
@@ -381,6 +390,29 @@ export default function Shelf({ lib, onOwl }) {
             disabled={working}
             onFile={onPhoto}
           />
+          {/* The box above says choose, and choosing is all it does: a file
+              input opens the gallery. Taking a picture needs `capture`, and
+              putting that on the same input would take the gallery away. So it
+              is a second control, and only where there is a camera behind it. */}
+          {HAS_CAMERA && (
+            <label
+              className={`btn small file-button${working ? ' shut' : ''}`}
+              style={{ marginTop: 10 }}
+            >
+              {t('shelf.takePhoto')}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                hidden
+                disabled={working}
+                onChange={(e) => {
+                  onPhoto(e.target.files?.[0])
+                  e.target.value = ''
+                }}
+              />
+            </label>
+          )}
           {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('shelf.cutting')}</p>}
         </section>
 

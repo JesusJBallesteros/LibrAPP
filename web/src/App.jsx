@@ -175,7 +175,14 @@ export default function App() {
           startHere={startHere}
           onDemo={async () => {
             await lib.useDemo()
-            go('catalog')
+            // Straight there rather than through go(). That reads lib.status
+            // from the render this closure was built in, which still says no
+            // library is open, so it files the destination as pending and
+            // returns. Nothing collects it: the pending view is only read while
+            // the storage question is on screen, and the demo never asks it. The
+            // books loaded and the page did not move.
+            setPendingView(null)
+            setView('catalog')
           }}
         />
         <Librarian
