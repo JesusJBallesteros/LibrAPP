@@ -6,9 +6,17 @@
 
 export default {
   // -- landing ------------------------------------------------------------
-  'landing.tagline': 'Your full library catalog and your own personal librarian, at hand.',
+  // What this app does, rather than what kind of app it is. The line it
+  // replaced described the category, and the two claims that are actually
+  // particular to LibrAPP sat a paragraph below it.
+  'landing.tagline': 'Photograph your shelves. Get a catalog that answers questions.',
+  'landing.subhead':
+    'It reads the spines and builds the catalog here, on this device. No account, no server, and nothing leaves unless you ask it to.',
+  // The headline above says what a photograph does. This is for everything
+  // else, and repeating the photograph here was a paragraph spent saying
+  // what had just been said.
   'landing.intro':
-    'Photograph a shelf and LibrAPP reads the spines into a catalog you can search, filter and browse. You can also bring in a spreadsheet, a store export, or a catalog you built on another device, and combine them all without duplicates.',
+    'A spreadsheet, a store export, the barcodes on the books themselves, or a catalog you built on another device all work too, and they combine into one without duplicates.',
   'landing.privacy.title': 'Your books stay with you',
   'landing.privacy.body':
     'There is no account and no server. Your catalog is written to this device, and once LibrAPP has loaded it works with no connection at all.',
@@ -37,11 +45,15 @@ export default {
   'landing.option.browse.count': '{n} {n:book|books} here.',
   // Storage left the row of doors. It is a real choice and some people want
   // to make it first, but it is the only technical one on the page.
+  // Leads with what it allows: noncommercial alarms people who would have
+  // been fine, and the restriction is the shorter half of the sentence.
+  'landing.licence': 'Free for your own use, to share and to modify. Not for commercial use.',
+  'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
   'landing.storageFirst': 'Storage is set up on the way, whichever of these you pick.',
 
-  'landing.demo.action': 'Check out this example',
+  'landing.demo.action': 'Open a catalog of {n} books',
   'landing.demo.hint':
-    'An invented shelf of {n} books, opened here and now. Nothing is saved and nothing of yours is touched.',
+    'The whole app, working: search, filters, the shelf, the desk, editing, imports. The books are invented, nothing is saved, and nothing of yours is touched.',
 
   'demo.banner': 'You are looking around a demo library.',
   'demo.bannerWhy':

@@ -342,6 +342,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-lang select:focus { outline: none; border-bottom-color: var(--accent); }
 
 .landing-tagline { font: 400 23px/1.35 var(--serif); margin: 20px 0 0; max-width: 40ch; }
+/* The claim under the claim. Smaller than the tagline and larger than the body,
+   because it is the second thing read and the last one that has to be read. */
+.landing-subhead {
+  margin: 10px 0 0;
+  max-width: 46ch;
+  font: 400 17px/1.5 var(--sans);
+  color: var(--ink-soft);
+}
 .landing-intro { margin: 12px 0 0; color: var(--ink-soft); max-width: 62ch; }
 
 .landing-facts { display: grid; gap: 26px; margin-bottom: 34px; }

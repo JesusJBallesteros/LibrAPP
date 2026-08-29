@@ -90,6 +90,10 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           <p className="eyebrow">{t('app.strapline')}</p>
 
           <p className="landing-tagline">{t('landing.tagline')}</p>
+          {/* The two things that are true of this app and not of the category
+              it belongs to. Both used to be a paragraph further down, where
+              somebody deciding whether to read on never reached them. */}
+          <p className="landing-subhead">{t('landing.subhead')}</p>
 
           {/* The first thing offered, and the only one that asks for nothing.
               Everything below wants a photograph or a spreadsheet the visitor
@@ -99,7 +103,7 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           {!hasCatalog && onDemo && (
             <div className="landing-demo">
               <button className="btn primary" onClick={onDemo}>
-                {t('landing.demo.action')}
+                {t('landing.demo.action', { n: DEMO_BOOKS })}
               </button>
               <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
             </div>
@@ -175,6 +179,17 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             {t('landing.storageFirst')}{' '}
             <button className="btn link" onClick={() => onGo('storage')}>
               {t('landing.option.storage')}
+            </button>
+          </p>
+
+          {/* Said before anybody invests an evening in it rather than only on
+              a page they would have to go looking for. Noncommercial alarms
+              people who would have been fine, so this leads with what it
+              allows. */}
+          <p className="tiny faint" style={{ marginTop: 10 }}>
+            {t('landing.licence')}{' '}
+            <button className="btn link" onClick={() => onGo('about', 'licence')}>
+              {t('landing.licenceName')}
             </button>
           </p>
         </section>

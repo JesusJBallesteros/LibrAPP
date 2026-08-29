@@ -5,9 +5,11 @@
 
 export default {
   // -- landing ------------------------------------------------------------
-  'landing.tagline': 'Todo tu catálogo y tu bibliotecario personal, a mano.',
+  'landing.tagline': 'Fotografía tus estanterías. Ten un catálogo que responde preguntas.',
+  'landing.subhead':
+    'Lee los lomos y construye el catálogo aquí, en este dispositivo. Sin cuenta, sin servidor, y nada sale si no lo pides.',
   'landing.intro':
-    'Fotografía una estantería y LibrAPP leerá los lomos para crear un catálogo que puedes consultar y editar. También puedes subir una tabla, una lista en PDF o un catálogo desde otro dispositivo, y combinarlo todo sin duplicados.',
+    'Una hoja de cálculo, una lista en PDF, los códigos de barras de los propios libros o un catálogo de otro dispositivo también valen, y se combinan en uno solo sin duplicados.',
   'landing.privacy.title': 'Tus libros se quedan contigo',
   'landing.privacy.body':
     'No hay cuenta ni servidor. Tu catálogo se guarda en este dispositivo y, una vez cargada, LibrAPP funciona sin conexión alguna.',
@@ -34,11 +36,13 @@ export default {
   'landing.option.browse': 'Ver mi catálogo',
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.count': '{n} {n:libro|libros} aquí.',
+  'landing.licence': 'Gratis para tu propio uso, para compartir y para modificar. No para uso comercial.',
+  'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
   'landing.storageFirst': 'El almacenamiento se configura por el camino, elijas la que elijas.',
 
-  'landing.demo.action': 'Mira este ejemplo',
+  'landing.demo.action': 'Abre un catálogo de {n} libros',
   'landing.demo.hint':
-    'Una estantería inventada de {n} libros, aquí mismo. No se guarda nada y no se toca nada tuyo.',
+    'La aplicación entera, funcionando: búsqueda, filtros, el estante, el escritorio, edición e importaciones. Los libros son inventados, no se guarda nada y no se toca nada tuyo.',
 
   'demo.banner': 'Estás viendo una biblioteca de muestra.',
   'demo.bannerWhy':
