@@ -37,7 +37,8 @@ collection keeps coming back to.
 ![The desk: books bought and never opened drawn as a shelf with the years each has waited above it, beside a cloud of the words the collection keeps returning to](docs/images/desk.png)
 
 **Your books stay on your device.** No account, no server, no sync. It works
-offline once loaded and installs as an app on Windows, Linux and Android. Three
+offline once loaded and installs as an app on Windows, Linux, Android and, by
+Add to Home Screen, on an iPhone. Three
 optional steps can send something, all of them listed [below](#about-privacy-and-version), and each
 shows you what it is sending first.
 
@@ -62,7 +63,6 @@ The interface is in English and Spanish, chosen on the opening page.
 - [Optional AI key](#optional-ai-key)
 - [About, privacy and version](#about-privacy-and-version)
 - [How this was built](#how-this-was-built)
-- [What changed since v1](#what-changed-since-v1)
 - [Command-line tools](#command-line-tools)
 - [Development](#development)
 - [Licence](#licence)
@@ -88,17 +88,6 @@ any AI session yourself, and both show what a request will cost before it is
 sent. Everything else, meaning importing, merging, searching and filtering, is
 plain code running locally. You choose which service to use and pay for it
 directly.
-
-### Why it might suit you
-
-- **Nothing leaves your device.** No account to create, nothing uploaded.
-- **Works offline.** The catalog is a file on your device, not a web service.
-- **Reads what you already have.** Most catalogs make you type everything in.
-- **Your data is plain JSON.** Readable, transferable and always yours.
-- **It has something to say.** The desk reads the shape of your collection and
-  answers from it, which a general assistant cannot do without your shelves.
-- **It knows what you told it.** Star a book or write a note on one and the
-  desk weighs that above anything it worked out by counting.
 
 ---
 
@@ -256,45 +245,46 @@ unless it is set aside.
 Photograph the shelf straight on at your camera's **full resolution**.
 
 1. Open **Shelf picture** and choose the photo. It appears in the box you
-   chose it from, and that box is also how to swap it for a different one.
+   chose it from, and that box is also how to swap it for a different one. On a
+   phone, **Take a photograph** beside the box opens the camera instead.
 
-![The Shelf picture page: the AI service box, the chosen photograph, and the grid control showing two tiles across by three down](docs/images/photo-steps.png)
+![The Shelf picture page: the AI service box, the chosen photograph, and the grid control showing two pieces across by three down](docs/images/photo-steps.png)
 
-2. LibrAPP cuts it into tiles at full resolution. A close-up of a few books
-   stays whole; a wide bookcase is split into several tiles. Adjust the grid
+2. LibrAPP cuts it into pieces at full resolution. A close-up of a few books
+   stays whole; a wide bookcase is split into several pieces. Adjust the grid
    with the **across** and **down** buttons if the default does not suit your
    shelf.
     The key box at the top is optional and the page works without it. Everything up
     to this point has happened on your device: the photograph has been read, sized
     and cut, and nothing has been sent anywhere.
-3. Check the tiles. Any that hold no readable spine, a wall, a lamp, the edge
+3. Check the pieces. Any that hold no readable spine, a wall, a lamp, the edge
    of a rug, can be **discarded**: they are not sent and not counted in the cost.
-4. Read the tiles:
+4. Read the pieces:
    - With an [AI key](#optional-ai-key): press **Read them**.
-   - Without one: press **Copy the instructions**, save the tiles, and give
+   - Without one: press **Copy the instructions**, save the pieces, and give
      both to any AI assistant. Bring back the JSON it writes.
 5. Check what it read, then import.
 
-![The tiles cut from the photograph, two of them greyed out and struck through as discarded, beside the checklist of extra fields to ask for](docs/images/photo-tiles.png)
+![The pieces cut from the photograph, two of them greyed out and struck through as discarded, beside the checklist of extra fields to ask for](docs/images/photo-pieces.png)
 
-Two tiles here are of no interest and have been
+Two pieces here are of no interest and have been
 set aside. The checklist on the right decides what is asked for beyond the
 titles, split into what is printed on the spine and what the model would be
 recalling from elsewhere. Anything recalled is marked on the book afterwards.
 
-A long shelf is read in several requests rather than one, four tiles at a time,
-and the button says which is running. One reply covering forty tiles is longer
+A long shelf is read in several requests rather than one, four pieces at a time,
+and the button says which is running. One reply covering forty pieces is longer
 than any model will return in one go, and a reply that runs out of room comes
 back unreadable rather than short. If one of those requests fails, whatever the
-others read is still offered, with the missing tiles named so a partial reading
+others read is still offered, with the missing pieces named so a partial reading
 is never imported as though it were the whole shelf.
 
-Aim for tiles showing a handful of whole spines with the title readable top to
+Aim for pieces showing a handful of whole spines with the title readable top to
 bottom. Adding **rows** splits titles in half, so only do that when the photo
 really shows shelves stacked above one another.
 
-Any tile holding no readable spine, such as a wall or a lamp, can be
-**discarded** before the read. Discarded tiles are not sent, not saved and not
+Any piece holding no readable spine, such as a wall or a lamp, can be
+**discarded** before the read. Discarded pieces are not sent, not saved and not
 counted in the cost.
 
 **What comes back is a list to check, not an import.** When the reading
@@ -307,7 +297,7 @@ it is set aside, and the count on the button follows what is left.
 
 ### Asking for more than the titles
 
-Under the tiles is a checklist of things to request beyond the titles, and it
+Under the pieces is a checklist of things to request beyond the titles, and it
 divides into two kinds that are not interchangeable.
 
 **Read from the photograph** — publisher, edition, the language on the cover,
@@ -436,23 +426,18 @@ duplicating it.
 
 ## Using the catalog
 
-**Search** across titles, authors, series and tags.
+**Search** opens the controls: search across titles, authors, series and tags,
+filter by read status, format, source, whether a book is away from the shelf and
+whether you marked it a favourite, and group and sort the result.
 
-**Filter** by read status, format (paper, ebook, audio), which source a book
-came from, whether it is away from the shelf, and whether you marked it a
-favourite. Three filters stay on screen and the rest sit behind **more
-filters**; when one of the hidden ones is narrowing the list, the page says so
-rather than letting it work out of sight.
-
-**Group** by title, author or series.
-
-**Sort** by title, author, newest or oldest.
+They stay folded until you press it, and while they are folded the button
+carries a count of anything still narrowing the list, so a shelf that looks
+short always says why.
 
 **Mark many books at once.** Under the count is *Mark all N shown as read /
 unread / not recorded*, which applies to every book the search and filters have
-left on screen. There is no multi-select because the filters already say which
-books are meant. It asks first and names the number, and each one is a
-correction like any other, so any of them can be undone.
+left on screen. It asks first and names the number, and each one is a correction
+like any other, so any of them can be undone.
 
 **The catalog opens as a shelf.** Spines draws the filtered books standing
 side by side; **List** is one button away and is where searching and sorting are
@@ -473,23 +458,24 @@ than its spine ends in an ellipsis. The whole title is always in the tooltip and
 in the accessible name.
 
 **A book that has been read carries a stamp** at the foot of its spine: a ring
-with a check in it, drawn in the same ink that spine uses for its lettering.
-Only read is marked. Unread and not recorded are different answers and a stamp
-cannot give either one, so both are left blank and that difference stays where
-it is stated, in the read filter and on the book's own record.
+with a check in it. Only read is marked; unread and not recorded are left
+blank, and the difference between those two is on the book's own record.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. The landing page has it too.
+
+**On a narrow screen** the sidebar folds behind a **Menu** button and opens on
+a press. Choosing a page closes it again.
 
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
 it, and how confident LibrAPP is about the entry.
 
 **The record asks for what nothing else can tell it.** Read state, a loan and a
-note are the only fields that have to come from the reader: no photograph,
-spreadsheet or lookup knows whether a book was read, who has it, or what was
-thought of it. A book missing any of the three lists them under *Still to
-record*, and each one opens the form at its own box rather than at the top.
+note have to come from you: no photograph, spreadsheet or lookup knows whether a
+book was read, who has it, or what you thought of it. A book missing any of the
+three lists them under *Still to record*, and each opens the form at its own
+box.
 
 ### Read status has three values
 
@@ -777,7 +763,7 @@ first, where there is any:
 Following one of these applies the filter it describes.
 
 **Then how the page works**, which is the part worth reading the first time you
-open it. Each page has its own: how to photograph a shelf and why tiles are
+open it. Each page has its own: how to photograph a shelf and why pieces are
 adjusted before spending anything, which file formats the list page takes and
 what happens when a file holds several lists, what the three desk requests are
 and that all of them work without a key, where your catalog lives and what an
@@ -786,7 +772,7 @@ export is for.
 Before any books exist, all three are about how to begin.
 
 It also speaks while something is happening, and then it says only that: how
-many tiles are being read, that a question is in flight, how many books an
+many pieces are being read, that a question is in flight, how many books an
 import brought and how many were already there.
 
 It is not a chat surface, and it has nowhere to type on purpose. Anything worth
@@ -820,7 +806,15 @@ overrides.json your corrections
 private to LibrAPP. Not visible to other apps, so export is how a copy leaves
 the device.
 
+After you pick a folder LibrAPP shows which one and waits: **Use this folder**
+or **Choose a different one**. Nothing is written until you say.
+
 Either can be changed later from **The stacks**.
+
+**Set up so far** on the opening page lists the three things that decide what
+the app can do: where the catalog is kept, how many books are in it, and whether
+a key is stored. It appears once you have a library, with a way on beside
+anything missing.
 
 ### Moving between devices
 
@@ -955,7 +949,7 @@ Three things can leave the device, all optional and none of them on by default:
 
 | Step | What is sent | What is not |
 |---|---|---|
-| Reading a shelf photograph | The tiles of that photograph | Anything else about your catalog |
+| Reading a shelf photograph | The pieces of that photograph | Anything else about your catalog |
 | Asking the desk a question | Your reading profile, printed in full first | The rest of the catalog |
 | Scanning a barcode | The ISBN, to Open Library | The title, your notes, your shelf, you |
 
@@ -977,53 +971,14 @@ your library, sources and corrections are stored elsewhere and are not touched.
 
 ## How this was built
 
-LibrAPP was written by one person working with an AI assistant, over a series of
-sessions. Most of the code was typed by the model; every decision about what to
-build was human made.
-
-- **Jesús J. Ballesteros** (I) conceived the app and decided every step of it — what
-  to build next, which of the proposed approaches to take, what to leave out,
-  and when to stop. I supplied everything it was tested against: my own shelves,
-  my own exports, my own devices. I reviewed the results and corrected them.
-- **Claude**, an AI assistant, proposed approaches when asked and occasionally
-  when not, wrote the code and the documentation, and carried out the changes I
-  decided on.
-- **A few early testers** used it and said what did not work. More than one
-  thing here exists because of that.
-
-The human review was not a formality. The assistant got things wrong — it once
-reported that a cut-off title had been repaired when it had not, and it chose a
-way of splitting photographs that fell apart on a close-up of three books. Both
-were caught by checking the output against the actual shelf. That is why the app
-shows you what a model read and waits for you to approve it, rather than
-importing it quietly.
+Written by **Jesús J. Ballesteros** working with **Claude**, an AI assistant.
+Every decision about what to build was human made; most of the code was typed by
+the model. A few early testers used it and said what did not work, and more than
+one thing here exists because of that.
 
 None of this touches the contents of your catalog. No entry is invented, every
 book comes from a source you provided, and the AI features are optional and off
 until you add a key.
-
----
-
-## What changed since v1
-
-Version 2 is a redesign of every screen, a new component, and four features
-that did not exist in v1.
-
-- **The LibrAPPrian** is now a presence rather than only a page: an owl in the
-  corner that says one true thing about your collection and offers to act on
-  it, and a desk that has gained a third kind of request.
-- **Fill in gaps** asks a model for the details your catalog is missing, for
-  books already on the shelf, and shows you everything before it writes.
-- **Favourites and notes** are yours to set, and the desk reads both.
-- **Page counts** can be asked for while a photograph is read, and the spine
-  wall uses them.
-- **The reader profile** the desk sends now describes the shape of the shelf,
-  says which fields are actually recorded, and names a proportional
-  cross-section of your books instead of the most recent thirty.
-- **Day and Night**, and a **Spines** view of the catalog.
-
-The full list, including what was fixed and what changed underneath, is in
-[CHANGELOG.md](CHANGELOG.md).
 
 ---
 
@@ -1069,7 +1024,7 @@ the interface is checked by hand, and the deploy checks that the built app can
 actually be installed.
 
 The app has no backend. Everything runs in the browser: PDFs are read with
-pdf.js, spreadsheets with a small zip reader, photographs are tiled on a canvas.
+pdf.js, spreadsheets with a small zip reader, photographs are pieced on a canvas.
 
 ```
 web/src/core/      matching, merging and the catalog format

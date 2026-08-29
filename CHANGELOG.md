@@ -1,5 +1,131 @@
 # Changelog
 
+## v2.5.0
+
+Almost all of this came from twelve issues opened after testing on a phone, and
+from one rule that came with them: the interface says what to do, and the
+reasons live in the README and on About.
+
+### Fixed: the demo button loaded the books and stayed where it was
+
+Filed as an enhancement, because from outside it looked like one. onDemo awaited
+the demo and then called go, and go reads the library status from the render its
+closure was built in, which still said no library was open. So it filed the
+catalog as a pending destination and returned, and nothing collected it: the
+pending view is read only while the storage question is on screen, and the demo
+never asks it. The only visible effect was the demo block disappearing once a
+catalog existed, which is why it read as a button that did nothing.
+
+### Fixed: the photograph box offered to take a picture and could not
+
+It said "take or choose" and a plain file input opens the gallery. Taking one
+needs capture, and putting capture on that input would take the gallery away,
+which is the commoner case: most people photograph the shelf first and open the
+app afterwards. It is a second control beside the box, shown where a coarse
+pointer says there is a camera behind it, and the box says what it does.
+
+### One contrast for everybody
+
+The raised level is the only level. The toggle, its store, the attribute it
+stamped on the document and the boot script that restored it before the first
+paint are gone, and the palette wires straight to the values that switch used to
+reach: quiet text at 7:1, the boundary of a control at 4.5, a hairline at 3.
+
+At that level a hairline is drawn in the same colour as the boundary of a
+control, so the palette no longer separates what marks a control from what is
+decoration. That is what the raised level always did, and anybody who had chosen
+it was already seeing it.
+
+### Things fold away until they are wanted
+
+On a phone the shell was taking 663 pixels of an 844 pixel screen before a
+single book appeared. It folds behind a Menu button, 90 pixels closed, and going
+somewhere folds it back up.
+
+The catalog is opened to look at books, and the controls for narrowing which
+books stood above them on every visit. They are behind a Search button, with the
+choice between List and Spines left beside it, because that decides how the same
+books are drawn rather than which ones. Folded, the button carries a count of
+whatever is still narrowing the list, and anything arriving from elsewhere that
+narrows it opens the row it is set in.
+
+The reasons on the shelf page fold too, behind Tell me how, which is a details
+element rather than a button and some state: it opens with no JavaScript, a
+screen reader knows what it is, and find-in-page can open it.
+
+### The front page says what to do
+
+It ran 2,623 pixels on a 390 pixel screen and put the first way in 1,304 pixels
+down, because almost everything on it carried a paragraph explaining itself. The
+subtitle, the paragraph restating the doors below it, the panel arguing the
+privacy case and the list of what the app needs have gone to About and the
+README, which say all of it in full. What is left is the claim, the way in that
+costs nothing, the three ways in that do not, installing, and the terms. 1,243
+pixels.
+
+Six doors became three. The first of them was the only technical decision on the
+page and the line under them already promised that any of the others would set
+up storage anyway; the last rendered as a disabled button saying there was
+nothing in it. Both of the returning-reader doors appear now only when they mean
+something.
+
+### The steps on the photograph page are legible, and say what to do
+
+They were set as eyebrows: 10.5px, uppercase, in the faintest ink the palette
+holds, which is the treatment for a label above a heading rather than for the
+heading itself.
+
+Nothing said what a tile was before asking somebody to discard one. The English
+called them tiles in twenty-four places; the Spanish already called them
+recortes, which is a word that explains itself. They are pieces.
+
+### A folder is shown before it is taken
+
+Picking one carried straight on to wherever you had been going, which left
+nobody sure which folder had been taken, and a picker is easy to answer with the
+wrong directory. It is shown, with the choice of using it or picking another,
+and nothing is written until then.
+
+### Set up so far
+
+Three things decide what the app can do: somewhere to keep the catalog, a book
+in it, and a key for the two steps that can use one. Each is answered on a
+different page and nothing gathered the answers. The front page says it in three
+lines of state, with a way on only where something is missing, and says nothing
+at all to somebody who has not started.
+
+### fill-gaps gets the two things its prompt told it to use
+
+The prompt asked for a genre matching the wording the catalog already uses, from
+a model that had never seen that wording: the request carried an id, a title, an
+author and a list of missing fields. It carries the catalog's genre vocabulary
+now, commonest first, and only where a genre was asked for. The same for
+language, which nothing had ever stated, so a Spanish catalog collected English
+abstracts that then collided with its own vocabulary.
+
+The JSON example showed five of the nine fields a reply may carry, missing genre
+among them, which is the field all of that is about. Models copy an example
+shape more reliably than they follow prose.
+
+### The README is a guide
+
+It carried a pitch, a history of version 1 and an account of how the app was
+built. The changelog is the changelog, and About says who wrote it. What is left
+describes how to use the thing, in the words the app uses: pieces rather than
+tiles, Search rather than three filters and a link, Menu on a narrow screen.
+
+### Also
+
+A test now reads the source, finds every literal call for a translated string
+and checks the name exists. Renaming the word tiles through the English copy
+also renamed two keys and a placeholder; the parity test caught the keys and
+could not have caught the placeholder.
+
+The stacks printed the raw key storage.kind.demo whenever the demo was open,
+which is a page the front door sends people to.
+
+---
+
 ## v2.4.0
 
 All of this came from watching somebody meet the app for the first time. None
