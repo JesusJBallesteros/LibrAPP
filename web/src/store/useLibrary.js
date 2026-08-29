@@ -78,13 +78,23 @@ export function useLibrary() {
     }
   }, [adopt])
 
+  /**
+   * Adopt a folder, and hand it back.
+   *
+   * Returned rather than only stored, because the caller wants to say which
+   * folder was taken and the state it would read for that belongs to the
+   * render it was called from, not to this one.
+   */
   const useFolder = useCallback(async () => {
     setError(null)
     try {
-      await adopt(new Library(await chooseFolder()))
+      const library = new Library(await chooseFolder())
+      await adopt(library)
+      return library
     } catch (err) {
       // Dismissing the picker is a decision, not a failure.
       if (err?.name !== 'AbortError') setError(err.message)
+      return null
     }
   }, [adopt])
 

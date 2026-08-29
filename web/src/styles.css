@@ -365,6 +365,25 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .landing-option-text strong { font: 400 17px/1.3 var(--serif); }
 .landing-option-go { color: var(--ink-faint); font-size: 17px; }
 
+/* Three lines of state: where the catalog is kept, how many books are in it,
+   whether a key is stored. Each answered somewhere else, and nothing gathered
+   the answers. */
+.set-up-so-far { margin-top: 34px; }
+.set-up-so-far ul { list-style: none; margin: 0; padding: 0; }
+.set-up-so-far li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: 13px;
+}
+.set-up-so-far li:last-child { border-bottom: 0; }
+.set-up-so-far .mark { width: 1em; color: var(--ink-faint); }
+.set-up-so-far li.done .mark { color: var(--accent); }
+.set-up-so-far .what { color: var(--ink-soft); min-width: 7em; }
+.set-up-so-far .said { color: var(--ink); }
+
 /* Recessed, like the key box: apparatus beside the page rather than part of
    the run of options above it. */
 .landing-next {

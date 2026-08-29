@@ -40,6 +40,8 @@ export default function App() {
   // Where to return to once storage exists. Each route asks for storage at the
   // point it needs it, rather than the app demanding it at the door.
   const [pendingView, setPendingView] = useState(null)
+  // The folder just picked, waiting to be confirmed or changed.
+  const [picked, setPicked] = useState(null)
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
   const demoAsked = useRef(false)
@@ -145,21 +147,35 @@ export default function App() {
 
   // Storage was needed by whatever the person just chose to do. Once it exists,
   // carry on to where they were going.
-  if (lib.status === 'choose' && pendingView) {
+  if (pendingView && (lib.status === 'choose' || picked)) {
     return (
       <Setup
         canPickFolder={lib.canPickFolder}
-        onFolder={async () => {
-          await lib.useFolder()
+        // Shown rather than taken. The picker is easy to answer with the wrong
+        // directory, and until now nothing said which one had been answered
+        // with.
+        chosen={picked}
+        onNext={() => {
+          setPicked(null)
           setView(pendingView)
           setPendingView(null)
+        }}
+        onFolder={async () => {
+          // The library it adopted, handed back. Reading lib.library here
+          // would read the render this closure was built in, which is the
+          // trap that swallowed the demo button.
+          const library = await lib.useFolder()
+          setPicked(library?.where ?? null)
         }}
         onBrowser={async () => {
           await lib.useBrowserStorage()
           setView(pendingView)
           setPendingView(null)
         }}
-        onBack={() => setPendingView(null)}
+        onBack={() => {
+          setPicked(null)
+          setPendingView(null)
+        }}
         error={lib.error}
       />
     )
@@ -177,6 +193,7 @@ export default function App() {
           bookCount={counts?.books ?? 0}
           browserUsable={capabilities.usable}
           startHere={startHere}
+          lib={lib}
           onDemo={async () => {
             await lib.useDemo()
             // Straight there rather than through go(). That reads lib.status

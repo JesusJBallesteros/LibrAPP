@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import OnYourPhone from '../components/OnYourPhone.jsx'
+import SetUpSoFar from '../components/SetUpSoFar.jsx'
 import { demoSize } from '../store/demo.js'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
 
@@ -38,7 +39,7 @@ const COMING_BACK = [
   { id: 'import', view: 'storage', focus: 'import' },
 ]
 
-export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo, startHere }) {
+export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo, startHere, lib }) {
   const { t, language, setLanguage } = useT()
   const start = useRef(null)
 
@@ -133,6 +134,8 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
 
         </section>
 
+        <SetUpSoFar lib={lib} bookCount={bookCount} onGo={onGo} />
+
         <OnYourPhone onGo={onGo} />
 
         <section className="landing-terms">
@@ -153,19 +156,15 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
         </section>
 
         <footer className="landing-foot">
-          {/* One page behind four links: each lands on its own section. */}
+          {/* Privacy and Licence are named above, in the words of the thing
+              they lead to, and both landed on the same two sections as these
+              did. */}
           <nav className="foot-links tiny">
             <button className="btn link tiny" onClick={() => onGo('about', 'what')}>
               {t('foot.about')}
             </button>
             <button className="btn link tiny" onClick={() => onGo('about', 'ai')}>
               {t('foot.ai')}
-            </button>
-            <button className="btn link tiny" onClick={() => onGo('about', 'privacy')}>
-              {t('foot.privacy')}
-            </button>
-            <button className="btn link tiny" onClick={() => onGo('about', 'licence')}>
-              {t('foot.licence')}
             </button>
             <a href="https://github.com/JesusJBallesteros/LibrAPP" target="_blank" rel="noreferrer">
               {t('foot.source')}

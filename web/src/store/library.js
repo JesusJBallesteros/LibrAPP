@@ -31,6 +31,11 @@ export class Library {
     return this.backend.kind
   }
 
+  /** The name of the chosen folder, where there is one. */
+  get where() {
+    return this.backend.root?.name || null
+  }
+
   // -- sources ------------------------------------------------------------
 
   async sourceNames() {

@@ -7,8 +7,33 @@ import { useT } from '../i18n/index.jsx'
  * at startup, so the reason for asking is already established by the time this
  * appears.
  */
-export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, error }) {
+export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, error, chosen, onNext }) {
   const { t } = useT()
+
+  // A folder was picked and is waiting to be confirmed. Picking one used to
+  // carry straight on, which left nobody sure which folder had been taken, and
+  // a picker is easy to answer with the wrong directory.
+  if (chosen) {
+    return (
+      <div className="view" style={{ maxWidth: 640 }}>
+        <header>
+          <h2>{t('setup.chosen.title')}</h2>
+        </header>
+        <div className="card">
+          <p className="tabular">{chosen}</p>
+          <p className="muted tiny" style={{ marginTop: 8 }}>{t('setup.chosen.body')}</p>
+          <div className="row" style={{ gap: 8, marginTop: 14 }}>
+            <button className="btn primary" onClick={onNext}>
+              {t('setup.chosen.next')}
+            </button>
+            <button className="btn" onClick={onFolder}>
+              {t('setup.chosen.change')}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="view" style={{ maxWidth: 640 }}>

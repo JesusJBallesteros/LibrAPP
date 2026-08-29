@@ -167,3 +167,59 @@ describe('the filters fold away', () => {
     expect(sorting.slice(0, 60)).not.toContain('setSearchOpen')
   })
 })
+
+// Choosing where the catalog lives, and knowing what is set up.
+describe('picking a folder', () => {
+  const setup = read('views/Setup.jsx')
+  const store = read('store/useLibrary.js')
+  const app = read('App.jsx')
+
+  it('shows which folder was picked instead of taking it', () => {
+    // A picker is easy to answer with the wrong directory, and nothing said
+    // which one had been answered with.
+    expect(setup).toContain('if (chosen) {')
+    expect(setup).toContain("t('setup.chosen.next')")
+    expect(setup).toContain("t('setup.chosen.change')")
+  })
+
+  it('hands the adopted library back rather than only storing it', () => {
+    // The caller names the folder, and the state it would read for that
+    // belongs to the render it was called from. That is the trap that
+    // swallowed the demo button.
+    const useFolder = store.slice(store.indexOf('const useFolder'), store.indexOf('const useDemo'))
+    expect(useFolder).toContain('return library')
+    expect(app).toContain('const library = await lib.useFolder()')
+    expect(app).toContain('setPicked(library?.where ?? null)')
+  })
+
+  it('asks the library where it is rather than reaching into the backend', () => {
+    expect(read('store/library.js')).toContain('get where()')
+  })
+})
+
+describe('what is set up so far', () => {
+  const strip = read('components/SetUpSoFar.jsx')
+
+  it('says nothing to somebody who has not started', () => {
+    // Before a library exists every line reads as not done, which is a wall of
+    // empty boxes in front of somebody who has not begun, and the ways in
+    // below are the whole of what there is to do anyway.
+    expect(strip).toContain("if (lib.status !== 'ready' || !lib.library) return null")
+  })
+
+  it('gathers the three answers that live in three places', () => {
+    // The keys are built from the row id, so the literals are not in the
+    // source and the key audit in i18n.test.js cannot see them either.
+    for (const id of ['storage', 'books', 'key']) {
+      expect(strip, id).toContain("id: '" + id + "'")
+    }
+    const en = read('i18n/en.js')
+    for (const id of ['storage', 'books', 'key']) {
+      expect(en, id).toContain("'setUp." + id + "':")
+    }
+  })
+
+  it('offers a way on only where something is missing', () => {
+    expect(strip).toContain('{!row.done && (')
+  })
+})
