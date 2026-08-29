@@ -483,11 +483,12 @@ export default {
   'shelf.step3': '3 · Comprueba lo que ha leído',
   'shelf.bookCount': '{n} libro(s)',
   'shelf.cost': 'coste {amount}',
+  'shelf.readyBelow': '{n} {n:libro|libros} leídos. La lista está abajo, lista para revisar.',
   'shelf.checkNote':
     'Todavía no se ha importado nada. Revisa la lista ahora: un lomo mal leído ya no se puede detectar una vez está en el catálogo. Lo marcado como dudoso es lo que conviene contrastar con las fotos de arriba.',
   'shelf.unplaced': 'sin ubicar',
   'shelf.importThese': 'Importar estos {n} libros',
-  'shelf.discard': 'Descartar',
+  'shelf.discard': 'Descartar la lectura entera',
   'shelf.stepBring': '{n} · Trae tú la transcripción',
   'shelf.bringNote':
     'Aquí no necesitas claves: añade las fotos junto con las instrucciones de arriba en cualquier sesión de IA, y trae aquí el resultado (.JSON). La importación rechaza un archivo con un libro sin título o con un valor de confianza desconocido.',

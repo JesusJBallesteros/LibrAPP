@@ -75,6 +75,7 @@ export default function Shelf({ lib, onOwl }) {
   // button that says nothing for two minutes looks like a button that failed.
   const [progress, setProgress] = useState(null)
   const failure = useRef(null)
+  const review = useRef(null)
   const inFlight = useRef(null)
 
   // The photograph itself, shown in the box it was chosen from. Held as an
@@ -284,6 +285,20 @@ export default function Shelf({ lib, onOwl }) {
   useEffect(() => {
     if (readError) failure.current?.scrollIntoView({ block: 'center' })
   }, [readError])
+
+  // The same for the books that came back.
+  //
+  // Reading a shelf takes a minute or more and the button that starts it is
+  // well above where the answer appears, so the page simply sat there and the
+  // list arrived off the bottom of the screen. Anyone waiting on it had no way
+  // to tell finished from still going without scrolling to look.
+  //
+  // Brought to its top rather than its middle: the count and the note about
+  // checking the books are the first things to read, and a long list centred
+  // starts halfway down itself.
+  useEffect(() => {
+    if (proposed) review.current?.scrollIntoView({ block: 'start' })
+  }, [proposed])
 
   const flash = async (key, text) => {
     if (await copyText(text)) {
@@ -576,7 +591,13 @@ export default function Shelf({ lib, onOwl }) {
       {tiles && (
         <>
           {proposed && (
-            <section className="shelf-step" style={{ marginTop: 34 }}>
+            <section className="shelf-step" style={{ marginTop: 34 }} ref={review}>
+              {/* Said as well as scrolled to. A screen reader is not moved by
+                  scrolling, and somebody who has looked away from a minute-long
+                  read needs telling rather than showing. */}
+              <p className="notice" role="status" style={{ marginBottom: 14 }}>
+                {t('shelf.readyBelow', { n: proposed.counted })}
+              </p>
               <div className="spread">
                 <p className="eyebrow">{t('shelf.stepThree')}</p>
                 <span className="tabular tiny faint">

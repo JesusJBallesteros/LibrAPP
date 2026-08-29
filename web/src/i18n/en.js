@@ -485,11 +485,12 @@ export default {
   'shelf.step3': '3 · Check what it read',
   'shelf.bookCount': '{n} book(s)',
   'shelf.cost': 'cost {amount}',
+  'shelf.readyBelow': '{n} {n:book|books} read. The list is below, ready to check.',
   'shelf.checkNote':
     'Nothing has been imported yet. Check the list now: a misread spine cannot be detected once it is in the catalog. Entries marked uncertain are the ones to compare against the tiles above.',
   'shelf.unplaced': 'unplaced',
   'shelf.importThese': 'Import these {n} books',
-  'shelf.discard': 'Discard',
+  'shelf.discard': 'Discard the whole reading',
   'shelf.stepBring': '{n} · Bring a transcription back yourself',
   'shelf.bringNote':
     'The route that needs no key. Read the tiles in any AI session using the instructions above, then drop the JSON here. A file containing an untitled book or an unknown confidence value is refused at this point rather than imported.',
