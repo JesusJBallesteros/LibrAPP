@@ -1,4 +1,3 @@
-import { spineHash } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -61,16 +60,6 @@ export const sizeFor = (count, max, { min, max: top }) => {
   return Math.round(min + share * (top - min))
 }
 
-/**
- * Whether a word is set on its side.
- *
- * From a hash of the word itself, so it is the same word every time rather than
- * a different one whenever the catalog is rebuilt, and so the two clouds stand
- * theirs up in different places. Roughly one in five: enough to break the row
- * up, few enough to stay readable.
- */
-export const upright = (key, kind) => spineHash(`${kind}:${key}`, 5) === 0
-
 export default function WordCloud({ books, onPick, kind = 'keyword' }) {
   const { t } = useT()
   const { words, distinct, drawn } = summariseWords(books, { kind })
@@ -95,7 +84,7 @@ export default function WordCloud({ books, onPick, kind = 'keyword' }) {
             key={word.key}
             /* One colour for every word in a cloud. Size carries the count and
                always did; the colour never carried anything. */
-            className={`word${upright(word.key, kind) ? ' upright' : ''}`}
+            className="word"
             style={{ fontSize: sizeFor(word.count, max, scale) }}
             title={t('cloud.count', { n: word.count })}
             aria-label={t('cloud.label', { word: word.value, n: word.count })}

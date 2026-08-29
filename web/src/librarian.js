@@ -35,6 +35,7 @@ const GUIDES = {
   catalog: ['catalog.1', 'catalog.2'],
   shelf: ['shelf.1', 'shelf.2', 'shelf.3'],
   list: ['list.1', 'list.2', 'list.3'],
+  barcode: ['barcode.1', 'barcode.2', 'barcode.3'],
   desk: ['desk.1', 'desk.2'],
   storage: ['storage.1', 'storage.2', 'storage.3'],
 }

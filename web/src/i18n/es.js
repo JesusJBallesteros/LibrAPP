@@ -23,17 +23,17 @@ export default {
   'landing.start': '¿Por dónde quieres empezar?',
   'landing.start.hint': 'Cualquiera de estas opciones configurará el almacenamiento si aún no lo has elegido.',
 
-  'landing.option.storage': 'Quiero elegir dónde se guarda mi catálogo',
+  'landing.option.storage': 'Elige dónde se guarda',
   'landing.option.storage.hint': 'Configúralo primero, antes de añadir libros.',
-  'landing.option.photo': 'Tengo una foto de mi estantería',
+  'landing.option.photo': 'Fotografía una estantería',
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
-  'landing.option.list': 'Ya tengo una lista de mis libros',
+  'landing.option.list': 'Sube una lista',
   'landing.option.list.hint': 'Una hoja de cálculo, un CSV, un XML o una lista en PDF.',
-  'landing.option.barcode': 'Tengo los libros delante',
+  'landing.option.barcode': 'Lee códigos de barras',
   'landing.option.barcode.hint': 'Escanea o escribe el código de barras. Gratis, exacto y sin clave.',
-  'landing.option.import': 'Tengo un catálogo de otro dispositivo',
+  'landing.option.import': 'Trae un catálogo',
   'landing.option.import.hint': 'Trae el archivo que exportaste desde LibrAPP en otro sitio.',
-  'landing.option.browse': 'Quiero ver mi catálogo',
+  'landing.option.browse': 'Ver mi catálogo',
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.empty': 'Aquí todavía no hay nada: empieza por una de las opciones de arriba.',
 
@@ -93,7 +93,7 @@ export default {
   'librarian.guide.catalog.1':
     'La b\u00fasqueda cubre t\u00edtulos, autor\u00eda, colecciones y etiquetas. Tres filtros quedan a la vista y el resto est\u00e1n tras "m\u00e1s filtros", que avisa cuando alguno de ellos oculta algo de la lista.',
   'librarian.guide.catalog.2':
-    'Cualquier libro abre su ficha completa, donde se puede editar, marcar como favorito o anotar. Lomos dibuja esos mismos libros como un estante.',
+    'El catálogo se abre como un estante. Cualquier lomo abre su ficha completa, donde el libro se puede editar, marcar como favorito o anotar, y Lista muestra esos mismos libros en filas.',
 
   'librarian.guide.shelf.1':
     'Fotograf\u00eda la estanter\u00eda de frente y a tama\u00f1o completo. De un lomo de pocos p\u00edxeles de alto salen los t\u00edtulos inventados.',
@@ -108,6 +108,13 @@ export default {
     'Un archivo con varias listas pregunta cu\u00e1l tomar. Importar una lista de deseos como biblioteca es el error que merece una pregunta de m\u00e1s.',
   'librarian.guide.list.3':
     'El mismo libro llegando de una segunda fuente acaba siendo una entrada, no dos. Di cu\u00e1nto fiarte de cada fuente y la m\u00e1s fiable gana donde discrepen.',
+
+  'librarian.guide.barcode.1':
+    'El número bajo el código de barras nombra la edición exacta, así que no hay que adivinar ni recordar nada del libro. Enfócalo con la cámara, fotografíalo o escríbelo.',
+  'librarian.guide.barcode.2':
+    'Lo que vuelve se lista antes de guardar nada, y cada línea dice si ese libro se une a uno que ya tienes o añade uno nuevo.',
+  'librarian.guide.barcode.3':
+    'Sin clave y sin coste. Lo único que sale del dispositivo es el número, y va a Open Library.',
 
   'librarian.guide.desk.1':
     'Tres peticiones: una sinopsis de cualquier libro, una recomendaci\u00f3n medida por hacia d\u00f3nde va la lectura, y rellenar los datos que faltan en el cat\u00e1logo.',
@@ -133,7 +140,7 @@ export default {
   'nav.catalog': 'Catálogo',
   'nav.shelf': 'Foto de estantería',
   'nav.list': 'Subir lista',
-  'nav.barcode': 'Escanear un código',
+  'nav.barcode': 'Leer códigos',
   'nav.desk': 'BibliotecAPPri@',
   'nav.stacks': 'El depósito',
   'nav.home.hint': 'la página de bienvenida',

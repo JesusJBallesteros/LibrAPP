@@ -439,9 +439,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .tiles figure.dropped figcaption { text-decoration: line-through; }
 .tiles figure.dropped .btn { text-decoration: none; }
 
-/* Centred rather than sat on a baseline, because roughly one word in five is
-   set on its side and a baseline would hang those off the bottom of the row. */
-.word-cloud { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+/* Sat on a baseline, so words of different sizes line up along the bottom the
+   way a line of type does. */
+.word-cloud { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; }
 /* Every word in one colour. Size carries the count; colour never carried
    anything, and the ramp these used to cycle has a pale end that all but
    disappears against paper. */
@@ -455,11 +455,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .word-cloud .word:hover { text-decoration: underline; }
 .word-cloud .word:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-
-/* One word in five stands up, chosen from a hash of the word so it is the same
-   one every time rather than a different one on every rebuild. It is what makes
-   the block read as a cloud rather than as a paragraph of links. */
-.word-cloud .word.upright { writing-mode: vertical-rl; }
 
 /* The two clouds answer different questions and are set differently so they do
    not read as the same panel twice. Keywords are what the collection returns

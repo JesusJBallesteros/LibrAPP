@@ -24,17 +24,17 @@ export default {
   'landing.start': 'Where would you like to start?',
   'landing.start.hint': 'Any of these will set up your storage if you have not chosen it yet.',
 
-  'landing.option.storage': 'I want to choose where my catalog is kept',
+  'landing.option.storage': 'Choose where it is kept',
   'landing.option.storage.hint': 'Set this up first, before adding any books.',
-  'landing.option.photo': 'I have a picture of my shelf',
+  'landing.option.photo': 'Photograph a shelf',
   'landing.option.photo.hint': 'The quickest way to catalog books you own on paper.',
-  'landing.option.list': 'I have a list of the books I own',
+  'landing.option.list': 'Upload a list',
   'landing.option.list.hint': 'A spreadsheet, a CSV, an XML file, or a store export as PDF.',
-  'landing.option.barcode': 'I have the books in front of me',
+  'landing.option.barcode': 'Read barcodes',
   'landing.option.barcode.hint': 'Scan or type the barcode number. Free, exact, and no key needed.',
-  'landing.option.import': 'I have a catalog from another device',
+  'landing.option.import': 'Bring a catalog over',
   'landing.option.import.hint': 'Bring in a file you exported from LibrAPP elsewhere.',
-  'landing.option.browse': 'I want to see my catalog',
+  'landing.option.browse': 'See my catalog',
   'landing.option.browse.hint': 'Go straight to the books you already have here.',
   'landing.option.browse.empty': 'There is nothing here yet. Start with one of the options above.',
 
@@ -94,7 +94,7 @@ export default {
   'librarian.guide.catalog.1':
     'Search covers titles, authors, series and tags. Three filters stay on screen and the rest sit behind "more filters", which says when one of them is hiding something from the list.',
   'librarian.guide.catalog.2':
-    'Any book opens its full record, where it can be edited, starred, or given a note. Spines draws the same books as a shelf.',
+    'The catalog opens as a shelf. Any spine opens its full record, where the book can be edited, starred or given a note, and List shows the same books as rows.',
 
   'librarian.guide.shelf.1':
     'Photograph the shelf straight on and at full size. Spine text a few pixels tall is where invented titles come from.',
@@ -109,6 +109,13 @@ export default {
     'A file holding several lists asks which one to take. Importing a wishlist as a library is the mistake worth one extra question.',
   'librarian.guide.list.3':
     'The same book arriving from a second source becomes one entry, not two. Say how much to trust each source and the more reliable one wins where they disagree.',
+
+  'librarian.guide.barcode.1':
+    'The number under a barcode names the exact edition, so nothing about the book has to be guessed or recalled. Point the camera at it, photograph it, or type it in.',
+  'librarian.guide.barcode.2':
+    'What comes back is listed before any of it is kept, and each line says whether that book joins one already on the shelf or adds a new one.',
+  'librarian.guide.barcode.3':
+    'No key and no cost. The only thing that leaves the device is the number itself, and it goes to Open Library.',
 
   'librarian.guide.desk.1':
     'Three requests: a synopsis of any book, a recommendation weighed against where the reading is going, and filling in the details the catalog is missing.',
@@ -134,7 +141,7 @@ export default {
   'nav.catalog': 'Catalog',
   'nav.shelf': 'Shelf picture',
   'nav.list': 'Upload list',
-  'nav.barcode': 'Scan a barcode',
+  'nav.barcode': 'Read barcodes',
   'nav.desk': "LibrAPPrian's desk",
   'nav.stacks': 'The stacks',
   'nav.home.hint': 'the welcome page',
