@@ -1,5 +1,53 @@
 # Changelog
 
+## v2.3.0
+
+A minor number rather than a patch. The last one was a patch carrying a
+feature, which reads as smaller than it was.
+
+### Forget the whole library, and be able to want it back
+
+Reset the catalog is the only thing in the app that destroys work on purpose,
+so it exists only alongside the way back from it. It copies everything first,
+always, and the copy is listed underneath with every other one.
+
+Recover puts a copy back and copies what it replaces on the way, because
+choosing the wrong one out of a list is a mistake somebody will make, and it
+should cost nothing but a second choice. What is here is read before anything
+is removed: a backup that turns out to be unreadable must not empty the library
+on its way to finding that out.
+
+A backup is an export bundle written into the library instead of being
+downloaded. Nothing about the format is private to backups, which is the point:
+the file a reset leaves behind is the file the export button already writes, so
+Download on any row is a real route to another device rather than a claim about
+one. The extra facts it carries, what it held and why it was made, ride
+alongside and are ignored by anything reading it as an export.
+
+Each copy is listed with when it was made, what it was made for, what it holds
+and how large it is. One that cannot be read is listed too, marked as such,
+because a file that is invisible in the app and present on disk is worse than
+one that can at least be deleted. Every destructive button asks first and names
+what goes.
+
+Two things follow from the shape rather than from the feature. A restore clears
+the corrections as well as the sources, because override ids are handed out by
+the builder and a correction that outlived its book would attach itself to
+whichever book took its id next. And a reset removes the built catalog instead
+of rebuilding it: rebuilding with no sources is refused, rightly, since an empty
+catalog arriving by accident is worth shouting about, so what a reset leaves
+behind is a library that looks exactly like one nothing has been added to yet.
+
+Which is where the last piece came from. That empty page offered a photograph,
+a list and typing a book in, and no way back to the copy made a moment earlier.
+It counts the backups now and says so.
+
+The README section on backups was about exporting by hand, which is still there
+and still true. It leads with the copies the app keeps for itself now, and says
+plainly that recovering replaces where importing adds.
+
+---
+
 ## v2.2.1
 
 All of this came out of one test on an Android phone. Barcodes read, every
@@ -62,6 +110,14 @@ else unknown still throws, including a typo standing next to a retired field.
 
 The crop files themselves are still in the library folder of anyone who read a
 shelf in that window. Nothing reads them, and nothing here deletes them.
+
+### The README catches up
+
+It described barcodes as something the desk does, when they have had a page of
+their own since v2.2.0. That section moves in beside the other ways in and is
+named the way the app names it. The read stamp on a spine, the three things a
+book's card asks for, and the discard on every import list are written up where
+each belongs, and the list of ways in says barcodes are one of them.
 
 ### A failure appears next to the button that caused it
 
