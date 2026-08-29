@@ -418,9 +418,14 @@ vouch for its own format and not for what somebody typed into it:
   is a note in brackets or it starts with one and carries on, drops to **low**
   and is marked as a stand-in to re-photograph.
 - An author column holding a word rather than a name, such as *Reference*,
-  *Various*, *VV.AA.* or *Unknown*, drops the entry to **medium** and says so.
-  A book that honestly has no personal author, like a reference work or an
-  anthology, is recorded as such and is not doubted for it.
+  *Various*, *VV.AA.*, *Unknown* or the catalogue abbreviations *s.n.* and
+  *s.a.*, drops the entry to **medium** and says so. A book that honestly has no
+  personal author, like a reference work or an anthology, is recorded as such and
+  is not doubted for it.
+- The publisher's name sitting in the author column drops it to **medium** too.
+- A first-published year that has not happened yet does the same. Only the
+  future is doubted: that field is when the work first appeared, so an ancient
+  text with a year of 180 is right and is left alone.
 
 When two sources disagree, the more reliable one wins on facts it can know. A
 store export knows the purchase date; a photograph does not. Judgements like

@@ -43,8 +43,19 @@ const PLACEHOLDER =
 // A book can honestly have no personal author, which is what no_personal_author
 // records; this is different, and means the column was filled with a word
 // standing in for the answer.
+// s.n. and s.a. are what a library catalogue prints for an unnamed publisher
+// or an unnamed author, and they reach a spreadsheet by being copied out of
+// one.
 const PLACEHOLDER_AUTHOR =
-  /^\s*(?:reference|various|various authors|anon|anonymous|unknown|n\s*\/?\s*a|varios|varios autores|vv\.?\s*aa\.?|aa\.?\s*vv\.?|desconocido|autor desconocido)\s*$/iu
+  /^\s*(?:reference|various|various authors|anon|anonymous|unknown|n\s*\/?\s*a|s\.\s*n\.?|s\.\s*a\.?|sine nomine|varios|varios autores|vv\.?\s*aa\.?|aa\.?\s*vv\.?|desconocido|autor desconocido)\s*$/iu
+
+// A year a book cannot have been first published in. Only the future is
+// checked: the field is when the work first appeared, and a shelf with Plato
+// and Marcus Aurelius on it holds first-published years of -375 and 180. A
+// floor at the invention of printing, which is the obvious thing to write,
+// would demote three books in this app's own demo.
+const impossibleYear = (year) =>
+  Number.isInteger(year) && year > new Date().getFullYear() + 1
 
 /** Whichever of two confidence values is the lower. */
 const lower = (a, b) => (rank(a) <= rank(b) ? a : b)
@@ -430,6 +441,21 @@ function buildEntry(cluster, collapsed, authors, ids) {
     !placeholder && shownAuthors.some((name) => name && PLACEHOLDER_AUTHOR.test(String(name)))
   if (standInAuthor) flags.push('placeholder_author')
 
+  // The publisher's name in the author column. A source that puts it there has
+  // put something in the field rather than left it empty, which reads as an
+  // answer and is not one.
+  const publisher = firstFact('publisher')
+  const authorIsPublisher =
+    Boolean(publisher) &&
+    shownAuthors.some((name) => name && fold(String(name)) === fold(String(publisher)))
+  if (authorIsPublisher) flags.push('author_is_publisher')
+
+  // A first-published year that has not happened yet. Nothing else about the
+  // date is doubted, because the field is when the work first appeared and that
+  // is legitimately ancient for a good deal of what people own.
+  const futureYear = impossibleYear(firstFact('published_year'))
+  if (futureYear) flags.push('impossible_year')
+
   const base = slugify(credits.length ? credits[0] : '', title)
   let entryId = base
   let n = 2
@@ -492,7 +518,7 @@ function buildEntry(cluster, collapsed, authors, ids) {
       ? 'low'
       : lower(
           maxBy(cluster.records, (r) => rank(r.confidence)).confidence,
-          standInAuthor ? 'medium' : 'high',
+          standInAuthor || authorIsPublisher || futureYear ? 'medium' : 'high',
         ),
     flags: sortedUnique(flags),
   }

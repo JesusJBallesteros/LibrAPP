@@ -329,3 +329,79 @@ describe('a floor under what a tidy file can claim', () => {
     expect(book.confidence).toBe('high')
   })
 })
+
+// The rest of the plausibility checks. Each one demotes rather than refuses,
+// because a value that looks wrong is still the value the source gave and
+// throwing it away would lose more than it saves.
+describe('more of what a tidy file cannot claim', () => {
+  const trusted = (records) => build([source({ name: 'list', confidence: 'high' }, records)])
+
+  it('catches the catalogue abbreviations for an unnamed author', () => {
+    for (const name of ['s.n.', 's. n.', 'S.A.', 'sine nomine']) {
+      const book = find(trusted([{ title: `Book by ${name}`, author_label: name }]), 'Book by')
+      expect(book.flags).toContain('placeholder_author')
+      expect(book.confidence).toBe('medium')
+    }
+  })
+
+  it('catches the publisher standing in the author column', () => {
+    const book = find(
+      trusted([{ title: 'A Guide', authors: ['Dorling Kindersley'], publisher: 'Dorling Kindersley' }]),
+      'A Guide',
+    )
+    expect(book.flags).toContain('author_is_publisher')
+    expect(book.confidence).toBe('medium')
+  })
+
+  it('compares the two by their comparison form, not letter by letter', () => {
+    const book = find(
+      trusted([{ title: 'A Guide', authors: ['ÉDITIONS DU SEUIL'], publisher: 'Éditions du Seuil' }]),
+      'A Guide',
+    )
+    expect(book.flags).toContain('author_is_publisher')
+  })
+
+  it('leaves an author who merely has a publisher alone', () => {
+    const book = find(
+      trusted([{ title: 'Dune', authors: ['Frank Herbert'], publisher: 'Ace Books' }]),
+      'Dune',
+    )
+    expect(book.flags).not.toContain('author_is_publisher')
+    expect(book.confidence).toBe('high')
+  })
+
+  it('catches a book first published after this year', () => {
+    const book = find(
+      trusted([{ title: 'From The Future', authors: ['Someone'], published_year: 3000 }]),
+      'From The Future',
+    )
+    expect(book.flags).toContain('impossible_year')
+    expect(book.confidence).toBe('medium')
+  })
+
+  it('allows next year, because a book can be announced', () => {
+    const soon = new Date().getFullYear() + 1
+    const book = find(trusted([{ title: 'Announced', authors: ['Someone'], published_year: soon }]), 'Announced')
+    expect(book.flags).not.toContain('impossible_year')
+    expect(book.confidence).toBe('high')
+  })
+
+  it('leaves an ancient work alone, because that is what the field means', () => {
+    // The field is when the work first appeared. A floor at the invention of
+    // printing is the obvious check to write and would demote Plato.
+    for (const year of [-375, -340, 180, 1320]) {
+      const book = find(trusted([{ title: `Work of ${year}`, authors: ['Someone'], published_year: year }]), 'Work of')
+      expect(book.flags).not.toContain('impossible_year')
+      expect(book.confidence).toBe('high')
+    }
+  })
+
+  it('demotes once however many things are wrong with a row', () => {
+    const book = find(
+      trusted([{ title: 'Odd', authors: ['Various'], publisher: 'Various', published_year: 4000 }]),
+      'Odd',
+    )
+    expect(book.confidence).toBe('medium')
+    expect(book.flags).toContain('placeholder_author')
+  })
+})

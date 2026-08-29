@@ -242,6 +242,8 @@ export default {
   'flag.no_genre': 'todavía sin género',
   'flag.placeholder': 'un marcador de posición, no un título real: vuelve a fotografiarlo',
   'flag.placeholder_author': 'la columna de autoría trae una palabra de relleno en vez de un nombre',
+  'flag.author_is_publisher': 'la columna de autoría trae el nombre de la editorial',
+  'flag.impossible_year': 'publicado por primera vez en un año que aún no ha llegado',
   'flag.series_not_expanded': 'representa varios volúmenes que ninguna fuente lista por separado',
   'flag.corrected': 'corregiste esta entrada a mano',
 

@@ -244,6 +244,8 @@ export default {
   'flag.no_genre': 'no genre recorded yet',
   'flag.placeholder': 'a stand-in, not a real title - re-photograph this one',
   'flag.placeholder_author': 'the author column holds a stand-in word rather than a name',
+  'flag.author_is_publisher': 'the author column holds the publisher name',
+  'flag.impossible_year': 'first published in a year that has not happened yet',
   'flag.series_not_expanded': 'stands for several volumes no source lists individually',
   'flag.corrected': 'you corrected this entry by hand',
 

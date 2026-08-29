@@ -210,6 +210,32 @@ anybody can buy.
 
 ## Unreleased
 
+### Three more things a tidy file cannot claim
+
+Confidence grades where a value came from and not whether it is plausible, and
+two checks already sat under that. Three more:
+
+The catalogue abbreviations for an unnamed author, s.n., s.a. and sine nomine,
+join the stand-in words already caught. They reach a spreadsheet by being copied
+out of a library record.
+
+The publisher's name in the author column, compared in the form the app compares
+names in, so a difference of case or accent does not hide it. A source that puts
+it there has filled the field rather than left it empty, which reads as an answer
+and is not one.
+
+A first-published year that has not happened yet. Only the future: the field is
+when the work first appeared, and the obvious check, a floor at the invention of
+printing, would demote Plato and Marcus Aurelius, both of whom are in this app's
+own demo at -375 and 180. Next year is allowed, because a book can be announced.
+
+Each demotes to medium and says why. Run against the demo, none of the three
+fires on any of its ninety-one books.
+
+Not done, deliberately: the same value repeated across an implausible share of
+rows. A specialist collection legitimately has one publisher throughout, and a
+check that fires on real data is worse than no check.
+
 ### The camera reads barcodes as they pass
 
 Photographing a barcode, opening the file, waiting for it to decode and doing
