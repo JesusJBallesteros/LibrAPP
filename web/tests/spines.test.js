@@ -272,3 +272,59 @@ describe('height no longer comes from the page count', () => {
     expect(wall.map(spineWidth)).toEqual([52, 42, 52])
   })
 })
+
+// The stamp at the foot of a read spine. It is drawn, not coloured: replacing
+// the eight fills with two would have cost the wall the one thing that makes a
+// book recognisable across a re-sort, so read state is a mark on top instead.
+describe('the read stamp', () => {
+  const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
+  const mark = readFileSync(new URL('../src/components/ReadMark.jsx', import.meta.url), 'utf8')
+  const catalog = readFileSync(new URL('../src/views/Catalog.jsx', import.meta.url), 'utf8')
+
+  // Pulled out of the declarations rather than duplicated here, so the test
+  // fails when one of the three numbers moves without the others.
+  const px = (rule, prop) => {
+    const at = css.indexOf(rule)
+    expect(at).toBeGreaterThan(-1)
+    const block = css.slice(at, css.indexOf('}', at))
+    const key = block.indexOf(prop + ':')
+    expect(key).toBeGreaterThan(-1)
+    return Number(block.slice(key + prop.length + 1, block.indexOf(';', key)).replace('px', '').trim())
+  }
+
+  const size = px('.spine-mark {', 'width')
+  const foot = px('.spine-mark {', 'bottom')
+  const reserve = px('.spine.read {', 'padding-bottom')
+
+  it('reserves enough of the spine that the lettering clears it', () => {
+    // The title's max-height is 100% of the content box, so this padding is the
+    // only thing keeping a long name off the stamp.
+    expect(reserve).toBeGreaterThanOrEqual(size + foot)
+  })
+
+  it('fits across the thinnest spine there is', () => {
+    expect(size).toBeLessThan(spineWidth({ pages: 100 }))
+  })
+
+  it('is drawn in the ink the spine already picked', () => {
+    // Every stroke is currentColor, which is the per-fill ink proved at 4.5:1
+    // above. A colour of its own would need eight more contrast checks and
+    // would be the first thing to go stale when the palette moved.
+    const strokes = [...mark.matchAll(/stroke="([^"]+)"/g)].map((m) => m[1])
+    expect(strokes.length).toBeGreaterThan(0)
+    for (const stroke of strokes) expect(stroke).toBe('currentColor')
+    expect(mark).not.toMatch(/fill="(?!none)/)
+  })
+
+  it('marks read and nothing else', () => {
+    // Unread and unrecorded are different answers and neither is one a stamp
+    // can give, so only the true case draws anything.
+    expect(catalog).toContain("readState(book) === 'read'")
+    expect(catalog).toContain('{done && <ReadMark />}')
+  })
+
+  it('does not take the click away from the spine', () => {
+    const at = css.indexOf('.spine-mark {')
+    expect(css.slice(at, css.indexOf('}', at))).toContain('pointer-events: none')
+  })
+})

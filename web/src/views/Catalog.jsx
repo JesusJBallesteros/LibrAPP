@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import BookEditor from '../components/BookEditor.jsx'
 import BookPanel from '../components/BookPanel.jsx'
+import ReadMark from '../components/ReadMark.jsx'
 import { setOverride } from '../core/overrides.js'
 import {
   authorNames,
@@ -636,6 +637,7 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
           }
           const book = item.book
           const name = byline(book, authors)
+          const done = readState(book) === 'read'
           return (
             <div
               key={book.id}
@@ -649,9 +651,11 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
                   it sits over the spine rather than down on the shelf board. */}
               <Star book={book} onToggle={onToggle} t={t} busy={busy} />
               <button
-                className="spine"
+                className={`spine${done ? ' read' : ''}`}
                 aria-selected={selected?.id === book.id}
-                title={name ? `${book.title} · ${name}` : book.title}
+                title={[book.title, name, done ? t('read.read') : null]
+                  .filter(Boolean)
+                  .join(' · ')}
                 onPointerDown={(e) => {
                   pointer.current = e.pointerType || 'mouse'
                 }}
@@ -676,6 +680,9 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
                     prints it, and only worth the room once the spine is pulled
                     out far enough to read. */}
                 {name && <span className="spine-author">{name}</span>}
+                {/* At the foot, where a library stamps one, and clear of the
+                    lettering because a read spine carries the padding for it. */}
+                {done && <ReadMark />}
               </button>
             </div>
           )

@@ -650,7 +650,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   padding: 13px 4px 13px 0;
   cursor: pointer;
   line-height: 1;
-  font-size: 14px;
+  font-size: 17px;
   color: var(--ink-faint);
   opacity: .35;
   transition: opacity .12s, color .12s;
@@ -1093,7 +1093,7 @@ pre.snippet {
 /* The glyph stays small; the area that answers a finger does not. A spine is
    26px wide, so the target takes the whole width and gains its height from
    padding. */
-.spine-slot .star-cell { padding: 6px 0; width: 100%; font-size: 13px; opacity: .3; }
+.spine-slot .star-cell { padding: 6px 0; width: 100%; font-size: 16px; opacity: .3; }
 @media (hover: hover) {
   .spine-slot .star-cell { opacity: 0; }
   .spine-slot:hover .star-cell { opacity: 1; }
@@ -1117,6 +1117,37 @@ pre.snippet {
      edge and a highlight down the left. */
   box-shadow: inset -3px 0 6px rgba(0, 0, 0, .16), inset 3px 0 4px rgba(255, 255, 255, .12);
 }
+/* A read spine keeps its foot clear. The title's max-height is 100% of this
+   box, so the padding is what stops a long name running under the stamp
+   rather than a second rule that would have to be kept in step with it. */
+.spine.read { padding-bottom: 26px; }
+
+/* The stamp itself. Absolute so it hangs off the foot without joining the
+   flex row the lettering sits in, and turned a few degrees because a mark
+   pressed by hand is never quite square to the page. */
+.spine-mark {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-7deg);
+  /* currentColor on the drawing, which is the ink this spine picked for its
+     own fill. Held under full strength so it reads as ink pressed into the
+     cloth rather than as a control sitting on top of it. */
+  opacity: .8;
+  /* The whole spine is the button. A mark that took the click would open the
+     book from a different element and swallow the touch-to-peek. */
+  pointer-events: none;
+}
+.spine-mark svg { display: block; width: 100%; height: 100%; }
+/* At raised contrast the ink is at 7:1 and holding the mark under strength
+   gives that back. Nothing here is decoration once the page is being read at
+   low vision, so the stamp goes to full ink like the lettering. */
+@media (prefers-contrast: more) {
+  :root:not([data-contrast='normal']) .spine-mark { opacity: 1; }
+}
+:root[data-contrast='high'] .spine-mark { opacity: 1; }
 /* Turned on its side, so the block axis runs across the spine and the inline
    axis runs down it. That is what makes the two limits below mean what they
    say: inline is how long one line may be, block is how many lines fit. */
@@ -1851,4 +1882,19 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 @media (max-width: 420px) {
   .pie-wrap { gap: 14px; }
   .pie-legend { flex-basis: 100%; }
+}
+
+/* Text for a screen reader and not for the eye. Not display:none and not
+   visibility:hidden, both of which take it out of the accessible tree as well
+   as out of the picture, which is the opposite of the point. */
+.offscreen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
