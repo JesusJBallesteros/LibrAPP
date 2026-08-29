@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import { loadTranscription, tileImage } from '../ingest/shelf.js'
+import { bookKey, loadTranscription, tileImage, withoutDropped } from '../ingest/shelf.js'
 import { stemOf } from '../store/library.js'
 import { copyText } from '../lib.js'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
@@ -16,6 +16,7 @@ import { EXTRAS, extrasPrompt } from '../ai/extras.js'
 import { idbGet, idbSet } from '../store/idb.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 import DemoWarning from '../components/DemoWarning.jsx'
+import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -62,6 +63,14 @@ export default function Shelf({ lib, onOwl }) {
   // a third place on this page, and a message shared between them would appear
   // beside whichever was pressed last rather than whichever just failed.
   const [saveError, setSaveError] = useState(null)
+  // Books set aside from what the model proposed. Separate from the tile set
+  // above: that one decides what is sent and paid for, this one decides what is
+  // written. Keyed by position in the transcription, which is stable for as
+  // long as that transcription is the one on screen.
+  const { dropped: droppedBooks, toggle: toggleBook, reset: resetBooks } = useKeepSet()
+  // The name of a transcription brought in as a file, kept only to name the
+  // source when the transcription does not name a photograph itself.
+  const [droppedName, setDroppedName] = useState(null)
   // Which batch is in flight. A long shelf is read in several requests, and a
   // button that says nothing for two minutes looks like a button that failed.
   const [progress, setProgress] = useState(null)
@@ -107,6 +116,9 @@ export default function Shelf({ lib, onOwl }) {
     // Tile names are positions in a grid, so they mean something different
     // after a recut. Carrying the old set over would discard the wrong tiles.
     setDropped(new Set())
+    // And the same for the books of whatever was proposed from the last cut.
+    resetBooks()
+    setDroppedName(null)
     setWorking(true)
     try {
       // Object URLs from the previous cut are useless now and would otherwise
@@ -172,6 +184,7 @@ export default function Shelf({ lib, onOwl }) {
           b.original_language != null ||
           b.pages != null,
       ).length
+      resetBooks()
       setProposed({ transcription, usage, counted: books.length, recalled })
       // Some tiles came back and some did not. What arrived is worth keeping,
       // and the reader has to know the rest is missing before importing it as
@@ -195,12 +208,23 @@ export default function Shelf({ lib, onOwl }) {
     }
   }
 
+  // The transcription with the set-aside books taken out, which is what gets
+  // written. A shelf left with no books at all is dropped rather than written
+  // as an empty group: the reader discarded everything on it, and a location
+  // holding nothing is not a fact about the photograph.
+  const keptTranscription = proposed && withoutDropped(proposed.transcription, droppedBooks)
+  const keptCount = keptTranscription
+    ? keptTranscription.shelves.reduce((n, shelf) => n + shelf.books.length, 0)
+    : 0
+
   const acceptProposed = () =>
     lib.run(async (library) => {
-      const { records, stats } = loadTranscription(proposed.transcription)
+      const { records, stats } = loadTranscription(keptTranscription)
       // Named after the photograph, so a second shelf does not overwrite the
       // first and re-reading the same one still replaces it.
-      const origin = stats.photo || tiles.photo
+      // A transcription brought in as a file has no tiles behind it, so the
+      // file's own name is the last thing left to name the source after.
+      const origin = stats.photo || tiles?.photo || droppedName || 'shelf'
       await library.putSource({
         name: await library.nameFor(`shelf-${stemOf(origin)}`, origin),
         kind: 'photo',
@@ -221,22 +245,35 @@ export default function Shelf({ lib, onOwl }) {
     cut(photo, { cols, rows })
   }
 
-  const onTranscription = (file) =>
-    lib.run(async (library) => {
-      const { records, stats } = loadTranscription(JSON.parse(await file.text()))
-      const origin = stats.photo || file.name
-      await library.putSource({
-        name: await library.nameFor(`shelf-${stemOf(origin)}`, origin),
-        kind: 'photo',
-        origin,
-        format: 'physical',
-        confidence: 'medium',
-        records,
-        stats,
+  /**
+   * A transcription brought in as a file, rather than read here.
+   *
+   * It goes to the same review the read one does instead of straight into the
+   * catalog. The file is the output of a model either way, so it deserves the
+   * same look before it is written, and routing it here means the books in it
+   * can be discarded one at a time like any others.
+   */
+  const onTranscription = async (file) => {
+    setSaveError(null)
+    try {
+      const transcription = JSON.parse(await file.text())
+      // Parsed once here so a malformed file is refused at the drop zone rather
+      // than after a review of books that were never going to be written.
+      const { records } = loadTranscription(transcription)
+      const books = (transcription.shelves || []).flatMap((shelf) => shelf.books || [])
+      resetBooks()
+      setDroppedName(file.name)
+      setProposed({
+        transcription,
+        // Nothing was spent here: the reading happened somewhere else.
+        usage: null,
+        counted: records.length,
+        recalled: books.filter((b) => b.recalled).length,
       })
-      const catalog = await library.rebuild()
-      setResult({ count: records.length, stats, counts: catalog.counts })
-    }, { onError: setSaveError })
+    } catch (err) {
+      setSaveError(err.message)
+    }
+  }
 
   // A failure that renders off-screen is the bug being fixed here, so put it
   // in view rather than trusting that it is near enough.
@@ -550,6 +587,7 @@ export default function Shelf({ lib, onOwl }) {
                 </span>
               </div>
               <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.checkNote')}</p>
+              <p className="tiny faint" style={{ marginTop: 6 }}>{t('keep.note')}</p>
 
               {(proposed.transcription.shelves || []).map((shelf, i) => (
                 <div key={i} style={{ marginTop: 12 }}>
@@ -557,8 +595,13 @@ export default function Shelf({ lib, onOwl }) {
                     {shelf.location || t('shelf.unplaced')}{' '}
                     <span className="faint">· {shelf.books?.length || 0}</span>
                   </div>
-                  {(shelf.books || []).map((book, j) => (
-                    <div className="forgotten-item spread" key={j}>
+                  {(shelf.books || []).map((book, j) => {
+                    const isDropped = droppedBooks.has(bookKey(i, j))
+                    return (
+                    <div
+                      className={`forgotten-item spread${isDropped ? ' discarded' : ''}`}
+                      key={j}
+                    >
                       <span>
                         <span className="title">{book.title}</span>
                         <br />
@@ -568,13 +611,27 @@ export default function Shelf({ lib, onOwl }) {
                         </span>
                         {book.notes && <div className="why">{book.notes}</div>}
                       </span>
-                      <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
-                        {t(`confidence.${book.confidence}`)}
+                      <span className="row" style={{ gap: 10, alignItems: 'center' }}>
+                        {isDropped ? (
+                          <span className="tiny faint">{t('keep.discardedTag')}</span>
+                        ) : (
+                          <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
+                            {t(`confidence.${book.confidence}`)}
+                          </span>
+                        )}
+                        <KeepToggle
+                          dropped={isDropped}
+                          disabled={lib.busy}
+                          onToggle={() => toggleBook(bookKey(i, j))}
+                        />
                       </span>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               ))}
+
+              <KeepSummary kept={keptCount} total={proposed.counted} />
 
               {saveError && (
                 <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
@@ -583,8 +640,12 @@ export default function Shelf({ lib, onOwl }) {
               )}
 
               <div className="row" style={{ marginTop: 14 }}>
-                <button className="btn primary" onClick={acceptProposed} disabled={lib.busy}>
-                  {t('shelf.importThese', { n: proposed.counted })}
+                <button
+                  className="btn primary"
+                  onClick={acceptProposed}
+                  disabled={lib.busy || !keptCount}
+                >
+                  {t('shelf.importThese', { n: keptCount })}
                 </button>
                 <button className="btn" onClick={() => setProposed(null)} disabled={lib.busy}>
                   {t('shelf.discard')}

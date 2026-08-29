@@ -1,14 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { loadTable, missingFields, readXlsx, readXml, xmlSections } from '../ingest/table.js'
 import { parseKindle } from '../ingest/kindle.js'
 import { linesFromPdf } from '../ingest/pdftext.js'
 import { stemOf } from '../store/library.js'
 import DemoWarning from '../components/DemoWarning.jsx'
+import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
 const FORMATS = ['physical', 'ebook', 'audio']
 const CONFIDENCES = ['high', 'medium', 'low']
+
+// How many rows to draw before asking. A spreadsheet exported from a store
+// can hold a few thousand, and every row here is a button and three pieces of
+// text. Drawing all of them costs a phone a visible pause for a list nobody
+// reads to the end.
+const ROWS_AT_FIRST = 200
 
 const suffixOf = (name) => (/\.[^.]+$/.exec(name || '') || [''])[0].toLowerCase()
 
@@ -57,6 +64,13 @@ export default function ListImport({ lib, onOwl }) {
   const [error, setError] = useState(null)
   const [result, setResult] = useState(null)
   const [working, setWorking] = useState(false)
+  // The rows themselves, parsed as soon as the file and the chosen list are
+  // settled. This page used to write a spreadsheet without ever showing what
+  // was in it, which made it the one way in with nothing to check.
+  const [rows, setRows] = useState(null)
+  const [rowError, setRowError] = useState(null)
+  const [showAll, setShowAll] = useState(false)
+  const { dropped, toggle, reset } = useKeepSet()
 
   const onFile = async (file) => {
     setError(null)
@@ -95,21 +109,62 @@ export default function ListImport({ lib, onOwl }) {
     }
   }
 
+  // Parsed here rather than inside the import, so the rows can be looked at
+  // and set aside first. Re-runs when the chosen list changes, because a
+  // different sheet of the same file is a different set of rows.
+  useEffect(() => {
+    if (!pending) {
+      setRows(null)
+      return undefined
+    }
+    let cancelled = false
+    setRows(null)
+    setRowError(null)
+    setShowAll(false)
+    reset()
+    ;(async () => {
+      try {
+        const bytes = new Uint8Array(await pending.file.arrayBuffer())
+        const records = await loadTable({
+          name: pending.file.name,
+          bytes,
+          text: new TextDecoder('utf-8').decode(bytes),
+          section: section || null,
+        })
+        if (!cancelled) setRows(records)
+      } catch (err) {
+        if (!cancelled) setRowError(err.message)
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pending, section])
+
+  // Row numbers are the key. Nothing in a spreadsheet row is reliably unique,
+  // and two copies of the same title are two books until somebody says
+  // otherwise.
+  const keptRows = rows ? rows.filter((_, i) => !dropped.has(i)) : []
+
   const doImport = () =>
     lib.run(async (library) => {
       const before = lib.catalog?.counts?.books ?? 0
       const { file } = pending
-      const bytes = new Uint8Array(await file.arrayBuffer())
-      const records = await loadTable({
-        name: file.name,
-        bytes,
-        text: new TextDecoder('utf-8').decode(bytes),
-        section: section || null,
-      })
+      // Already parsed for the preview. Reading the file a second time here
+      // would be a second chance to disagree with what was on the screen.
+      const records = keptRows
       const { file: written } = await library.putSource({
         name: await library.nameFor(name, file.name),
         kind: 'table', origin: file.name, format, confidence,
-        records, stats: { rows: records.length, section: section || null },
+        records,
+        // What the file held, and what of it was kept. A source that says 40
+        // rows when the sheet had 60 should say so in its own stats.
+        stats: {
+          rows: records.length,
+          of: rows.length,
+          section: section || null,
+        },
       })
       const catalog = await library.rebuild()
       setPending(null)
@@ -217,17 +272,86 @@ export default function ListImport({ lib, onOwl }) {
               </select>
             </label>
 
-            <button className="btn primary" onClick={doImport} disabled={lib.busy}>
-              {lib.busy ? t('common.importing') : t('list.importAction')}
-            </button>
           </div>
 
-          {/* Beside the button, not at the top of the page. This panel is long
-              enough on a phone that the two are never on screen together. */}
-          {error && (
-            <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
-              <p className="tiny">{error}</p>
+          {/* What is actually in the file. Everything above this decides how the
+              rows are read; this is the rows. */}
+          {rowError ? (
+            <div className="notice bad" role="alert" style={{ marginTop: 14 }}>
+              <p className="tiny">{rowError}</p>
             </div>
+          ) : rows === null ? (
+            <p className="tiny faint" style={{ marginTop: 14 }}>{t('list.reading')}</p>
+          ) : (
+            <>
+              <div className="section-head spread" style={{ marginTop: 20 }}>
+                <h3>{t('list.whatItHolds', { n: rows.length })}</h3>
+              </div>
+              <p className="tiny faint">{t('keep.note')}</p>
+
+              <ul className="lookup-list">
+                {(showAll ? rows : rows.slice(0, ROWS_AT_FIRST)).map((record, i) => {
+                  const isDropped = dropped.has(i)
+                  return (
+                    <li key={i} className={isDropped ? 'discarded' : undefined}>
+                      <span>
+                        <span className="title">{record.title}</span>
+                        <br />
+                        <span className="tiny muted">
+                          {[
+                            (record.authors || []).join(', ') || t('isbn.noAuthor'),
+                            record.publisher,
+                            record.published_year,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ')}
+                        </span>
+                      </span>
+                      <span className="lookup-fate tiny">
+                        {isDropped && (
+                          <span className="faint">{t('keep.discardedTag')}</span>
+                        )}
+                        <KeepToggle
+                          dropped={isDropped}
+                          disabled={lib.busy}
+                          onToggle={() => toggle(i)}
+                        />
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+
+              {rows.length > ROWS_AT_FIRST && !showAll && (
+                <p className="tiny faint">
+                  {t('list.showingSome', { shown: ROWS_AT_FIRST, n: rows.length })}{' '}
+                  <button className="btn link" onClick={() => setShowAll(true)}>
+                    {t('list.showAll', { n: rows.length })}
+                  </button>
+                </p>
+              )}
+
+              <KeepSummary kept={keptRows.length} total={rows.length} />
+
+              {/* Beside the button, not at the top of the page. This panel is
+                  long enough on a phone that the two are never on screen
+                  together. */}
+              {error && (
+                <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+                  <p className="tiny">{error}</p>
+                </div>
+              )}
+
+              <div className="row" style={{ marginTop: 14 }}>
+                <button
+                  className="btn primary"
+                  onClick={doImport}
+                  disabled={lib.busy || !keptRows.length}
+                >
+                  {lib.busy ? t('common.importing') : t('list.importAction')}
+                </button>
+              </div>
+            </>
           )}
 
           <p className="tiny faint" style={{ marginTop: 10 }}>

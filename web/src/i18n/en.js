@@ -117,6 +117,8 @@ export default {
   'librarian.guide.barcode.3':
     'No key and no cost. The only thing that leaves the device is the number itself, and it goes to Open Library.',
 
+  'librarian.guide.discard':
+    'Every way in ends with a list to check, and any single line on it can be discarded before the rest is kept. Everything is kept unless it is set aside, and nothing is written until then.',
   'librarian.guide.desk.1':
     'Three requests: a synopsis of any book, a recommendation weighed against where the reading is going, and filling in the details the catalog is missing.',
   'librarian.guide.desk.2':
@@ -279,6 +281,9 @@ export default {
   'list.callIt': 'Call it',
   'list.theseAre': 'These are',
   'list.trust': 'Trust',
+  'list.whatItHolds': 'The {n} {n:row|rows} in this list',
+  'list.showingSome': 'Showing the first {shown}.',
+  'list.showAll': 'Show all {n}',
   'list.importAction': 'Import and rebuild',
   'list.theseAreNote': 'is only a fallback: rows naming their own format keep it.',
   'list.trustNote':
@@ -803,6 +808,14 @@ export default {
 
   'list.savedAs': 'Saved as {name}.',
 
+  // The same vocabulary as the tiles above, for the rows of every import
+  // list. Kept is the default, so the control names the other thing.
+  'keep.discard': 'Discard',
+  'keep.restore': 'Keep',
+  'keep.discardedTag': 'discarded',
+  'keep.someDropped': '{n} discarded. {kept} will be imported.',
+  'keep.noneLeft': 'Everything here is discarded. There is nothing left to import.',
+  'keep.note': 'Every one of these is imported unless it is discarded.',
   'shelf.dropTile': 'Discard',
   'shelf.keepTile': 'Keep',
   'shelf.droppedTag': 'discarded',

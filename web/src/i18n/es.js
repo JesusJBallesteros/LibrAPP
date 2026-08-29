@@ -116,6 +116,8 @@ export default {
   'librarian.guide.barcode.3':
     'Sin clave y sin coste. Lo único que sale del dispositivo es el número, y va a Open Library.',
 
+  'librarian.guide.discard':
+    'Cada vía de entrada termina en una lista para revisar, y cualquier línea suelta se puede descartar antes de guardar el resto. Todo se conserva salvo lo que se aparte, y no se escribe nada hasta entonces.',
   'librarian.guide.desk.1':
     'Tres peticiones: una sinopsis de cualquier libro, una recomendaci\u00f3n medida por hacia d\u00f3nde va la lectura, y rellenar los datos que faltan en el cat\u00e1logo.',
   'librarian.guide.desk.2':
@@ -274,6 +276,9 @@ export default {
   'list.callIt': 'Llámala',
   'list.theseAre': 'Son',
   'list.trust': 'Confianza',
+  'list.whatItHolds': '{n} {n:fila|filas} en esta lista',
+  'list.showingSome': 'Se muestran las primeras {shown}.',
+  'list.showAll': 'Mostrar las {n}',
   'list.importAction': 'Importar y reconstruir',
   'list.theseAreNote': 'es solo un valor por defecto: las filas que indican su propio formato lo conservan.',
   'list.trustNote':
@@ -806,6 +811,12 @@ export default {
 
   'list.savedAs': 'Guardado como {name}.',
 
+  'keep.discard': 'Descartar',
+  'keep.restore': 'Recuperar',
+  'keep.discardedTag': 'descartado',
+  'keep.someDropped': '{n} descartados. Se importarán {kept}.',
+  'keep.noneLeft': 'Está todo descartado. No queda nada que importar.',
+  'keep.note': 'Todo esto se importa salvo lo que se descarte.',
   'shelf.dropTile': 'Descartar',
   'shelf.keepTile': 'Recuperar',
   'shelf.droppedTag': 'descartada',

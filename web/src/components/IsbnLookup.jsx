@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { lookup, nativeBarcodes, parseCodes, previewLookup, readBarcodes } from '../ingest/isbn.js'
+import { KeepSummary, KeepToggle, useKeepSet } from './Keep.jsx'
 import LiveScan, { cameraAvailable } from './LiveScan.jsx'
 import { useT } from '../i18n/index.jsx'
 
@@ -28,6 +29,7 @@ export default function IsbnLookup({ lib, onDone }) {
   const [busy, setBusy] = useState(false)
   const [progress, setProgress] = useState(null)
   const [error, setError] = useState(null)
+  const { dropped, toggle, reset } = useKeepSet()
   const [found, setFound] = useState(null)
   const [written, setWritten] = useState(null)
   // Whether the browser has a reader of its own. Null until asked. Where it
@@ -74,6 +76,8 @@ export default function IsbnLookup({ lib, onDone }) {
         // still works; it just goes in without saying what it will do.
         merges = []
       }
+      // A new set of results means the old discards refer to nothing.
+      reset()
       setFound({ ...result, merges })
     } catch (err) {
       if (err?.name !== 'AbortError') setError(err.message)
@@ -84,11 +88,14 @@ export default function IsbnLookup({ lib, onDone }) {
     }
   }
 
+  // What Keep will actually write. Everything found, less what was set aside.
+  const keeping = found ? found.found.filter((r) => !dropped.has(r.isbn)) : []
+
   const keep = () =>
     lib.run(async (library) => {
-      await library.addLookupRecords(found.found, { format })
+      await library.addLookupRecords(keeping, { format })
       const catalog = await library.rebuild()
-      setWritten({ n: found.found.length, books: catalog.counts?.books })
+      setWritten({ n: keeping.length, books: catalog.counts?.books })
       setFound(null)
       setText('')
       onDone?.()
@@ -266,10 +273,13 @@ export default function IsbnLookup({ lib, onDone }) {
           </p>
           <p className="tiny faint">{t('isbn.checkThese')}</p>
           <p className="tiny faint">{t('isbn.mergeNote')}</p>
+          <p className="tiny faint">{t('keep.note')}</p>
 
           <ul className="lookup-list">
-            {found.found.map((record) => (
-              <li key={record.isbn}>
+            {found.found.map((record) => {
+              const isDropped = dropped.has(record.isbn)
+              return (
+              <li key={record.isbn} className={isDropped ? 'discarded' : undefined}>
                 <span>
                   <span className="title">{record.title}</span>
                   <br />
@@ -285,7 +295,9 @@ export default function IsbnLookup({ lib, onDone }) {
                   </span>
                 </span>
                 <span className="lookup-fate tiny">
-                  {(() => {
+                  {isDropped ? (
+                    <span className="faint">{t('keep.discardedTag')}</span>
+                  ) : (() => {
                     const fate = found.merges?.find((m) => m.isbn === record.isbn)
                     if (!fate) return <span className="faint tabular">{record.isbn}</span>
                     return fate.joins ? (
@@ -296,9 +308,15 @@ export default function IsbnLookup({ lib, onDone }) {
                       <span className="faint">{t('isbn.isNew')}</span>
                     )
                   })()}
+                  <KeepToggle
+                    dropped={isDropped}
+                    disabled={lib?.busy}
+                    onToggle={() => toggle(record.isbn)}
+                  />
                 </span>
               </li>
-            ))}
+              )
+            })}
           </ul>
 
           {found.missing.length > 0 && (
@@ -317,13 +335,15 @@ export default function IsbnLookup({ lib, onDone }) {
             </div>
           )}
 
+          <KeepSummary kept={keeping.length} total={found.found.length} />
+
           <div className="row" style={{ gap: 8, marginTop: 12 }}>
             <button
               className="btn primary"
-              disabled={!found.found.length || lib?.busy}
+              disabled={!keeping.length || lib?.busy}
               onClick={keep}
             >
-              {t('isbn.keep', { n: found.found.length })}
+              {t('isbn.keep', { n: keeping.length })}
             </button>
             <button className="btn" disabled={lib?.busy} onClick={() => setFound(null)}>
               {t('common.cancel')}

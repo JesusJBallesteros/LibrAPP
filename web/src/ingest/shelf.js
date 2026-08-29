@@ -161,6 +161,28 @@ export class TranscriptionError extends Error {}
  * A file with an untitled book or an unknown confidence value is refused, so
  * that a bad read stops here rather than reaching the catalog.
  */
+/** Where a book sits in a transcription. Stable for as long as that transcription is. */
+export const bookKey = (shelfIndex, bookIndex) => `${shelfIndex}:${bookIndex}`
+
+/**
+ * A transcription with the set-aside books taken out.
+ *
+ * A shelf left holding nothing is dropped rather than written as an empty
+ * group. The reader discarded every book on it, and a location with no books
+ * under it is not something the photograph showed.
+ */
+export function withoutDropped(transcription, dropped) {
+  return {
+    ...transcription,
+    shelves: (transcription?.shelves || [])
+      .map((shelf, i) => ({
+        ...shelf,
+        books: (shelf.books || []).filter((_, j) => !dropped.has(bookKey(i, j))),
+      }))
+      .filter((shelf) => shelf.books.length),
+  }
+}
+
 export function loadTranscription(payload) {
   const groups = payload?.shelves
   if (!Array.isArray(groups) || !groups.length) {

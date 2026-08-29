@@ -971,7 +971,12 @@ main:focus { outline: none; }
 .lookup-list .title { font: 400 16px/1.3 var(--serif); }
 /* What keeping this one would do. Marked rather than left to be discovered
    after the fact, since a merge and a new entry are different decisions. */
-.lookup-fate { white-space: nowrap; }
+.lookup-fate {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
 .lookup-fate .joins { color: var(--accent); }
 /* A file input is unstyleable, so the label is the button and the input hides
    inside it. Keeps the keyboard path: the label still labels the control. */
@@ -1898,3 +1903,14 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
   white-space: nowrap;
   border: 0;
 }
+
+/* A row of an import list that has been set aside.
+   Struck through and left where it was, rather than removed. A list that
+   reflowed under the finger that pressed it would slide the next row into the
+   place just tapped, and a discard that cannot be taken back is not a review,
+   it is a deletion. */
+.discarded { opacity: .5; }
+.discarded .title { text-decoration: line-through; }
+/* The control on the row is how the discard is undone, so it stays at full
+   strength and unstruck. */
+.discarded .btn { opacity: 1; text-decoration: none; }
