@@ -78,6 +78,26 @@ export class SourceError extends Error {}
 
 const TEXT_FIELDS = ['publisher', 'genre', 'keywords', 'series', 'location', 'notes', 'author_label']
 
+/**
+ * Fields this app wrote once and no longer keeps.
+ *
+ * The unknown-field check below is strict on purpose: it is what stops an
+ * ingester writing a field the builder quietly ignores. But a source file is
+ * written to a reader's own folder and stays there, so a field that shipped and
+ * was then withdrawn leaves files that the next version would refuse to open,
+ * and the reader would have no way to know why or what to do about it. Refusing
+ * a record because of something this app put there itself is a bug in this app,
+ * not a fault in the file.
+ *
+ * So these are dropped on the way in. Anything else unknown still throws.
+ *
+ * spine: a path to a crop of the shelf photograph, cut around one book. It
+ * shipped on 2026-08-27 and was withdrawn two days later, because the crops
+ * caught the books standing next to the one they were cut for. Files written
+ * in that window carry it on every record read from a photograph.
+ */
+export const RETIRED_FIELDS = new Set(['spine'])
+
 /** Compare like Python compares strings: by code point, not by locale. */
 export const byCodePoint = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
 
@@ -86,13 +106,20 @@ export function normalise(record) {
   const out = {}
   for (const [k, v] of Object.entries(RECORD_FIELDS)) out[k] = Array.isArray(v) ? [...v] : v
 
-  const unknown = Object.keys(record).filter((k) => !(k in RECORD_FIELDS))
+  const unknown = Object.keys(record).filter(
+    (k) => !(k in RECORD_FIELDS) && !RETIRED_FIELDS.has(k),
+  )
   if (unknown.length) {
     throw new SourceError(
       `unknown field(s) ${JSON.stringify(unknown.sort())} in record ${JSON.stringify(record.title)}`,
     )
   }
-  Object.assign(out, record)
+  // Copied field by field rather than assigned wholesale, so a retired field
+  // is left behind instead of being carried into the record it was dropped
+  // from.
+  for (const [k, v] of Object.entries(record)) {
+    if (!RETIRED_FIELDS.has(k)) out[k] = v
+  }
 
   out.title = clean(String(out.title ?? ''))
   out.authors = (out.authors || []).map((a) => clean(a)).filter(Boolean)

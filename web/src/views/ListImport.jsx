@@ -81,7 +81,7 @@ export default function ListImport({ lib, onOwl }) {
           const catalog = await library.rebuild()
           setResult({ records: records.length, counts: catalog.counts, stats, written })
           onOwl?.(arrival(before, catalog.counts?.books, records.length))
-        })
+        }, { onError: setError })
         return
       }
       const info = await probe(file)
@@ -123,7 +123,7 @@ export default function ListImport({ lib, onOwl }) {
         missing: missingFields(records),
       })
       onOwl?.(arrival(before, catalog.counts?.books, records.length))
-    })
+    }, { onError: setError })
 
   return (
     <div className="view">
@@ -136,8 +136,11 @@ export default function ListImport({ lib, onOwl }) {
 
       <DemoWarning lib={lib} />
 
-      {error && (
-        <div className="notice bad">
+      {/* The drop zone is right below this, so a failure to read a file
+          lands beside it. A failure to import does not: that button is at the
+          bottom of the panel below, and its message goes there. */}
+      {error && !pending && (
+        <div className="notice bad" role="alert">
           <p>{error}</p>
         </div>
       )}
@@ -218,6 +221,14 @@ export default function ListImport({ lib, onOwl }) {
               {lib.busy ? t('common.importing') : t('list.importAction')}
             </button>
           </div>
+
+          {/* Beside the button, not at the top of the page. This panel is long
+              enough on a phone that the two are never on screen together. */}
+          {error && (
+            <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+              <p className="tiny">{error}</p>
+            </div>
+          )}
 
           <p className="tiny faint" style={{ marginTop: 10 }}>
             <strong>{t('list.theseAre')}</strong> {t('list.theseAreNote')}{' '}

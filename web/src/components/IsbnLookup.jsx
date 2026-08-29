@@ -92,7 +92,7 @@ export default function IsbnLookup({ lib, onDone }) {
       setFound(null)
       setText('')
       onDone?.()
-    })
+    }, { onError: setError })
 
   const onFile = async (file) => {
     if (!file) return
@@ -252,7 +252,7 @@ export default function IsbnLookup({ lib, onDone }) {
         </>
       )}
 
-      {error && (
+      {error && !found && (
         <div className="notice bad" role="alert">
           <p className="tiny">{error}</p>
         </div>
@@ -305,6 +305,16 @@ export default function IsbnLookup({ lib, onDone }) {
             <p className="tiny faint">
               {t('isbn.missingWhich')} <span className="tabular">{found.missing.join(', ')}</span>
             </p>
+          )}
+
+          {/* Directly above the button that failed. This list runs off the
+              bottom of a phone screen, so a message at the top of the page is
+              not merely inconvenient, it is invisible, and keeping looked like
+              it had done nothing at all. */}
+          {error && (
+            <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+              <p className="tiny">{error}</p>
+            </div>
           )}
 
           <div className="row" style={{ gap: 8, marginTop: 12 }}>

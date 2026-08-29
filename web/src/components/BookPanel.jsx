@@ -20,6 +20,10 @@ export default function BookPanel({ book, authors, lib, onClose }) {
   // thing to be recorded as well as offer to correct the whole book, and the
   // two open the same form at different places in it.
   const [editing, setEditing] = useState(false)
+  // The banner at the top of the page renders behind this overlay, so a write
+  // that fails there is not merely far from the button, it cannot be seen at
+  // all. It stays in here with the controls that caused it.
+  const [saveError, setSaveError] = useState(null)
 
   if (!book) return null
 
@@ -29,7 +33,7 @@ export default function BookPanel({ book, authors, lib, onClose }) {
       await library.rebuild()
       setEditing(false)
       onClose()
-    })
+    }, { onError: setSaveError })
 
   if (editing) {
     return (
@@ -38,6 +42,7 @@ export default function BookPanel({ book, authors, lib, onClose }) {
         authorNames={authors}
         busy={lib?.busy}
         focusField={typeof editing === 'string' ? editing : null}
+        saveError={saveError}
         // Back to the book rather than out of it. Cancelling an edit is not a
         // reason to lose the entry that was being read.
         onCancel={() => setEditing(false)}
@@ -51,6 +56,7 @@ export default function BookPanel({ book, authors, lib, onClose }) {
       book={book}
       authors={authors}
       busy={lib?.busy}
+      saveError={saveError}
       onClose={onClose}
       onEdit={(_book, field) => setEditing(field || true)}
       onRemove={(b) => write((overrides) => setRemoved(overrides, b, true))}

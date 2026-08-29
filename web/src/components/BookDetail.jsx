@@ -2,7 +2,7 @@ import { byline, callNumber, readState, stillToRecord } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 import Overlay from './Overlay.jsx'
 
-export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy }) {
+export default function BookDetail({ book, authors, onClose, onEdit, onRemove, onRevert, busy, saveError }) {
   const { t } = useT()
 
   const state = readState(book)
@@ -108,6 +108,15 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
             </button>
           )}
         </div>
+
+        {/* Removing and undoing a correction both write, and both can fail.
+            The page's own banner is behind this panel and would never be
+            seen. */}
+        {saveError && (
+          <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+            <p className="tiny">{saveError}</p>
+          </div>
+        )}
 
         {state === 'unknown' && <p className="tiny faint" style={{ marginTop: 14 }}>{t('book.unknownNote')}</p>}
 

@@ -58,6 +58,10 @@ export default function Shelf({ lib, onOwl }) {
   // to read has to appear beside the button that caused it: shown at the top of
   // the page it is below the fold on a phone, and looks like nothing happened.
   const [readError, setReadError] = useState(null)
+  // And apart from both again. Keeping the proposed books is a third button in
+  // a third place on this page, and a message shared between them would appear
+  // beside whichever was pressed last rather than whichever just failed.
+  const [saveError, setSaveError] = useState(null)
   // Which batch is in flight. A long shelf is read in several requests, and a
   // button that says nothing for two minutes looks like a button that failed.
   const [progress, setProgress] = useState(null)
@@ -209,7 +213,7 @@ export default function Shelf({ lib, onOwl }) {
       const catalog = await library.rebuild()
       setProposed(null)
       setResult({ count: records.length, stats, counts: catalog.counts })
-    })
+    }, { onError: setSaveError })
 
   const regrid = (dCols, dRows) => {
     const cols = Math.max(1, Math.min(8, tiles.grid.cols + dCols))
@@ -232,7 +236,7 @@ export default function Shelf({ lib, onOwl }) {
       })
       const catalog = await library.rebuild()
       setResult({ count: records.length, stats, counts: catalog.counts })
-    })
+    }, { onError: setSaveError })
 
   // A failure that renders off-screen is the bug being fixed here, so put it
   // in view rather than trusting that it is near enough.
@@ -572,6 +576,12 @@ export default function Shelf({ lib, onOwl }) {
                 </div>
               ))}
 
+              {saveError && (
+                <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+                  <p className="tiny">{saveError}</p>
+                </div>
+              )}
+
               <div className="row" style={{ marginTop: 14 }}>
                 <button className="btn primary" onClick={acceptProposed} disabled={lib.busy}>
                   {t('shelf.importThese', { n: proposed.counted })}
@@ -593,6 +603,11 @@ export default function Shelf({ lib, onOwl }) {
               disabled={lib.busy}
               onFile={onTranscription}
             />
+            {saveError && !proposed && (
+              <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+                <p className="tiny">{saveError}</p>
+              </div>
+            )}
           </div>
         </>
       )}

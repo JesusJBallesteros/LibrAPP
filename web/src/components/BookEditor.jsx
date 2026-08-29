@@ -57,7 +57,7 @@ export const toForm = (book, names) => ({
   formats: book?.formats?.length ? [...book.formats] : ['physical'],
 })
 
-export default function BookEditor({ book, authorNames, onSave, onCancel, busy, focusField }) {
+export default function BookEditor({ book, authorNames, onSave, onCancel, busy, focusField, saveError }) {
   const { t } = useT()
   const editing = Boolean(book)
   // Opened at a field, when the panel was asked to record one thing rather
@@ -190,12 +190,6 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy, 
         <p className="tiny muted" style={{ marginTop: 0 }}>
           {editing ? t('editor.correctNote') : t('editor.addNote')}
         </p>
-
-        {error && (
-          <div className="notice bad" style={{ marginTop: 10 }}>
-            <p className="tiny">{error}</p>
-          </div>
-        )}
 
         <div style={{ marginTop: 14 }}>
           <Row label={t('editor.title')}>
@@ -353,6 +347,16 @@ export default function BookEditor({ book, authorNames, onSave, onCancel, busy, 
             </div>
           </Row>
         </div>
+
+        {/* Both kinds of failure land here rather than at the head of the
+            form: a refused date and a write that could not finish are both
+            answers to pressing Save, and this form is long enough that the top
+            of it is off the screen by the time anybody does. */}
+        {(error || saveError) && (
+          <div className="notice bad" role="alert" style={{ marginTop: 10 }}>
+            <p className="tiny">{error || saveError}</p>
+          </div>
+        )}
 
         <div className="row" style={{ marginTop: 6 }}>
           <button className="btn primary" onClick={submit} disabled={busy}>

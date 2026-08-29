@@ -4,8 +4,15 @@
 // from a bad OCR read or a bad parser. So the refusals are the point of these
 // tests, not the successes.
 
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { SourceError, makeSource, normalise, readSource } from '../src/core/records.js'
+import {
+  RETIRED_FIELDS,
+  SourceError,
+  makeSource,
+  normalise,
+  readSource,
+} from '../src/core/records.js'
 
 const record = (extra = {}) => ({ title: 'Some Book', ...extra })
 
@@ -102,5 +109,61 @@ describe('readSource', () => {
   it('stamps each record with the source it came from', () => {
     const [book] = readSource(envelope([record()])).records
     expect(book._source).toBe('list')
+  })
+})
+
+// A file this app wrote must stay readable by the next version of it. The
+// unknown-field check is strict so that an ingester cannot quietly write a
+// field the builder ignores, and that strictness turned on the reader the one
+// time a field shipped and was then withdrawn: every shelf read during that
+// window wrote records the next build refused to open, with an error naming a
+// field the reader had never heard of and could do nothing about.
+describe('a file written by a version whose fields have since gone', () => {
+  // A shelf source exactly as the withdrawn crop feature wrote it.
+  const asWritten = {
+    librapp_source: 1,
+    source: {
+      name: 'shelf-2026-08-27T10-14-02',
+      kind: 'photo',
+      origin: 'shelf.jpg',
+      format: 'physical',
+      confidence: 'medium',
+    },
+    records: [
+      { title: 'Book lying flat', authors: ['A. Reader'], spine: 'spines/shelf-1-03.webp' },
+      { title: 'Dune', authors: ['Frank Herbert'], pages: 412, spine: 'spines/shelf-1-04.webp' },
+    ],
+  }
+
+  it('opens', () => {
+    const source = readSource(asWritten, 'shelf-2026-08-27.json')
+    expect(source.records.map((r) => r.title)).toEqual(['Book lying flat', 'Dune'])
+  })
+
+  it('leaves the retired field behind rather than carrying it', () => {
+    // Dropped, not kept under another name. The builder names every field it
+    // keeps, so a value smuggled through here would be dead weight in the file
+    // the next save writes.
+    for (const record of readSource(asWritten, 'x').records) {
+      expect(record).not.toHaveProperty('spine')
+    }
+  })
+
+  it('still refuses a field nobody ever wrote', () => {
+    expect(() => normalise({ title: 'X', sprine: 'a typo' })).toThrow(/sprine/)
+  })
+
+  it('refuses a typo standing next to a retired field', () => {
+    // The retirement is a named exception, not a relaxation of the check.
+    expect(() => normalise({ title: 'X', spine: 'a', nonsense: 1 })).toThrow(/nonsense/)
+  })
+
+  it('names every retired field with a reason in the source', () => {
+    // A set that grows without explanation becomes the place unknown fields go
+    // to be forgotten. Each one needs its story next to it.
+    const src = readFileSync(new URL('../src/core/records.js', import.meta.url), 'utf8')
+    for (const field of RETIRED_FIELDS) {
+      expect(src).toContain(` * ${field}: `)
+    }
   })
 })

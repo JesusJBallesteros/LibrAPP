@@ -44,6 +44,16 @@ export default function App() {
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
   const demoAsked = useRef(false)
+  // Where a failure lands when the thing that caused it has nowhere of its own
+  // to put one. A star pressed at the foot of a long shelf is the case: there
+  // is no room beside it for a message, so the message stays here and the page
+  // comes to it. Callers with somewhere better pass onError to lib.run and this
+  // banner never fires for them.
+  //
+  // Not smooth, for the same reason the shelf page does not scroll smoothly to
+  // its own failures: smooth scrolling can be skipped outright when the page is
+  // not being composited, and this is not a message to leave to chance.
+  const banner = useRef(null)
   // Whether this load is the one that followed "try yours now", so the front
   // page can open at the ways in rather than at the top.
   const [startHere] = useState(wantedStart)
@@ -53,6 +63,10 @@ export default function App() {
   // page asking for a photograph. Once only, and never over a demo already
   // open. It cannot harm an existing library: the demo is held in memory and
   // has nowhere to write.
+  useEffect(() => {
+    if (lib.error) banner.current?.scrollIntoView({ block: 'center' })
+  }, [lib.error])
+
   useEffect(() => {
     if (demoAsked.current || lib.status === 'opening' || lib.isDemo) return
     if (!/(^|[?&#])demo(=|&|$)/.test(window.location.search + window.location.hash)) return
@@ -281,7 +295,7 @@ export default function App() {
 
         {lib.error && (
           <div className="view" style={{ paddingBottom: 0 }}>
-            <div className="notice bad">
+            <div className="notice bad" role="alert" ref={banner}>
               <p>
                 <strong>{lib.error}</strong>
               </p>

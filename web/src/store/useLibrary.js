@@ -129,16 +129,30 @@ export function useLibrary() {
     setStatus('choose')
   }, [])
 
+  /**
+   * Do something to the library, and reload what the app is showing.
+   *
+   * Failures go to the banner at the top of the page unless the caller passes
+   * onError, in which case they go there instead. The banner is a long way from
+   * whatever was pressed: on a phone, keeping a page of scanned books puts the
+   * button near the bottom and the failure off the top of the screen, so the
+   * press looked like it did nothing. A caller with somewhere to put the
+   * message should say so and put it next to the control.
+   */
   const run = useCallback(
-    async (fn) => {
+    async (fn, { onError } = {}) => {
       setBusy(true)
       setError(null)
+      onError?.(null)
       try {
         const result = await fn(library)
         await load(library)
         return result
       } catch (err) {
-        setError(err.message)
+        // One place or the other, never both: two copies of the same failure on
+        // one page reads as two failures.
+        if (onError) onError(err.message)
+        else setError(err.message)
         return null
       } finally {
         setBusy(false)
