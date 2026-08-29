@@ -32,13 +32,10 @@ export default {
   // Leads with what it allows: noncommercial alarms people who would have
   // been fine, and the restriction is the shorter half of the sentence.
   'landing.privacyLink': 'What leaves this device',
-  'landing.licence': 'Free for your own use. Not for commercial use.',
   'landing.licenceName': 'PolyForm Noncommercial',
   'landing.storageFirst': 'Storage is set up on the way.',
 
   'landing.demo.action': 'Try a demo library',
-  'landing.demo.hint':
-    '{n} invented books. Nothing is saved and nothing of yours is touched.',
 
   'demo.banner': 'You are looking around a demo library.',
   'demo.bannerWhy':
@@ -71,7 +68,7 @@ export default {
   'librarian.borrowedLong': '{n} {n:book|books} here {n:belongs|belong} to somebody else, and {n:has|have} for more than a year.',
   'librarian.desk': 'Ask about your own shelves. All {n} {n:book|books} here {n:is|are} in the catalog.',
 
-  'librarian.reading': '{n} {n:tile|tiles}, spines top to bottom. This takes a moment.',
+  'librarian.reading': '{n} {n:piece|pieces}, spines top to bottom. This takes a moment.',
   'librarian.asking': 'Looking through the shelves.',
   'librarian.imported': '{n} {n:book|books} arrived, and {known} {known:was|were} already here. One entry each.',
 
@@ -97,7 +94,7 @@ export default {
   'librarian.guide.shelf.1':
     'Photograph the shelf straight on and at full size. Spine text a few pixels tall is where invented titles come from.',
   'librarian.guide.shelf.2':
-    'The photograph is cut into tiles and each is read separately. Adjust how many across and down, and discard any tile that holds no books, before spending anything.',
+    'The photograph is cut into pieces and each is read separately. Adjust how many across and down, and discard any piece that holds no books, before spending anything.',
   'librarian.guide.shelf.3':
     'The checklist below asks for more than titles. The first group is printed on the spine; the second is recalled by the model and is marked on every book that carries it.',
 
@@ -167,6 +164,7 @@ export default {
 
   'common.cancel': 'Cancel',
   'common.close': 'Close',
+  'common.tellMeHow': 'Tell me how',
   'common.dismiss': 'Dismiss',
   'common.edit': 'Edit',
   'common.remove': 'Remove',
@@ -453,7 +451,7 @@ export default {
   'cap.unzip.needed': 'reading .xlsx spreadsheets',
   'cap.unzip.fix': 'CSV, XML and PDF imports still work. Needs Firefox 113 or Safari 16.4 and later.',
   'cap.canvas.label': 'Offscreen canvas',
-  'cap.canvas.needed': 'cutting a photograph into readable tiles',
+  'cap.canvas.needed': 'cutting a photograph into readable pieces',
   'cap.canvas.fix': 'Without it, import your books from a list instead of a photograph.',
   'cap.bitmap.label': 'Image decoding',
   'cap.bitmap.needed': 'opening the photograph you choose',
@@ -490,8 +488,9 @@ export default {
   'common.copied': 'Copied',
   'common.save': 'Save',
 
-  'shelf.intro':
-    'Photograph the shelf straight on, at your camera’s full resolution. Resolution determines how much of the lettering can be read, so a larger photograph produces a better transcription.',
+  'shelf.intro': 'Photograph the shelf straight on, at your camera’s full resolution.',
+  'shelf.intro.how':
+    'Resolution decides how much of the lettering can be read, so a larger photograph produces a better transcription. Shooting straight on keeps the titles square to the camera; a shelf photographed at an angle puts the far end out of focus and out of shape.',
   'shelf.whatItIsFor': 'reading a shelf',
   'shelf.eyebrow': 'Accessions',
   'list.listsFound': '{n} lists found',
@@ -507,43 +506,47 @@ export default {
   'shelf.takePhoto': 'Take a photograph',
   'shelf.dropPhotoHint': 'JPEG or PNG · nothing is uploaded',
   'shelf.photoReplace': 'Choose a different photograph',
-  'shelf.cutting': 'Cutting it into tiles…',
+  'shelf.cutting': 'Cutting it into pieces…',
   'shelf.step2': '2 · Read the spines',
-  'shelf.tileCount': '{n} tile(s)',
-  'shelf.tilesNote':
-    'Tiles are cut at native resolution and overlap, so a book on a seam is whole in one of them. Give them to a model along with the instructions below, and have it write the transcription.',
+  'shelf.tileCount': '{n} piece(s)',
+  'shelf.piecesNote':
+    'Give these pieces to an AI along with the instructions below, and have it write the transcription.',
+  'shelf.piecesNote.how':
+    'The photograph is cut up because a whole bookcase in one image is too small to read. Each piece keeps the resolution of the original, and they overlap, so a book falling on a seam is whole in one of them.',
   'shelf.grid': 'Grid · {cols} across × {rows} down',
   'shelf.lessAcross': '− across',
   'shelf.moreAcross': '+ across',
   'shelf.lessDown': '− down',
   'shelf.moreDown': '+ down',
   'shelf.gridNote':
-    'Aim for tiles holding a handful of whole spines, with the title readable top to bottom. A wide bookcase needs several tiles across. A close-up of three books needs only one.',
+    'Aim for pieces holding a handful of whole spines, with the title readable top to bottom. A wide bookcase needs several pieces across. A close-up of three books needs only one.',
   'shelf.gridWarning': 'Adding rows is what splits a title in half',
   'shelf.gridWarningTail':
     ', so add those only when the photograph really shows shelves stacked above one another.',
   'shelf.backToSuggested': 'back to the suggested {cols}×{rows}',
   'shelf.reading': 'reading the spines…',
-  'shelf.readForMe': 'Read these tiles for me',
+  'shelf.readForMe': 'Read these pieces for me',
   'shelf.tokensOnly': 'about {k}k tokens in, at your own rate',
   'shelf.youApprove': 'you approve the result before anything is imported',
   'shelf.copyInstructions': 'Copy the instructions',
   'shelf.hideThem': 'Hide them',
   'shelf.readThem': 'Read them',
-  'shelf.saveAll': 'Save all tiles',
-  'shelf.tileAlt': 'Tile row {row}, column {column}',
+  'shelf.saveAll': 'Save all pieces',
+  'shelf.tileAlt': 'Piece at row {row}, column {column}',
   'shelf.step3': '3 · Check what it read',
   'shelf.bookCount': '{n} book(s)',
   'shelf.cost': 'cost {amount}',
   'shelf.readyBelow': '{n} {n:book|books} read. The list is below, ready to check.',
   'shelf.checkNote':
-    'Nothing has been imported yet. Check the list now: a misread spine cannot be detected once it is in the catalog. Entries marked uncertain are the ones to compare against the tiles above.',
+    'Nothing has been imported yet. Check the list now: a misread spine cannot be detected once it is in the catalog. Entries marked uncertain are the ones to compare against the pieces above.',
   'shelf.unplaced': 'unplaced',
   'shelf.importThese': 'Import these {n} books',
   'shelf.discard': 'Discard the whole reading',
   'shelf.stepBring': '{n} · Bring a transcription back yourself',
   'shelf.bringNote':
-    'The route that needs no key. Read the tiles in any AI session using the instructions above, then drop the JSON here. A file containing an untitled book or an unknown confidence value is refused at this point rather than imported.',
+    'Read the pieces in any AI session using the instructions above, then drop the JSON here.',
+  'shelf.bringNote.how':
+    'This is the route that needs no key: the reading happens wherever you already have an AI session, and LibrAPP only takes the result. A file holding an untitled book or an unknown confidence value is refused here rather than imported.',
   'shelf.dropTranscription': 'Drop the transcription',
   'shelf.dropTranscriptionHint': 'the JSON file the model wrote',
   'shelf.result': '{n} books read from the photograph.',
@@ -800,11 +803,11 @@ export default {
   'about.privacy.device':
     'Your catalog is written to this device: a folder you chose, or storage the browser keeps for this app. It is never uploaded.',
   'about.privacy.key':
-    'If you provide an AI key, it stays in this browser and is sent only to the service you chose. It is never written into your catalog and never included in an export. Photographs are cut into tiles here; only the tiles go, and only when you ask.',
+    'If you provide an AI key, it stays in this browser and is sent only to the service you chose. It is never written into your catalog and never included in an export. Photographs are cut into pieces here; only the pieces go, and only when you ask.',
   'about.privacy.cookies':
     'No cookies, no analytics and no trackers. The only thing remembered about you is which language you picked and where your library is.',
   'about.privacy.requests':
-    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends that number to Open Library and nothing else: no title, no note, nothing about your shelf. Barcodes are read here, whether from a picture or from the camera, and neither the picture nor the camera’s view ever leaves or is recorded.',
+    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the pieces of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends that number to Open Library and nothing else: no title, no note, nothing about your shelf. Barcodes are read here, whether from a picture or from the camera, and neither the picture nor the camera’s view ever leaves or is recorded.',
   'about.privacy.offline':
     'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
   'about.privacyCheck': 'You do not have to take any of that on trust. The code is public.',
@@ -860,7 +863,7 @@ export default {
 
   'list.savedAs': 'Saved as {name}.',
 
-  // The same vocabulary as the tiles above, for the rows of every import
+  // The same vocabulary as the pieces above, for the rows of every import
   // list. Kept is the default, so the control names the other thing.
   'keep.discard': 'Discard',
   'keep.restore': 'Keep',
@@ -872,12 +875,12 @@ export default {
   'shelf.keepTile': 'Keep',
   'shelf.droppedTag': 'discarded',
   'shelf.discardHint':
-    'Discard any tile that holds no readable spine \u2014 a wall, a lamp, the edge of a rug. Discarded tiles are not sent and not paid for.',
-  'shelf.tileCountKept': '{kept} of {total} tiles',
-  'shelf.noneKept': 'Every tile is discarded, so there is nothing to read. Keep at least one.',
+    'Discard any piece with no readable spine in it: a wall, a lamp, the edge of a rug. Discarded pieces are not sent and not paid for.',
+  'shelf.tileCountKept': '{kept} of {total} pieces',
+  'shelf.noneKept': 'Every piece is discarded, so there is nothing to read. Keep at least one.',
   'shelf.batchProgress': 'Batch {at} of {of}',
   'shelf.someTilesFailed':
-    'Some tiles could not be read and are missing from what follows: {tiles}. {why}',
+    'Some pieces could not be read and are missing from what follows: {tiles}. {why}',
   'shelf.stop': 'Stop',
   'shelf.stopped': 'Stopped before a reply arrived.',
   'shelf.timedOut':
@@ -971,7 +974,7 @@ export default {
   'shelf.extra.edition': 'Edition or printing',
   'shelf.extra.language': 'Language on the cover',
   'shelf.extra.series': 'Series and volume number',
-  'shelf.extra.duplicates': 'Merge a book showing in two tiles',
+  'shelf.extra.duplicates': 'Merge a book showing in two pieces',
   'shelf.extra.abstract': 'A short abstract',
   'shelf.extra.published': 'Year first published',
   'shelf.extra.rating': 'A general reader rating',

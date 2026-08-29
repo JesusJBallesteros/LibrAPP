@@ -2,6 +2,9 @@
 // placeholder renders {name}, and neither throws, so nothing reports it until
 // someone notices on screen. These checks catch both before a release.
 
+import { readFileSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import en from '../src/i18n/en.js'
 import es from '../src/i18n/es.js'
@@ -112,5 +115,40 @@ describe('choosing a form by count', () => {
 
   it('leaves the form alone when the count was not supplied', () => {
     expect(translate('en', 'librarian.unread', { other: 1 })).toContain('{n:book|books}')
+  })
+})
+
+// Every name the code asks for is a name the dictionary holds.
+//
+// Renaming a key is a two-file edit and the second is easy to miss: the lookup
+// falls back to printing the key, which reads as a translation gap rather than
+// a broken call. This caught exactly that, when a rename of the word "tiles"
+// through the English copy also renamed a key the shelf page calls by name.
+describe('the keys the code asks for', () => {
+  const read = (dir) => {
+    const out = []
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name)
+      if (entry.isDirectory()) {
+        if (entry.name !== 'i18n') out.push(...read(path))
+      } else if (/\.jsx?$/.test(entry.name)) {
+        out.push(readFileSync(path, 'utf8'))
+      }
+    }
+    return out
+  }
+
+  it('are all defined in English', () => {
+    const sources = read(fileURLToPath(new URL('../src/', import.meta.url)))
+    const asked = new Set()
+    for (const source of sources) {
+      // Literal calls only. A key built from a variable, t('format.' + f),
+      // cannot be checked here and is covered where those lists are tested.
+      for (const [, key] of source.matchAll(/\bt\(\s*'([a-zA-Z][\w.]*)'/g)) {
+        if (!key.endsWith('.')) asked.add(key)
+      }
+    }
+    expect(asked.size).toBeGreaterThan(50)
+    expect([...asked].filter((key) => !(key in en))).toEqual([])
   })
 })

@@ -16,6 +16,7 @@ import { EXTRAS, extrasPrompt } from '../ai/extras.js'
 import { idbGet, idbSet } from '../store/idb.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 import DemoWarning from '../components/DemoWarning.jsx'
+import TellMeHow from '../components/TellMeHow.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
@@ -359,6 +360,9 @@ export default function Shelf({ lib, onOwl }) {
         <h2>{t('nav.shelf')}</h2>
         <hr className="rule" />
         <p>{t('shelf.intro')}</p>
+        <TellMeHow>
+          <p>{t('shelf.intro.how')}</p>
+        </TellMeHow>
       </div>
 
       <DemoWarning lib={lib} />
@@ -380,7 +384,7 @@ export default function Shelf({ lib, onOwl }) {
           there instead. */}
       <div className={`shelf-steps${tiles ? ' cut' : ''}`}>
         <section className="shelf-step shelf-one">
-          <p className="eyebrow">{t('shelf.stepOne')}</p>
+          <h3 className="step-head">{t('shelf.stepOne')}</h3>
           <DropZone
             mark="camera"
             title={photoUrl ? photo.name : t('shelf.dropPhoto')}
@@ -419,13 +423,16 @@ export default function Shelf({ lib, onOwl }) {
         {tiles && (
           <section className="shelf-step shelf-two">
             <div className="spread">
-              <p className="eyebrow">{t('shelf.stepTwo')}</p>
+              <h3 className="step-head">{t('shelf.stepTwo')}</h3>
               <span className="tabular tiny faint">
                 {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} ·{' '}
                 {t('shelf.tileCount', { n: tiles.tiles.length })}
               </span>
             </div>
-            <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.tilesNote')}</p>
+            <p style={{ marginTop: 8 }}>{t('shelf.piecesNote')}</p>
+            <TellMeHow>
+              <p>{t('shelf.piecesNote.how')}</p>
+            </TellMeHow>
 
             <div className="sunk-panel" style={{ marginTop: 12 }}>
               <div className="spread">
@@ -631,7 +638,7 @@ export default function Shelf({ lib, onOwl }) {
                 {t('shelf.readyBelow', { n: proposed.counted })}
               </p>
               <div className="spread">
-                <p className="eyebrow">{t('shelf.stepThree')}</p>
+                <h3 className="step-head">{t('shelf.stepThree')}</h3>
                 <span className="tabular tiny faint">
                   {t('shelf.bookCount', { n: proposed.counted })}
                   {proposed.recalled > 0 &&
@@ -709,7 +716,10 @@ export default function Shelf({ lib, onOwl }) {
 
           <div className="card">
             <h3>{t('shelf.stepBring', { n: proposed ? 4 : 3 })}</h3>
-            <p className="muted tiny">{t('shelf.bringNote')}</p>
+            <p>{t('shelf.bringNote')}</p>
+            <TellMeHow>
+              <p>{t('shelf.bringNote.how')}</p>
+            </TellMeHow>
             <DropZone
               mark="page"
               title={t('shelf.dropTranscription')}

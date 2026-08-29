@@ -21,13 +21,10 @@ export default {
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.count': '{n} {n:libro|libros} aquí.',
   'landing.privacyLink': 'Qué sale de este dispositivo',
-  'landing.licence': 'Gratis para tu propio uso. No para uso comercial.',
   'landing.licenceName': 'PolyForm Noncommercial',
   'landing.storageFirst': 'El almacenamiento se configura por el camino.',
 
   'landing.demo.action': 'Prueba una biblioteca de muestra',
-  'landing.demo.hint':
-    '{n} libros inventados. No se guarda nada y no se toca nada tuyo.',
 
   'demo.banner': 'Estás viendo una biblioteca de muestra.',
   'demo.bannerWhy':
@@ -156,6 +153,7 @@ export default {
 
   'common.cancel': 'Cancelar',
   'common.close': 'Cerrar',
+  'common.tellMeHow': 'Cómo se hace',
   'common.dismiss': 'Descartar',
   'common.edit': 'Editar',
   'common.remove': 'Quitar',
@@ -476,7 +474,9 @@ export default {
   'common.copied': 'Copiado',
   'common.save': 'Guardar',
 
-  'shelf.intro': 'Fotografía la estantería de frente, a la resolución máxima de tu cámara. La resolución determina cuánto texto se puede leer, así que una foto más grande da una transcripción mejor.',
+  'shelf.intro': 'Fotografía la estantería de frente, a la resolución máxima de tu cámara.',
+  'shelf.intro.how':
+    'La resolución decide cuánto texto se puede leer, así que una foto más grande da una transcripción mejor. De frente mantiene los títulos rectos: una estantería fotografiada en ángulo deja el extremo lejano desenfocado y deformado.',
   'shelf.whatItIsFor': 'leer una estantería',
   'shelf.eyebrow': 'Ingresos',
   'list.listsFound': '{n} listas encontradas',
@@ -495,8 +495,10 @@ export default {
   'shelf.cutting': 'Recortando las fotos…',
   'shelf.step2': '2 · Leer los lomos',
   'shelf.tileCount': '{n} foto(s)',
-  'shelf.tilesNote':
-    'Las fotos se recortan a resolución nativa y se solapan, de modo que un libro que cae en una junta aparece entero en alguna de ellas. Pásaselas a un modelo junto con las instrucciones de abajo y pídele que escriba la transcripción.',
+  'shelf.piecesNote':
+    'Pásale estos recortes a una IA junto con las instrucciones de abajo y pídele que escriba la transcripción.',
+  'shelf.piecesNote.how':
+    'La foto se recorta porque una estantería entera en una sola imagen queda demasiado pequeña para leerse. Cada recorte conserva la resolución del original, y se solapan, así que un libro que cae en una junta aparece entero en alguno.',
   'shelf.grid': 'Cuadrícula · {cols} × {rows}',
   'shelf.lessAcross': '- columnas',
   'shelf.moreAcross': '+ columnas',
@@ -528,7 +530,9 @@ export default {
   'shelf.discard': 'Descartar la lectura entera',
   'shelf.stepBring': '{n} · Trae tú la transcripción',
   'shelf.bringNote':
-    'Aquí no necesitas claves: añade las fotos junto con las instrucciones de arriba en cualquier sesión de IA, y trae aquí el resultado (.JSON). La importación rechaza un archivo con un libro sin título o con un valor de confianza desconocido.',
+    'Lee los recortes en cualquier sesión de IA con las instrucciones de arriba y suelta aquí el JSON.',
+  'shelf.bringNote.how':
+    'Esta es la vía que no necesita clave: la lectura ocurre donde ya tengas una sesión de IA, y LibrAPP solo recoge el resultado. Un archivo con un libro sin título o con un valor de confianza desconocido se rechaza aquí, no se importa.',
   'shelf.dropTranscription': 'Suelta aquí la transcripción',
   'shelf.dropTranscriptionHint': 'el archivo JSON que escribió el modelo',
   'shelf.result': '{n} libros leídos de la foto.',

@@ -227,6 +227,35 @@
   border-bottom: 1px solid var(--ink);
 }
 
+/* A step in a page that has steps. It was an eyebrow: 10.5px, uppercase, in
+   the faintest ink the palette has, which is the treatment for a label above a
+   heading rather than for the heading itself. */
+.step-head {
+  font: 400 20px/1.25 var(--serif);
+  margin: 0;
+  color: var(--ink);
+}
+
+/* The explanation, folded. Set as a link rather than a control with a box,
+   because it reveals a paragraph rather than doing anything. */
+.tell-me-how { margin-top: 8px; }
+.tell-me-how > summary {
+  display: inline-block;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 12.5px;
+  text-decoration: underline;
+  padding: 4px 0;
+}
+.tell-me-how > summary::marker { content: ''; }
+.tell-me-how-body {
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  max-width: 64ch;
+}
+.tell-me-how-body p { margin: 0 0 8px; }
+
 /* Numbers, filenames, costs and anything that should line up in a column. */
 .tabular { font-family: var(--mono); font-variant-numeric: tabular-nums; }
 

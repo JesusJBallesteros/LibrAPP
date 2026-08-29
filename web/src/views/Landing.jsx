@@ -86,15 +86,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           <p className="eyebrow">{t('app.strapline')}</p>
 
           <p className="landing-tagline">{t('landing.tagline')}</p>
-          {/* Two paragraphs and a bulleted list used to stand on this page
-              making the case for it. About makes the same case, properly, and
-              this is the way there. */}
-          <p className="landing-subhead">
-            <button className="btn link" onClick={() => onGo('about', 'privacy')}>
-              {t('landing.privacyLink')}
-            </button>
-          </p>
-
           {/* The first thing offered, and the only one that asks for nothing.
               Everything below wants a photograph or a spreadsheet the visitor
               has to go and find; somebody deciding whether to bother should not
@@ -105,7 +96,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
               <button className="btn primary" onClick={onDemo}>
                 {t('landing.demo.action', { n: DEMO_BOOKS })}
               </button>
-              <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
             </div>
           )}
         </header>
@@ -153,7 +143,9 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             </button>
           </p>
           <p className="tiny faint" style={{ marginTop: 10 }}>
-            {t('landing.licence')}{' '}
+            <button className="btn link" onClick={() => onGo('about', 'privacy')}>
+              {t('landing.privacyLink')}
+            </button>
             <button className="btn link" onClick={() => onGo('about', 'licence')}>
               {t('landing.licenceName')}
             </button>
