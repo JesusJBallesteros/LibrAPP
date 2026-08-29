@@ -15,6 +15,7 @@ import { providerById } from '../ai/providers.js'
 import { EXTRAS, extrasPrompt } from '../ai/extras.js'
 import { idbGet, idbSet } from '../store/idb.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
+import DemoWarning from '../components/DemoWarning.jsx'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -294,6 +295,8 @@ export default function Shelf({ lib, onOwl }) {
         <hr className="rule" />
         <p>{t('shelf.intro')}</p>
       </div>
+
+      <DemoWarning lib={lib} />
 
       {error && (
         <div className="notice bad">

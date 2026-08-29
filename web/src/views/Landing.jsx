@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import ContrastToggle from '../components/ContrastToggle.jsx'
 import { demoSize } from '../store/demo.js'
@@ -27,8 +28,18 @@ const OPTIONS = [
   { id: 'browse', view: 'catalog', needsCatalog: true },
 ]
 
-export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo }) {
+export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo, startHere }) {
   const { t, language, setLanguage } = useT()
+  const start = useRef(null)
+
+  // Arrived from the demo having decided to build one. Put the ways in on
+  // screen and hand focus to them, rather than dropping the reader at the top
+  // of a page they have already read.
+  useEffect(() => {
+    if (!startHere || !start.current) return
+    start.current.scrollIntoView({ block: 'start' })
+    start.current.querySelector('h2')?.focus()
+  }, [startHere])
 
   return (
     <div className="landing">
@@ -119,8 +130,8 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           </section>
         </div>
 
-        <section className="landing-start">
-          <h2>{t('landing.start')}</h2>
+        <section className="landing-start" ref={start}>
+          <h2 tabIndex={-1}>{t('landing.start')}</h2>
           <p className="tiny faint">{t('landing.start.hint')}</p>
 
           <div className="landing-options">

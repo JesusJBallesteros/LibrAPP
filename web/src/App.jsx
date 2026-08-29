@@ -15,6 +15,7 @@ import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
 import ContrastToggle from './components/ContrastToggle.jsx'
+import { leaveForYourOwn, wantedStart } from './components/DemoWarning.jsx'
 
 const VIEWS = ['catalog', 'shelf', 'list', 'barcode', 'desk', 'storage', 'about']
 
@@ -43,6 +44,9 @@ export default function App() {
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
   const demoAsked = useRef(false)
+  // Whether this load is the one that followed "try yours now", so the front
+  // page can open at the ways in rather than at the top.
+  const [startHere] = useState(wantedStart)
 
   // #demo in the address opens the demo library straight away, so a link from
   // the README or from anywhere else lands in a populated app rather than on a
@@ -151,6 +155,7 @@ export default function App() {
           hasCatalog={Boolean(counts?.books)}
           bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
           browserUsable={capabilities.usable}
+          startHere={startHere}
           onDemo={async () => {
             await lib.useDemo()
             go('catalog')
@@ -259,13 +264,17 @@ export default function App() {
                 <strong>{t('demo.banner')}</strong>
               </p>
               <p className="tiny">{t('demo.bannerWhy')}</p>
-              <button
-                className="btn small"
-                style={{ marginTop: 8 }}
-                onClick={() => window.location.reload()}
-              >
-                {t('demo.leave')}
-              </button>
+              <span className="row" style={{ gap: 8, marginTop: 8 }}>
+                {/* Being persuaded and being set up were two different pages
+                    with nothing between them: leaving returned to the same five
+                    doors the visitor had already declined. */}
+                <button className="btn small primary" onClick={leaveForYourOwn}>
+                  {t('demo.tryYours')}
+                </button>
+                <button className="btn small" onClick={() => window.location.reload()}>
+                  {t('demo.leave')}
+                </button>
+              </span>
             </div>
           </div>
         )}

@@ -46,6 +46,10 @@ export default {
   'demo.bannerWhy':
     'These books are invented. Everything works, including editing and importing, and all of it is gone when you reload. Your own catalog is untouched.',
   'demo.leave': 'Leave the demo',
+  'demo.tryYours': 'Try yours now',
+  'demo.importWarning': 'Anything you bring in here is part of the demo.',
+  'demo.importWarningWhy':
+    'It will be read and merged exactly as it would be in your own library, and it goes when you reload along with the invented books. Your own library is not touched either way. To keep what you import, start your own first.',
 
   'landing.language': 'Language',
   'landing.learnMore': 'More about LibrAPP',

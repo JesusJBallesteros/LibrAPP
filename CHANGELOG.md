@@ -210,6 +210,29 @@ anybody can buy.
 
 ## Unreleased
 
+### A way out of the demo that goes somewhere
+
+The demo showed what the app is for and then offered one door: leave, which
+returned to the same five the visitor had already declined. Being persuaded and
+being set up were two pages with nothing between them.
+
+**Try yours now** leaves the demo and opens the front page at the ways in, with
+the heading focused so it reaches a screen reader as well as an eye. A flag
+through the reload, because leaving is a reload: the demo lives in memory and
+starting the page again is the only way to be rid of it. The flag is taken as
+it is read, so a later reload does not do it again.
+
+### And a warning where it can cost something
+
+The banner says the demo is discarded on reload, and says it before the reader
+has done anything. The natural move for somebody the demo has persuaded is to
+bring their real export in and watch it work, and lose it.
+
+The three pages that write, the photograph, the list and the barcode, now say
+so where the choice is made: what you bring in is read and merged exactly as it
+would be in your own library, and it goes with the invented books. The way out
+that keeps the work is offered in the same breath.
+
 ### The barcode lookup is a way in, and is filed as one
 
 It was at the foot of the desk, under the enquiries, below the charts, at the

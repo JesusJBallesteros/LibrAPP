@@ -4,6 +4,7 @@ import { loadTable, missingFields, readXlsx, readXml, xmlSections } from '../ing
 import { parseKindle } from '../ingest/kindle.js'
 import { linesFromPdf } from '../ingest/pdftext.js'
 import { stemOf } from '../store/library.js'
+import DemoWarning from '../components/DemoWarning.jsx'
 import { useT } from '../i18n/index.jsx'
 
 const FORMATS = ['physical', 'ebook', 'audio']
@@ -132,6 +133,8 @@ export default function ListImport({ lib, onOwl }) {
         <hr className="rule" />
         <p>{t('list.intro')}</p>
       </div>
+
+      <DemoWarning lib={lib} />
 
       {error && (
         <div className="notice bad">

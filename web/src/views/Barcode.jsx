@@ -1,4 +1,5 @@
 import IsbnLookup from '../components/IsbnLookup.jsx'
+import DemoWarning from '../components/DemoWarning.jsx'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -23,6 +24,8 @@ export default function Barcode({ lib }) {
         <hr className="rule" />
         <p>{t('barcode.intro')}</p>
       </div>
+
+      <DemoWarning lib={lib} />
 
       <IsbnLookup lib={lib} />
     </div>
