@@ -219,9 +219,15 @@ export default function App() {
               key={id}
               onClick={() => go(id)}
               aria-current={view === id ? 'page' : undefined}
-              title={t(`nav.${NAV_KEY[id]}.hint`)}
             >
               {t(`nav.${NAV_KEY[id]}`)}
+              {/* The names in here are the house vocabulary and half of them
+                  say nothing to somebody who has just arrived: a desk, some
+                  stacks. These lines already existed and were in a title
+                  attribute, which is a tooltip on a mouse and nothing at all
+                  on a phone, so the one place the wording needed explaining
+                  was the one place it was hidden. */}
+              <span className="nav-hint">{t(`nav.${NAV_KEY[id]}.hint`)}</span>
             </button>
           ))}
         </nav>

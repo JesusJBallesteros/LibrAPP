@@ -155,8 +155,8 @@ export default {
   'nav.shelf.hint': 'leer una fotografía',
   'nav.list.hint': 'un archivo que ya tienes',
   'nav.barcode.hint': 'el número del libro',
-  'nav.desk.hint': 'preguntar sobre ello',
-  'nav.stacks.hint': 'dónde se guarda todo',
+  'nav.desk.hint': 'preguntar por tus libros',
+  'nav.stacks.hint': 'almacenamiento, copias, correcciones',
 
   'sidebar.books': 'libros',
   'sidebar.authors': 'autores',
@@ -981,8 +981,8 @@ export default {
     'Sin autor anotado. D\u00e9jalo en blanco si la obra es an\u00f3nima o corporativa, o escribe uno.',
 
   'nav.about': 'Acerca de',
-  'nav.about.hint': 'Qu\u00e9 es esto, qui\u00e9n lo hizo y en qu\u00e9 t\u00e9rminos',
-  'sidebar.holdings': 'El fondo',
+  'nav.about.hint': 'qu\u00e9 es esto y en qu\u00e9 t\u00e9rminos',
+  'sidebar.holdings': 'Lo que hay',
   'about.eyebrow': 'Colof\u00f3n',
   'contrast.label': 'Contraste',
   'contrast.normal': 'Normal',

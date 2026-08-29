@@ -166,8 +166,8 @@ export default {
   'nav.shelf.hint': 'read a photograph',
   'nav.list.hint': 'a file you already keep',
   'nav.barcode.hint': 'the number on the book',
-  'nav.desk.hint': 'ask about it',
-  'nav.stacks.hint': 'where it all lives',
+  'nav.desk.hint': 'ask about your books',
+  'nav.stacks.hint': 'storage, backups, corrections',
 
   'sidebar.books': 'books',
   'sidebar.authors': 'authors',
@@ -992,8 +992,8 @@ export default {
     'No author recorded. Leave this blank for an anonymous or corporate work, or type one in.',
 
   'nav.about': 'About',
-  'nav.about.hint': 'What this is, who made it, and the terms',
-  'sidebar.holdings': 'The holdings',
+  'nav.about.hint': 'what this is, and the terms',
+  'sidebar.holdings': 'What is here',
   'about.eyebrow': 'Colophon',
   'contrast.label': 'Contrast',
   'contrast.normal': 'Normal',
