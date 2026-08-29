@@ -622,6 +622,12 @@ Paste the codes, one per line or out of a spreadsheet column, or read them from
 a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
 a 10 and a 13 is looked up once.
 
+**Or point the camera at them.** *Scan with the camera* opens a viewfinder and
+reads codes as they pass in front of it, which is the quick way through a stack:
+hold each book up, watch the count go up, move on. The same book twice counts
+once. The camera is asked for only when you press it and handed back the moment
+you stop, leave the page or switch tabs.
+
 **Or photograph the barcodes.** Where the browser can read one, and Chrome on
 Android can, **Read a barcode from a photo** takes one picture or several and
 adds what it finds to the same box. A photograph of a pile gives up every code
@@ -877,9 +883,13 @@ Three things can leave the device, all optional and none of them on by default:
 | Asking the desk a question | Your reading profile, printed in full first | The rest of the catalog |
 | Scanning a barcode | The ISBN, to Open Library | The title, your notes, your shelf, you |
 
-The barcode case is the smallest of the three by a distance. A photograph of a
-barcode is decoded on the device and never leaves it; what goes out is thirteen
-digits that are printed on the back of a book anybody can buy.
+The barcode case is the smallest of the three by a distance. Barcodes are
+decoded on the device, whether they come from a picture or from the camera, and
+neither the picture nor the camera's view leaves or is recorded. What goes out
+is thirteen digits printed on the back of a book anybody can buy.
+
+**The camera** is asked for only when you press *Scan with the camera*, and it
+is handed back the moment you stop, leave the page, or switch to another tab.
 
 **Version.** **The stacks** shows which build you are running, when it was
 made, and a button that throws the cached copy away and fetches the current one.

@@ -574,6 +574,19 @@ export default {
   'isbn.scannedNone': 'No barcode found in {photos} {photos:photo|photos}. Straight on and close, with the whole code in frame, reads best.',
   'isbn.carriedReader':
     'This browser has no barcode reader of its own, so LibrAPP uses the one it carries. It is fetched the first time you scan something, and served from here rather than from anywhere else.',
+  'scan.start': 'Scan with the camera',
+  'scan.stop': 'Stop the camera',
+  'scan.viewfinder': 'What the camera is pointed at',
+  'scan.starting': 'Asking for the camera',
+  'scan.hint':
+    'Hold the barcode in the frame. Codes are added as they are read, and the same book twice counts once. The picture stays on this device and is not recorded.',
+  'scan.found': '{n} {n:code|codes} read.',
+  'scan.none': 'Nothing read yet.',
+  'scan.denied':
+    'The camera was refused. Allow it for this page in the browser, or type the numbers instead.',
+  'scan.noCamera': 'No camera the browser can use. The codes can be typed or read from a file.',
+  'scan.inUse': 'The camera is being used by something else. Close that and try again.',
+  'scan.failed': 'The camera could not be started.',
   'isbn.fromFile': 'Read them from a file',
   'isbn.ready': '{n} {n:code|codes} ready.',
   'isbn.noneFound': 'No codes in there yet.',
@@ -718,7 +731,7 @@ export default {
   'about.privacy.cookies':
     'No cookies, no analytics and no trackers. The only thing remembered about you is which language you picked and where your library is.',
   'about.privacy.requests':
-    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends that number to Open Library and nothing else: no title, no note, nothing about your shelf. The photograph of a barcode is read here and never leaves.',
+    'Three things can leave this device, all of them optional and none of them on by default. Reading a shelf photograph sends the tiles of that photograph. Asking the desk a question sends your reading profile, which the desk prints in full first. Looking a book up by its barcode sends that number to Open Library and nothing else: no title, no note, nothing about your shelf. Barcodes are read here, whether from a picture or from the camera, and neither the picture nor the camera’s view ever leaves or is recorded.',
   'about.privacy.offline':
     'Once loaded it runs with no network at all, which is the simplest proof that nothing is being sent anywhere.',
   'about.privacyCheck': 'You do not have to take any of that on trust. The code is public.',

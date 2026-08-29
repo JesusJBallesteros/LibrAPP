@@ -138,7 +138,7 @@ export default function Shelf({ lib, onOwl }) {
     if (err?.name === 'AbortError') return t('shelf.stopped')
     // An empty notice is worse than none: it looks like the same silence the
     // person was already complaining about.
-    return String(err?.message || err || '').trim() || t('shelf.failedUnknown')
+    return String(err?.message || '').trim() || t('shelf.failedUnknown')
   }
 
   const readWithKey = async () => {

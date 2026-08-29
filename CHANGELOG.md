@@ -210,6 +210,37 @@ anybody can buy.
 
 ## Unreleased
 
+### The camera reads barcodes as they pass
+
+Photographing a barcode, opening the file, waiting for it to decode and doing
+that again for the next book is slower per book than typing the number, which
+made the fast path the slow one. The same reader is now pointed at a live
+picture, so a shelf of paper books is a few minutes rather than an evening.
+Codes land in the same box the typed ones do, the same book twice counts once,
+and nothing is written until the same review step as before.
+
+The camera is a permission the app had never asked for, so the privacy notes
+say what it does: barcodes are read on the device whether they come from a
+picture or from the camera, neither the picture nor the view leaves or is
+recorded, and what goes out is still thirteen digits.
+
+It is handed back the moment it is not in use, including when the tab is
+hidden. A camera light left on is the one bug that would cost this app the
+trust the rest of it is built on, so that is checked rather than assumed: with
+a stand-in stream the track reads live while open, ended when the tab hides,
+and ended on close.
+
+Where the camera cannot start, the reason says what to do about it: refused,
+none fitted, or already in use by something else. "The camera could not be
+started" is true of all three and useful for none.
+
+### Fixed: an error with no message read as "[object Object]"
+
+Both the shelf reader and the new camera fell back to stringifying the error
+itself when it carried no message, which puts "[object Object]" in front of the
+reader. Found by a test written for the camera, and the same line was already in
+the shelf.
+
 ### A way out of the demo that goes somewhere
 
 The demo showed what the app is for and then offered one door: leave, which

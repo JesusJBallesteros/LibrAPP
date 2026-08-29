@@ -577,6 +577,19 @@ export default {
   'isbn.scannedNone': 'No se ha encontrado ningún código en {photos} {photos:foto|fotos}. De frente y de cerca, con el código entero en el encuadre, es como mejor se lee.',
   'isbn.carriedReader':
     'Este navegador no trae lector de códigos, así que LibrAPP usa el suyo. Se descarga la primera vez que escaneas algo, y se sirve desde aquí y no desde ningún otro sitio.',
+  'scan.start': 'Escanear con la cámara',
+  'scan.stop': 'Parar la cámara',
+  'scan.viewfinder': 'Lo que enfoca la cámara',
+  'scan.starting': 'Pidiendo la cámara',
+  'scan.hint':
+    'Pon el código dentro del recuadro. Los códigos se añaden según se leen, y el mismo libro dos veces cuenta una. La imagen no sale de este dispositivo y no se graba.',
+  'scan.found': '{n} {n:código leído|códigos leídos}.',
+  'scan.none': 'Todavía no se ha leído nada.',
+  'scan.denied':
+    'Se ha denegado la cámara. Permítela para esta página en el navegador, o escribe los números.',
+  'scan.noCamera': 'No hay cámara que el navegador pueda usar. Puedes escribir los códigos o leerlos de un archivo.',
+  'scan.inUse': 'La cámara la está usando otra cosa. Ciérrala y vuelve a intentarlo.',
+  'scan.failed': 'No se ha podido iniciar la cámara.',
   'isbn.fromFile': 'Leerlos de un archivo',
   'isbn.ready': '{n} {n:código|códigos} {n:listo|listos}.',
   'isbn.noneFound': 'Todavía no hay códigos ahí.',
@@ -723,7 +736,7 @@ export default {
   'about.privacy.cookies':
     'Sin cookies, sin analítica y sin rastreadores. Lo único que se recuerda de ti es qué idioma elegiste y dónde está tu biblioteca.',
   'about.privacy.requests':
-    'Tres cosas pueden salir de este dispositivo, todas opcionales y ninguna activada de antemano. Leer la foto de una estantería envía los recortes de esa foto. Preguntar en el escritorio envía tu perfil de lectura, que el escritorio muestra entero antes. Buscar un libro por su código de barras envía ese número a Open Library y nada más: ni título, ni notas, nada de tu estantería. La foto de un código se lee aquí y no sale nunca.',
+    'Tres cosas pueden salir de este dispositivo, todas opcionales y ninguna activada de antemano. Leer la foto de una estantería envía los recortes de esa foto. Preguntar en el escritorio envía tu perfil de lectura, que el escritorio muestra entero antes. Buscar un libro por su código de barras envía ese número a Open Library y nada más: ni título, ni notas, nada de tu estantería. Los códigos se leen aquí, vengan de una foto o de la cámara, y ni la foto ni lo que ve la cámara salen ni se graban.',
   'about.privacy.offline':
     'Una vez cargada funciona sin ninguna conexión, que es la prueba más sencilla de que no se está enviando nada a ninguna parte.',
   'about.privacyCheck': 'No hace falta que te fies de nada de esto: el código es público.',

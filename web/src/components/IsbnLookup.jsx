@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { lookup, nativeBarcodes, parseCodes, previewLookup, readBarcodes } from '../ingest/isbn.js'
+import LiveScan, { cameraAvailable } from './LiveScan.jsx'
 import { useT } from '../i18n/index.jsx'
 
 // One code per line is how the box reads and how a person writes them.
@@ -35,6 +36,9 @@ export default function IsbnLookup({ lib, onDone }) {
   // to warn about that.
   const [native, setNative] = useState(null)
   const [scanning, setScanning] = useState(false)
+  // Whether the viewfinder is open. Separate from `scanning`, which is a
+  // photograph being decoded.
+  const [live, setLive] = useState(false)
   const [scanned, setScanned] = useState(null)
   const inFlight = useRef(null)
 
@@ -157,6 +161,15 @@ export default function IsbnLookup({ lib, onDone }) {
                 <option value="audio">{t('isbn.format.audio')}</option>
               </select>
             </label>
+            {cameraAvailable() && (
+              <button
+                className="btn small"
+                disabled={busy || scanning}
+                onClick={() => setLive((open) => !open)}
+              >
+                {live ? t('scan.stop') : t('scan.start')}
+              </button>
+            )}
             <label className="btn small file-button">
               {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
               <input
@@ -185,6 +198,21 @@ export default function IsbnLookup({ lib, onDone }) {
               />
             </label>
           </div>
+
+          {live && (
+            <LiveScan
+              onClose={() => setLive(false)}
+              onCode={(code) =>
+                setText((current) =>
+                  // Straight into the same box the typed ones go in, so there is
+                  // one list to check before anything is sent.
+                  parseCodes(current).codes.includes(code)
+                    ? current
+                    : [current.trim(), code].filter(Boolean).join(NEWLINE),
+                )
+              }
+            />
+          )}
 
           {native === false && (
             <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.carriedReader')}</p>
