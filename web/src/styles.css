@@ -19,15 +19,12 @@
   --l-ink-soft: #5d564c;
   /* Solved against the darkest surface it appears on, which is the catalog
      card. The old #8d857a read at 3.15 there, under the 4.5 that text needs. */
-  --l-ink-faint: #736b60;
-  --l-ink-faint-hi: #564e43;
+  --l-ink-faint: #564e43;
   /* The boundary of a control, which is the underline on a select or an input
      since the redesign gave them no box. That has to clear 3, where a rule
      drawn between two rows carries no meaning and does not. */
-  --l-control: #90887a;
-  --l-control-hi: #736b5d;
-  --l-rule: #e3dbcd;
-  --l-rule-hi: #90887a;
+  --l-control: #736b5d;
+  --l-rule: #90887a;
   --l-rule-soft: #ece5d8;
   --l-rule-strong: #d5cab8;
   --l-accent: #7a4a2b;
@@ -43,12 +40,9 @@
   --d-card: #2a251d;
   --d-ink: #ece5d8;
   --d-ink-soft: #a9a297;
-  --d-ink-faint: #928b82;
-  --d-ink-faint-hi: #b6afa6;
-  --d-control: #736e68;
-  --d-control-hi: #908b85;
-  --d-rule: #35302a;
-  --d-rule-hi: #736e68;
+  --d-ink-faint: #b6afa6;
+  --d-control: #908b85;
+  --d-rule: #736e68;
   --d-rule-soft: #2a2620;
   --d-rule-strong: #443d35;
   --d-accent: #d09a6e;
@@ -133,20 +127,8 @@
   --card: var(--l-card);
   --ink: var(--l-ink);
   --ink-soft: var(--l-ink-soft);
-  /* Two steps, not one. The theme decides which palette is in play and puts
-     both the plain and the raised value in reach; the contrast layer below
-     then chooses between them without needing to know which theme it is in.
-     Without this indirection every contrast rule would need a light and a dark
-     twin, and the pair would drift. */
-  --faint-plain: var(--l-ink-faint);
-  --faint-hi: var(--l-ink-faint-hi);
-  --control-plain: var(--l-control);
-  --control-hi: var(--l-control-hi);
-  --rule-plain: var(--l-rule);
-  --rule-hi: var(--l-rule-hi);
-
-  --ink-faint: var(--faint-plain);
-  --control-line: var(--control-plain);
+  --ink-faint: var(--l-ink-faint);
+  --control-line: var(--l-control);
   --rule: var(--l-rule);
   --rule-soft: var(--l-rule-soft);
   --rule-strong: var(--l-rule-strong);
@@ -173,14 +155,8 @@
     --card: var(--d-card);
     --ink: var(--d-ink);
     --ink-soft: var(--d-ink-soft);
-    --faint-plain: var(--d-ink-faint);
-    --faint-hi: var(--d-ink-faint-hi);
-    --control-plain: var(--d-control);
-    --control-hi: var(--d-control-hi);
-    --rule-plain: var(--d-rule);
-    --rule-hi: var(--d-rule-hi);
-    --ink-faint: var(--faint-plain);
-    --control-line: var(--control-plain);
+    --ink-faint: var(--d-ink-faint);
+    --control-line: var(--d-control);
     --rule: var(--d-rule);
     --rule-soft: var(--d-rule-soft);
     --rule-strong: var(--d-rule-strong);
@@ -202,14 +178,8 @@
   --card: var(--d-card);
   --ink: var(--d-ink);
   --ink-soft: var(--d-ink-soft);
-  --faint-plain: var(--d-ink-faint);
-  --faint-hi: var(--d-ink-faint-hi);
-  --control-plain: var(--d-control);
-  --control-hi: var(--d-control-hi);
-  --rule-plain: var(--d-rule);
-  --rule-hi: var(--d-rule-hi);
-  --ink-faint: var(--faint-plain);
-  --control-line: var(--control-plain);
+  --ink-faint: var(--d-ink-faint);
+  --control-line: var(--d-control);
   --rule: var(--d-rule);
   --rule-soft: var(--d-rule-soft);
   --rule-strong: var(--d-rule-strong);
@@ -221,39 +191,6 @@
   --bad: var(--d-bad);
 
   color-scheme: dark;
-}
-
-/* ------------------------------------------------------------- contrast -- */
-
-/* A second axis, independent of light and dark. Somebody who needs more
-   contrast may want it on either, so this is not a third theme: it raises the
-   quiet colours of whichever theme is in force.
- *
- * The defaults already clear what text needs. This goes further, to the 7:1 the
- * guidelines ask for as an enhanced level, and gives the rules between rows a
- * contrast of their own, because at low vision the structure of a page matters
- * as much as the words on it.
- *
- * The system asks first. Anyone who has turned contrast up in their operating
- * system gets it here without finding a setting, the same way the theme follows
- * prefers-color-scheme. Choosing "normal" in the app wins that back, which is
- * what the :not() guard is for. */
-@media (prefers-contrast: more) {
-  :root:not([data-contrast='normal']) {
-    --ink-faint: var(--faint-hi);
-    --control-line: var(--control-hi);
-    --rule: var(--rule-hi);
-    --rule-soft: var(--rule-hi);
-    --rule-strong: var(--rule-hi);
-  }
-}
-
-:root[data-contrast='high'] {
-  --ink-faint: var(--faint-hi);
-  --control-line: var(--control-hi);
-  --rule: var(--rule-hi);
-  --rule-soft: var(--rule-hi);
-  --rule-strong: var(--rule-hi);
 }
 
 /* ------------------------------------------------------- shared patterns -- */
@@ -1174,21 +1111,13 @@ pre.snippet {
   height: 20px;
   transform: translateX(-50%) rotate(-7deg);
   /* currentColor on the drawing, which is the ink this spine picked for its
-     own fill. Held under full strength so it reads as ink pressed into the
-     cloth rather than as a control sitting on top of it. */
-  opacity: .8;
+     own fill. At full strength: the ink is at 7:1 and holding the mark under
+     it would give that back, and nothing here is decoration. */
   /* The whole spine is the button. A mark that took the click would open the
      book from a different element and swallow the touch-to-peek. */
   pointer-events: none;
 }
 .spine-mark svg { display: block; width: 100%; height: 100%; }
-/* At raised contrast the ink is at 7:1 and holding the mark under strength
-   gives that back. Nothing here is decoration once the page is being read at
-   low vision, so the stamp goes to full ink like the lettering. */
-@media (prefers-contrast: more) {
-  :root:not([data-contrast='normal']) .spine-mark { opacity: 1; }
-}
-:root[data-contrast='high'] .spine-mark { opacity: 1; }
 /* Turned on its side, so the block axis runs across the spine and the inline
    axis runs down it. That is what makes the two limits below mean what they
    say: inline is how long one line may be, block is how many lines fit. */
@@ -1858,6 +1787,10 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
 .book-row .byline,
 .forgotten-item .title { overflow-wrap: anywhere; }
 
+/* Wide enough for a column down the side: the menu button has nothing to do
+   and the shell is always open. */
+.menu-button { display: none; }
+
 @media (max-width: 820px) {
   .shell { grid-template-columns: 1fr; }
   .sidebar {
@@ -1868,6 +1801,31 @@ textarea.compose:focus { outline: none; border-color: var(--accent); }
     padding: 14px;
     overflow: visible;
   }
+
+  /* Folded, the shell is a name and a way in. The nav and the counts under it
+     took 545 of the 663 pixels it was spending before a single book appeared. */
+  .sidebar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .menu-button {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    border: 1px solid var(--control-line);
+    border-radius: var(--radius);
+    background: none;
+    color: var(--ink);
+    font: 400 14.5px/1 var(--sans);
+    cursor: pointer;
+  }
+  .sidebar .nav,
+  .sidebar .sidebar-foot { display: none; }
+  .sidebar.open .nav { display: flex; }
+  .sidebar.open .sidebar-foot { display: flex; }
   /* A left border marks the current item in a column. In a row it would mark
      the wrong edge, so the underline does the work instead. */
   .nav { flex-direction: row; flex-wrap: wrap; gap: 2px; }

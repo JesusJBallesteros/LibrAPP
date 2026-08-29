@@ -14,7 +14,6 @@ import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
-import ContrastToggle from './components/ContrastToggle.jsx'
 import { leaveForYourOwn, wantedStart } from './components/DemoWarning.jsx'
 
 const VIEWS = ['catalog', 'shelf', 'list', 'barcode', 'desk', 'storage', 'about']
@@ -44,6 +43,10 @@ export default function App() {
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
   const demoAsked = useRef(false)
+  // Whether the shell is unfolded on a phone, where it is folded by default.
+  // Always open on a wide screen: the CSS below stops reading this above the
+  // breakpoint, so nothing here has to know how wide the window is.
+  const [menuOpen, setMenuOpen] = useState(false)
   // Where a failure lands when the thing that caused it has nowhere of its own
   // to put one. A star pressed at the foot of a long shelf is the case: there
   // is no room beside it for a message, so the message stays here and the page
@@ -106,6 +109,7 @@ export default function App() {
       }
       setPendingView(null)
       setView(next)
+      setMenuOpen(false)
     },
     [lib.status, view],
   )
@@ -211,7 +215,8 @@ export default function App() {
       <a className="skip-link" href="#content">
         {t('a11y.skipToContent')}
       </a>
-      <aside className="sidebar">
+      <aside className={`sidebar${menuOpen ? ' open' : ''}`}>
+        <div className="sidebar-top">
         <button className="brand brand-button" onClick={() => setView('home')}>
           <h1>
             Libr<em>APP</em>
@@ -219,8 +224,19 @@ export default function App() {
           <span className="brand-rule" aria-hidden="true" />
           <p className="eyebrow">{t('app.strapline')}</p>
         </button>
+        {/* The shell took 79% of a phone screen before any book did. Every
+            name in it is still here, one press away. */}
+        <button
+          className="menu-button"
+          aria-expanded={menuOpen}
+          aria-controls="shell-nav"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {t(menuOpen ? 'nav.menu.close' : 'nav.menu')}
+        </button>
+        </div>
 
-        <nav className="nav">
+        <nav className="nav" id="shell-nav">
           {VIEWS.map((id) => (
             <button
               key={id}
@@ -263,7 +279,6 @@ export default function App() {
             </button>
           </div>
           <ThemeToggle />
-        <ContrastToggle />
 
           <nav className="sidebar-links">
             {[

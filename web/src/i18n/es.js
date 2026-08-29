@@ -143,6 +143,8 @@ export default {
 
   'a11y.skipToContent': 'Saltar al cat\u00e1logo',
   'app.strapline': 'tu estantería, catalogada',
+  'nav.menu': 'Menú',
+  'nav.menu.close': 'Cerrar',
   'nav.home': 'Inicio',
   'nav.catalog': 'Catálogo',
   'nav.shelf': 'Foto de estantería',
@@ -395,6 +397,7 @@ export default {
     'una carpeta que elegiste, con archivos normales que puedes abrir, copiar o versionar',
   'storage.kind.browser':
     'almacenamiento del navegador, privado para LibrAPP; solo sale de aquí exportando',
+  'storage.kind.demo': 'la muestra, en memoria y se va al recargar',
   'storage.kind.unknown': 'desconocido',
   'storage.using': 'Usando {used} de los {quota} que el navegador concede a esta app.',
   'storage.notPersistent': 'Este almacenamiento no está marcado como persistente.',
@@ -995,10 +998,6 @@ export default {
   'nav.about.hint': 'qu\u00e9 es esto y en qu\u00e9 t\u00e9rminos',
   'sidebar.holdings': 'Lo que hay',
   'about.eyebrow': 'Colof\u00f3n',
-  'contrast.label': 'Contraste',
-  'contrast.normal': 'Normal',
-  'contrast.high': 'M\u00e1s',
-  'contrast.following': 'Elegido aqu\u00ed. Pulsa otra vez para seguir al sistema.',
   'theme.label': 'Tema',
   'theme.light': 'D\u00eda',
   'theme.dark': 'Noche',

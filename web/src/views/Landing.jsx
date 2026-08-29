@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import OnYourPhone from '../components/OnYourPhone.jsx'
-import ContrastToggle from '../components/ContrastToggle.jsx'
 import { demoSize } from '../store/demo.js'
 import { LANGUAGES, useT } from '../i18n/index.jsx'
 
@@ -79,10 +78,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
               <label className="field landing-theme">
                 <span className="tiny">{t('theme.label')}</span>
                 <ThemeToggle />
-              </label>
-              <label className="field landing-theme">
-                <span className="tiny">{t('contrast.label')}</span>
-                <ContrastToggle />
               </label>
             </div>
           </div>

@@ -57,3 +57,43 @@ describe('photographing a shelf', () => {
     expect(en).toContain("'shelf.takePhoto': 'Take a photograph'")
   })
 })
+
+// The shell on a phone.
+//
+// It was taking 663 of 844 pixels before a single book appeared: seven names,
+// each two lines since the names gained their glosses, and the counts under
+// them. Every one of those is still here, one press away.
+describe('the shell folds up on a phone', () => {
+  const app = read('App.jsx')
+  // Carriage returns stripped: the stylesheet is stored with CRLF and any
+  // anchor below that spans a line would miss.
+  const css = read('styles.css').split(String.fromCharCode(13)).join('')
+
+
+  it('has a control that says what it is doing', () => {
+    expect(app).toContain('className="menu-button"')
+    expect(app).toContain('aria-expanded={menuOpen}')
+    expect(app).toContain('aria-controls="shell-nav"')
+    expect(app).toContain('id="shell-nav"')
+  })
+
+  it('folds back up on the way to wherever it was pointed', () => {
+    // Left open, the destination would arrive underneath the menu that opened
+    // it.
+    const go = app.slice(app.indexOf('const go = useCallback'), app.indexOf('if (lib.status ='))
+    expect(go).toContain('setMenuOpen(false)')
+  })
+
+  it('hides the nav and the counts only while it is folded', () => {
+    const narrow = css.slice(css.indexOf('@media (max-width: 820px) {\n  .shell'))
+    expect(narrow).toContain('.sidebar .nav,')
+    expect(narrow).toContain('.sidebar.open .nav { display: flex; }')
+    expect(narrow).toContain('.sidebar.open .sidebar-foot { display: flex; }')
+  })
+
+  it('does not draw the control where there is room for the column', () => {
+    // Above the breakpoint the shell is always open and the button has nothing
+    // to do, so the state it reads is never consulted.
+    expect(css).toContain('.menu-button { display: none; }')
+  })
+})

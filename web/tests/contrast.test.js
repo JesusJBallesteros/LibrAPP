@@ -12,7 +12,6 @@
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { LEVELS, applyContrast, effectiveContrast, readContrast } from '../src/store/contrast.js'
 
 const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
 
@@ -54,8 +53,8 @@ const worst = (token, theme) =>
 describe('the palette is defined at all', () => {
   it('has every token these tests measure', () => {
     const needed = [
-      'l-ink', 'l-ink-soft', 'l-ink-faint', 'l-ink-faint-hi', 'l-control', 'l-control-hi',
-      'd-ink', 'd-ink-soft', 'd-ink-faint', 'd-ink-faint-hi', 'd-control', 'd-control-hi',
+      'l-ink', 'l-ink-soft', 'l-ink-faint', 'l-control', 'l-rule',
+      'd-ink', 'd-ink-soft', 'd-ink-faint', 'd-control', 'd-rule',
       ...SURFACES.l, ...SURFACES.d,
     ]
     for (const token of needed) expect(value(token), token).toMatch(/^#[0-9a-f]{6}$/i)
@@ -71,24 +70,12 @@ describe('text at the ordinary level', () => {
     }
   }
 
-  it('holds the faintest colour to the same line as the rest', () => {
-    // This is the one that was under it. It carries the card's field labels,
-    // the year and format cells, the eyebrows and every hint.
-    expect(worst('l-ink-faint', 'l')).toBeGreaterThanOrEqual(4.5)
-    expect(worst('d-ink-faint', 'd')).toBeGreaterThanOrEqual(4.5)
-  })
-})
-
-describe('text with more contrast asked for', () => {
-  for (const theme of ['l', 'd']) {
-    it(`--${theme}-ink-faint-hi reaches 7`, () => {
-      expect(worst(`${theme}-ink-faint-hi`, theme)).toBeGreaterThanOrEqual(7)
-    })
-  }
-
-  it('is actually stronger than the ordinary one, not merely different', () => {
-    expect(worst('l-ink-faint-hi', 'l')).toBeGreaterThan(worst('l-ink-faint', 'l'))
-    expect(worst('d-ink-faint-hi', 'd')).toBeGreaterThan(worst('d-ink-faint', 'd'))
+  it('holds the faintest colour to 7, which is the enhanced level', () => {
+    // It carries the card's field labels, the year and format cells, the
+    // eyebrows and every hint, and it used to be the one under the line. There
+    // is one palette now and this is the level it is held at.
+    expect(worst('l-ink-faint', 'l')).toBeGreaterThanOrEqual(7)
+    expect(worst('d-ink-faint', 'd')).toBeGreaterThanOrEqual(7)
   })
 })
 
@@ -99,101 +86,32 @@ describe('the boundary of a control', () => {
       expect(worst(`${theme}-control`, theme)).toBeGreaterThanOrEqual(3)
     })
 
-    it(`--${theme}-control-hi is stronger still`, () => {
-      expect(worst(`${theme}-control-hi`, theme)).toBeGreaterThan(worst(`${theme}-control`, theme))
+    it(`--${theme}-control clears 4.5, above what a boundary is asked for`, () => {
+      // The palette that shipped as an option is the whole palette now, and it
+      // carried the control boundary well past the 3 a boundary needs.
+      expect(worst(`${theme}-control`, theme)).toBeGreaterThanOrEqual(4.5)
     })
   }
 
-  it('is held to a higher standard than a decorative hairline', () => {
-    // --rule separates rows and means nothing on its own, so it is not asked
-    // to clear 3. The point of a separate token is that the two can differ.
-    expect(worst('l-control', 'l')).toBeGreaterThan(worst('l-rule', 'l'))
-    expect(worst('d-control', 'd')).toBeGreaterThan(worst('d-rule', 'd'))
+  it('draws a hairline as strongly as the boundary of a control', () => {
+    // These were two levels apart while the reader could choose. At the raised
+    // level they are the same colour, which is what the raised level always
+    // did: at low vision the structure of a page matters as much as the words.
+    expect(worst('l-rule', 'l')).toBeGreaterThanOrEqual(3)
+    expect(worst('d-rule', 'd')).toBeGreaterThanOrEqual(3)
   })
 })
 
-describe('the stylesheet wires the levels up', () => {
-  it('raises the quiet colours when contrast is set to high', () => {
-    expect(css).toMatch(/\[data-contrast='high'\]/)
-    expect(css).toContain('--ink-faint: var(--faint-hi)')
-    expect(css).toContain('--control-line: var(--control-hi)')
+describe('there is one level, and nothing left to switch', () => {
+  it('leaves no attribute for a level to be chosen with', () => {
+    expect(css).not.toContain('data-contrast')
   })
 
-  it('follows the system when nobody has chosen', () => {
-    expect(css).toMatch(/@media \(prefers-contrast: more\)/)
-  })
-
-  it('lets a choice of normal win back a system that asked for more', () => {
-    // Without the guard, choosing normal would do nothing on a machine set to
-    // high contrast, and the button would look broken.
-    const at = css.indexOf('prefers-contrast: more')
-    expect(css.slice(at, at + 200)).toContain(":not([data-contrast='normal'])")
-  })
-
-  it('names the pair in both themes, so one contrast rule covers both', () => {
-    expect(css).toContain('--faint-plain: var(--l-ink-faint)')
-    expect(css).toContain('--faint-plain: var(--d-ink-faint)')
-    expect(css).toContain('--faint-hi: var(--l-ink-faint-hi)')
-    expect(css).toContain('--faint-hi: var(--d-ink-faint-hi)')
-  })
-})
-
-describe('remembering the choice', () => {
-  const root = () => globalThis.document.documentElement
-
-  const fresh = () => {
-    globalThis.document = { documentElement: new (class {
-      constructor() { this.attrs = new Map() }
-      setAttribute(k, v) { this.attrs.set(k, v) }
-      removeAttribute(k) { this.attrs.delete(k) }
-      getAttribute(k) { return this.attrs.get(k) ?? null }
-    })() }
-    const store = new Map()
-    globalThis.localStorage = {
-      getItem: (k) => store.get(k) ?? null,
-      setItem: (k, v) => store.set(k, String(v)),
-      removeItem: (k) => store.delete(k),
-    }
-  }
-
-  it('offers exactly the two levels a person can pick', () => {
-    expect(LEVELS).toEqual(['high', 'normal'])
-  })
-
-  it('stamps a choice and takes it off again', () => {
-    fresh()
-    applyContrast('high')
-    expect(root().getAttribute('data-contrast')).toBe('high')
-    applyContrast(null)
-    expect(root().getAttribute('data-contrast')).toBeNull()
-  })
-
-  it('leaves the attribute off rather than writing the system answer into it', () => {
-    fresh()
-    applyContrast(null)
-    expect(root().getAttribute('data-contrast')).toBeNull()
-  })
-
-  it('ignores a stored value it does not recognise', () => {
-    fresh()
-    globalThis.localStorage.setItem('librapp-contrast', 'maximum')
-    expect(readContrast()).toBeNull()
-  })
-
-  it('reads nothing rather than throwing where storage is refused', () => {
-    fresh()
-    globalThis.localStorage.getItem = () => { throw new Error('denied') }
-    expect(readContrast()).toBeNull()
-  })
-
-  it('prefers a stored choice over what the system asks', () => {
-    globalThis.matchMedia = () => ({ matches: true })
-    expect(effectiveContrast('normal')).toBe('normal')
-    expect(effectiveContrast(null)).toBe('high')
-  })
-
-  it('says normal where the browser cannot be asked', () => {
-    globalThis.matchMedia = undefined
-    expect(effectiveContrast(null)).toBe('normal')
+  it('wires the quiet colours straight to the palette', () => {
+    // No pair, no indirection, no rule choosing between them.
+    expect(css).toContain('--ink-faint: var(--l-ink-faint)')
+    expect(css).toContain('--ink-faint: var(--d-ink-faint)')
+    expect(css).not.toContain('--faint-plain')
+    expect(css).not.toContain('--faint-hi')
   })
 })

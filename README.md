@@ -181,12 +181,11 @@ and eye. It is checked against WCAG 2.2 rather than guessed at, and the colour
 arithmetic is measured by its own tests, so a later change to the palette has to
 fail there before it can ship.
 
-**More contrast** is a switch of its own, beside Day and Night rather than among
-them, because it is not a theme: whoever needs it may want it on either. It
-raises the quiet colours to the enhanced level and gives the rules between rows
-a contrast of their own, since at low vision the structure of a page matters as
-much as the words. If your system already asks for more contrast, you get it
-without finding the switch.
+**Contrast is not a setting.** The palette everyone gets is the raised one:
+quiet text reaches 7:1, which WCAG calls the enhanced level, and the hairlines
+between rows are drawn as strongly as the boundary of a control, since at low
+vision the structure of a page matters as much as the words. There used to be a
+switch offering a lower level; there is nothing to switch to now.
 
 **By keyboard**, a skip link is the first thing Tab reaches, past the sidebar
 and into the catalog. The book panel is a real dialog: it takes focus when it
@@ -480,8 +479,7 @@ cannot give either one, so both are left blank and that difference stays where
 it is stated, in the read filter and on the book's own record.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
-follows whatever your system asks for. **More contrast** is a separate switch
-beside it, so it can be had on either. The landing page has both.
+follows whatever your system asks for. The landing page has it too.
 
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
