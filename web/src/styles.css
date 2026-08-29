@@ -380,6 +380,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .landing-option:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
 .landing-option:disabled { opacity: .5; cursor: not-allowed; }
+/* The door a returning reader came for. Marked rather than merely first,
+   because first is only obvious once, and this row is read at a glance. */
+.landing-option.primary {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.landing-option.primary .landing-option-go { color: var(--accent); }
 .landing-option-text { display: grid; gap: 3px; min-width: 0; }
 .landing-option-text strong { font: 400 17px/1.3 var(--serif); }
 .landing-option-go { color: var(--ink-faint); font-size: 17px; }

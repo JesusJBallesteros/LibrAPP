@@ -167,7 +167,10 @@ export default function App() {
         <Landing
           onGo={go}
           hasCatalog={Boolean(counts?.books)}
-          bookCount={counts?.books ? `${counts.books} ${t('sidebar.books')}` : null}
+          // The number, not a sentence. The wording and its plural belong to
+          // the string that shows it, which is the only way the Spanish one can
+          // agree with itself.
+          bookCount={counts?.books ?? 0}
           browserUsable={capabilities.usable}
           startHere={startHere}
           onDemo={async () => {

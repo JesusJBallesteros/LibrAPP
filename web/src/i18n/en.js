@@ -22,10 +22,8 @@ export default {
   'landing.needs.ai':
     'An AI service, for two of the steps: reading the spines off a photograph, and asking the desk about your books. Both work without a key, by preparing the request for you to paste into any AI session yourself. Everything else runs here with no AI at all.',
   'landing.start': 'Where would you like to start?',
-  'landing.start.hint': 'Any of these will set up your storage if you have not chosen it yet.',
 
-  'landing.option.storage': 'Choose where it is kept',
-  'landing.option.storage.hint': 'Set this up first, before adding any books.',
+  'landing.option.storage': 'Choose where it is kept first',
   'landing.option.photo': 'Photograph a shelf',
   'landing.option.photo.hint': 'The quickest way to catalog books you own on paper.',
   'landing.option.list': 'Upload a list',
@@ -36,7 +34,10 @@ export default {
   'landing.option.import.hint': 'Bring in a file you exported from LibrAPP elsewhere.',
   'landing.option.browse': 'See my catalog',
   'landing.option.browse.hint': 'Go straight to the books you already have here.',
-  'landing.option.browse.empty': 'There is nothing here yet. Start with one of the options above.',
+  'landing.option.browse.count': '{n} {n:book|books} here.',
+  // Storage left the row of doors. It is a real choice and some people want
+  // to make it first, but it is the only technical one on the page.
+  'landing.storageFirst': 'Storage is set up on the way, whichever of these you pick.',
 
   'landing.demo.action': 'Check out this example',
   'landing.demo.hint':

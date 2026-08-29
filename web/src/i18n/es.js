@@ -21,10 +21,8 @@ export default {
   'landing.needs.ai':
     'Un servicio de IA, para dos de los pasos: leer los lomos de una foto y preguntar en el escritorio sobre tus libros. Los dos funcionan sin clave, preparando la petición para que la pegues tú en cualquier sesión de IA. Todo lo demás funciona aquí sin IA.',
   'landing.start': '¿Por dónde quieres empezar?',
-  'landing.start.hint': 'Cualquiera de estas opciones configurará el almacenamiento si aún no lo has elegido.',
 
-  'landing.option.storage': 'Elige dónde se guarda',
-  'landing.option.storage.hint': 'Configúralo primero, antes de añadir libros.',
+  'landing.option.storage': 'Elegir primero dónde se guarda',
   'landing.option.photo': 'Fotografía una estantería',
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
   'landing.option.list': 'Sube una lista',
@@ -35,7 +33,8 @@ export default {
   'landing.option.import.hint': 'Trae el archivo que exportaste desde LibrAPP en otro sitio.',
   'landing.option.browse': 'Ver mi catálogo',
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
-  'landing.option.browse.empty': 'Aquí todavía no hay nada: empieza por una de las opciones de arriba.',
+  'landing.option.browse.count': '{n} {n:libro|libros} aquí.',
+  'landing.storageFirst': 'El almacenamiento se configura por el camino, elijas la que elijas.',
 
   'landing.demo.action': 'Mira este ejemplo',
   'landing.demo.hint':

@@ -12,25 +12,38 @@ const DEMO_BOOKS = demoSize()
  * The front door.
  *
  * The app used to open by asking for access to storage. This says what LibrAPP
- * is, what it needs, and then offers the five things someone may have arrived
- * wanting to do.
+ * is, what it needs, and then offers the ways in.
  *
  * Storage is still required before anything can be saved, but it is no longer
- * the opening question. Each route sets it up at the point where it is needed.
+ * the opening question. Each route sets it up at the point where it is needed,
+ * and the door that only chose storage is gone: it was the one technical
+ * decision on the page, it was first, and the line under the doors already
+ * promised that any of the others would do it anyway.
+ *
+ * What is offered depends on whether there is anything here yet. Somebody
+ * arriving for the first time has three ways in and sees three. The other two
+ * are for a reader who has been here before, and one of them used to render as
+ * a disabled button saying there was nothing in it, which is a poor third thing
+ * to meet on a front page.
  */
 
-const OPTIONS = [
-  { id: 'storage', view: 'storage' },
+const WAYS_IN = [
   { id: 'photo', view: 'shelf' },
   { id: 'list', view: 'list' },
   { id: 'barcode', view: 'barcode' },
+]
+
+const COMING_BACK = [
+  { id: 'browse', view: 'catalog', primary: true },
   { id: 'import', view: 'storage', focus: 'import' },
-  { id: 'browse', view: 'catalog', needsCatalog: true },
 ]
 
 export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo, startHere }) {
   const { t, language, setLanguage } = useT()
   const start = useRef(null)
+
+  // Coming back first, because a reader who has a catalog came to open it.
+  const doors = hasCatalog ? [...COMING_BACK, ...WAYS_IN] : WAYS_IN
 
   // Arrived from the demo having decided to build one. Put the ways in on
   // screen and hand focus to them, rather than dropping the reader at the top
@@ -132,36 +145,38 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
 
         <section className="landing-start" ref={start}>
           <h2 tabIndex={-1}>{t('landing.start')}</h2>
-          <p className="tiny faint">{t('landing.start.hint')}</p>
 
           <div className="landing-options">
-            {OPTIONS.map((option) => {
-              const unavailable = option.needsCatalog && !hasCatalog
-              return (
-                <button
-                  key={option.id}
-                  className="landing-option"
-                  onClick={() => onGo(option.view, option.focus)}
-                  disabled={unavailable}
-                >
-                  <span className="landing-option-text">
-                    <strong>{t(`landing.option.${option.id}`)}</strong>
-                    <span className="tiny faint">
-                      {unavailable
-                        ? t('landing.option.browse.empty')
-                        : option.id === 'browse' && bookCount
-                          ? `${bookCount}`
-                          : t(`landing.option.${option.id}.hint`)}
-                    </span>
+            {doors.map((option) => (
+              <button
+                key={option.id}
+                className={`landing-option${option.primary ? ' primary' : ''}`}
+                onClick={() => onGo(option.view, option.focus)}
+              >
+                <span className="landing-option-text">
+                  <strong>{t(`landing.option.${option.id}`)}</strong>
+                  <span className="tiny faint">
+                    {option.id === 'browse' && bookCount
+                      ? t('landing.option.browse.count', { n: bookCount })
+                      : t(`landing.option.${option.id}.hint`)}
                   </span>
-                  <span className="landing-option-go" aria-hidden="true">
-                    →
-                  </span>
-                </button>
-              )
-            })}
+                </span>
+                <span className="landing-option-go" aria-hidden="true">
+                  →
+                </span>
+              </button>
+            ))}
           </div>
 
+          {/* Where storage went. It is a real choice and some people want to
+              make it first, but it is the only technical one here and it does
+              not belong in front of somebody deciding whether to bother. */}
+          <p className="tiny faint" style={{ marginTop: 14 }}>
+            {t('landing.storageFirst')}{' '}
+            <button className="btn link" onClick={() => onGo('storage')}>
+              {t('landing.option.storage')}
+            </button>
+          </p>
         </section>
 
         <section className="landing-next">
