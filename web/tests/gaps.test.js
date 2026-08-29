@@ -11,6 +11,7 @@ import {
   GapsError,
   booksNeeding,
   buildRequest,
+  genreVocabulary,
   gapsByField,
   parseReply,
   summarise,
@@ -307,5 +308,65 @@ describe('the fields a tick permits', () => {
       { books, fields: ['genre'] },
     )
     expect(proposals).toHaveLength(0)
+  })
+})
+
+// Two things the prompt told the model to use and the request never sent.
+//
+// The prompt asked for a genre matching the catalog's own wording, from a model
+// that had never seen that wording, and it is read by whoever owns the shelf,
+// in a language nothing stated. A rule that cannot be obeyed is worse than no
+// rule: it teaches a model that the rest are advisory.
+describe('what the request says about the catalog it came from', () => {
+  const shelf = [
+    { id: 'a', tags: [{ kind: 'genre', value: 'Science fiction' }] },
+    { id: 'b', tags: [{ kind: 'genre', value: 'Science fiction' }] },
+    { id: 'c', tags: [{ kind: 'genre', value: 'Philosophy' }, { kind: 'keyword', value: 'time' }] },
+    { id: 'd', tags: [{ kind: 'genre', value: 'Memoir' }] },
+  ]
+
+  it('orders the vocabulary by how much of the shelf uses it', () => {
+    // Commonest first, so the wordings that already carry the collection are
+    // the ones a model reads before it runs out of attention.
+    expect(genreVocabulary(shelf)).toEqual(['Science fiction', 'Memoir', 'Philosophy'])
+  })
+
+  it('takes genres only, never keywords', () => {
+    expect(genreVocabulary(shelf)).not.toContain('time')
+  })
+
+  it('survives a catalog with no tags at all', () => {
+    expect(genreVocabulary([{ id: 'a' }])).toEqual([])
+    expect(genreVocabulary(null)).toEqual([])
+  })
+
+  it('sends the vocabulary when a genre was asked for', () => {
+    const text = buildRequest([book('b1')], ['genre'], names, 'PROMPT', {
+      genres: genreVocabulary(shelf),
+    })
+    expect(text).toContain('## Genres this catalog already uses')
+    expect(text).toContain('Science fiction, Memoir, Philosophy')
+  })
+
+  it('does not pay for the vocabulary when no genre was asked for', () => {
+    // A request about page counts has nothing to do with genre wording.
+    const text = buildRequest([book('b1')], ['pages'], names, 'PROMPT', {
+      genres: genreVocabulary(shelf),
+    })
+    expect(text).not.toContain('Genres this catalog already uses')
+  })
+
+  it('states the language when it is given one', () => {
+    const text = buildRequest([book('b1')], ['pages'], names, 'PROMPT', { language: 'Spanish' })
+    expect(text).toContain('## The language of this catalog')
+    expect(text).toContain('Spanish')
+  })
+
+  it('says nothing about either when it is told nothing', () => {
+    // The old four-argument call still has to work, and has to produce a
+    // request that claims nothing it was not given.
+    const text = buildRequest([book('b1')], ['genre'], names, 'PROMPT')
+    expect(text).not.toContain('Genres this catalog already uses')
+    expect(text).not.toContain('The language of this catalog')
   })
 })

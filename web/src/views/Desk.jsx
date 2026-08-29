@@ -34,11 +34,12 @@ import {
   WHY as FILL_WHY,
   booksNeeding,
   buildRequest,
+  genreVocabulary,
   gapsByField,
   parseReply,
   summarise,
 } from '../ai/gaps.js'
-import { useT } from '../i18n/index.jsx'
+import { LANGUAGES, useT } from '../i18n/index.jsx'
 
 // The prompt text itself is not translated: it is the instruction sent to a
 // model, and it lives in prompts/ where anyone can edit it. What is translated
@@ -178,8 +179,17 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
     [catalog, fields],
   )
   const fillRequest = useMemo(
-    () => (toFill.length ? buildRequest(toFill, fields, authors, fillPrompt) : ''),
-    [toFill, fields, authors],
+    () =>
+      toFill.length
+        ? buildRequest(toFill, fields, authors, fillPrompt, {
+            genres: genreVocabulary(catalog?.books || []),
+            // The name rather than the code, so nothing has to interpret 'es'.
+            language: LANGUAGES.find((l) => l.code === language)?.label || null,
+          })
+        : '',
+    // The catalog for its genre wording, the language because the request now
+    // states it. Neither was here before because neither was sent.
+    [toFill, fields, authors, catalog, language],
   )
   const assembled = useMemo(() => {
     if (chosen.structured) return fillRequest

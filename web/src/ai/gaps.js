@@ -80,14 +80,42 @@ export function booksNeeding(books, fields, { limit = 60 } = {}) {
 }
 
 /**
+ * Every genre wording this catalog already uses, the commonest first.
+ *
+ * Sent whole rather than capped. The list exists to stop a shelf ending up
+ * with three names for one subject, and a list with the tail cut off invites
+ * exactly the re-invention it is there to prevent. A few hundred words is
+ * cheap beside the profile that travels with it.
+ */
+export function genreVocabulary(books) {
+  const counts = new Map()
+  for (const book of books || []) {
+    for (const tag of book.tags || []) {
+      if (tag.kind !== 'genre') continue
+      counts.set(tag.value, (counts.get(tag.value) || 0) + 1)
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([value]) => value)
+}
+
+/**
  * The request text.
  *
  * Each book carries its id, so the reply can be matched back without guessing
  * from a title that a model may have tidied on the way through. Titles and
  * authors go out because the model needs them to recognise the book at all;
  * nothing else does.
+ *
+ * Two things travel beside them, and both exist because a rule in the prompt
+ * could not be obeyed without them. The prompt asked for a genre matching the
+ * catalog's own wording, from a model that had never seen that wording; and it
+ * is read by whoever owns the shelf, in their language, which nothing said
+ * either. A rule that cannot be followed teaches a model that the rest are
+ * advisory.
  */
-export function buildRequest(books, fields, names, promptText) {
+export function buildRequest(books, fields, names, promptText, { genres = [], language = null } = {}) {
   const wanted = fields.filter((f) => FILLABLE.includes(f))
   const lines = ['## Books to fill in', '']
   for (const book of books) {
@@ -100,13 +128,19 @@ export function buildRequest(books, fields, names, promptText) {
       `  missing: ${gaps.join(', ')}`,
     )
   }
-  return [
+  const parts = [
     promptText.trim(),
     '\n---\n',
     `## Fields asked for\n\n${wanted.join(', ')}`,
-    '\n---\n',
-    lines.join('\n'),
-  ].join('\n')
+  ]
+  if (language) parts.push('\n---\n', `## The language of this catalog\n\n${language}`)
+  // Only where a genre was actually asked for. Sending the vocabulary for a
+  // request about page counts is paying for something nothing will read.
+  if (wanted.includes('genre') && genres.length) {
+    parts.push('\n---\n', `## Genres this catalog already uses\n\n${genres.join(', ')}`)
+  }
+  parts.push('\n---\n', lines.join('\n'))
+  return parts.join('\n')
 }
 
 export class GapsError extends Error {}

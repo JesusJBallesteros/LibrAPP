@@ -36,10 +36,17 @@ in it. Plain language. Not a blurb, and not a recommendation.
 **Original language** is the language the work was written in, not the language
 of the edition on the shelf.
 
+**Write in the catalog's language.** The request states which it is. The
+`abstract` and the `genre` are read by the person who owns the shelf and are
+filed beside what is already there, so a Spanish catalog wants them in Spanish.
+Titles and author names are never translated, and `original_language` names a
+language rather than being written in one.
+
 **Genre** is a few words in plain language: "philosophy", "science fiction",
-"military history". Where the catalog already files similar books under a
-wording, use that wording rather than a synonym, so the shelf does not end up
-with three names for one subject.
+"military history". A list of the genres this catalog already uses arrives with
+the request, commonest first. Use a wording from that list wherever the book
+fits one, and introduce a new one only where none of them do, so the shelf does
+not end up with three names for one subject.
 
 **Series** is the name the works are collected under, with `series_index` as the
 volume number where they are numbered. Leave both out for a standalone book. A
@@ -61,6 +68,10 @@ One JSON object, nothing else. No commentary before or after it.
   "books": [
     {
       "id": "the id given for that book, copied exactly",
+      "genre": "science fiction",
+      "series": "The Hainish Cycle",
+      "series_index": 5,
+      "publisher": "Harper & Row",
       "published_year": 1974,
       "pages": 341,
       "rating": 4.2,
@@ -70,6 +81,9 @@ One JSON object, nothing else. No commentary before or after it.
   ]
 }
 ```
+
+Every field is shown above so the shape is unambiguous. A real reply carries
+only the fields that were asked for, and only the ones you are confident of.
 
 Include only the books you can say something about, and within each, only the
 fields you are confident of. A book you do not recognise is simply absent from
