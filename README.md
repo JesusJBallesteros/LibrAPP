@@ -646,7 +646,9 @@ reading the list.
 
 A book already on your shelf takes the new details rather than becoming a second
 entry: a lookup is a source like a photograph or a spreadsheet, and the same
-merge applies. Anything that matched nothing is added.
+merge applies. Anything that matched nothing is added. **The review says which
+is which** before you keep anything, so a batch of thirty tells you how many are
+new books and how many are gaps being filled.
 
 Subjects come back as **keywords**, not as a genre. There are twenty to ninety
 of them per book and they include things like *American literature* and *New

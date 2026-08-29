@@ -15,7 +15,9 @@ import {
   cleanIsbn,
   lookup,
   lookupUrl,
+  LOOKUP_SOURCE,
   parseCodes,
+  previewLookup,
   publishedYear,
   readBarcodes,
   toIsbn13,
@@ -431,5 +433,91 @@ describe('reading a barcode out of a picture', () => {
     const native = stubDetector([{ rawValue: '9780441013593' }])
     vi.stubGlobal('BarcodeDetector', native)
     expect(await barcodeReader()).toBe(native)
+  })
+})
+
+// Whether a looked-up book joins one already on the shelf or arrives new is
+// decided by the same clustering that decides it for a photograph or a
+// spreadsheet. That was right and invisible: the review step listed what came
+// back and said nothing about which was which.
+describe('saying what keeping a lookup would do', () => {
+  const shelfSource = (records, name = 'shelf-photo') =>
+    readSource(
+      makeSource({
+        name,
+        kind: 'photo',
+        origin: `${name}.jpg`,
+        format: 'physical',
+        confidence: 'medium',
+        records,
+      }),
+      name,
+    )
+
+  const dune = {
+    title: 'Dune',
+    authors: ['Frank Herbert'],
+    publisher: 'Ace Books',
+    published_year: 2005,
+    pages: 528,
+    isbn: '9780441013593',
+  }
+  const hobbit = { title: 'The Hobbit', authors: ['J.R.R. Tolkien'], isbn: '9780547928227' }
+
+  it('says a book the shelf already has will join it', () => {
+    const sources = [shelfSource([{ title: 'Dune', authors: ['Frank Herbert'] }])]
+    const [fate] = previewLookup([dune], sources)
+    expect(fate.joins).toBe('Dune')
+    expect(fate.from).toEqual(['shelf-photo'])
+  })
+
+  it('says a book the shelf does not have is new', () => {
+    const sources = [shelfSource([{ title: 'Dune', authors: ['Frank Herbert'] }])]
+    const [fate] = previewLookup([hobbit], sources)
+    expect(fate.joins).toBeNull()
+    expect(fate.from).toEqual([])
+  })
+
+  it('answers for every record in the batch', () => {
+    const sources = [shelfSource([{ title: 'Dune', authors: ['Frank Herbert'] }])]
+    const fates = previewLookup([dune, hobbit], sources)
+    expect(fates.map((f) => f.isbn)).toEqual([dune.isbn, hobbit.isbn])
+    expect(fates.map((f) => Boolean(f.joins))).toEqual([true, false])
+  })
+
+  it('names the book under the title the shelf gave it, not the lookup', () => {
+    // The shelf may hold a fuller or shorter title than the catalogue does, and
+    // the reader is being told which of their books this lands on.
+    const sources = [shelfSource([{ title: 'Dune', authors: ['Frank Herbert'] }])]
+    const [fate] = previewLookup([{ ...dune, title: 'Dune: a novel' }], sources)
+    expect(fate.joins).toBeTruthy()
+  })
+
+  it('works from nothing at all, where every book is new', () => {
+    const fates = previewLookup([dune, hobbit], [])
+    expect(fates.every((f) => f.joins === null)).toBe(true)
+  })
+
+  it('does not count an earlier lookup as a book the shelf already had', () => {
+    // Looking the same book up twice corrects its entry. That is not the same
+    // as it joining a photograph or a spreadsheet, and saying so would be a lie
+    // about where the reader's copy came from.
+    const earlier = readSource(
+      makeSource({
+        name: 'isbn',
+        kind: 'lookup',
+        origin: 'openlibrary.org',
+        format: 'physical',
+        confidence: 'high',
+        records: [dune],
+      }),
+      'isbn',
+    )
+    const [fate] = previewLookup([dune], [earlier])
+    expect(fate.joins).toBeNull()
+  })
+
+  it('previews with the same source name the library writes', () => {
+    expect(LOOKUP_SOURCE).toBe('isbn')
   })
 })

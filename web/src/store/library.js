@@ -16,6 +16,8 @@ const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
 const OVERRIDES = 'overrides.json'
 const MANUAL = 'manual'
+// Shared with the preview in ingest/isbn.js, so what is shown before keeping
+// and what is written on keeping cannot drift apart.
 const LOOKUP = 'isbn'
 
 export class Library {

@@ -584,6 +584,11 @@ export default {
   'isbn.missingN': '{n} que el servicio no conoce.',
   'isbn.checkThese':
     'Revísalos antes de guardarlos. Cuando Open Library no tiene un ISBN, responde con otro libro en vez de con un error, así que un número equivocado produce un registro verosímil pero incorrecto.',
+  'isbn.joins': 'se une a un libro que tienes',
+  'isbn.joinsWhich': 'Se fusiona con {title}, que ya está en tu estantería',
+  'isbn.isNew': 'libro nuevo',
+  'isbn.mergeNote':
+    'Un libro que ya está en tu estantería toma estos datos en vez de convertirse en una segunda entrada. Cuál es cuál está marcado en cada uno.',
   'isbn.missingWhich': 'No ha vuelto nada de:',
   'isbn.noAuthor': 'sin autoría anotada',
   'isbn.pages': '{n} páginas',

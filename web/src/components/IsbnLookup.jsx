@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { lookup, nativeBarcodes, parseCodes, readBarcodes } from '../ingest/isbn.js'
+import { lookup, nativeBarcodes, parseCodes, previewLookup, readBarcodes } from '../ingest/isbn.js'
 import { useT } from '../i18n/index.jsx'
 
 // One code per line is how the box reads and how a person writes them.
@@ -59,7 +59,18 @@ export default function IsbnLookup({ lib, onDone }) {
         signal: controller.signal,
         onProgress: setProgress,
       })
-      setFound(result)
+      // What keeping them would do, worked out with the real builder before
+      // anything is written, so the reader can see which of these joins a book
+      // already on the shelf and which arrives new.
+      let merges = []
+      try {
+        merges = previewLookup(result.found, lib?.sources || [])
+      } catch {
+        // A preview that fails is not a reason to lose the lookup. The keep
+        // still works; it just goes in without saying what it will do.
+        merges = []
+      }
+      setFound({ ...result, merges })
     } catch (err) {
       if (err?.name !== 'AbortError') setError(err.message)
     } finally {
@@ -226,6 +237,7 @@ export default function IsbnLookup({ lib, onDone }) {
             {found.missing.length ? t('isbn.missingN', { n: found.missing.length }) : ''}
           </p>
           <p className="tiny faint">{t('isbn.checkThese')}</p>
+          <p className="tiny faint">{t('isbn.mergeNote')}</p>
 
           <ul className="lookup-list">
             {found.found.map((record) => (
@@ -244,7 +256,19 @@ export default function IsbnLookup({ lib, onDone }) {
                       .join(' · ')}
                   </span>
                 </span>
-                <span className="tiny faint tabular">{record.isbn}</span>
+                <span className="lookup-fate tiny">
+                  {(() => {
+                    const fate = found.merges?.find((m) => m.isbn === record.isbn)
+                    if (!fate) return <span className="faint tabular">{record.isbn}</span>
+                    return fate.joins ? (
+                      <span className="joins" title={t('isbn.joinsWhich', { title: fate.joins })}>
+                        {t('isbn.joins')}
+                      </span>
+                    ) : (
+                      <span className="faint">{t('isbn.isNew')}</span>
+                    )
+                  })()}
+                </span>
               </li>
             ))}
           </ul>

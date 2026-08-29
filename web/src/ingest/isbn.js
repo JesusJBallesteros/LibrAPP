@@ -15,6 +15,13 @@
 // same show-it-before-writing step the desk already puts in front of a model's
 // reply.
 
+import { build } from '../core/build.js'
+import { makeSource, readSource } from '../core/records.js'
+
+// The one source every lookup is written into, named here so the preview
+// below builds the same thing addLookupRecords will write.
+export const LOOKUP_SOURCE = 'isbn'
+
 /** Digits only, with the trailing X that ISBN-10 allows. */
 export const cleanIsbn = (raw) =>
   String(raw ?? '')
@@ -242,6 +249,59 @@ export async function readBarcodes(file, { reader } = {}) {
   } finally {
     bitmap.close?.()
   }
+}
+
+/**
+ * What keeping these records would do to the catalog.
+ *
+ * A lookup is a source like a photograph or a spreadsheet, so whether a book
+ * joins one already on the shelf or arrives as a new entry is decided by the
+ * same clustering that decides it for every other source. That is the right
+ * behaviour, and it was invisible: the review step listed what came back and
+ * said nothing about which of them was about to merge into a book the reader
+ * already had.
+ *
+ * Answered by building the catalog that keeping them would produce, rather than
+ * by matching titles here. An approximation of the clusterer that disagreed with
+ * the clusterer would be worse than no answer at all, because it would be wrong
+ * in exactly the place the reader was relying on it.
+ */
+export function previewLookup(records, sources = []) {
+  const others = sources.filter((s) => s.source?.name !== LOOKUP_SOURCE)
+  const already = sources.find((s) => s.source?.name === LOOKUP_SOURCE)
+
+  // Keyed by ISBN and written in the same order addLookupRecords uses, so
+  // looking a book up twice previews as the correction it will be.
+  const kept = new Map()
+  for (const record of already?.records || []) {
+    const { _source, ...rest } = record
+    kept.set(rest.isbn, rest)
+  }
+  for (const record of records) kept.set(record.isbn, record)
+
+  const lookup = readSource(
+    makeSource({
+      name: LOOKUP_SOURCE,
+      kind: 'lookup',
+      origin: 'openlibrary.org',
+      format: 'physical',
+      confidence: 'high',
+      records: [...kept.values()],
+      stats: {},
+    }),
+    LOOKUP_SOURCE,
+  )
+
+  const catalog = build([...others, lookup])
+  const byIsbn = new Map(catalog.books.map((b) => [b.isbn, b]))
+
+  return records.map((record) => {
+    const book = byIsbn.get(record.isbn)
+    // A book carrying a source other than the lookup is one the reader already
+    // had, under whatever title that source gave it.
+    const from = (book?.sources || []).filter((name) => name !== LOOKUP_SOURCE)
+    return { isbn: record.isbn, joins: from.length ? book.title : null, from }
+  })
 }
 
 export class LookupError extends Error {}

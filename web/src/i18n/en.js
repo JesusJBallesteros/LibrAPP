@@ -581,6 +581,11 @@ export default {
   'isbn.missingN': '{n} not known to the service.',
   'isbn.checkThese':
     'Check these before keeping them. When Open Library does not hold an ISBN it returns a different book rather than an error, so an incorrect number produces a plausible but wrong record.',
+  'isbn.joins': 'joins a book you have',
+  'isbn.joinsWhich': 'Merges into {title}, which is already on your shelf',
+  'isbn.isNew': 'new book',
+  'isbn.mergeNote':
+    'A book already on your shelf takes these details rather than becoming a second entry. Which is which is marked against each one.',
   'isbn.missingWhich': 'Nothing came back for:',
   'isbn.noAuthor': 'no author recorded',
   'isbn.pages': '{n} pages',

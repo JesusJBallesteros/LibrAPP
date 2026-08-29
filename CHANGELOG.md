@@ -222,6 +222,23 @@ path was there.
 It has a page of its own now, beside the other two, and a door on the front
 page: I have the books in front of me.
 
+### A lookup says whether it joins a book or adds one
+
+Both already happened: a lookup is a source like a photograph or a spreadsheet,
+so the same clustering decides whether it merges into a book already on the
+shelf or arrives as a new entry. What was missing is that the review step said
+nothing about which, so the reader accepted a batch without knowing whether it
+was about to add ten books or fill in ten they had.
+
+Each row now says. Worked out by building the catalog that keeping them would
+produce, rather than by matching titles at the point of asking: an
+approximation of the clusterer that disagreed with the clusterer would be worse
+than no answer, because it would be wrong exactly where it was being relied on.
+
+Looking the same book up twice is a correction to that entry and is not
+reported as joining anything, since saying otherwise would misdescribe where the
+reader's copy came from.
+
 ### The service has a name
 
 Every AI provider in the app is named: Anthropic, OpenAI, Gemini, OpenRouter.
