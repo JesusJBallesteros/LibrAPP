@@ -630,6 +630,7 @@ export default {
   'isbn.title': 'Look a book up by its barcode',
   'isbn.note':
     'The number under the barcode identifies the exact edition. Where Open Library holds that edition, the title, authors, publisher, year and page count are taken from its record.',
+  'isbn.settleFirst': 'Keep or cancel the books below before reading more.',
   'isbn.privacy':
     'This step asks Open Library, a free catalogue run by the Internet Archive, at openlibrary.org. What leaves the device is a list of ISBNs and nothing else: no titles, no notes and no other catalog data. Records that come back are shown here before anything is written.',
   'isbn.paste': 'Codes, one per line or separated by commas',

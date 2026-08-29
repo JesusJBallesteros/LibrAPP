@@ -851,6 +851,13 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
+/* And the boxes beside them, which said nothing. The buttons have shown their
+   own state since the beginning and the fields did not, which on the barcode
+   page left a select looking live while the batch under it waited to be
+   settled. */
+select:disabled,
+input:disabled,
+textarea:disabled { opacity: .45; cursor: not-allowed; }
 .btn.primary {
   background: var(--accent);
   border-color: var(--accent);
@@ -981,6 +988,10 @@ main:focus { outline: none; }
 /* A file input is unstyleable, so the label is the button and the input hides
    inside it. Keeps the keyboard path: the label still labels the control. */
 .file-button { cursor: pointer; display: inline-flex; align-items: center; }
+/* A label is not a control, so disabling the input hidden inside it leaves the
+   label looking as pressable as ever. This is what :disabled would have done
+   if the label could carry it. */
+.file-button.shut { opacity: .45; cursor: not-allowed; }
 .bulk-offer { margin: 6px 0 0; }
 .bulk-offer .btn.link { margin-left: 8px; }
 .notice.bad { border-left-color: var(--bad); color: var(--bad); }

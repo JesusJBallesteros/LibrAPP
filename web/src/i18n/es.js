@@ -627,6 +627,7 @@ export default {
   'isbn.title': 'Busca un libro por su código de barras',
   'isbn.note':
     'El número que hay bajo el código de barras identifica la edición exacta. Si Open Library tiene esa edición, el título, la autoría, la editorial, el año y las páginas se toman de su registro.',
+  'isbn.settleFirst': 'Guarda o cancela los libros de abajo antes de leer más.',
   'isbn.privacy':
     'Este paso pregunta a Open Library, un catálogo libre del Internet Archive, en openlibrary.org. De este dispositivo sale una lista de ISBN y nada más: ni títulos, ni notas, ni ningún otro dato del catálogo. Lo que vuelve se enseña aquí antes de escribir nada.',
   'isbn.paste': 'Códigos, uno por línea o separados por comas',

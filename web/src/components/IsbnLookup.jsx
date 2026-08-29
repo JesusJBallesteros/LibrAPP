@@ -78,6 +78,11 @@ export default function IsbnLookup({ lib, onDone }) {
       }
       // A new set of results means the old discards refer to nothing.
       reset()
+      // And the viewfinder has nothing to add to a batch that is already back.
+      // Left running it would hold the camera open behind controls that cannot
+      // be used, which is the light-left-on case the scanner is careful about
+      // everywhere else.
+      setLive(false)
       setFound({ ...result, merges })
     } catch (err) {
       if (err?.name !== 'AbortError') setError(err.message)
@@ -90,6 +95,17 @@ export default function IsbnLookup({ lib, onDone }) {
 
   // What Keep will actually write. Everything found, less what was set aside.
   const keeping = found ? found.found.filter((r) => !dropped.has(r.isbn)) : []
+
+  /**
+   * Whether the box is holding still while a batch waits to be decided.
+   *
+   * The box used to be taken off the screen instead, both during the review and
+   * after keeping, which made reading a second stack of books an exercise in
+   * finding the page again. It stays where it was now. Shut rather than gone
+   * while a batch is under review, because codes typed into it then would go
+   * nowhere: the review already holds what was looked up, and Keep writes that.
+   */
+  const locked = Boolean(found)
 
   const keep = () =>
     lib.run(async (library) => {
@@ -145,118 +161,125 @@ export default function IsbnLookup({ lib, onDone }) {
           sends is the whole of the argument for it being here. */}
       <p className="tiny muted">{t('isbn.privacy')}</p>
 
-      {!found && !written && (
-        <>
-          <label className="field" style={{ marginTop: 12 }}>
-            <span className="tiny">{t('isbn.paste')}</span>
-            <textarea
-              rows={4}
-              value={text}
-              spellCheck={false}
-              placeholder={'978-0-441-01359-3\n9780547928227'}
-              onChange={(e) => setText(e.target.value)}
-              disabled={busy || lib?.busy}
-            />
-          </label>
+      <label className="field" style={{ marginTop: 12 }}>
+        <span className="tiny">{t('isbn.paste')}</span>
+        <textarea
+          rows={4}
+          value={text}
+          spellCheck={false}
+          placeholder={'978-0-441-01359-3\n9780547928227'}
+          onChange={(e) => setText(e.target.value)}
+          disabled={busy || lib?.busy || locked}
+        />
+      </label>
 
-          <div className="row" style={{ gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
-            <label className="field">
-              <span className="tiny">{t('isbn.format')}</span>
-              <select value={format} onChange={(e) => setFormat(e.target.value)} disabled={busy}>
-                <option value="physical">{t('isbn.format.physical')}</option>
-                <option value="ebook">{t('isbn.format.ebook')}</option>
-                <option value="audio">{t('isbn.format.audio')}</option>
-              </select>
-            </label>
-            {cameraAvailable() && (
-              <button
-                className="btn small"
-                disabled={busy || scanning}
-                onClick={() => setLive((open) => !open)}
-              >
-                {live ? t('scan.stop') : t('scan.start')}
-              </button>
-            )}
-            <label className="btn small file-button">
-              {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                multiple
-                hidden
-                disabled={scanning || busy}
-                onChange={(e) => {
-                  onPhotos([...(e.target.files || [])])
-                  e.target.value = ''
-                }}
-              />
-            </label>
-            <label className="btn small file-button">
-              {t('isbn.fromFile')}
-              <input
-                type="file"
-                accept=".txt,.csv,.tsv"
-                hidden
-                onChange={(e) => {
-                  onFile(e.target.files?.[0])
-                  e.target.value = ''
-                }}
-              />
-            </label>
-          </div>
-
-          {live && (
-            <LiveScan
-              onClose={() => setLive(false)}
-              onCode={(code) =>
-                setText((current) =>
-                  // Straight into the same box the typed ones go in, so there is
-                  // one list to check before anything is sent.
-                  parseCodes(current).codes.includes(code)
-                    ? current
-                    : [current.trim(), code].filter(Boolean).join(NEWLINE),
-                )
-              }
-            />
-          )}
-
-          {native === false && (
-            <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.carriedReader')}</p>
-          )}
-          {scanned && (
-            <p className="tiny faint" aria-live="polite">
-              {scanned.codes
-                ? t('isbn.scanned', { n: scanned.codes, photos: scanned.photos })
-                : t('isbn.scannedNone', { photos: scanned.photos })}
-            </p>
-          )}
-
-          <p className="tiny faint" style={{ marginTop: 10 }} aria-live="polite">
-            {codes.length
-              ? t('isbn.ready', { n: codes.length })
-              : text.trim()
-                ? t('isbn.noneFound')
-                : ''}
-            {rejected.length ? ` ${t('isbn.rejected', { n: rejected.length })}` : ''}
-          </p>
-          {rejected.length > 0 && (
-            <p className="tiny faint tabular">{rejected.join(', ')}</p>
-          )}
-
-          <button
-            className="btn primary"
-            style={{ marginTop: 10 }}
-            disabled={!codes.length || busy || lib?.busy}
-            onClick={run}
+      <div className="row" style={{ gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+        <label className="field">
+          <span className="tiny">{t('isbn.format')}</span>
+          <select
+            value={format}
+            onChange={(e) => setFormat(e.target.value)}
+            disabled={busy || locked}
           >
-            {busy
-              ? progress
-                ? t('isbn.looking', { done: progress.done, total: progress.total })
-                : t('isbn.lookingUp')
-              : t('isbn.lookUp', { n: codes.length })}
+            <option value="physical">{t('isbn.format.physical')}</option>
+            <option value="ebook">{t('isbn.format.ebook')}</option>
+            <option value="audio">{t('isbn.format.audio')}</option>
+          </select>
+        </label>
+        {cameraAvailable() && (
+          <button
+            className="btn small"
+            disabled={busy || scanning || locked}
+            onClick={() => setLive((open) => !open)}
+          >
+            {live ? t('scan.stop') : t('scan.start')}
           </button>
-        </>
+        )}
+        <label className={`btn small file-button${locked ? ' shut' : ''}`}>
+          {scanning ? t('isbn.reading') : t('isbn.fromPhoto')}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            multiple
+            hidden
+            disabled={scanning || busy || locked}
+            onChange={(e) => {
+              onPhotos([...(e.target.files || [])])
+              e.target.value = ''
+            }}
+          />
+        </label>
+        <label className={`btn small file-button${locked ? ' shut' : ''}`}>
+          {t('isbn.fromFile')}
+          <input
+            type="file"
+            accept=".txt,.csv,.tsv"
+            hidden
+            disabled={busy || locked}
+            onChange={(e) => {
+              onFile(e.target.files?.[0])
+              e.target.value = ''
+            }}
+          />
+        </label>
+      </div>
+
+      {live && (
+        <LiveScan
+          onClose={() => setLive(false)}
+          onCode={(code) =>
+            setText((current) =>
+              // Straight into the same box the typed ones go in, so there is
+              // one list to check before anything is sent.
+              parseCodes(current).codes.includes(code)
+                ? current
+                : [current.trim(), code].filter(Boolean).join(NEWLINE),
+            )
+          }
+        />
+      )}
+
+      {native === false && (
+        <p className="tiny faint" style={{ marginTop: 8 }}>{t('isbn.carriedReader')}</p>
+      )}
+      {scanned && (
+        <p className="tiny faint" aria-live="polite">
+          {scanned.codes
+            ? t('isbn.scanned', { n: scanned.codes, photos: scanned.photos })
+            : t('isbn.scannedNone', { photos: scanned.photos })}
+        </p>
+      )}
+
+      <p className="tiny faint" style={{ marginTop: 10 }} aria-live="polite">
+        {codes.length
+          ? t('isbn.ready', { n: codes.length })
+          : text.trim()
+            ? t('isbn.noneFound')
+            : ''}
+        {rejected.length ? ` ${t('isbn.rejected', { n: rejected.length })}` : ''}
+      </p>
+      {rejected.length > 0 && (
+        <p className="tiny faint tabular">{rejected.join(', ')}</p>
+      )}
+
+      <button
+        className="btn primary"
+        style={{ marginTop: 10 }}
+        disabled={!codes.length || busy || lib?.busy || locked}
+        onClick={run}
+      >
+        {busy
+          ? progress
+            ? t('isbn.looking', { done: progress.done, total: progress.total })
+            : t('isbn.lookingUp')
+          : t('isbn.lookUp', { n: codes.length })}
+      </button>
+
+      {locked && (
+        <p className="tiny faint" style={{ marginTop: 8 }} aria-live="polite">
+          {t('isbn.settleFirst')}
+        </p>
       )}
 
       {error && !found && (
