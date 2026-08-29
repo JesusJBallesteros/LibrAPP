@@ -97,3 +97,34 @@ describe('the shell folds up on a phone', () => {
     expect(css).toContain('.menu-button { display: none; }')
   })
 })
+
+// What the front page is for.
+//
+// It ran 2,623px on a 390px screen with the first way in 1,304px down, because
+// almost every control carried a paragraph explaining itself. The explanations
+// were not wrong and they were not deleted: About and the README carry them,
+// and the page links there.
+describe('the front page states the action', () => {
+  const landing = read('views/Landing.jsx')
+  const en = read('i18n/en.js')
+
+  it('sends the case for the app to the page that makes it', () => {
+    expect(landing).toContain("onGo('about', 'privacy')")
+    expect(en).toContain("'landing.privacyLink'")
+  })
+
+  it('no longer carries About on the front page', () => {
+    // Two panels restating the privacy argument and the requirements, both of
+    // which About says in full and better.
+    for (const key of ['landing.privacy.body', 'landing.needs.storage', 'landing.subhead']) {
+      expect(landing, key).not.toContain(key)
+      expect(en, key).not.toContain(`'${key}'`)
+    }
+  })
+
+  it('keeps the paragraph that says what leaves the device, on About', () => {
+    // The claim itself must survive the move, or the link points at nothing.
+    expect(en).toContain("'about.privacy.requests'")
+    expect(en).toContain("'about.privacy.device'")
+  })
+})

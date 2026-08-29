@@ -86,10 +86,14 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
           <p className="eyebrow">{t('app.strapline')}</p>
 
           <p className="landing-tagline">{t('landing.tagline')}</p>
-          {/* The two things that are true of this app and not of the category
-              it belongs to. Both used to be a paragraph further down, where
-              somebody deciding whether to read on never reached them. */}
-          <p className="landing-subhead">{t('landing.subhead')}</p>
+          {/* Two paragraphs and a bulleted list used to stand on this page
+              making the case for it. About makes the same case, properly, and
+              this is the way there. */}
+          <p className="landing-subhead">
+            <button className="btn link" onClick={() => onGo('about', 'privacy')}>
+              {t('landing.privacyLink')}
+            </button>
+          </p>
 
           {/* The first thing offered, and the only one that asks for nothing.
               Everything below wants a photograph or a spreadsheet the visitor
@@ -104,7 +108,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
               <p className="tiny faint">{t('landing.demo.hint', { n: DEMO_BOOKS })}</p>
             </div>
           )}
-          <p className="landing-intro">{t('landing.intro')}</p>
         </header>
 
         {!browserUsable && (
@@ -112,36 +115,6 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             <p className="tiny">{t('landing.browserWarning')}</p>
           </div>
         )}
-
-        <div className="landing-facts">
-          <section>
-            <h3 className="section-head">{t('landing.privacy.title')}</h3>
-            <p className="tiny muted">{t('landing.privacy.body')}</p>
-            {/* The sharpest criticism of a local-first app that talks to a
-                model is that "nothing is uploaded" and "send this to Anthropic"
-                cannot both be true. They are not, and the honest version is a
-                better claim than the absolute was. */}
-            <p className="tiny muted">{t('landing.privacy.body2')}</p>
-          </section>
-
-          <section>
-            <h3 className="section-head">{t('landing.needs.title')}</h3>
-            <ul className="landing-needs">
-              <li>
-                <span className="tick" aria-hidden="true" />
-                <span className="tiny muted">{t('landing.needs.storage')}</span>
-              </li>
-              <li>
-                <span className="tick" aria-hidden="true" />
-                <span className="tiny muted">{t('landing.needs.source')}</span>
-              </li>
-              <li>
-                <span className="tick" aria-hidden="true" />
-                <span className="tiny muted">{t('landing.needs.ai')}</span>
-              </li>
-            </ul>
-          </section>
-        </div>
 
         <section className="landing-start" ref={start}>
           <h2 tabIndex={-1}>{t('landing.start')}</h2>

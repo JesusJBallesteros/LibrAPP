@@ -10,28 +10,12 @@ export default {
   // replaced described the category, and the two claims that are actually
   // particular to LibrAPP sat a paragraph below it.
   'landing.tagline': 'Photograph your shelves. Get a catalog that answers questions.',
-  'landing.subhead':
-    'It reads the spines and builds the catalog here, on this device. No account, no server, and nothing leaves unless you ask it to.',
   // The headline above says what a photograph does. This is for everything
   // else, and repeating the photograph here was a paragraph spent saying
   // what had just been said.
-  'landing.intro':
-    'A spreadsheet, a store export, the barcodes on the books themselves, or a catalog you built on another device all work too, and they combine into one without duplicates.',
-  'landing.privacy.title': 'Your books stay with you',
-  'landing.privacy.body':
-    'There is no account and no server. Your catalog is written to this device, and once LibrAPP has loaded it works with no connection at all.',
-  'landing.privacy.body2':
-    'Two optional steps can use an AI service, and they are the only things that ever send anything. Each shows the exact text first: at the desk, Your reading profile prints the whole of what would be sent, with its character count, and a button to copy just that. Nothing goes anywhere unread.',
-  'landing.needs.title': 'What it needs to work',
-  'landing.needs.storage':
-    'Somewhere to keep your catalog: a folder you pick, or storage the browser manages for you. You choose, and you can change your mind later.',
-  'landing.needs.source':
-    'At least one source of books: a photograph, a list you already keep, or a catalog exported from another device.',
-  'landing.needs.ai':
-    'An AI service, for two of the steps: reading the spines off a photograph, and asking the desk about your books. Both work without a key, by preparing the request for you to paste into any AI session yourself. Everything else runs here with no AI at all.',
   'landing.start': 'Where would you like to start?',
 
-  'landing.option.storage': 'Choose where it is kept first',
+  'landing.option.storage': 'Choose it first',
   'landing.option.photo': 'Photograph a shelf',
   'landing.option.photo.hint': 'The quickest way to catalog books you own on paper.',
   'landing.option.list': 'Upload a list',
@@ -47,9 +31,10 @@ export default {
   // to make it first, but it is the only technical one on the page.
   // Leads with what it allows: noncommercial alarms people who would have
   // been fine, and the restriction is the shorter half of the sentence.
-  'landing.licence': 'Free for your own use, to share and to modify. Not for commercial use.',
-  'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
-  'landing.storageFirst': 'Storage is set up on the way, whichever of these you pick.',
+  'landing.privacyLink': 'What leaves this device',
+  'landing.licence': 'Free for your own use. Not for commercial use.',
+  'landing.licenceName': 'PolyForm Noncommercial',
+  'landing.storageFirst': 'Storage is set up on the way.',
 
   'landing.demo.action': 'Try a demo library',
   'landing.demo.hint':
@@ -905,17 +890,16 @@ export default {
   // do I get my books there. The second is the one people mean.
   'phone.title': 'On your phone',
   'phone.body':
-    'LibrAPP is a web page that installs like an app. Once it is on the home screen it opens full screen, works with no connection, and keeps its catalog on that device like any other.',
+    'Add LibrAPP to the home screen. It opens full screen from there and works with no connection.',
   'phone.install': 'Install LibrAPP',
-  'phone.already': 'Installed. This is the app rather than a browser tab.',
+  'phone.already': 'Installed.',
   'phone.byHand':
-    'No offer to install here? On an iPhone: Share, then Add to Home Screen. On Android: the browser menu, then Install app. Both do the same thing.',
-  'phone.catalog':
-    'A catalog does not travel by itself. Each device keeps its own, so move one across with a file:',
+    'iPhone: Share, then Add to Home Screen. Android: the browser menu, then Install app.',
+  'phone.catalog': 'Each device keeps its own catalog. To move one across:',
   'phone.catalogAction': 'export it, and bring it over',
   'landing.next.title': 'Then ask it things',
   'landing.next.body':
-    'A catalog is a starting point, not the end of it. The desk uses your shelves as context: what to read next and why, which books by an author you have collected unevenly are missing, what threads run through what you own, a list for a long flight or a summer. It answers about your books rather than books in general.',
+    'Ask the desk about the books you own: what to read next, what a series is missing, what runs through the collection.',
   'landing.next.action': 'Open the LibrAPPrian’s desk',
   'landing.next.empty': 'Ready as soon as there are books here.',
   'desk.estimateNote': 'an estimate. What it actually cost appears with the answer.',

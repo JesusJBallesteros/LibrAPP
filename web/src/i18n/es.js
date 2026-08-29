@@ -6,25 +6,9 @@
 export default {
   // -- landing ------------------------------------------------------------
   'landing.tagline': 'Fotografía tus estanterías. Ten un catálogo que responde preguntas.',
-  'landing.subhead':
-    'Lee los lomos y construye el catálogo aquí, en este dispositivo. Sin cuenta, sin servidor, y nada sale si no lo pides.',
-  'landing.intro':
-    'Una hoja de cálculo, una lista en PDF, los códigos de barras de los propios libros o un catálogo de otro dispositivo también valen, y se combinan en uno solo sin duplicados.',
-  'landing.privacy.title': 'Tus libros se quedan contigo',
-  'landing.privacy.body':
-    'No hay cuenta ni servidor. Tu catálogo se guarda en este dispositivo y, una vez cargada, LibrAPP funciona sin conexión alguna.',
-  'landing.privacy.body2':
-    'Dos pasos opcionales pueden usar un servicio de IA, y son lo único que envía algo. Cada uno enseña antes el texto exacto: en el escritorio, Tu perfil de lectura muestra entero lo que se enviaría, con su recuento de caracteres, y un botón para copiar solo eso. No sale nada sin que puedas leerlo.',
-  'landing.needs.title': 'Qué hace falta para que funcione',
-  'landing.needs.storage':
-    'Un lugar donde guardar tu catálogo: una carpeta que elijas o el almacenamiento que gestiona el navegador. Tú decides, y puedes cambiar de idea más adelante.',
-  'landing.needs.source':
-    'Al menos una fuente de libros: una fotografía, una lista que ya tengas o un catálogo exportado desde otro dispositivo.',
-  'landing.needs.ai':
-    'Un servicio de IA, para dos de los pasos: leer los lomos de una foto y preguntar en el escritorio sobre tus libros. Los dos funcionan sin clave, preparando la petición para que la pegues tú en cualquier sesión de IA. Todo lo demás funciona aquí sin IA.',
   'landing.start': '¿Por dónde quieres empezar?',
 
-  'landing.option.storage': 'Elegir primero dónde se guarda',
+  'landing.option.storage': 'Elegirlo primero',
   'landing.option.photo': 'Fotografía una estantería',
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
   'landing.option.list': 'Sube una lista',
@@ -36,9 +20,10 @@ export default {
   'landing.option.browse': 'Ver mi catálogo',
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.count': '{n} {n:libro|libros} aquí.',
-  'landing.licence': 'Gratis para tu propio uso, para compartir y para modificar. No para uso comercial.',
-  'landing.licenceName': 'PolyForm Noncommercial 1.0.0',
-  'landing.storageFirst': 'El almacenamiento se configura por el camino, elijas la que elijas.',
+  'landing.privacyLink': 'Qué sale de este dispositivo',
+  'landing.licence': 'Gratis para tu propio uso. No para uso comercial.',
+  'landing.licenceName': 'PolyForm Noncommercial',
+  'landing.storageFirst': 'El almacenamiento se configura por el camino.',
 
   'landing.demo.action': 'Prueba una biblioteca de muestra',
   'landing.demo.hint':
@@ -892,17 +877,16 @@ export default {
 
   'phone.title': 'En el móvil',
   'phone.body':
-    'LibrAPP es una página web que se instala como una aplicación. Una vez en la pantalla de inicio se abre a pantalla completa, funciona sin conexión y guarda su catálogo en ese dispositivo como cualquier otra.',
+    'Añade LibrAPP a la pantalla de inicio. Desde ahí se abre a pantalla completa y funciona sin conexión.',
   'phone.install': 'Instalar LibrAPP',
-  'phone.already': 'Instalada. Esto es la aplicación, no una pestaña del navegador.',
+  'phone.already': 'Instalada.',
   'phone.byHand':
-    '¿No aparece la opción de instalar? En iPhone: Compartir y luego Añadir a pantalla de inicio. En Android: el menú del navegador y luego Instalar aplicación. Hacen lo mismo.',
-  'phone.catalog':
-    'Un catálogo no viaja solo. Cada dispositivo guarda el suyo, así que se lleva de uno a otro con un archivo:',
+    'iPhone: Compartir y luego Añadir a pantalla de inicio. Android: el menú del navegador y luego Instalar aplicación.',
+  'phone.catalog': 'Cada dispositivo guarda su propio catálogo. Para llevarlo a otro:',
   'phone.catalogAction': 'expórtalo y tráelo',
   'landing.next.title': 'Y luego preg\u00fantale',
   'landing.next.body':
-    'Un cat\u00e1logo es un punto de partida, no el final. El escritorio usa tus estanter\u00edas como contexto: qu\u00e9 leer a continuaci\u00f3n y por qu\u00e9, qu\u00e9 te falta de un autor que has ido reuniendo a medias, qu\u00e9 hilos recorren lo que tienes, una lista para un vuelo largo o para el verano. Responde sobre tus libros, no sobre los libros en general.',
+    'Pregúntale al escritorio por los libros que tienes: qué leer a continuación, qué le falta a una colección, qué recorre lo que has reunido.',
   'landing.next.action': 'Abrir BibliotecAPPri@',
   'landing.next.empty': 'Estar\u00e1 listo en cuanto haya libros aqu\u00ed.',
   'desk.estimateNote': 'una estimaci\u00f3n. Lo que ha costado de verdad aparece con la respuesta.',
