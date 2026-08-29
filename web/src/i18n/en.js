@@ -514,8 +514,15 @@ export default {
   'barcode.intro':
     'The number under a barcode names the exact edition, so where a library catalogue holds it the title, authors, publisher, year and page count are read from its record rather than guessed at. No AI and no key, and nothing is written until you have seen it.',
   'shelf.stepOne': 'Step one · The photograph',
-  'shelf.stepTwo': 'Step two · Read the spines',
-  'shelf.stepThree': 'Step three · Check what it read',
+  'shelf.stepTwo': 'Step two · The pieces',
+  'shelf.stepThree': 'Step three · What to ask for',
+  'shelf.stepThree.note': 'The titles always come back. Tick anything else you want asked for.',
+  'shelf.stepFour': 'Step four · Read the spines',
+  'shelf.stepFour.note': 'Read the pieces with a key, or take them to an AI session yourself.',
+  'shelf.stepFour.how':
+    'With a key stored, LibrAPP sends the pieces to the service you chose and brings the answer back here. Without one, nothing is sent: copy the instructions, save the pieces, and paste both into whatever AI session you already use. Either way the reading is the same, and either way you see the books before any of them are kept.',
+  'shelf.stepFive': 'Step five · Bring a transcription back',
+  'shelf.checkWhatItRead': 'Check what it read',
   'shelf.step1': '1 · The photograph',
   'shelf.dropPhoto': 'Choose a photograph',
   'shelf.takePhoto': 'Take a photograph',
@@ -529,15 +536,13 @@ export default {
   'shelf.piecesNote.how':
     'The photograph is cut up because a whole bookcase in one image is too small to read. Each piece keeps the resolution of the original, and they overlap, so a book falling on a seam is whole in one of them.',
   'shelf.grid': 'Grid · {cols} across × {rows} down',
-  'shelf.lessAcross': '− across',
-  'shelf.moreAcross': '+ across',
-  'shelf.lessDown': '− down',
-  'shelf.moreDown': '+ down',
-  'shelf.gridNote':
-    'Aim for pieces holding a handful of whole spines, with the title readable top to bottom. A wide bookcase needs several pieces across. A close-up of three books needs only one.',
-  'shelf.gridWarning': 'Adding rows is what splits a title in half',
-  'shelf.gridWarningTail':
-    ', so add those only when the photograph really shows shelves stacked above one another.',
+  'shelf.lessAcross': 'Remove column',
+  'shelf.moreAcross': 'Add column',
+  'shelf.lessDown': 'Remove row',
+  'shelf.moreDown': 'Add row',
+  'shelf.gridNote': 'Aim for a handful of whole spines in each piece.',
+  'shelf.gridNote.how':
+    'A wide bookcase needs several columns; a close-up of three books needs one piece and no more. Rows are what split a title in half, so add one only where the photograph really shows shelves stacked above one another.',
   'shelf.backToSuggested': 'back to the suggested {cols}×{rows}',
   'shelf.reading': 'reading the spines…',
   'shelf.readForMe': 'Read these pieces for me',

@@ -454,10 +454,10 @@ export default function Shelf({ lib, onOwl }) {
                   </button>
                 </span>
               </div>
-              <p className="tiny faint" style={{ margin: '8px 0 0' }}>
-                {t('shelf.gridNote')}{' '}
-                <strong>{t('shelf.gridWarning')}</strong> {t('shelf.gridWarningTail')}
-              </p>
+              <p className="tiny" style={{ margin: '8px 0 0' }}>{t('shelf.gridNote')}</p>
+              <TellMeHow>
+                <p>{t('shelf.gridNote.how')}</p>
+              </TellMeHow>
               {(tiles.grid.cols !== tiles.suggested.cols || tiles.grid.rows !== tiles.suggested.rows) && (
                 <button
                   className="btn link tiny"
@@ -471,6 +471,52 @@ export default function Shelf({ lib, onOwl }) {
                 </button>
               )}
             </div>
+
+          <p className="tiny faint" style={{ margin: '26px 0 0' }}>
+            {t('shelf.discardHint')}
+          </p>
+
+          <div className="tiles" style={{ marginTop: 10 }}>
+              {tiles.tiles.map((tile) => {
+                const isDropped = dropped.has(tile.tile)
+                return (
+                  <figure key={tile.tile} className={isDropped ? 'dropped' : undefined}>
+                    <img
+                      src={tile.url}
+                      alt={t('shelf.tileAlt', { row: tile.row, column: tile.column })}
+                      loading="lazy"
+                    />
+                    <figcaption className="spread">
+                      <span>
+                        r{tile.row}c{tile.column}
+                        {isDropped && <span className="faint"> · {t('shelf.droppedTag')}</span>}
+                      </span>
+                      <span className="row" style={{ gap: 5 }}>
+                        <button
+                          className="btn small"
+                          aria-pressed={isDropped}
+                          onClick={() => toggleTile(tile)}
+                        >
+                          {isDropped ? t('shelf.keepTile') : t('shelf.dropTile')}
+                        </button>
+                        <button className="btn small" onClick={() => saveTile(tile)}>
+                          {t('common.save')}
+                        </button>
+                      </span>
+                    </figcaption>
+                  </figure>
+                )
+              })}
+            </div>
+
+          </section>
+        )}
+      </div>
+
+      {tiles && (
+        <section className="shelf-step" style={{ marginTop: 34 }}>
+          <h3 className="step-head">{t('shelf.stepThree')}</h3>
+          <p style={{ marginTop: 8 }}>{t('shelf.stepThree.note')}</p>
 
             <div className="sunk-panel" style={{ marginTop: 12 }}>
               <h3 className="panel-head">{t('shelf.extras')}</h3>
@@ -501,6 +547,16 @@ export default function Shelf({ lib, onOwl }) {
 
               <p className="tiny faint" style={{ margin: '12px 0 0' }}>{t('shelf.noCover')}</p>
             </div>
+        </section>
+      )}
+
+      {tiles && (
+        <section className="shelf-step" style={{ marginTop: 34 }}>
+          <h3 className="step-head">{t('shelf.stepFour')}</h3>
+          <p style={{ marginTop: 8 }}>{t('shelf.stepFour.note')}</p>
+          <TellMeHow>
+            <p>{t('shelf.stepFour.how')}</p>
+          </TellMeHow>
 
             {keyStatus?.usable && (
               <>
@@ -582,50 +638,9 @@ export default function Shelf({ lib, onOwl }) {
                 {instructions}
               </pre>
             )}
+        </section>
+      )}
 
-          </section>
-        )}
-        {tiles && (
-          <div className="shelf-tiles">
-          <p className="tiny faint" style={{ margin: '26px 0 0' }}>
-            {t('shelf.discardHint')}
-          </p>
-
-          <div className="tiles" style={{ marginTop: 10 }}>
-              {tiles.tiles.map((tile) => {
-                const isDropped = dropped.has(tile.tile)
-                return (
-                  <figure key={tile.tile} className={isDropped ? 'dropped' : undefined}>
-                    <img
-                      src={tile.url}
-                      alt={t('shelf.tileAlt', { row: tile.row, column: tile.column })}
-                      loading="lazy"
-                    />
-                    <figcaption className="spread">
-                      <span>
-                        r{tile.row}c{tile.column}
-                        {isDropped && <span className="faint"> · {t('shelf.droppedTag')}</span>}
-                      </span>
-                      <span className="row" style={{ gap: 5 }}>
-                        <button
-                          className="btn small"
-                          aria-pressed={isDropped}
-                          onClick={() => toggleTile(tile)}
-                        >
-                          {isDropped ? t('shelf.keepTile') : t('shelf.dropTile')}
-                        </button>
-                        <button className="btn small" onClick={() => saveTile(tile)}>
-                          {t('common.save')}
-                        </button>
-                      </span>
-                    </figcaption>
-                  </figure>
-                )
-              })}
-            </div>
-          </div>
-        )}
-      </div>
 
       {tiles && (
         <>
@@ -638,7 +653,7 @@ export default function Shelf({ lib, onOwl }) {
                 {t('shelf.readyBelow', { n: proposed.counted })}
               </p>
               <div className="spread">
-                <h3 className="step-head">{t('shelf.stepThree')}</h3>
+                <h3 className="step-head">{t('shelf.checkWhatItRead')}</h3>
                 <span className="tabular tiny faint">
                   {t('shelf.bookCount', { n: proposed.counted })}
                   {proposed.recalled > 0 &&
@@ -715,7 +730,7 @@ export default function Shelf({ lib, onOwl }) {
           )}
 
           <div className="card">
-            <h3>{t('shelf.stepBring', { n: proposed ? 4 : 3 })}</h3>
+            <h3 className="step-head">{t('shelf.stepFive')}</h3>
             <p>{t('shelf.bringNote')}</p>
             <TellMeHow>
               <p>{t('shelf.bringNote.how')}</p>

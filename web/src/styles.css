@@ -1400,19 +1400,13 @@ pre.snippet {
    photograph does not, and putting the tiles in a row of their own below both
    left the space under the photograph empty on a wide screen. */
 .shelf-steps { display: grid; grid-template-columns: 1fr; gap: 26px; align-items: start; }
-.shelf-steps.cut { grid-template-areas: 'one' 'two' 'tiles'; }
-.shelf-steps.cut > .shelf-one { grid-area: one; }
-.shelf-steps.cut > .shelf-two { grid-area: two; }
-.shelf-steps.cut > .shelf-tiles { grid-area: tiles; min-width: 0; }
+.shelf-steps > * { min-width: 0; }
 
+/* The photograph beside the pieces cut from it, where there is room for both.
+   Everything after them is a step of its own at full width, in the order it is
+   worked through. */
 @media (min-width: 900px) {
-  .shelf-steps.cut {
-    grid-template-columns: 1fr 1fr;
-    /* Step two spans both rows; the tiles sit under the photograph. */
-    grid-template-areas:
-      'one two'
-      'tiles two';
-  }
+  .shelf-steps.cut { grid-template-columns: 1fr 1fr; }
 }
 
 .shelf-step > .eyebrow { margin: 0 0 12px; }

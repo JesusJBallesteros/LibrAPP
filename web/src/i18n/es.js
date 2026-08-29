@@ -500,8 +500,15 @@ export default {
   'barcode.intro':
     'El número bajo un código de barras nombra la edición exacta, así que si un catálogo bibliotecario la tiene, el título, la autoría, la editorial, el año y las páginas se leen de su registro en vez de adivinarse. Sin IA y sin clave, y no se escribe nada hasta que lo hayas visto.',
   'shelf.stepOne': 'Paso uno \u00b7 La foto',
-  'shelf.stepTwo': 'Paso dos \u00b7 Leer los lomos',
-  'shelf.stepThree': 'Paso tres \u00b7 Comprueba lo que ha le\u00eddo',
+  'shelf.stepTwo': 'Paso dos \u00b7 Los recortes',
+  'shelf.stepThree': 'Paso tres \u00b7 Qu\u00e9 pedir',
+  'shelf.stepThree.note': 'Los t\u00edtulos vuelven siempre. Marca lo dem\u00e1s que quieras pedir.',
+  'shelf.stepFour': 'Paso cuatro \u00b7 Leer los lomos',
+  'shelf.stepFour.note': 'Lee los recortes con una clave, o ll\u00e9valos t\u00fa a una sesi\u00f3n de IA.',
+  'shelf.stepFour.how':
+    'Con una clave guardada, LibrAPP env\u00eda los recortes al servicio que hayas elegido y trae aqu\u00ed la respuesta. Sin clave no sale nada: copia las instrucciones, guarda los recortes y pega ambos en la sesi\u00f3n de IA que ya uses. La lectura es la misma en los dos casos, y en los dos ves los libros antes de guardar ninguno.',
+  'shelf.stepFive': 'Paso cinco \u00b7 Trae una transcripci\u00f3n',
+  'shelf.checkWhatItRead': 'Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
   'shelf.dropPhoto': 'Elige una foto',
   'shelf.takePhoto': 'Haz una foto',
@@ -515,15 +522,13 @@ export default {
   'shelf.piecesNote.how':
     'La foto se recorta porque una estantería entera en una sola imagen queda demasiado pequeña para leerse. Cada recorte conserva la resolución del original, y se solapan, así que un libro que cae en una junta aparece entero en alguno.',
   'shelf.grid': 'Cuadrícula · {cols} × {rows}',
-  'shelf.lessAcross': '- columnas',
-  'shelf.moreAcross': '+ columnas',
-  'shelf.lessDown': '- filas',
-  'shelf.moreDown': '+ filas',
-  'shelf.gridNote':
-    'Trata de tener unos pocos lomos enteros y el título legible. Una estantería ancha necesita varios recortes a lo ancho. Un primer plano de tres libros necesita uno solo.',
-  'shelf.gridWarning': 'Añadir filas puede cortar un título por la mitad',
-  'shelf.gridWarningTail':
-    ', así que añádelas solo cuando la foto muestre de verdad baldas una encima de otra.',
+  'shelf.lessAcross': 'Quitar columna',
+  'shelf.moreAcross': 'A\u00f1adir columna',
+  'shelf.lessDown': 'Quitar fila',
+  'shelf.moreDown': 'A\u00f1adir fila',
+  'shelf.gridNote': 'Trata de tener unos pocos lomos enteros en cada recorte.',
+  'shelf.gridNote.how':
+    'Una estanter\u00eda ancha necesita varias columnas; un primer plano de tres libros necesita un solo recorte. Las filas son las que parten un t\u00edtulo por la mitad, as\u00ed que a\u00f1ade una solo cuando la foto muestre de verdad baldas una encima de otra.',
   'shelf.backToSuggested': 'volver a la sugerida de {cols}×{rows}',
   'shelf.reading': 'leyendo los lomos…',
   'shelf.readForMe': 'Lee estas fotos por mí',
