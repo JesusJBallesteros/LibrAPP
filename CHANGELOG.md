@@ -1,5 +1,33 @@
 # Changelog
 
+## v2.3.1
+
+### The barcode box stays where it was
+
+It was taken off the screen twice over: once while a batch was under review,
+and again after it was kept. Reading a second stack of books meant finding the
+page again, which for the one page in the app built around doing the same thing
+forty times is the wrong way round.
+
+It stays now. Shut rather than gone while a batch waits to be decided, because
+codes typed in then would go nowhere: the review already holds what was looked
+up, and Keep writes that and not whatever arrived afterwards. A line under the
+button says which of the two it is waiting for. Keeping clears the box and
+opens it; cancelling opens it and leaves the codes in place, so a lookup can be
+tried again or corrected rather than typed out a second time.
+
+The viewfinder closes when a batch comes back. Left running it would hold the
+camera open behind controls that cannot be used, which is the light left on
+that the scanner is careful about everywhere else.
+
+### Fixed: a disabled field looked exactly like a live one
+
+Buttons have shown their own state since the beginning and fields never have,
+so the format select on that page sat there looking ready with nothing behind
+it. Every disabled field says so now, in every form in the app.
+
+---
+
 ## v2.3.0
 
 A minor number rather than a patch. The last one was a patch carrying a
