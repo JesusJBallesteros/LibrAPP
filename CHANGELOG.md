@@ -1,5 +1,83 @@
 # Changelog
 
+## v2.4.0
+
+All of this came from watching somebody meet the app for the first time. None
+of it changes what LibrAPP does; all of it changes whether that is legible in
+the first thirty seconds.
+
+### Three ways in, for somebody who has none
+
+Six doors, and the first of them was the only technical decision on the page:
+choose where the catalog is kept, put in front of a visitor still deciding
+whether to bother. The line under the doors already promised that any of the
+others would set up storage anyway, so the page argued against its own first
+option. Storage is a real choice and some people want to make it first, so it
+stays as a quiet line underneath.
+
+The last door was worse. See my catalog rendered as a disabled button saying
+there was nothing in it, which is a poor third thing to meet on a front page.
+Both it and Bring a catalog over are for a reader who has been here before, and
+they appear now only when they mean something. Somebody arriving with nothing
+sees three ways in and three doors; somebody with a catalog sees it first and
+marked, because it is what they came for.
+
+The count beside that door was assembled elsewhere as the phrase "91 books" and
+handed over finished, which made it read "91 books books here" the moment a
+sentence wrapped it. The number travels now and the wording belongs to the
+string showing it, which is also the only way the Spanish can agree with itself.
+
+### The headline says what the app does
+
+It described the category: a library catalog and a personal librarian, true of a
+dozen things. The two claims particular to this one, that it reads a photograph
+of a shelf and that it does all of it on the device, were a paragraph below,
+where somebody deciding whether to read on never reached them. The headline is
+now the one the README has opened with all along, with the local promise on the
+line under it. The paragraph that followed spent itself repeating the
+photograph, so it covers what the headline does not.
+
+Check out this example undersold what it opens. It is not an example, it is the
+whole app with ninety-one books in it, and it says so. Its note led with the
+books being invented, which is the honest part but a poor first thing to hear.
+
+The licence is on the front page rather than only on a page somebody would have
+to go looking for, and it leads with what it allows: noncommercial alarms people
+who would have been fine with it, and the restriction is the shorter half of the
+sentence.
+
+### The sidebar says what its names mean
+
+Half the names in it are house vocabulary that says nothing on arrival. A desk.
+Some stacks. The lines explaining them were already written, in both languages,
+and sat in a title attribute: a tooltip on a mouse and nothing at all on a
+phone, so the one place the wording needed explaining was the one place it was
+hidden.
+
+Two of them were not carrying their weight either. Ask about it did not say what
+it, and where it all lives could have meant the books. The holdings goes
+entirely: it labelled a block of counts that already say they are books,
+authors, read and unread.
+
+### It installs, and it says so
+
+LibrAPP has been an installable web page since the beginning, with a complete
+manifest, and nothing in the interface ever mentioned it. Where the browser
+offers to install, the front page does too, using the event it already fires.
+That event is held rather than acted on, because firing a prompt the moment it
+arrives is what makes install prompts hated.
+
+The manual route is written out whether or not the button appears, since Safari
+on iOS never fires that event and never will, and somebody on an iPhone is
+exactly the person asking how to get this on their phone. A page already running
+as an installed app says so instead of offering again.
+
+And underneath it the part that matters more: a catalog does not travel by
+itself, each device keeps its own, and the file that carries one across is now a
+link away rather than three screens into The stacks.
+
+---
+
 ## v2.3.1
 
 ### The barcode box stays where it was

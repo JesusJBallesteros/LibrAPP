@@ -210,7 +210,17 @@ If something here does not work for you, that is a bug and worth
 
 You do not have to install anything —
 [the app](https://jesusjballesteros.github.io/LibrAPP/) runs in the browser. But
-installing gives it its own icon and window, and makes offline use reliable. In compatible browsers, choose **Install app** (or **Add to Home screen**) from the browser menu or in the address bar.
+installing gives it its own icon and window, and makes offline use reliable.
+
+**On your phone**, the front page offers to install where the browser supports
+being asked, and writes out the manual route where it does not: on an iPhone,
+*Share* then *Add to Home Screen*; on Android, the browser menu then *Install
+app*. Both do the same thing.
+
+**Your catalog does not travel with it.** Each device keeps its own, so moving
+one across is a file: export it in **The stacks** on one device, and bring that
+file in on the other. A backup works for this too, since a backup is the same
+file.
 
 ### Running your own copy
 
@@ -227,10 +237,14 @@ Requirements: Node 20+ to build. Nothing to run it.
 
 ## Adding your books
 
-The opening page asks what you have rather than asking for your storage: a
-photograph, a list, the barcodes on the books themselves, a catalog exported
-from another device, or a catalog already here. Whichever you choose, it sets up
-storage on the way if you have not chosen any yet.
+The opening page asks what you have rather than asking for your storage.
+Arriving with nothing, there are three ways in: a photograph of a shelf, a list
+you already keep, or the barcodes on the books themselves. Once there is a
+catalog here, opening it and bringing one over from another device join them.
+
+Whichever you pick sets up storage on the way, so choosing where the catalog is
+kept is a decision you can make first if you want to and never have to make on
+your own.
 
 You need at least one source. Any one of these is enough on its own.
 
