@@ -39,7 +39,7 @@ const GUIDES = {
   list: ['list.1', 'list.2', 'list.3', 'discard'],
   barcode: ['barcode.1', 'barcode.2', 'barcode.3', 'discard'],
   desk: ['desk.1', 'desk.2'],
-  storage: ['storage.1', 'storage.2', 'storage.3'],
+  storage: ['storage.1', 'storage.2', 'storage.3', 'backups'],
 }
 
 const guide = (view) => (GUIDES[view] || []).map((key) => ({ key: `guide.${key}`, values: {}, action: null }))

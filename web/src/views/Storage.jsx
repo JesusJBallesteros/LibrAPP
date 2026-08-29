@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
+import Backups from '../components/Backups.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
 import { checkCapabilities } from '../store/capabilities.js'
@@ -394,6 +395,11 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
           />
         </div>
       </section>
+
+      {/* Below the move section on purpose. A backup is the file that section
+          writes, so the two belong together, and the destructive button is at
+          the far end of a long page rather than on the way to anything. */}
+      <Backups lib={lib} />
     </div>
   )
 }

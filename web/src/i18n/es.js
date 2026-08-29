@@ -116,6 +116,8 @@ export default {
   'librarian.guide.barcode.3':
     'Sin clave y sin coste. Lo único que sale del dispositivo es el número, y va a Open Library.',
 
+  'librarian.guide.backups':
+    'Vaciar el catálogo hace antes una copia, y recuperar una también, así que ninguna de las dos es una puerta de un solo sentido. Una copia es el mismo archivo que escribe el botón de exportar, que es lo que permite llevarla a otro dispositivo.',
   'librarian.guide.discard':
     'Cada vía de entrada termina en una lista para revisar, y cualquier línea suelta se puede descartar antes de guardar el resto. Todo se conserva salvo lo que se aparte, y no se escribe nada hasta entonces.',
   'librarian.guide.desk.1':
@@ -306,6 +308,8 @@ export default {
   'catalog.empty.title': 'Todavía no hay catálogo',
   'catalog.empty.body':
     'Aún no se ha incorporado nada. Empieza por una foto de una estantería o por una lista que ya tengas: cualquiera de las dos basta para construir un catálogo.',
+  'catalog.empty.backups': '{n} {n:copia guardada|copias guardadas} aquí.',
+  'catalog.empty.recover': 'Recuperar una',
   'catalog.empty.shelf': 'Leer una foto de la estantería',
   'catalog.empty.list': 'Subir una lista',
   'catalog.typeIn': 'Escribir un libro',
@@ -341,6 +345,46 @@ export default {
   'storage.owlHidden': 'La BibliotecAPPri@ está oculta en todas las páginas. Al recuperarla vuelve a aparecer el distintivo en la esquina.',
   'storage.owlRestore': 'Recuperarla',
   'storage.owlBack': 'La BibliotecAPPri@ ha vuelto.',
+  'backups.head': 'Copias de seguridad',
+  'backups.countN': '{n} {n:copia|copias}',
+  'backups.intro':
+    'Una copia guarda todas las fuentes y todas las correcciones, que es la biblioteca entera. Se hace una antes de vaciar el catálogo y antes de que una recuperación sustituya lo que hay, así que ninguna de las dos es una puerta de un solo sentido.',
+  'backups.carry':
+    'Una copia es el mismo archivo que escribe el botón de exportar. Al descargarla se puede meter en LibrAPP en otro dispositivo con Trae un catálogo.',
+  'backups.makeNow': 'Hacer una copia ahora',
+  'backups.reading': 'Buscando copias.',
+  'backups.none': 'Aún no hay copias. Se hace una cada vez que el catálogo se vacía o se sustituye.',
+  'backups.holds': '{books} {books:libro|libros} de {sources} {sources:fuente|fuentes}',
+  'backups.unreadable': 'Este archivo no se puede leer. Se puede borrar, pero no recuperar.',
+
+  'backups.reset': 'Vaciar el catálogo',
+  'backups.resetConfirm': '¿Olvidar los {n} {n:libro|libros}?',
+  'backups.resetWhy':
+    'Se van todas las fuentes y todas las correcciones. Antes se hace una copia que queda en la lista de abajo, así que esto se deshace recuperándola. Las copias no se tocan.',
+  'backups.resetDo': 'Olvidar los {n}',
+  'backups.wasReset': 'El catálogo está vacío. La copia hecha antes está en la lista de abajo.',
+  'backups.nothingToCopy': 'Todavía no hay nada que copiar.',
+  'backups.copied': 'Copia hecha.',
+
+  'backups.recover': 'Recuperar',
+  'backups.recoverConfirm': '¿Devolver estos {books} {books:libro|libros}?',
+  'backups.recoverWhy':
+    'Lo que hay ahora se copia primero y queda en esta lista, así que recuperar la copia equivocada no cuesta más que elegir otra vez. Los {n} {n:libro|libros} que hay en el catálogo se sustituyen, no se mezclan.',
+  'backups.recoverDo': 'Recuperar esta',
+  'backups.recovered': 'Recuperada. Lo que había antes está en la lista como copia.',
+
+  'backups.download': 'Descargar',
+  'backups.downloaded': 'Guardado {name}.',
+  'backups.delete': 'Borrar',
+  'backups.deleteConfirm': '¿Borrar esta copia?',
+  'backups.deleteWhy': 'El archivo se va para siempre. No cambia nada más, y el catálogo no se toca.',
+  'backups.deleteDo': 'Borrarla',
+  'backups.deleted': 'Copia borrada.',
+
+  'backups.why.reset': 'hecha antes de vaciar',
+  'backups.why.replaced': 'hecha antes de recuperar',
+  'backups.why.manual': 'hecha a mano',
+
   'storage.eyebrow': 'Mantenimiento',
   'storage.kindUnknown': 'sin registrar',
   'storage.where': 'Almacenamiento',

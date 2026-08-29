@@ -68,6 +68,8 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const [editing, setEditing] = useState(null) // an existing book, or 'new'
   // Which bulk change has been asked for and not yet confirmed.
   const [bulk, setBulk] = useState(null)
+  // How many backups are held, asked for only when the catalog is empty.
+  const [held, setHeld] = useState(0)
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
 
@@ -219,6 +221,23 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // is what the shape is for; searching and filtering narrow both.
   const wall = useMemo(() => withBands(shown, sort), [shown, sort])
 
+  // Only asked for when there is no catalog, which is the one moment it
+  // matters. A reset says a copy was kept, and somebody who then walks away
+  // from that page and comes back here should not have to remember where.
+  useEffect(() => {
+    if (catalog || !lib?.library) return undefined
+    let cancelled = false
+    lib.library
+      .backupNames()
+      .then((names) => {
+        if (!cancelled) setHeld(names.length)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [catalog, lib?.library])
+
   if (!catalog) {
     return (
       <div className="view">
@@ -237,6 +256,14 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             {t('catalog.typeIn')}
           </button>
         </div>
+        {held > 0 && (
+          <p className="tiny" style={{ marginTop: 16 }}>
+            {t('catalog.empty.backups', { n: held })}{' '}
+            <button className="btn link" onClick={() => onGo('storage')}>
+              {t('catalog.empty.recover')}
+            </button>
+          </p>
+        )}
         {editing === 'new' && (
           <BookEditor
             authorNames={authors}

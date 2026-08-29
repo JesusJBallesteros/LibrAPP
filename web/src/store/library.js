@@ -3,6 +3,7 @@
 //
 //     sources/<name>.json    one per ingested source, exactly as it was read
 //     catalog.json           rebuilt from all of them, never edited by hand
+//     backups/<stamp>.json   a whole library, copied before it was replaced
 //
 // The same layout the command-line tools use, so a folder written here can be
 // read by them and the other way round. Plain JSON, one file per source, which
@@ -15,6 +16,7 @@ import { makeSource, normalise, readSource, SourceError } from '../core/records.
 const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
 const OVERRIDES = 'overrides.json'
+const BACKUPS = 'backups'
 const MANUAL = 'manual'
 // Shared with the preview in ingest/isbn.js, so what is shown before keeping
 // and what is written on keeping cannot drift apart.
@@ -240,6 +242,12 @@ export class Library {
     }
     if (replace) {
       for (const file of await this.sourceNames()) await this.backend.remove(`${SOURCES}/${file}`)
+      // Corrections go with the sources they correct. A restore that kept the
+      // old ones would leave edits pointing at books that are no longer there,
+      // and the ids they are keyed by are handed out by the builder, so the
+      // survivors would attach themselves to whichever books happened to take
+      // those ids next.
+      await this.writeOverrides(emptyOverrides())
     }
     let written = 0
     for (const { file, payload } of bundle.sources || []) {
@@ -249,6 +257,139 @@ export class Library {
     }
     if (bundle.overrides) await this.writeOverrides(readOverrides(bundle.overrides))
     return written
+  }
+
+  // -- backups ------------------------------------------------------------
+  //
+  // A backup is an export bundle, written into the library instead of being
+  // downloaded. Nothing about the format is private to backups, which is the
+  // point: the file a reset leaves behind is the same file the export button
+  // produces, so it can be carried to another device and brought in there
+  // through the import that already exists.
+
+  /** Every backup held here, newest first. */
+  async backupNames() {
+    const names = (await this.backend.list(BACKUPS)).filter((n) => n.endsWith('.json'))
+    // Names begin with a timestamp, so the order the backend sorts them into is
+    // already the order they were made in.
+    return names.reverse()
+  }
+
+  /**
+   * What each backup holds.
+   *
+   * Read from the file rather than from its name, because a name can be
+   * anything once a folder is open to whoever owns it. A backup that will not
+   * parse is still listed: it cannot be restored, but it can be deleted, and a
+   * file that is invisible in the app and present on disk is worse.
+   */
+  async readBackups() {
+    const out = []
+    for (const file of await this.backupNames()) {
+      const text = (await this.backend.readText(`${BACKUPS}/${file}`)) || ''
+      try {
+        const bundle = JSON.parse(text)
+        if (bundle?.librapp_bundle !== 1) throw new Error('not a bundle')
+        out.push({
+          file,
+          bytes: text.length,
+          made_at: bundle.exported_at || null,
+          why: bundle.made_because || null,
+          sources: (bundle.sources || []).length,
+          books: bundle.held?.books ?? null,
+          readable: true,
+        })
+      } catch {
+        out.push({ file, bytes: text.length, made_at: null, why: null, sources: null, books: null, readable: false })
+      }
+    }
+    return out
+  }
+
+  /**
+   * Copy the whole library, and say what the copy was made for.
+   *
+   * Returns null when there is nothing to copy. A library with no sources has
+   * nothing that could be lost, and a shelf of empty backups is a list nobody
+   * can read.
+   */
+  async makeBackup(why = 'manual') {
+    const bundle = await this.exportBundle()
+    if (!bundle.sources.length) return null
+    const catalog = await this.readCatalog()
+    // Colons are not allowed in a file name on every system this can be opened
+    // on. Stripped rather than replaced with nothing, so the stamp still sorts
+    // in the order the backups were made.
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:]/g, '-')
+    const file = `${stamp}-${safeName(why)}.json`
+    await this.backend.writeText(
+      `${BACKUPS}/${file}`,
+      JSON.stringify(
+        {
+          ...bundle,
+          made_because: why,
+          // So the list can say what is in each one without parsing every
+          // record of every source to count them again.
+          held: { books: catalog?.counts?.books ?? null, sources: bundle.sources.length },
+        },
+        null,
+        2,
+      ),
+    )
+    return file
+  }
+
+  async readBackup(file) {
+    const text = await this.backend.readText(`${BACKUPS}/${file}`)
+    if (!text) throw new SourceError(`there is no backup called ${JSON.stringify(file)}`)
+    let bundle
+    try {
+      bundle = JSON.parse(text)
+    } catch {
+      throw new SourceError(`the backup ${JSON.stringify(file)} is not readable`)
+    }
+    if (bundle?.librapp_bundle !== 1) {
+      throw new SourceError(`the backup ${JSON.stringify(file)} is not a LibrAPP export`)
+    }
+    return bundle
+  }
+
+  async deleteBackup(file) {
+    await this.backend.remove(`${BACKUPS}/${file}`)
+  }
+
+  /**
+   * Forget every book, after copying them.
+   *
+   * The backups are not touched. Resetting is the act this feature exists to
+   * make survivable, and a reset that swept away the way back would be the one
+   * thing nobody could undo.
+   */
+  async resetCatalog() {
+    const backup = await this.makeBackup('reset')
+    for (const file of await this.sourceNames()) await this.backend.remove(`${SOURCES}/${file}`)
+    await this.writeOverrides(emptyOverrides())
+    // Removed rather than rebuilt. Rebuilding with no sources is refused, and
+    // rightly so: an empty catalog arriving by accident is worth shouting
+    // about. This one is on purpose, so what is left behind is a library that
+    // looks exactly like one nothing has been added to yet.
+    await this.backend.remove(CATALOG)
+    return backup
+  }
+
+  /**
+   * Put a backup back in place of what is here.
+   *
+   * What it replaces is copied first, so recovering the wrong one costs
+   * nothing. Read before anything is removed: a backup that turns out to be
+   * unreadable must not leave the library emptied on its way to finding out.
+   */
+  async restoreBackup(file) {
+    const bundle = await this.readBackup(file)
+    const replaced = await this.makeBackup('replaced')
+    const written = await this.importBundle(bundle, { replace: true })
+    await this.rebuild()
+    return { replaced, written }
   }
 }
 

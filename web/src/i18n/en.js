@@ -117,6 +117,8 @@ export default {
   'librarian.guide.barcode.3':
     'No key and no cost. The only thing that leaves the device is the number itself, and it goes to Open Library.',
 
+  'librarian.guide.backups':
+    'Resetting the catalog copies it first, and so does recovering one, so neither is a one-way door. A copy is the same file the export button writes, which is what lets one be carried to another device.',
   'librarian.guide.discard':
     'Every way in ends with a list to check, and any single line on it can be discarded before the rest is kept. Everything is kept unless it is set aside, and nothing is written until then.',
   'librarian.guide.desk.1':
@@ -311,6 +313,8 @@ export default {
   'catalog.empty.title': 'No catalog yet',
   'catalog.empty.body':
     'Nothing has been ingested. Start with a photograph of a shelf, or with a list you already keep. Either one on its own is enough to build a catalog.',
+  'catalog.empty.backups': '{n} {n:backup is|backups are} held here.',
+  'catalog.empty.recover': 'Recover one',
   'catalog.empty.shelf': 'Read a shelf photograph',
   'catalog.empty.list': 'Upload a list',
   'catalog.typeIn': 'Type a book in',
@@ -346,6 +350,49 @@ export default {
   'storage.owlHidden': 'The LibrAPPrian is hidden on every page. Bringing it back shows the badge in the corner again.',
   'storage.owlRestore': 'Bring it back',
   'storage.owlBack': 'The LibrAPPrian is back.',
+  // -- backups ------------------------------------------------------------
+  // Resetting is the only thing here that destroys work on purpose, so every
+  // line about it says what goes and what is kept.
+  'backups.head': 'Backups',
+  'backups.countN': '{n} {n:copy|copies}',
+  'backups.intro':
+    'A backup holds every source and every correction, which is the whole of a library. One is made before the catalog is reset, and before a recovery replaces what is here, so neither of those is a one-way door.',
+  'backups.carry':
+    'A backup is the same file the export button writes. Download one and it can be brought into LibrAPP on another device through Bring a catalog over.',
+  'backups.makeNow': 'Make a backup now',
+  'backups.reading': 'Looking for backups.',
+  'backups.none': 'No backups yet. One is made whenever the catalog is reset or replaced.',
+  'backups.holds': '{books} {books:book|books} from {sources} {sources:source|sources}',
+  'backups.unreadable': 'This file cannot be read. It can be deleted but not recovered.',
+
+  'backups.reset': 'Reset the catalog',
+  'backups.resetConfirm': 'Forget all {n} {n:book|books}?',
+  'backups.resetWhy':
+    'Every source and every correction goes. A copy is made first and stays in the list below, so this can be undone by recovering it. The backups themselves are not touched.',
+  'backups.resetDo': 'Forget all {n}',
+  'backups.wasReset': 'The catalog is empty. The copy made first is in the list below.',
+  'backups.nothingToCopy': 'There is nothing here to copy yet.',
+  'backups.copied': 'Copy made.',
+
+  'backups.recover': 'Recover',
+  'backups.recoverConfirm': 'Put these {books} {books:book|books} back?',
+  'backups.recoverWhy':
+    'What is here now is copied first and stays in this list, so recovering the wrong one costs nothing but a second choice. The {n} {n:book|books} currently in the catalog are replaced, not merged.',
+  'backups.recoverDo': 'Recover this one',
+  'backups.recovered': 'Recovered. What was here before is in the list as a copy.',
+
+  'backups.download': 'Download',
+  'backups.downloaded': 'Saved {name}.',
+  'backups.delete': 'Delete',
+  'backups.deleteConfirm': 'Delete this backup?',
+  'backups.deleteWhy': 'The file goes for good. Nothing else changes, and the catalog is not touched.',
+  'backups.deleteDo': 'Delete it',
+  'backups.deleted': 'Backup deleted.',
+
+  'backups.why.reset': 'made before a reset',
+  'backups.why.replaced': 'made before a recovery',
+  'backups.why.manual': 'made by hand',
+
   'storage.eyebrow': 'Housekeeping',
   'storage.kindUnknown': 'not recorded',
   'storage.where': 'Storage',
