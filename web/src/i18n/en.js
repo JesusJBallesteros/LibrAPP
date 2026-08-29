@@ -325,6 +325,7 @@ export default {
   'catalog.correctedCount': '{n} corrected',
   'catalog.removedCount': '{n} removed',
   'catalog.searchPlaceholder': 'Search titles, authors, series, tags…',
+  'catalog.search': 'Search',
   'catalog.searchLabel': 'Search the catalog',
   'catalog.clearSearch': 'Clear search',
   'catalog.groupBy': 'Group by',
@@ -888,7 +889,7 @@ export default {
 
   // Two questions that arrive as one: how do I get the app there, and how
   // do I get my books there. The second is the one people mean.
-  'phone.title': 'On your phone',
+  'phone.title': 'Install it on your device',
   'phone.body':
     'Add LibrAPP to the home screen. It opens full screen from there and works with no connection.',
   'phone.install': 'Install LibrAPP',
@@ -897,11 +898,6 @@ export default {
     'iPhone: Share, then Add to Home Screen. Android: the browser menu, then Install app.',
   'phone.catalog': 'Each device keeps its own catalog. To move one across:',
   'phone.catalogAction': 'export it, and bring it over',
-  'landing.next.title': 'Then ask it things',
-  'landing.next.body':
-    'Ask the desk about the books you own: what to read next, what a series is missing, what runs through the collection.',
-  'landing.next.action': 'Open the LibrAPPrian’s desk',
-  'landing.next.empty': 'Ready as soon as there are books here.',
   'desk.estimateNote': 'an estimate. What it actually cost appears with the answer.',
 
   // -- lent and borrowed ----------------------------------------------------

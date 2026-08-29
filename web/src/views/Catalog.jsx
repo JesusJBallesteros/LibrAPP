@@ -58,6 +58,10 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   // already folded, so it is exact rather than a substring search.
   const [tag, setTag] = useState(null)
   const [showMore, setShowMore] = useState(false)
+  // The whole filter row, folded until it is wanted. A catalog is opened to
+  // look at books, and the controls for narrowing which books stood above them
+  // on every visit whether or not anything was being narrowed.
+  const [searchOpen, setSearchOpen] = useState(false)
   // Spines first. A catalog opening as a list opens looking like a database
   // export; opening as a shelf, it looks like the thing it describes. The list
   // is a button away and is what search and sorting are read in.
@@ -74,19 +78,29 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const authors = useMemo(() => authorNames(catalog), [catalog])
 
   useEffect(() => {
-    if (focus?.tag) setTag({ key: focus.tag, label: focus.label ?? focus.tag })
     // The desk sends a word; the librarian sends a filter. Both arrive the same
-    // way, and a filter behind the disclosure opens it, so nothing narrows the
+    // way, and a filter behind a disclosure opens it, so nothing narrows the
     // list with its control out of sight.
-    if (focus?.read) setRead(focus.read)
+    if (focus?.tag) {
+      setTag({ key: focus.tag, label: focus.label ?? focus.tag })
+      setSearchOpen(true)
+    }
+    if (focus?.read) {
+      setRead(focus.read)
+      setSearchOpen(true)
+    }
     if (focus?.favourite) {
       setFavourite(focus.favourite)
       setShowMore(true)
+      setSearchOpen(true)
     }
+    // Sorting is not narrowing: it changes the order of the same books, so it
+    // does not have to be in view to be understood.
     if (focus?.sort) setSort(focus.sort)
     if (focus?.loan) {
       setLoan(focus.loan)
       setShowMore(true)
+      setSearchOpen(true)
     }
   }, [focus])
 
@@ -178,6 +192,12 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     t(LABEL[name]),
   )
   const hiddenActive = hiddenNames.length
+
+  // How many things are narrowing the list right now. Shown on the closed
+  // button, because a shelf with two thirds of it missing and no visible
+  // reason is the one thing folding these away could cost.
+  const narrowing =
+    (q.trim() ? 1 : 0) + (read !== 'all' ? 1 : 0) + (tag ? 1 : 0) + hiddenActive
 
   // What a bucket is called. The two catch-alls are fixed markers rather than
   // names, so they are translated at the point of showing.
@@ -347,7 +367,30 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
         )}
       </header>
 
-      <div className="toolbar">
+      <div className="toolbar-head">
+        <button
+          className="btn"
+          aria-expanded={searchOpen}
+          aria-controls="catalog-filters"
+          onClick={() => setSearchOpen((open) => !open)}
+        >
+          {t('catalog.search')}
+          {!searchOpen && narrowing > 0 && <span className="filter-count">{narrowing}</span>}
+        </button>
+
+        {/* Not a filter. It decides how the same books are drawn, so it stays
+            out where it can be reached. */}
+        <div className="segmented view-mode" role="group" aria-label={t('catalog.viewMode')}>
+          {['list', 'spines'].map((each) => (
+            <button key={each} aria-pressed={mode === each} onClick={() => setMode(each)}>
+              {t(`catalog.mode.${each}`)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {searchOpen && (
+      <div className="toolbar" id="catalog-filters">
         <div className="search">
           <span className="glyph" aria-hidden="true">
             ⌕
@@ -401,17 +444,10 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             <span className="filter-count">{hiddenActive}</span>
           )}
         </button>
-
-        <div className="segmented view-mode" role="group" aria-label={t('catalog.viewMode')}>
-          {['list', 'spines'].map((each) => (
-            <button key={each} aria-pressed={mode === each} onClick={() => setMode(each)}>
-              {t(`catalog.mode.${each}`)}
-            </button>
-          ))}
-        </div>
       </div>
+      )}
 
-      {showMore && (
+      {searchOpen && showMore && (
         <div className="toolbar toolbar-more">
           {formats.length > 1 && (
             <label className="field">

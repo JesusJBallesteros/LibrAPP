@@ -141,46 +141,23 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
             ))}
           </div>
 
-          {/* Where storage went. It is a real choice and some people want to
-              make it first, but it is the only technical one here and it does
-              not belong in front of somebody deciding whether to bother. */}
-          <p className="tiny faint" style={{ marginTop: 14 }}>
+        </section>
+
+        <OnYourPhone onGo={onGo} />
+
+        <section className="landing-terms">
+          <p className="tiny faint">
             {t('landing.storageFirst')}{' '}
             <button className="btn link" onClick={() => onGo('storage')}>
               {t('landing.option.storage')}
             </button>
           </p>
-
-          {/* Said before anybody invests an evening in it rather than only on
-              a page they would have to go looking for. Noncommercial alarms
-              people who would have been fine, so this leads with what it
-              allows. */}
           <p className="tiny faint" style={{ marginTop: 10 }}>
             {t('landing.licence')}{' '}
             <button className="btn link" onClick={() => onGo('about', 'licence')}>
               {t('landing.licenceName')}
             </button>
           </p>
-        </section>
-
-        <OnYourPhone onGo={onGo} />
-
-        <section className="landing-next">
-          <h2>{t('landing.next.title')}</h2>
-          <p className="muted tiny">{t('landing.next.body')}</p>
-          <button
-            className="btn primary"
-            style={{ marginTop: 12 }}
-            onClick={() => onGo('desk')}
-            disabled={!hasCatalog}
-          >
-            {t('landing.next.action')}
-          </button>
-          {!hasCatalog && (
-            <p className="tiny faint" style={{ marginTop: 8 }}>
-              {t('landing.next.empty')}
-            </p>
-          )}
         </section>
 
         <footer className="landing-foot">

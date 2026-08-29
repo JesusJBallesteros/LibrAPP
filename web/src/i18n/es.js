@@ -310,6 +310,7 @@ export default {
   'catalog.correctedCount': '{n} corregidos',
   'catalog.removedCount': '{n} retirados',
   'catalog.searchPlaceholder': 'Busca títulos, autores, series, etiquetas…',
+  'catalog.search': 'Buscar',
   'catalog.searchLabel': 'Buscar en el catálogo',
   'catalog.clearSearch': 'Borrar la búsqueda',
   'catalog.groupBy': 'Agrupar por',
@@ -875,7 +876,7 @@ export default {
   'shelf.copyFailure': 'Copiar este mensaje',
   'shelf.usingService': 'Servicio: {service} \u00b7 modelo: {model}',
 
-  'phone.title': 'En el móvil',
+  'phone.title': 'Instálalo en tu dispositivo',
   'phone.body':
     'Añade LibrAPP a la pantalla de inicio. Desde ahí se abre a pantalla completa y funciona sin conexión.',
   'phone.install': 'Instalar LibrAPP',
@@ -884,11 +885,6 @@ export default {
     'iPhone: Compartir y luego Añadir a pantalla de inicio. Android: el menú del navegador y luego Instalar aplicación.',
   'phone.catalog': 'Cada dispositivo guarda su propio catálogo. Para llevarlo a otro:',
   'phone.catalogAction': 'expórtalo y tráelo',
-  'landing.next.title': 'Y luego preg\u00fantale',
-  'landing.next.body':
-    'Pregúntale al escritorio por los libros que tienes: qué leer a continuación, qué le falta a una colección, qué recorre lo que has reunido.',
-  'landing.next.action': 'Abrir BibliotecAPPri@',
-  'landing.next.empty': 'Estar\u00e1 listo en cuanto haya libros aqu\u00ed.',
   'desk.estimateNote': 'una estimaci\u00f3n. Lo que ha costado de verdad aparece con la respuesta.',
 
   // -- prestados y tomados prestados ----------------------------------------

@@ -448,6 +448,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-radius: 0;
 }
 .toolbar-more { margin-top: -6px; }
+/* The row that is always there: a way into the controls, and the choice of how
+   the books are drawn. */
+.toolbar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 18px;
+}
 
 .search {
   display: flex;

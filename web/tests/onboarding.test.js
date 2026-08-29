@@ -128,3 +128,42 @@ describe('the front page states the action', () => {
     expect(en).toContain("'about.privacy.device'")
   })
 })
+
+// The catalog opens on books, not on the controls for narrowing which books.
+describe('the filters fold away', () => {
+  const catalog = read('views/Catalog.jsx')
+
+  it('starts closed', () => {
+    expect(catalog).toContain('const [searchOpen, setSearchOpen] = useState(false)')
+  })
+
+  it('leaves the way in and the choice of how to draw them', () => {
+    // The view mode is not a filter: it decides how the same books are drawn,
+    // so it stays out where it can be reached.
+    const headAt = catalog.indexOf('className="toolbar-head"')
+    const head = catalog.slice(headAt, catalog.indexOf('{searchOpen &&', headAt))
+    expect(head).toContain("t('catalog.search')")
+    expect(head).toContain('view-mode')
+    expect(head).toContain('aria-controls="catalog-filters"')
+  })
+
+  it('says how many things are narrowing the list while it is closed', () => {
+    // A shelf with two thirds of it missing and no visible reason is the one
+    // thing folding these away could cost.
+    expect(catalog).toContain('const narrowing =')
+    expect(catalog).toContain('{!searchOpen && narrowing > 0 &&')
+  })
+
+  it('opens itself for anything that arrives narrowing the list', () => {
+    // The rule the inner disclosure already followed: nothing narrows the list
+    // with its own control out of sight.
+    const effect = catalog.slice(catalog.indexOf('if (focus?.tag)'), catalog.indexOf('}, [focus])'))
+    for (const arriving of ['tag', 'read', 'favourite', 'loan']) {
+      expect(effect, arriving).toContain(`focus?.${arriving}`)
+    }
+    // Four narrowing filters, each opening it; sorting is not one of them.
+    expect(effect.match(/setSearchOpen\(true\)/g)).toHaveLength(4)
+    const sorting = effect.slice(effect.indexOf('focus?.sort'))
+    expect(sorting.slice(0, 60)).not.toContain('setSearchOpen')
+  })
+})
