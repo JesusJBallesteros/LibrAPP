@@ -228,11 +228,15 @@ Requirements: Node 20+ to build. Nothing to run it.
 ## Adding your books
 
 The opening page asks what you have rather than asking for your storage: a
-photograph, a list, a catalog exported from another device, or a catalog
-already here. Whichever you choose, it sets up storage on the way if you have
-not chosen any yet.
+photograph, a list, the barcodes on the books themselves, a catalog exported
+from another device, or a catalog already here. Whichever you choose, it sets up
+storage on the way if you have not chosen any yet.
 
 You need at least one source. Any one of these is enough on its own.
+
+Every one of them ends in a list to check before anything is written, and any
+single line of that list can be **discarded** on its own. Everything is kept
+unless it is set aside.
 
 ### A photograph of a shelf
 
@@ -279,6 +283,14 @@ really shows shelves stacked above one another.
 Any tile holding no readable spine, such as a wall or a lamp, can be
 **discarded** before the read. Discarded tiles are not sent, not saved and not
 counted in the cost.
+
+**What comes back is a list to check, not an import.** When the reading
+finishes, the page says how many books came back and moves to the list, so a
+read that takes a minute does not end on a page that looks unchanged. Nothing is
+written until *Import these* is pressed, and any single book on the list can be
+**discarded** first: a DVD case read as a book, a spine the model guessed at,
+one wrong line in a reading that is otherwise right. Everything is kept unless
+it is set aside, and the count on the button follows what is left.
 
 ### Asking for more than the titles
 
@@ -330,6 +342,11 @@ ignored.
 If a file holds more than one list, LibrAPP asks which one you want before
 importing anything.
 
+**The rows are shown before anything is written.** LibrAPP lists what it read
+out of the file, and any row can be **discarded**: a header line that parsed as
+a title, a wishlist entry sitting among books owned, anything in the sheet that
+is not a book. Everything is kept unless it is set aside.
+
 ### A store export
 
 Export your library from Amazon's **Manage Your Content and Devices** page,
@@ -337,6 +354,62 @@ printing the list to PDF, then drop the PDF into **Upload list**.
 
 This recovers the title, authors, publisher, purchase date, read status and how
 many devices and collections each book is in.
+
+### Reading barcodes
+
+The number under a barcode identifies the exact edition, so where **[Open
+Library](https://openlibrary.org)** holds that edition there is nothing to guess
+at: the title, the authors, the publisher, the year and the page count come back
+as recorded facts. No AI, no key and no cost.
+
+Open Library is a free catalogue run by the Internet Archive, and it is the one
+service LibrAPP asks anything of. What it is sent is a list of ISBNs and nothing
+else.
+
+Paste the codes, one per line or out of a spreadsheet column, or read them from
+a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
+a 10 and a 13 is looked up once.
+
+**Or point the camera at them.** *Scan with the camera* opens a viewfinder and
+reads codes as they pass in front of it, which is the quick way through a stack:
+hold each book up, watch the count go up, move on. The same book twice counts
+once. The camera is asked for only when you press it and handed back the moment
+you stop, leave the page or switch tabs.
+
+**Or photograph the barcodes.** Where the browser can read one, and Chrome on
+Android can, **Read a barcode from a photo** takes one picture or several and
+adds what it finds to the same box. A photograph of a pile gives up every code
+in it, and a barcode that is not a book fails the same check a typo does. The
+picture is read on the device at its own resolution and never leaves: shrinking
+it would throw away the lines that carry the data, and there is nothing to save
+by shrinking something that is not being sent.
+
+Chrome on Android has a barcode reader built in and uses it. Desktop browsers
+have none, so LibrAPP carries its own: about a megabyte of compiled decoder,
+fetched the first time you scan something and not before. It is served from
+LibrAPP itself, like the fonts, so scanning still makes no third-party request.
+The page says which of the two is in use.
+
+**What comes back is shown before any of it is kept**, for a reason worth
+knowing. Asked for an ISBN it does not hold, the service answers with a
+different book rather than with an error, so one wrong digit does not fail, it
+succeeds wrongly and hands back a title with a publisher and a page count
+attached. A code whose own check digit disagrees is refused before anything is
+sent, which catches a mistyped or transposed digit, and you catch the rest by
+reading the list.
+
+A book already on your shelf takes the new details rather than becoming a second
+entry: a lookup is a source like a photograph or a spreadsheet, and the same
+merge applies. Anything that matched nothing is added. **The review says which
+is which** before you keep anything, so a batch of thirty tells you how many are
+new books and how many are gaps being filled. Any line of it can be
+**discarded** on its own, so one wrong code among twenty right ones costs one
+line rather than the batch.
+
+Subjects come back as **keywords**, not as a genre. There are twenty to ninety
+of them per book and they include things like *American literature* and *New
+York Times reviewed*; calling one of them the genre would be the app choosing
+rather than recording.
 
 ### Typing a book in
 
@@ -386,6 +459,12 @@ one size on every spine, large enough to read across a room, and a title longer
 than its spine ends in an ellipsis. The whole title is always in the tooltip and
 in the accessible name.
 
+**A book that has been read carries a stamp** at the foot of its spine: a ring
+with a check in it, drawn in the same ink that spine uses for its lettering.
+Only read is marked. Unread and not recorded are different answers and a stamp
+cannot give either one, so both are left blank and that difference stays where
+it is stated, in the read filter and on the book's own record.
+
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. **More contrast** is a separate switch
 beside it, so it can be had on either. The landing page has both.
@@ -393,6 +472,12 @@ beside it, so it can be had on either. The landing page has both.
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
 it, and how confident LibrAPP is about the entry.
+
+**The record asks for what nothing else can tell it.** Read state, a loan and a
+note are the only fields that have to come from the reader: no photograph,
+spreadsheet or lookup knows whether a book was read, who has it, or what was
+thought of it. A book missing any of the three lists them under *Still to
+record*, and each one opens the form at its own box rather than at the top.
 
 ### Read status has three values
 
@@ -611,60 +696,6 @@ genre's share. It is the same every time for the same catalog.
 
 The prompts are told this is a sample, so absence from it is never treated as
 proof you do not own something.
-
-### Scanning a barcode
-
-The number under a barcode identifies the exact edition, so where **[Open
-Library](https://openlibrary.org)** holds that edition there is nothing to guess
-at: the title, the authors, the publisher, the year and the page count come back
-as recorded facts. No AI, no key and no cost.
-
-Open Library is a free catalogue run by the Internet Archive, and it is the one
-service LibrAPP asks anything of. What it is sent is a list of ISBNs and nothing
-else.
-
-Paste the codes, one per line or out of a spreadsheet column, or read them from
-a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
-a 10 and a 13 is looked up once.
-
-**Or point the camera at them.** *Scan with the camera* opens a viewfinder and
-reads codes as they pass in front of it, which is the quick way through a stack:
-hold each book up, watch the count go up, move on. The same book twice counts
-once. The camera is asked for only when you press it and handed back the moment
-you stop, leave the page or switch tabs.
-
-**Or photograph the barcodes.** Where the browser can read one, and Chrome on
-Android can, **Read a barcode from a photo** takes one picture or several and
-adds what it finds to the same box. A photograph of a pile gives up every code
-in it, and a barcode that is not a book fails the same check a typo does. The
-picture is read on the device at its own resolution and never leaves: shrinking
-it would throw away the lines that carry the data, and there is nothing to save
-by shrinking something that is not being sent.
-
-Chrome on Android has a barcode reader built in and uses it. Desktop browsers
-have none, so LibrAPP carries its own: about a megabyte of compiled decoder,
-fetched the first time you scan something and not before. It is served from
-LibrAPP itself, like the fonts, so scanning still makes no third-party request.
-The page says which of the two is in use.
-
-**What comes back is shown before any of it is kept**, for a reason worth
-knowing. Asked for an ISBN it does not hold, the service answers with a
-different book rather than with an error, so one wrong digit does not fail, it
-succeeds wrongly and hands back a title with a publisher and a page count
-attached. A code whose own check digit disagrees is refused before anything is
-sent, which catches a mistyped or transposed digit, and you catch the rest by
-reading the list.
-
-A book already on your shelf takes the new details rather than becoming a second
-entry: a lookup is a source like a photograph or a spreadsheet, and the same
-merge applies. Anything that matched nothing is added. **The review says which
-is which** before you keep anything, so a batch of thirty tells you how many are
-new books and how many are gaps being filled.
-
-Subjects come back as **keywords**, not as a genre. There are twenty to ninety
-of them per book and they include things like *American literature* and *New
-York Times reviewed*; calling one of them the genre would be the app choosing
-rather than recording.
 
 ### Filling gaps in the records
 

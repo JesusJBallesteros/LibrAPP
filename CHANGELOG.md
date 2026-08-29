@@ -1,5 +1,83 @@
 # Changelog
 
+## v2.2.1
+
+All of this came out of one test on an Android phone. Barcodes read, every
+book found, Keep pressed, and an answer about a field called spine several
+screens above the button that had just been pressed.
+
+### Say when the reading is done, and where the reading is
+
+Reading a shelf takes a minute or more, and the button that starts it sits well
+above where the answer lands. The page sat there and the list arrived off the
+bottom of the screen, so there was no telling finished from still going without
+scrolling to look.
+
+The review says how many books came back and that the list is under it, and the
+page goes there. Both, because scrolling moves the page and not a screen reader,
+and somebody who looked away during a minute-long read needs telling rather than
+showing. Brought to the top of the review rather than its middle, so the count
+and the note about checking are the first things on the screen.
+
+The button that throws a whole reading away said Discard, which is now also what
+every row of that reading says. It says what it discards.
+
+### One row of an import can be set aside
+
+Every way in ends with a list to check, and until now that list was all or
+nothing. One DVD case read as a book off a photograph, one header row that
+parsed as a title, one wrong barcode among twenty right ones, and the only
+answer was to discard the whole batch and do it again.
+
+Each row of each list carries a discard now. Kept is the default, since the list
+is the result of work already done and most of it is right, so the control names
+the other thing. A discarded row stays where it is, struck through, rather than
+vanishing: a list that reflowed under the finger that pressed it would slide the
+next row into the place just tapped, and a discard that cannot be taken back is
+a deletion rather than a review. The count on the button follows what survives,
+and at nothing kept the button will not write.
+
+Two of the three lists had to be built rather than changed. The list page wrote
+a spreadsheet without ever showing what was in it, which made it the one way in
+with nothing to check; the rows are parsed for the preview now, and the import
+writes those rather than reading the file a second time. A transcription brought
+in as a file went into the catalog with no review at all, and now goes through
+the same one a read photograph does.
+
+The owl says so on all three pages.
+
+### Fixed: this app could not open a file this app had written
+
+Between 2026-08-27 and the revert two days later, a shelf read wrote a spine
+field on every record: a path to a crop of the photograph, cut around one book.
+The field went when the feature did, and the unknown-field check then refused
+every file written in that window, naming a field the reader had never heard of
+and could do nothing about.
+
+That check is strict on purpose, since it is what stops an ingester writing a
+field the builder ignores. But refusing a record over something this app put
+there itself is a bug in this app and not a fault in the file. Retired fields
+are named, with the reason each one went, and dropped on the way in. Anything
+else unknown still throws, including a typo standing next to a retired field.
+
+The crop files themselves are still in the library folder of anyone who read a
+shelf in that window. Nothing reads them, and nothing here deletes them.
+
+### A failure appears next to the button that caused it
+
+Every failure went to the banner at the head of the page, which on a phone is
+several screens above whatever was pressed, so the press looked like it had done
+nothing at all.
+
+The pages whose controls sit far down now put the message beside the control:
+the barcode review above Keep, the list import above its own button, the shelf
+above the books it is proposing. The book panel keeps its own, because the page
+banner renders behind the overlay and could not be seen at all. Where there is
+no room beside the control, a star at the foot of a long shelf, the banner stays
+and the page scrolls to it.
+
+---
+
 ## v2.2.0
 
 A second adversarial review of the running app drove most of this. The barcode
