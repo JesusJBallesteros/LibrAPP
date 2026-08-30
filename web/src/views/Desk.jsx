@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   authorNames,
   byline,
@@ -14,6 +14,7 @@ import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
 import WordCloud from '../components/WordCloud.jsx'
 import AskStrip from '../components/AskStrip.jsx'
+import KeptAnswers from '../components/KeptAnswers.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
 // Imported under another name: `ask` is already the state holding which
@@ -184,6 +185,10 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
   // and between them they pushed everything else off the page, so both start
   // shut. Independently: opening one is not a reason to close the other.
   const [opened, setOpened] = useState(() => new Set())
+  // Replies the reader chose to keep, and where the newest one is on the page.
+  const [kept, setKept] = useState([])
+  const [saved, setSaved] = useState(null)
+  const answerAt = useRef(null)
   const toggle = (which) =>
     setOpened((on) => {
       const next = new Set(on)
@@ -191,6 +196,35 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
       else next.add(which)
       return next
     })
+
+  const readKept = useCallback(() => {
+    if (!lib.library) return
+    lib.library
+      .readAnswers()
+      .then(setKept)
+      .catch(() => {})
+  }, [lib.library])
+
+  useEffect(() => {
+    readKept()
+  }, [readKept])
+
+  // An answer arrives at the bottom of a long page, after a wait of up to a
+  // minute, and nothing moved to it. Not smooth, for the reason the shelf page
+  // gives: smooth scrolling is skipped when the page is not being composited.
+  useEffect(() => {
+    if (!asking && answer) answerAt.current?.scrollIntoView({ block: 'start' })
+  }, [asking, answer])
+
+  const keep = () =>
+    lib.run(
+      async (library) => {
+        await library.saveAnswer({ ask, question: question.trim() || null, text: answer })
+        setSaved(ask)
+        readKept()
+      },
+      { onError: setAskError },
+    )
 
   const chosen = ASKS.find((a) => a.id === ask)
 
@@ -478,6 +512,22 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             )}
           </section>
 
+          <KeptAnswers
+            answers={kept}
+            open={opened.has('kept')}
+            onToggle={() => toggle('kept')}
+            onDelete={(id) =>
+              lib.run(
+                async (library) => {
+                  await library.deleteAnswer(id)
+                  readKept()
+                },
+                { onError: setAskError },
+              )
+            }
+            busy={lib.busy}
+          />
+
           {/* The cloud leads and the chart follows. Both answer what the
               collection is made of, and the cloud answers it better on a real
               shelf: genre labels come from the sources uncontrolled, so a
@@ -648,7 +698,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             )}
 
             {!chosen.structured && (answer || asking) && (
-              <div style={{ marginTop: 14 }}>
+              <div style={{ marginTop: 14 }} ref={answerAt}>
                 <div className="spread">
                   <strong className="tiny">{t('desk.answer')}</strong>
                   <span className="tiny faint">
@@ -663,9 +713,14 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                   {answer || ' '}
                 </pre>
                 {!asking && answer && (
-                  <button className="btn small" style={{ marginTop: 8 }} onClick={() => flash('answer', answer)}>
-                    {copied === 'answer' ? t('common.copied') : t('desk.copyAnswer')}
-                  </button>
+                  <div className="row" style={{ marginTop: 8, gap: 8 }}>
+                    <button className="btn small" onClick={() => flash('answer', answer)}>
+                      {copied === 'answer' ? t('common.copied') : t('desk.copyAnswer')}
+                    </button>
+                    <button className="btn small" disabled={lib.busy} onClick={keep}>
+                      {saved === ask ? t('desk.kept.done') : t('desk.keepAnswer')}
+                    </button>
+                  </div>
                 )}
               </div>
             )}

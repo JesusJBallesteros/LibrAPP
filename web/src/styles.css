@@ -1567,6 +1567,15 @@ button.forgotten-item:hover { background: var(--accent-soft); }
   margin-bottom: -8px;
 }
 
+/* One kept reply. The text is a snippet like every other block of model
+   output, so it reads the same wherever it appears. */
+.kept-answer {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.kept-answer:last-of-type { border-bottom: 0; }
+.kept-answer .snippet { margin: 8px 0; max-height: 260px; white-space: pre-wrap; }
+
 textarea.compose {
   width: 100%;
   min-height: 96px;

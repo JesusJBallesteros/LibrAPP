@@ -4,6 +4,7 @@
 //     sources/<name>.json    one per ingested source, exactly as it was read
 //     catalog.json           rebuilt from all of them, never edited by hand
 //     backups/<stamp>.json   a whole library, copied before it was replaced
+//     answers.json           replies from the desk the reader chose to keep
 //
 // The same layout the command-line tools use, so a folder written here can be
 // read by them and the other way round. Plain JSON, one file per source, which
@@ -17,6 +18,7 @@ const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
 const OVERRIDES = 'overrides.json'
 const BACKUPS = 'backups'
+const ANSWERS = 'answers.json'
 const MANUAL = 'manual'
 // Shared with the preview in ingest/isbn.js, so what is shown before keeping
 // and what is written on keeping cannot drift apart.
@@ -262,6 +264,52 @@ export class Library {
     }
     if (bundle.overrides) await this.writeOverrides(readOverrides(bundle.overrides))
     return written
+  }
+
+  // -- answers kept --------------------------------------------------------
+  //
+  // A reply from the desk lives in a box on the page and goes when the page
+  // does. Most of them should: a synopsis of a book is worth reading once. A
+  // description of the collection is not, and there was nothing to keep it
+  // with except a clipboard.
+  //
+  // Their own file rather than the catalog. Nothing derives from them, a
+  // rebuild must not touch them, and a reader deleting one is deleting a
+  // document rather than editing a book.
+
+  async readAnswers() {
+    const text = await this.backend.readText(ANSWERS)
+    if (!text) return []
+    try {
+      const payload = JSON.parse(text)
+      return Array.isArray(payload?.answers) ? payload.answers : []
+    } catch {
+      // A file that will not parse is not a reason to lose the page. It is
+      // replaced by the next save.
+      return []
+    }
+  }
+
+  async #writeAnswers(answers) {
+    await this.backend.writeText(ANSWERS, JSON.stringify({ librapp_answers: 1, answers }, null, 2))
+  }
+
+  /** Keep one, newest first. */
+  async saveAnswer({ ask, question, text }) {
+    const answers = await this.readAnswers()
+    const entry = {
+      id: `a_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
+      ask,
+      question: question || null,
+      text,
+      at: new Date().toISOString(),
+    }
+    await this.#writeAnswers([entry, ...answers])
+    return entry
+  }
+
+  async deleteAnswer(id) {
+    await this.#writeAnswers((await this.readAnswers()).filter((a) => a.id !== id))
   }
 
   // -- backups ------------------------------------------------------------
