@@ -947,8 +947,10 @@ export default {
   'catalog.borrowed': 'de otra persona',
 
   'desk.away': 'Prestados y tomados prestados',
-  'desk.ask.previous': 'Pregunta anterior: {name}',
-  'desk.ask.next': 'Pregunta siguiente: {name}',
+  'ring.previous': 'Anterior: {name}',
+  'ring.next': 'Siguiente: {name}',
+  'desk.shelves': 'Estantes que el escritorio destaca',
+  'desk.nothingHere': 'Aqu\u00ed no hay nada.',
   'desk.keepAnswer': 'Guardar esta respuesta',
   'desk.kept': 'Respuestas que guardaste',
   'desk.kept.done': 'Guardada',

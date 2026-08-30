@@ -1518,23 +1518,23 @@ button.forgotten-item:hover { background: var(--accent-soft); }
 }
 /* Tabs, not buttons in a box. The active one carries its underline down on to
    the container rule, so the two read as one line. */
-/* The questions the desk can put, on one line.
-   Six labels do not fit across a panel 421px wide and wrapping them cost two
-   lines of a page that is mostly panel. One is chosen, its neighbours are shown
-   faintly either side of it, and the arrows move along the row. */
-.ask-strip {
+/* One of a short list at a time, with the two either side in view.
+   Used for the questions the desk can put and for the shelves it singles out.
+   Six labels do not fit across a panel 421px wide, and stacking them costs rows
+   on a page that is mostly panel. */
+.ring {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin: 8px 0 20px;
+  gap: 8px;
+  margin: 8px 0 18px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--rule);
 }
-.ask-arrow {
+.ring-arrow {
   flex: 0 0 auto;
   border: 0;
   background: none;
-  padding: 0 4px;
+  padding: 0 2px;
   cursor: pointer;
   /* Large enough to be a target and to read as a mark rather than as a glyph
      that happened to be in the font. */
@@ -1542,10 +1542,12 @@ button.forgotten-item:hover { background: var(--accent-soft); }
   color: var(--ink-soft);
   transition: color .12s;
 }
-.ask-arrow:hover { color: var(--accent); }
-/* The two either side. Truncated rather than wrapped: they are a glimpse of
-   what is next, and a glimpse does not need to be whole. */
-.ask-near {
+.ring-arrow:hover { color: var(--accent); }
+
+/* Out by the arrows rather than beside the chosen one. Pushed against the ends
+   they read as what a press brings; pulled in against the centre they read as
+   part of the label in the middle. */
+.ring-near {
   flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
@@ -1553,28 +1555,21 @@ button.forgotten-item:hover { background: var(--accent-soft); }
   text-overflow: ellipsis;
   font: 400 13px/1.3 var(--serif);
   color: var(--ink-faint);
-  opacity: .7;
+  opacity: .65;
 }
-.ask-near:first-of-type { text-align: right; }
-.ask-here {
+.ring-near.before { text-align: left; }
+.ring-near.after { text-align: right; }
+
+.ring-here {
   flex: 0 1 auto;
   min-width: 0;
+  padding: 0 10px 6px;
+  margin-bottom: -11px;
   text-align: center;
   font: 400 18px/1.25 var(--serif);
   color: var(--ink);
   border-bottom: 2px solid var(--accent);
-  padding-bottom: 6px;
-  margin-bottom: -8px;
 }
-
-/* One kept reply. The text is a snippet like every other block of model
-   output, so it reads the same wherever it appears. */
-.kept-answer {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--rule-soft);
-}
-.kept-answer:last-of-type { border-bottom: 0; }
-.kept-answer .snippet { margin: 8px 0; max-height: 260px; white-space: pre-wrap; }
 
 textarea.compose {
   width: 100%;

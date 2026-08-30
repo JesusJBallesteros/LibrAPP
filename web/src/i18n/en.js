@@ -959,8 +959,10 @@ export default {
   'catalog.borrowed': 'borrowed',
 
   'desk.away': 'Lent and borrowed',
-  'desk.ask.previous': 'Previous question: {name}',
-  'desk.ask.next': 'Next question: {name}',
+  'ring.previous': 'Previous: {name}',
+  'ring.next': 'Next: {name}',
+  'desk.shelves': 'Shelves the desk singles out',
+  'desk.nothingHere': 'Nothing here.',
   'desk.keepAnswer': 'Keep this answer',
   'desk.kept': 'Answers you kept',
   'desk.kept.done': 'Kept',

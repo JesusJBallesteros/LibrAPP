@@ -4,7 +4,6 @@ import {
   byline,
   copyText,
   forgotten,
-  intentWhy,
   onLoan,
   spineHeight,
   spineTint,
@@ -13,7 +12,8 @@ import {
 import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
 import WordCloud from '../components/WordCloud.jsx'
-import AskStrip from '../components/AskStrip.jsx'
+import Ring from '../components/Ring.jsx'
+import BookWall from '../components/BookWall.jsx'
 import KeptAnswers from '../components/KeptAnswers.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
@@ -49,6 +49,14 @@ import { LANGUAGES, useT } from '../i18n/index.jsx'
 // The prompt text itself is not translated: it is the instruction sent to a
 // model, and it lives in prompts/ where anyone can edit it. What is translated
 // is how the two are offered here.
+// Three shelves the desk singles out. All the same books seen three ways,
+// which is why they share one place rather than stacking as three headings.
+const SHELVES = [
+  { id: 'stale', label: 'desk.neverOpened' },
+  { id: 'favourites', label: 'desk.favourites' },
+  { id: 'away', label: 'desk.away' },
+]
+
 const ASKS = [
   { id: 'synopsis', text: synopsisPrompt },
   { id: 'recommend', text: recommendPrompt },
@@ -83,62 +91,6 @@ function FieldCounts({ summary, t, written = false }) {
         </li>
       ))}
     </ul>
-  )
-}
-
-/**
- * The waiting books as a shelf, drawn the way the catalog draws one.
- *
- * The same spines, so a pile the desk has singled out looks like the shelf it
- * came off rather than like a report about it. What the list had and a spine
- * has no room for goes above it: the years are the reason these books are here
- * at all, and the order they stand in.
- */
-function StaleWall({ rows, authors, language, onPick, t }) {
-  const waited = (row) =>
-    t('desk.yearsShort', {
-      n: row.age.toLocaleString(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
-    })
-
-  return (
-    <div className="spine-view">
-      {/* A group rather than a list, for the same reason the catalog wall is
-          one: role="listitem" on a button replaces the button role. */}
-      <div className="spine-wall short" role="group" aria-label={t('desk.neverOpened')}>
-        {rows.map((row) => {
-          const book = row.book
-          const name = byline(book, authors)
-          const why = intentWhy(row)
-          // Everything the row used to show, gathered into the one place a
-          // spine can carry it.
-          const label = [book.title, name, waited(row), why].filter(Boolean).join(' · ')
-          // The slot takes its width from the label rather than from the spine.
-          // A spine is 26px and the years above it are wider than that, so
-          // fixing the slot to the spine would set neighbouring labels
-          // overlapping each other.
-          return (
-            <div className="spine-slot labelled" key={book.id}>
-              <span className="waited-cell tabular">{waited(row)}</span>
-              <button
-                className="spine"
-                title={label}
-                aria-label={label}
-                onClick={() => onPick(book)}
-                style={{
-                  width: spineWidth(book),
-                  height: spineHeight(book),
-                  background: `var(--spine-${spineTint(book)})`,
-                  color: `var(--spine-${spineTint(book)}-ink)`,
-                }}
-              >
-                <span className="spine-title">{book.title}</span>
-              </button>
-            </div>
-          )
-        })}
-      </div>
-      <div className="shelf-board" />
-    </div>
   )
 }
 
@@ -181,9 +133,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
     [catalog],
   )
 
-  // Which of the two long lists are open. Both run to the length of the shelf,
-  // and between them they pushed everything else off the page, so both start
-  // shut. Independently: opening one is not a reason to close the other.
+  // Which of the three shelves the desk singles out is showing, and whether
+  // the kept answers are open. The shelves went behind a ring rather than a
+  // disclosure: they are the same books seen three ways, so one at a time is
+  // the shape, not one on top of another.
+  const [shelf, setShelf] = useState('stale')
   const [opened, setOpened] = useState(() => new Set())
   // Replies the reader chose to keep, and where the newest one is on the page.
   const [kept, setKept] = useState([])
@@ -225,6 +179,30 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
       },
       { onError: setAskError },
     )
+
+  // The one fact each shelf exists for, keyed by book so the wall can ask for
+  // it without knowing which shelf it is drawing.
+  const waitedOn = useMemo(
+    () =>
+      new Map(
+        stale.map((row) => [
+          row.book.id,
+          row.age === null
+            ? t('desk.sinceUnknown')
+            : t('desk.yearsShort', {
+                n: row.age.toLocaleString(language, {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 1,
+                }),
+              }),
+        ]),
+      ),
+    [stale, language, t],
+  )
+  const whoHas = useMemo(
+    () => new Map([...lent, ...borrowedIn].map((row) => [row.book.id, row.who])),
+    [lent, borrowedIn],
+  )
 
   const chosen = ASKS.find((a) => a.id === ask)
 
@@ -360,155 +338,114 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
 
       <div className="desk-grid">
         <div>
+          {/* Three shelves the desk singles out, one at a time. Each ran to
+              the length of the collection, and stacked they pushed everything
+              else off the page. All three are the same thing seen three ways,
+              which is what makes a ring right for them rather than three
+              headings. */}
           <section className="desk-section">
-            <div className="section-head spread">
-              <h3>{t('desk.neverOpened')}</h3>
-              <label className="field">
-                {t('desk.waitingAtLeast')}
-                <select
-                  value={minYears}
-                  onChange={(e) => {
-                    setMinYears(Number(e.target.value))
-                    setShowAllStale(false)
-                  }}
-                >
-                  {[1, 2, 3, 5, 8].map((y) => (
-                    <option key={y} value={y}>
-                      {t(y > 1 ? 'desk.years' : 'desk.year', { n: y })}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+            <Ring
+              items={SHELVES.map((shelf) => ({ id: shelf.id, label: t(shelf.label) }))}
+              current={shelf}
+              onPick={setShelf}
+              label={t('desk.shelves')}
+            />
 
-            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>
-              {t('desk.neverOpenedNote', { unknown: catalog.counts.read_unknown })}
-            </p>
-
-            {stale.length === 0 ? (
-              <p className="muted">{t('desk.nothingWaited')}</p>
-            ) : (
-              <StaleWall
-                rows={showAllStale ? stale : stale.slice(0, 5)}
-                authors={authors}
-                language={language}
-                onPick={setSelected}
-                t={t}
-              />
-            )}
-
-            {stale.length > 5 && (
-              <button
-                className="btn small"
-                style={{ marginTop: 12 }}
-                onClick={() => setShowAllStale((shown) => !shown)}
-              >
-                {showAllStale ? t('desk.showFive') : t('desk.showAll', { n: stale.length })}
-              </button>
-            )}
-          </section>
-
-          {favourites.length > 0 && (
-            <section className="desk-section">
-              <div className="section-head spread">
-                <h3>{t('desk.favourites')}</h3>
-                <span className="tabular tiny faint">{favourites.length}</span>
-              </div>
-              <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
-              {!opened.has('favourites') ? (
-                <button className="btn" onClick={() => toggle('favourites')}>
-                  {t('desk.seeThem')}
-                </button>
-              ) : (
-                <>
-              {favourites.map((book) => (
-                <button
-                  className="forgotten-item spread"
-                  key={book.id}
-                  onClick={() => setSelected(book)}
-                >
-                  <span>
-                    <span className="title">
-                      <span className="star" aria-hidden="true">{'\u2605'}</span>
-                      {book.title}
-                    </span>
-                    <br />
-                    <span className="tiny muted">
-                      {byline(book, authors) || t('book.authorUnknown')}
-                    </span>
-                    {book.notes && <div className="why">{book.notes}</div>}
-                  </span>
-                </button>
-              ))}
-              <div className="row" style={{ marginTop: 12, gap: 8 }}>
-                <button className="btn small" onClick={() => toggle('favourites')}>
-                  {t('desk.hideThem')}
-                </button>
-                <button
-                  className="btn link"
-                  onClick={() => onGo?.('catalog', { favourite: 'yes' })}
-                >
-                  {t('desk.showFavourites')}
-                </button>
-              </div>
-                </>
-              )}
-            </section>
-          )}
-
-          <section className="desk-section">
-            <h3 className="section-head">{t('desk.away')}</h3>
-            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.awayNote')}</p>
-
-            {!lent.length && !borrowedIn.length && (
-              <p className="muted">{t('desk.nothingAway')}</p>
-            )}
-
-            {(lent.length > 0 || borrowedIn.length > 0) && opened !== 'away' && (
-              <button className="btn" onClick={() => toggle('away')}>
-                {t('desk.seeThem')}
-              </button>
-            )}
-
-            {opened.has('away') && [
-              ['desk.lentGroup', lent, 'desk.withWhom'],
-              ['desk.borrowedGroup', borrowedIn, 'desk.fromWhom'],
-            ].map(([heading, rows, whoKey]) =>
-              rows.length ? (
-                <div key={heading} style={{ marginTop: 10 }}>
-                  <p className="group-label">{t(heading, { n: rows.length })}</p>
-                  {rows.map((row) => (
-                    <button
-                      className="forgotten-item spread"
-                      key={row.book.id}
-                      onClick={() => setSelected(row.book)}
+            {shelf === 'stale' && (
+              <>
+                <div className="spread">
+                  <p className="tiny faint">
+                    {t('desk.neverOpenedNote', { unknown: catalog.counts.read_unknown })}
+                  </p>
+                  <label className="field">
+                    {t('desk.waitingAtLeast')}
+                    <select
+                      value={minYears}
+                      onChange={(e) => {
+                        setMinYears(Number(e.target.value))
+                        setShowAllStale(false)
+                      }}
                     >
-                      <span>
-                        <span className="title">{row.book.title}</span>
-                        <br />
-                        <span className="tiny muted">{byline(row.book, authors)}</span>
-                        <div className="why">{t(whoKey, { who: row.who })}</div>
-                      </span>
-                      <span className="waited">
-                        {row.age === null
-                          ? t('desk.sinceUnknown')
-                          : t('desk.yearsShort', {
-                              n: row.age.toLocaleString(language, {
-                                minimumFractionDigits: 1,
-                                maximumFractionDigits: 1,
-                              }),
-                            })}
-                      </span>
-                    </button>
-                  ))}
+                      {[1, 2, 3, 5, 8].map((y) => (
+                        <option key={y} value={y}>
+                          {t(y > 1 ? 'desk.years' : 'desk.year', { n: y })}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                 </div>
-              ) : null,
+
+                {stale.length === 0 ? (
+                  <p className="muted">{t('desk.nothingWaited')}</p>
+                ) : (
+                  <BookWall
+                    books={(showAllStale ? stale : stale.slice(0, 5)).map((row) => row.book)}
+                    authors={authors}
+                    label={t('desk.neverOpened')}
+                    caption={(book) => waitedOn.get(book.id) || ''}
+                    onPick={setSelected}
+                  />
+                )}
+
+                {stale.length > 5 && (
+                  <button
+                    className="btn small"
+                    style={{ marginTop: 12 }}
+                    onClick={() => setShowAllStale((shown) => !shown)}
+                  >
+                    {showAllStale ? t('desk.showFive') : t('desk.showAll', { n: stale.length })}
+                  </button>
+                )}
+              </>
             )}
 
-            {opened.has('away') && (
-              <button className="btn small" style={{ marginTop: 12 }} onClick={() => toggle('away')}>
-                {t('desk.hideThem')}
-              </button>
+            {shelf === 'favourites' && (
+              <>
+                <p className="tiny faint">{t('desk.favouritesNote')}</p>
+                <BookWall
+                  books={favourites}
+                  authors={authors}
+                  label={t('desk.favourites')}
+                  caption={(book) => byline(book, authors) || t('book.authorUnknown')}
+                  onPick={setSelected}
+                />
+                {favourites.length > 0 && (
+                  <button
+                    className="btn link"
+                    style={{ marginTop: 12, paddingLeft: 0 }}
+                    onClick={() => onGo?.('catalog', { favourite: 'yes' })}
+                  >
+                    {t('desk.showFavourites')}
+                  </button>
+                )}
+              </>
+            )}
+
+            {shelf === 'away' && (
+              <>
+                <p className="tiny faint">{t('desk.awayNote')}</p>
+                {!lent.length && !borrowedIn.length ? (
+                  <p className="muted">{t('desk.nothingAway')}</p>
+                ) : (
+                  [
+                    ['desk.lentGroup', lent, 'desk.withWhom'],
+                    ['desk.borrowedGroup', borrowedIn, 'desk.fromWhom'],
+                  ].map(([heading, rows, whoKey]) =>
+                    rows.length ? (
+                      <div key={heading} style={{ marginTop: 10 }}>
+                        <p className="group-label">{t(heading, { n: rows.length })}</p>
+                        <BookWall
+                          books={rows.map((row) => row.book)}
+                          authors={authors}
+                          label={t(heading, { n: rows.length })}
+                          caption={(book) => t(whoKey, { who: whoHas.get(book.id) || '' })}
+                          onPick={setSelected}
+                        />
+                      </div>
+                    ) : null,
+                  )
+                )}
+              </>
             )}
           </section>
 
@@ -561,9 +498,10 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             <p className="eyebrow">{t('desk.askEyebrow')}</p>
             {/* Tabs rather than a segmented control: the two are alternative
                 questions to put, not a setting being switched. */}
-            <AskStrip
-              asks={ASKS}
+            <Ring
+              items={ASKS.map((a) => ({ id: a.id, label: t(`desk.${a.id}`) }))}
               current={ask}
+              label={t('desk.ask')}
               onPick={(id) => {
                 setAsk(id)
                 // Each one answers a different question. Leaving the last
