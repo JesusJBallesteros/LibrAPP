@@ -583,6 +583,18 @@ export default {
   'desk.eyebrow': 'Consultas',
   'desk.askEyebrow': 'Plantea una pregunta',
   'desk.ask': 'Preguntar',
+  'desk.next': 'Qué leer ahora',
+  'desk.next.placeholder': 'Un vuelo largo, una semana libre, algo corto, algo que no sea novela.',
+  'desk.next.blurb':
+    'Elige entre los libros que ya tienes y dice cómo será leerlo. Nada que no tengas.',
+  'desk.portrait': 'Leer la estantería',
+  'desk.portrait.placeholder': 'Opcional. Pide un enfoque concreto, o déjalo vacío.',
+  'desk.portrait.blurb':
+    'Describe la colección a quien la ha reunido: qué es, sobre qué vuelve, dónde se contradice, de qué anda escasa.',
+  'desk.quick': 'Pregunta rápida',
+  'desk.quick.placeholder': 'Lo que quieras. Tus palabras van tal cual al modelo, con tu catálogo adjunto.',
+  'desk.quick.blurb':
+    'Tu propia pregunta, con tu catálogo como contexto. No se compone nada por ti salvo una nota de que la respuesta va en texto plano.',
   'desk.fill': 'Rellenar huecos',
   'desk.fill.blurb':
     'Pide los datos que el cat\u00e1logo no tiene. Cada respuesta viene de la memoria del modelo, no de una lectura, as\u00ed que no se guarda nada sin verlo antes.',

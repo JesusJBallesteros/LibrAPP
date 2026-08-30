@@ -597,6 +597,18 @@ export default {
   'desk.eyebrow': 'Enquiries',
   'desk.askEyebrow': 'Put a question',
   'desk.ask': 'Ask',
+  'desk.next': 'What to read next',
+  'desk.next.placeholder': 'A long flight, a free week, something short, something that is not a novel.',
+  'desk.next.blurb':
+    'Picks from the books already on your shelf, and says what reading it will be like. Nothing you do not own.',
+  'desk.portrait': 'Read the shelf',
+  'desk.portrait.placeholder': 'Optional. Ask for a particular angle, or leave it empty.',
+  'desk.portrait.blurb':
+    'Describes the collection to the person who built it: what it is, what it keeps circling, where it argues with itself, what it is thin on.',
+  'desk.quick': 'Quick question',
+  'desk.quick.placeholder': 'Anything. Your words go straight to the model, with your catalog attached.',
+  'desk.quick.blurb':
+    'Your own question, asked with your catalog as context. Nothing is composed for you beyond a note that the answer is plain text.',
   'desk.fill': 'Fill in gaps',
   'desk.fill.blurb':
     'Ask for the details the catalog does not hold. Every answer is recalled rather than read, so nothing is written until it has been seen.',

@@ -28,6 +28,9 @@ import { providerById } from '../ai/providers.js'
 import synopsisPrompt from '../../../prompts/synopsis.md?raw'
 import recommendPrompt from '../../../prompts/recommend.md?raw'
 import fillPrompt from '../../../prompts/fill-gaps.md?raw'
+import nextPrompt from '../../../prompts/next.md?raw'
+import portraitPrompt from '../../../prompts/portrait.md?raw'
+import quickPrompt from '../../../prompts/quick.md?raw'
 import { setOverride } from '../core/overrides.js'
 import {
   FILLABLE,
@@ -47,6 +50,11 @@ import { LANGUAGES, useT } from '../i18n/index.jsx'
 const ASKS = [
   { id: 'synopsis', text: synopsisPrompt },
   { id: 'recommend', text: recommendPrompt },
+  { id: 'next', text: nextPrompt },
+  // The only one that answers with nothing typed into it: it describes the
+  // collection, and the collection is already in the profile.
+  { id: 'portrait', text: portraitPrompt, optionalQuestion: true },
+  { id: 'quick', text: quickPrompt },
   // Not a question in prose but a list of books with holes in them, so it
   // assembles its own request and reads the answer back rather than printing
   // it. The reply is written only after somebody has seen it.
@@ -199,7 +207,11 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
       '\n---\n',
       context.trim(),
       '\n---\n',
-      question.trim() ? `## The question\n\n${question.trim()}` : '## The question\n\n(fill this in)',
+      question.trim()
+        ? `## The question\n\n${question.trim()}`
+        : chosen.optionalQuestion
+          ? '## The question\n\nNone. Describe the collection.'
+          : '## The question\n\n(fill this in)',
     ].join('\n')
   }, [context, chosen, question, fillRequest])
 

@@ -1518,20 +1518,23 @@ button.forgotten-item:hover { background: var(--accent-soft); }
 }
 /* Tabs, not buttons in a box. The active one carries its underline down on to
    the container rule, so the two read as one line. */
+/* Six questions do not fit on one line of a panel 421px wide, and they spilled
+   out of it rather than wrapping. The underline moved onto the buttons so that
+   a second row does not sit on top of the first. */
 .ask-tabs {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 2px 18px;
   margin: 8px 0 20px;
-  padding-bottom: 10px;
+  padding-bottom: 8px;
   border-bottom: 1px solid var(--rule);
 }
 .ask-tabs button {
   border: 0;
   background: none;
-  padding: 0 0 10px;
-  margin-bottom: -11px;
+  padding: 3px 0 5px;
   cursor: pointer;
-  font: 400 17px/1.2 var(--serif);
+  font: 400 16px/1.25 var(--serif);
   color: var(--ink-soft);
   border-bottom: 2px solid transparent;
 }
