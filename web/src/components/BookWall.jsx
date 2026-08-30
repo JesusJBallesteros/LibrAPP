@@ -29,8 +29,11 @@ export default function BookWall({ books, authors, caption, onPick, label }) {
           const above = caption(book)
           const whole = [book.title, name, above].filter(Boolean).join(' · ')
           return (
-            <div className="spine-slot labelled" key={book.id}>
-              <span className="waited-cell tabular">{above}</span>
+            <div className={`spine-slot${above ? ' labelled' : ''}`} key={book.id}>
+              {/* Left out rather than left empty: an empty cell still takes a
+                  line of height, and a shelf with nothing to say above it
+                  should stand on the board like the catalog's own. */}
+              {above && <span className="waited-cell tabular">{above}</span>}
               <button
                 className="spine"
                 title={whole}

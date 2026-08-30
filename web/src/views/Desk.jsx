@@ -406,7 +406,9 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                   books={favourites}
                   authors={authors}
                   label={t('desk.favourites')}
-                  caption={(book) => byline(book, authors) || t('book.authorUnknown')}
+                  // Nothing above these. A starred book is on the shelf
+                  // because somebody starred it, and the spine says which one.
+                  caption={() => ''}
                   onPick={setSelected}
                 />
                 {favourites.length > 0 && (

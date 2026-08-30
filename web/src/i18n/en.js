@@ -578,8 +578,7 @@ export default {
 
   // -- the desk -------------------------------------------------------------
   'desk.nothingYet': 'Nothing to work with yet. Build a catalog first.',
-  'desk.intro':
-    'Everything on the left is computed on this device from the catalog. The right-hand side prepares a question for a model, with a summary of your catalog included so the answer covers the books you own.',
+  'desk.intro': 'The expert hand of the LibrAPPrian helps you.',
   'desk.neverOpened': 'Bought, and never opened',
   'desk.waitingAtLeast': 'waiting at least',
   'desk.year': '{n} year',

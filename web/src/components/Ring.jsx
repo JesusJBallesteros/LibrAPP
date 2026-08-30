@@ -11,11 +11,11 @@ import { useT } from '../i18n/index.jsx'
  * which end they are at before pressing; a ring has no dead press, and over a
  * handful of items the way back is never more than half of them.
  *
- * The neighbours are labels rather than controls. Three targets a thumb apart
- * would make a wrong press expensive, and here it is expensive: changing the
- * question at the desk clears the answer that was just given. The whole list is
- * still there off screen, where a keyboard and a screen reader can reach it and
- * where three spans built for the eye cannot serve either.
+ * The neighbours are targets too: a pair of arrows alone is a small surface on
+ * a phone, and the name beside one is the part a thumb goes for. They are
+ * pointer targets only, hidden from the accessible tree and out of the tab
+ * order, because the list below already offers every item once and a reader
+ * hearing the same three names twice is worse served, not better.
  */
 export default function Ring({ items, current, onPick, label }) {
   const { t } = useT()
@@ -35,10 +35,14 @@ export default function Ring({ items, current, onPick, label }) {
 
       {/* Out by the arrows rather than beside the chosen one: a glimpse of what
           a press brings, far enough from the centre to read as a different
-          thing. */}
-      <span className="ring-near before" aria-hidden="true">{wrap(at - 1).label}</span>
+          thing, and large enough to be pressed. */}
+      <button className="ring-near before" tabIndex={-1} aria-hidden="true" onClick={() => step(-1)}>
+        {wrap(at - 1).label}
+      </button>
       <span className="ring-here" aria-live="polite">{wrap(at).label}</span>
-      <span className="ring-near after" aria-hidden="true">{wrap(at + 1).label}</span>
+      <button className="ring-near after" tabIndex={-1} aria-hidden="true" onClick={() => step(1)}>
+        {wrap(at + 1).label}
+      </button>
 
       <button
         className="ring-arrow"

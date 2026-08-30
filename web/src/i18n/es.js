@@ -564,8 +564,7 @@ export default {
 
   // -- el escritorio --------------------------------------------------------
   'desk.nothingYet': 'Aún no hay con qué trabajar: construye primero un catálogo.',
-  'desk.intro':
-    'Todo lo de la izquierda se calcula en este dispositivo a partir del catálogo. A la derecha se prepara una pregunta para un modelo de IA, con un resumen de tu catálogo incluido para que la respuesta trate de los libros que tienes.',
+  'desk.intro': 'La mano experta de BibliotecAPPri@ te echa una mano.',
   'desk.neverOpened': 'Comprados y nunca abiertos',
   'desk.waitingAtLeast': 'esperando al menos',
   'desk.year': '{n} año',
