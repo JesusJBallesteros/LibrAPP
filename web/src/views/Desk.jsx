@@ -13,6 +13,7 @@ import {
 import { readerProfile } from '../core/profile.js'
 import BookPanel from '../components/BookPanel.jsx'
 import WordCloud from '../components/WordCloud.jsx'
+import AskStrip from '../components/AskStrip.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
 
 // Imported under another name: `ask` is already the state holding which
@@ -510,26 +511,20 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             <p className="eyebrow">{t('desk.askEyebrow')}</p>
             {/* Tabs rather than a segmented control: the two are alternative
                 questions to put, not a setting being switched. */}
-            <div className="ask-tabs" role="group" aria-label={t('desk.ask')}>
-              {ASKS.map((a) => (
-                <button
-                  key={a.id}
-                  aria-pressed={ask === a.id}
-                  onClick={() => {
-                    setAsk(a.id)
-                    // Each tab answers a different question. Leaving the last
-                    // one on screen makes it look like the answer to this one.
-                    setAnswer('')
-                    setProposed(null)
-                    setWritten(null)
-                    setAskError(null)
-                    setSpent(null)
-                  }}
-                >
-                  {t(`desk.${a.id}`)}
-                </button>
-              ))}
-            </div>
+            <AskStrip
+              asks={ASKS}
+              current={ask}
+              onPick={(id) => {
+                setAsk(id)
+                // Each one answers a different question. Leaving the last
+                // answer on screen makes it look like the answer to this one.
+                setAnswer('')
+                setProposed(null)
+                setWritten(null)
+                setAskError(null)
+                setSpent(null)
+              }}
+            />
             <p className="tiny muted">{t(`desk.${chosen.id}.blurb`)}</p>
 
             {chosen.structured ? (

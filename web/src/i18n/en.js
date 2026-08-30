@@ -959,6 +959,8 @@ export default {
   'catalog.borrowed': 'borrowed',
 
   'desk.away': 'Lent and borrowed',
+  'desk.ask.previous': 'Previous question: {name}',
+  'desk.ask.next': 'Next question: {name}',
   'desk.seeThem': 'See them',
   'desk.hideThem': 'Hide them',
   'desk.favourites': 'Your favourites',

@@ -1518,27 +1518,54 @@ button.forgotten-item:hover { background: var(--accent-soft); }
 }
 /* Tabs, not buttons in a box. The active one carries its underline down on to
    the container rule, so the two read as one line. */
-/* Six questions do not fit on one line of a panel 421px wide, and they spilled
-   out of it rather than wrapping. The underline moved onto the buttons so that
-   a second row does not sit on top of the first. */
-.ask-tabs {
+/* The questions the desk can put, on one line.
+   Six labels do not fit across a panel 421px wide and wrapping them cost two
+   lines of a page that is mostly panel. One is chosen, its neighbours are shown
+   faintly either side of it, and the arrows move along the row. */
+.ask-strip {
   display: flex;
-  flex-wrap: wrap;
-  gap: 2px 18px;
+  align-items: baseline;
+  gap: 10px;
   margin: 8px 0 20px;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--rule);
 }
-.ask-tabs button {
+.ask-arrow {
+  flex: 0 0 auto;
   border: 0;
   background: none;
-  padding: 3px 0 5px;
+  padding: 0 4px;
   cursor: pointer;
-  font: 400 16px/1.25 var(--serif);
+  /* Large enough to be a target and to read as a mark rather than as a glyph
+     that happened to be in the font. */
+  font: 400 26px/1 var(--serif);
   color: var(--ink-soft);
-  border-bottom: 2px solid transparent;
+  transition: color .12s;
 }
-.ask-tabs button[aria-pressed='true'] { color: var(--ink); border-bottom-color: var(--accent); }
+.ask-arrow:hover { color: var(--accent); }
+/* The two either side. Truncated rather than wrapped: they are a glimpse of
+   what is next, and a glimpse does not need to be whole. */
+.ask-near {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: 400 13px/1.3 var(--serif);
+  color: var(--ink-faint);
+  opacity: .7;
+}
+.ask-near:first-of-type { text-align: right; }
+.ask-here {
+  flex: 0 1 auto;
+  min-width: 0;
+  text-align: center;
+  font: 400 18px/1.25 var(--serif);
+  color: var(--ink);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 6px;
+  margin-bottom: -8px;
+}
 
 textarea.compose {
   width: 100%;

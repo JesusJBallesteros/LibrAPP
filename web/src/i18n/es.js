@@ -947,6 +947,8 @@ export default {
   'catalog.borrowed': 'de otra persona',
 
   'desk.away': 'Prestados y tomados prestados',
+  'desk.ask.previous': 'Pregunta anterior: {name}',
+  'desk.ask.next': 'Pregunta siguiente: {name}',
   'desk.seeThem': 'Verlos',
   'desk.hideThem': 'Ocultarlos',
   'desk.favourites': 'Tus favoritos',
