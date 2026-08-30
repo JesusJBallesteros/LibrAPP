@@ -1,5 +1,62 @@
 # Changelog
 
+## v2.5.2
+
+An adversarial read of the four prompts, worked through. What it got wrong is
+noted where it matters.
+
+### The rules about the profile travel with the profile
+
+Five of them described the document the desk sends rather than any request made
+with it: the cross-section is a sample, a field blank across the whole shelf
+means nobody recorded it, a rating is not the reader's own, lent books are
+elsewhere, and never recorded is not unread.
+
+Two were copied into both answer prompts, three were in one only, and nothing
+kept the copies in step: the two copies of the cross-section rule had already
+drifted apart in wording. They are emitted by the profile now, under a heading
+of their own, before the document they are about.
+
+Two of them name a section that is not always there, so they are stated only
+when it is. A rule about a heading that is not in the document would be the same
+mistake as a prompt asking for a vocabulary nobody sent.
+
+The rating one matters most. A book line reads "rated 4.2" with nothing to say
+where the number came from, so a model answers as though the reader had liked
+it, which is a sentence about a stranger's average.
+
+### The answer is plain text, and the prompts say so
+
+The desk renders a reply into a fixed-width box that parses no formatting, and
+both prompts are themselves written in bold-headed markdown, which is what a
+model mirrors. Asterisks were reaching the screen.
+
+### Three more things the prompts now say
+
+An unfamiliar title in this app is more often a misread spine than a book nobody
+has heard of, since the catalog is partly built from photographs. Saying so
+turns a refusal into something the reader can act on.
+
+A recommendation may be one book, or none with a reason, rather than two chosen
+to fill the shape of an answer.
+
+The shelf prompt covers four things a real photograph holds and it did not:
+objects that are not books, a run with a volume missing, a spine blocked by a
+book in front, and one author printed two ways.
+
+That last one is scoped. The review asked for a note wherever both spellings
+appear, but a long shelf is read four pieces at a time in separate requests, so
+a model cannot see what was on the pieces in another one. The rule says within
+what you were given.
+
+### Pieces, everywhere a model is told about them
+
+The prompt said tiles in six places and the strings sent with the images said
+Tile in six more, which would have put both words in one request now that the
+page beside them says pieces.
+
+---
+
 ## v2.5.1
 
 ### The shelf page is five steps, in the order they are done
