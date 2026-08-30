@@ -34,7 +34,7 @@ and never opened, ranked by how long they have waited and by how much you
 evidently wanted them at the time. What is lent out and to whom. What the
 collection keeps coming back to.
 
-![The desk: books bought and never opened drawn as a shelf with the years each has waited above it, beside a cloud of the words the collection keeps returning to](docs/images/desk.png)
+![The desk: a row of shelves the desk singles out with Bought, and never opened chosen, five spines under the years each has waited, the keyword cloud below, and the question panel on the right with Synopsis chosen](docs/images/desk.png)
 
 **Your books stay on your device.** No account, no server, no sync. It works
 offline once loaded and installs as an app on Windows, Linux, Android and, by
@@ -125,6 +125,8 @@ library lives](#where-your-library-lives).
 tests each feature and tells you what works, which is more reliable than any
 table — including this one.
 
+![The browser check: nine features listed by what they are for, each answered yes, under a badge reading everything supported](docs/images/browser-support.png)
+
 ### If you use strict privacy settings
 
 Brave's Shields, Firefox's strict mode and similar features do not stop LibrAPP
@@ -205,6 +207,8 @@ being asked, and writes out the manual route where it does not: on an iPhone,
 *Share* then *Add to Home Screen*; on Android, the browser menu then *Install
 app*. Both do the same thing.
 
+<img src="docs/images/phone-desk.png" alt="The desk on a phone: the sidebar folded behind a Menu button, and the shelves shown one at a time with the names either side of the chosen one" width="320">
+
 **Your catalog does not travel with it.** Each device keeps its own, so moving
 one across is a file: export it in **The stacks** on one device, and bring that
 file in on the other. A backup works for this too, since a backup is the same
@@ -248,12 +252,12 @@ Photograph the shelf straight on at your camera's **full resolution**.
    chose it from, and that box is also how to swap it for a different one. On a
    phone, **Take a photograph** beside the box opens the camera instead.
 
-![The Shelf picture page: the AI service box, the chosen photograph, and the grid control showing two pieces across by three down](docs/images/photo-steps.png)
+![Step one and step two side by side: the chosen photograph of a bookcase, and beside it the grid control reading three across by two down with buttons to add or remove a row or a column](docs/images/photo-steps.png)
 
 2. LibrAPP cuts it into pieces at full resolution. A close-up of a few books
-   stays whole; a wide bookcase is split into several pieces. Adjust the grid
-   with the **across** and **down** buttons if the default does not suit your
-   shelf.
+   stays whole; a wide bookcase is split into several pieces. **Add row**, **Add
+   column** and their opposites change the grid if the default does not suit
+   your shelf.
     The key box at the top is optional and the page works without it. Everything up
     to this point has happened on your device: the photograph has been read, sized
     and cut, and nothing has been sent anywhere.
@@ -265,12 +269,16 @@ Photograph the shelf straight on at your camera's **full resolution**.
      both to any AI assistant. Bring back the JSON it writes.
 5. Check what it read, then import.
 
-![The pieces cut from the photograph, two of them greyed out and struck through as discarded, beside the checklist of extra fields to ask for](docs/images/photo-pieces.png)
+![Six pieces cut from the photograph, each with Discard and Save under it, one of them greyed out and struck through as discarded](docs/images/photo-pieces.png)
 
-Two pieces here are of no interest and have been
-set aside. The checklist on the right decides what is asked for beyond the
-titles, split into what is printed on the spine and what the model would be
-recalling from elsewhere. Anything recalled is marked on the book afterwards.
+One piece here holds no readable spine and has been set aside. Discarded pieces
+are not sent and not paid for, and **Keep** puts one back.
+
+![The checklist: five fields read from the photograph, six the model would be recalling, each a checkbox, under a note that anything recalled is marked on the book and counted as lower confidence](docs/images/photo-extras.png)
+
+The checklist decides what is asked for beyond the titles, split into what is
+printed on the spine and what the model would be recalling from elsewhere.
+Anything recalled is marked on the book afterwards.
 
 A long shelf is read in several requests rather than one, four pieces at a time,
 and the button says which is running. One reply covering forty pieces is longer
@@ -471,6 +479,8 @@ a press. Choosing a page closes it again.
 date, publisher, genre and tags, where it is shelved, which sources know about
 it, and how confident LibrAPP is about the entry.
 
+<img src="docs/images/book.png" alt="A book's record drawn as a catalogue card: shelf mark, title, author, then formats, read state, date acquired, page count, first published, original language, genre and sources, with the confidence in the corner" width="400">
+
 **The record asks for what nothing else can tell it.** Read state, a loan and a
 note have to come from you: no photograph, spreadsheet or lookup knows whether a
 book was read, who has it, or what you thought of it. A book missing any of the
@@ -665,6 +675,8 @@ framing beyond it.
 
 **Fill in gaps.** Described below. Unlike the others, this one writes to your
 catalog, and only after you have seen what it wants to write.
+
+![The question panel: Synopsis chosen with Fill in gaps and Recommendation faint either side, a box to type the book into, and buttons to copy the whole request or just the profile](docs/images/desk-questions.png)
 
 ### Keeping an answer
 
