@@ -18,6 +18,26 @@ import { ReplyTruncated, TRANSCRIPTION_SCHEMA, replyTokens, toGeminiSchema } fro
 
 export class KeyRejected extends Error {}
 
+/**
+ * The model in the box is not one this service will answer to.
+ *
+ * Its own kind, because the remedy is its own: nothing about the key, the
+ * request or the connection is wrong, and the one thing to do about it is
+ * choose a different model. The box that holds that field says so when it sees
+ * this.
+ */
+export class ModelUnknown extends Error {
+  constructor(host, model, detail) {
+    super(
+      `${host} will not answer to the model ${JSON.stringify(model || '(none)')}. ` +
+        `Services retire model names on their own schedule, so a name that worked ` +
+        `before can stop. Choose another in the AI service box. ${detail}`.trim(),
+    )
+    this.name = 'ModelUnknown'
+    this.model = model
+  }
+}
+
 const dataUrl = (base64) => `data:image/jpeg;base64,${base64}`
 
 /** Whatever the service put in its error body, or the status if it said nothing. */
@@ -32,13 +52,20 @@ async function describe(response) {
   return detail || `HTTP ${response.status}`
 }
 
-async function check(response, host) {
+async function check(response, host, model) {
   if (response.ok) return response
   const detail = await describe(response)
   if (response.status === 401 || response.status === 403) {
     throw new KeyRejected(`${host} rejected that key: ${detail}`)
   }
-  if (response.status === 404) {
+  // A retired model is a 404 at OpenAI and Google and a 400 at some of the
+  // services wearing the same interface, and either way the body says so. The
+  // status alone cannot tell a wrong model from a wrong address, so the body
+  // is read before deciding which of the two this is.
+  if (response.status === 404 || (response.status === 400 && /model/i.test(detail))) {
+    if (model && (response.status === 404 || /model/i.test(detail))) {
+      throw new ModelUnknown(host, model, detail)
+    }
     throw new Error(`${host} does not know that model or that address: ${detail}`)
   }
   if (response.status === 429) {
@@ -55,7 +82,7 @@ const unreachable = (host) =>
       `address before a browser is allowed to talk to it.`,
   )
 
-async function post(url, { headers, body, signal, host }) {
+async function post(url, { headers, body, signal, host, model }) {
   let response
   try {
     response = await fetch(url, {
@@ -64,6 +91,18 @@ async function post(url, { headers, body, signal, host }) {
       body: JSON.stringify(body),
       signal,
     })
+  } catch (error) {
+    if (error.name === 'AbortError') throw error
+    throw unreachable(host)
+  }
+  return check(response, host, model)
+}
+
+/** The same, for the one thing that is asked rather than told: what is on offer. */
+async function get(url, { headers, signal, host }) {
+  let response
+  try {
+    response = await fetch(url, { headers, signal })
   } catch (error) {
     if (error.name === 'AbortError') throw error
     throw unreachable(host)
@@ -112,6 +151,26 @@ const tokenCap = (provider, value) =>
   provider.id === 'openai' ? { max_completion_tokens: value } : { max_tokens: value }
 
 export const openai = {
+  /**
+   * What this key can actually ask for.
+   *
+   * Every service in this family answers GET /models with the names it will
+   * take. A hand-typed address may not, and the caller shows what came back
+   * rather than insisting.
+   */
+  async listModels({ baseUrl, apiKey, host, signal }) {
+    const response = await get(`${baseUrl}/models`, {
+      headers: apiKey ? { authorization: `Bearer ${apiKey}` } : {},
+      host,
+      signal,
+    })
+    const body = await response.json()
+    return (body?.data || [])
+      .map((model) => model?.id)
+      .filter(Boolean)
+      .sort()
+  },
+
   /** Images first, each labelled, then the instructions. */
   shelfContent({ tiles, tail }) {
     const content = []
@@ -128,6 +187,7 @@ export const openai = {
       headers: apiKey ? { authorization: `Bearer ${apiKey}` } : {},
       signal,
       host,
+      model,
       body: {
         model,
         messages: [{ role: 'user', content }],
@@ -160,6 +220,7 @@ export const openai = {
       headers: apiKey ? { authorization: `Bearer ${apiKey}` } : {},
       signal,
       host,
+      model,
       body: {
         model,
         messages: [{ role: 'user', content: request }],
@@ -192,6 +253,28 @@ const googleText = (body) =>
   (body?.candidates?.[0]?.content?.parts || []).map((part) => part.text || '').join('')
 
 export const google = {
+  /**
+   * What this key can actually ask for.
+   *
+   * Google returns every model it hosts, most of which cannot answer this kind
+   * of request at all: transcription, speech, embeddings. Only the ones that
+   * generate content are offered, and the models/ prefix is dropped because
+   * that is not how the name is written in the box.
+   */
+  async listModels({ baseUrl, apiKey, host, signal }) {
+    const response = await get(`${baseUrl}/models?pageSize=200`, {
+      headers: { 'x-goog-api-key': apiKey },
+      host,
+      signal,
+    })
+    const body = await response.json()
+    return (body?.models || [])
+      .filter((model) => (model?.supportedGenerationMethods || []).includes('generateContent'))
+      .map((model) => String(model?.name || '').replace(/^models\//, ''))
+      .filter(Boolean)
+      .sort()
+  },
+
   shelfContent({ tiles, tail }) {
     const parts = []
     for (const tile of tiles) {
@@ -207,6 +290,7 @@ export const google = {
       headers: { 'x-goog-api-key': apiKey },
       signal,
       host,
+      model,
       body: {
         contents: [{ role: 'user', parts: content }],
         generationConfig: {
@@ -243,6 +327,7 @@ export const google = {
       headers: { 'x-goog-api-key': apiKey },
       signal,
       host,
+      model,
       body: {
         contents: [{ role: 'user', parts: [{ text: request }] }],
         generationConfig: { maxOutputTokens: replyTokens('google', 'ask') },

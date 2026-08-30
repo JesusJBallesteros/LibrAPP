@@ -83,6 +83,19 @@ const clientFor = (apiKey) =>
   })
 
 export const anthropic = {
+  /** What this key can actually ask for, from the service rather than a list here. */
+  async listModels({ apiKey, signal }) {
+    try {
+      const page = await clientFor(apiKey).models.list({ limit: 100 }, { signal })
+      return (page?.data || [])
+        .map((model) => model?.id)
+        .filter(Boolean)
+        .sort()
+    } catch (error) {
+      throw explain(error)
+    }
+  },
+
   /** Images first, each labelled, then the instructions. */
   shelfContent({ tiles, tail }) {
     const content = []

@@ -119,13 +119,16 @@ export async function keyState() {
  * A service at a hand-typed address may legitimately want no key, since a model
  * running on the user's own machine has nobody to bill.
  */
-export async function usableConfig() {
+export async function usableConfig({ needModel = true } = {}) {
   const choice = await readChoice()
   const provider = providerById(choice.provider)
   const stored = await readKey(provider.id)
   const apiKey = stored?.active ? stored.key : null
   if (!apiKey && !provider.optionalKey) return null
-  if (!choice.model) return null
+  // Asking a service which models it offers is the one request that can be made
+  // without knowing one, and is how a reader gets out of holding a name the
+  // service has retired.
+  if (needModel && !choice.model) return null
   if (provider.editableBaseUrl && !choice.baseUrl) return null
   return {
     provider,

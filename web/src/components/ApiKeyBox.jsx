@@ -11,6 +11,7 @@ import {
   setActive,
 } from '../ai/key.js'
 import { PROVIDERS, providerById } from '../ai/providers.js'
+import { listModels } from '../ai/model.js'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -34,6 +35,10 @@ export default function ApiKeyBox({ what, onChange }) {
   const [unfamiliar, setUnfamiliar] = useState(false)
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
+  // What the service said it offers, when it has been asked. The suggestions in
+  // the registry were written on a day that is now in the past; this was not.
+  const [offered, setOffered] = useState(null)
+  const [asking, setAsking] = useState(false)
 
   const refresh = async () => {
     const next = await keyState()
@@ -66,6 +71,25 @@ export default function ApiKeyBox({ what, onChange }) {
   const provider = providerById(choice.provider)
   const state = choice.state
   const where = provider.host || hostOf(choice.baseUrl)
+
+  /**
+   * Ask the service which models it will answer to.
+   *
+   * Whatever comes back replaces the suggestions in the box's list. It is not
+   * forced on the field: a name typed by hand still stands, because a service
+   * can offer a model this list does not mention.
+   */
+  const askWhatItOffers = () => {
+    setAsking(true)
+    setError(null)
+    listModels()
+      .then((ids) => setOffered(ids.map((id) => ({ id }))))
+      .catch((err) => {
+        setOffered(null)
+        setError(err.message)
+      })
+      .finally(() => setAsking(false))
+  }
 
   const save = () =>
     run(async () => {
@@ -117,6 +141,7 @@ export default function ApiKeyBox({ what, onChange }) {
             disabled={busy}
             onChange={(e) => {
               setUnfamiliar(false)
+              setOffered(null)
               run(() => chooseProvider(e.target.value))
             }}
             style={{ ...field, fontFamily: 'inherit' }}
@@ -143,12 +168,33 @@ export default function ApiKeyBox({ what, onChange }) {
             style={field}
           />
           <datalist id={`models-${provider.id}`}>
-            {provider.models.map((m) => (
+            {(offered || provider.models).map((m) => (
               <option key={m.id} value={m.id}>
                 {m.label || ''}
               </option>
             ))}
           </datalist>
+          {/* A model name is the one setting here that goes stale on somebody
+              else's schedule, and the service is the only thing that knows the
+              current answer. */}
+          <button
+            className="btn link"
+            style={{ padding: 0, textAlign: 'left' }}
+            // A service at a hand-typed address may want no key at all, and
+            // asking it what it offers is exactly how to find out whether it
+            // is answering.
+            disabled={busy || asking || (state !== 'active' && !provider.optionalKey)}
+            onClick={askWhatItOffers}
+          >
+            {asking ? t('key.models.asking') : t('key.models.ask')}
+          </button>
+          {offered && (
+            <span className="faint">
+              {offered.length
+                ? t('key.models.found', { n: offered.length })
+                : t('key.models.none')}
+            </span>
+          )}
         </label>
       </div>
 

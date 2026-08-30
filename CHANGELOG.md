@@ -1,5 +1,49 @@
 # Changelog
 
+## v2.5.4
+
+A reader reading a shelf with Gemini got this back:
+
+    This model models/gemini-2.5-pro is no longer available to new users.
+
+The name was right, the key was right, and the request was refused anyway.
+Google had retired it for anyone who had not used it before. The app had been
+suggesting it since the day that provider was added.
+
+### The names, brought up to date
+
+Gemini goes to `gemini-3.7-flash`, and OpenAI to `gpt-5.6-terra`. OpenRouter's
+suggestions were stale in the same way and now name models it actually serves.
+Anthropic's were already current.
+
+The Gemini default is a stable model rather than the most capable one, which is
+a preview. A preview is the kind of name that stops working.
+
+### Which fixes nobody who already has one stored
+
+The model is remembered per service from the moment that service is chosen, so
+a new default reaches new readers and nobody else. Two things follow from that.
+
+**A refused model is now its own kind of failure.** It said "does not know that
+model or that address", which names two possibilities and no remedy. It now says
+which name was refused, that services retire names on their own schedule, and
+that the thing to do is choose another in the box, while keeping every word the
+service itself said. The 400 that some services send instead of a 404 for the
+same thing is recognised too, from the body rather than the status.
+
+**And the box can ask the service what it offers.** *See what this key can use*
+puts the question to whichever service is chosen and replaces the suggestions
+with the answer. Every family answers it: Anthropic and the OpenAI shape from
+`/models`, Google from its own, filtered to the models that can answer this kind
+of request at all, since Google also returns its embedders and transcribers and
+one of those would fail on use.
+
+Nothing is forced on the field. A typed name still stands, because a service can
+offer a model this app has never heard of, and that has always been allowed.
+
+The list written into the app was going to go stale again. This is the version
+of it that cannot.
+
 ## v2.5.3
 
 The desk fits on a page again. Three more questions, and the answers stay.

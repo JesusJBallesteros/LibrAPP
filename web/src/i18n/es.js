@@ -761,6 +761,10 @@ export default {
   'key.service': 'Servicio',
   'key.model': 'Modelo',
   'key.modelPlaceholder': 'el nombre del modelo que use tu servicio',
+  'key.models.ask': 'Ver qu\u00e9 puede usar esta clave',
+  'key.models.asking': 'Preguntando al servicio\u2026',
+  'key.models.found': '{n} {n:modelo|modelos} disponibles. Elige uno en el campo de arriba.',
+  'key.models.none': 'El servicio no ofreci\u00f3 nada que esta app pueda usar.',
   'key.address': 'Dirección',
   'key.addressNote':
     'Cualquier cosa que hable la interfaz de chat de OpenAI: Groq, Mistral, DeepSeek, Together o un servidor en tu propia máquina. Da la dirección que termina en /v1. Un servidor local tiene que estar configurado para aceptar peticiones de esta página antes de que un navegador pueda hablar con él.',

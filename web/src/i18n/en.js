@@ -773,6 +773,10 @@ export default {
   'key.service': 'Service',
   'key.model': 'Model',
   'key.modelPlaceholder': 'the model name your service uses',
+  'key.models.ask': 'See what this key can use',
+  'key.models.asking': 'Asking the service…',
+  'key.models.found': '{n} {n:model|models} offered. Pick one from the box above.',
+  'key.models.none': 'The service offered nothing this app can use.',
   'key.address': 'Address',
   'key.addressNote':
     'Anything that speaks the OpenAI chat interface: Groq, Mistral, DeepSeek, Together, or a server on your own machine. Give the address ending in /v1. A local server has to be configured to accept requests from this page before a browser may reach it.',

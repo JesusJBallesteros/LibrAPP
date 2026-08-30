@@ -924,8 +924,14 @@ server has to be configured to accept requests from the page before a browser
 is allowed to talk to it.
 
 The model is a free text field with suggestions, so a model newer than this
-README still works. Each service keeps its own key — trying a second one does
-not cost you the first, and switching back needs no pasting.
+README still works. **See what this key can use** asks the service itself and
+replaces the suggestions with what it answers. Use it whenever a request comes
+back saying the model is not available: services retire model names on their own
+schedule, and the list they give back is the only one that cannot be out of
+date.
+
+Each service keeps its own key — trying a second one does not cost you the
+first, and switching back needs no pasting.
 
 LibrAPP checks the shape of a key before saving it, but only as a warning: if it
 does not recognise what you pasted it says so and lets you save it on a second

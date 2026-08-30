@@ -80,14 +80,28 @@ const toBase64 = (blob) =>
     reader.readAsDataURL(blob)
   })
 
-async function chosen() {
-  const config = await usableConfig()
+async function chosen({ needModel = true } = {}) {
+  const config = await usableConfig({ needModel })
   if (!config) {
     throw new Error('No AI service is set up and switched on.')
   }
   const adapter = ADAPTERS[config.provider.family]
   if (!adapter) throw new Error(`No adapter for ${config.provider.label}.`)
   return { ...config, adapter }
+}
+
+/**
+ * Which models the chosen service will actually answer to.
+ *
+ * The list in providers.js is a set of suggestions written on a day that is now
+ * in the past. A service retires a name whenever it likes, and the only list
+ * that cannot be stale is the one the service itself gives back. Not every
+ * address answers this, so a failure here is shown and nothing else changes.
+ */
+export async function listModels({ signal } = {}) {
+  const { adapter, provider, apiKey, baseUrl, host } = await chosen({ needModel: false })
+  if (!adapter.listModels) throw new Error(`${provider.label} does not offer a list of models.`)
+  return adapter.listModels({ provider, apiKey, baseUrl, host, signal })
 }
 
 /**

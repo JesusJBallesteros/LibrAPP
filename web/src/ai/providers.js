@@ -117,10 +117,15 @@ export function toGeminiSchema(node) {
  * from being used. A pattern that is too loose costs one refused request, which
  * explains itself.
  *
- * `models` are suggestions. Every provider accepts a model name it does not
- * list, because this list goes stale and an account does not. `prices` is
- * filled in only where the rate has been checked. Where it is absent the
- * estimate shows tokens instead of a figure.
+ * `models` are suggestions, and they go stale. A service retires a name on its
+ * own schedule and a page that was built months ago keeps asking for it, which
+ * is what happened to Gemini 2.5 Pro: still documented, still spelled right,
+ * and refused for anyone who had not used it before. So nothing here is a gate.
+ * The box takes a typed name, and it can ask the service which names it will
+ * actually answer to, which is the only list that cannot be out of date.
+ *
+ * `prices` is filled in only where the rate has been checked. Where it is
+ * absent the estimate shows tokens instead of a figure.
  */
 /**
  * How much room a reply is given, in tokens.
@@ -185,8 +190,12 @@ export const PROVIDERS = [
     keyHint: 'sk-…',
     keyPattern: /^sk-[\w-]{20,}$/,
     host: 'api.openai.com',
-    defaultModel: 'gpt-5',
-    models: [{ id: 'gpt-5' }, { id: 'gpt-5-mini' }, { id: 'gpt-4.1' }, { id: 'gpt-4.1-mini' }],
+    defaultModel: 'gpt-5.6-terra',
+    models: [
+      { id: 'gpt-5.6-sol', label: 'most capable' },
+      { id: 'gpt-5.6-terra', label: 'balanced' },
+      { id: 'gpt-5.6-luna', label: 'cheapest' },
+    ],
   },
   {
     id: 'google',
@@ -201,8 +210,14 @@ export const PROVIDERS = [
     // an opaque credential and nothing more.
     keyPattern: /^[\w.-]{30,}$/,
     host: 'generativelanguage.googleapis.com',
-    defaultModel: 'gemini-2.5-pro',
-    models: [{ id: 'gemini-2.5-pro' }, { id: 'gemini-2.5-flash' }],
+    // A stable model rather than the most capable one. The capable Gemini is a
+    // preview, and a preview is the kind of name that stops working.
+    defaultModel: 'gemini-3.7-flash',
+    models: [
+      { id: 'gemini-3.7-flash', label: 'stable' },
+      { id: 'gemini-3.5-flash-lite', label: 'cheapest' },
+      { id: 'gemini-3.1-pro-preview', label: 'most capable · preview' },
+    ],
   },
   {
     id: 'openrouter',
@@ -213,11 +228,11 @@ export const PROVIDERS = [
     keyHint: 'sk-or-…',
     keyPattern: /^sk-or-[\w-]{20,}$/,
     host: 'openrouter.ai',
-    defaultModel: 'anthropic/claude-sonnet-4.5',
+    defaultModel: 'anthropic/claude-sonnet-5',
     models: [
-      { id: 'anthropic/claude-sonnet-4.5' },
-      { id: 'openai/gpt-4.1' },
-      { id: 'google/gemini-2.5-pro' },
+      { id: 'anthropic/claude-sonnet-5' },
+      { id: 'openai/gpt-5.6-terra' },
+      { id: 'google/gemini-3.7-flash' },
       { id: 'meta-llama/llama-4-maverick' },
     ],
   },
