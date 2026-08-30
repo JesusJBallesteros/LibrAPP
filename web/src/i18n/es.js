@@ -41,12 +41,12 @@ export default {
     'A este navegador le falta algo que LibrAPP necesita. Abre El depósito cuando entres para ver los detalles.',
 
   // -- shell --------------------------------------------------------------
-  // -- la BibliotecAPPri@ ---------------------------------------------------
-  'librarian.name': 'La BibliotecAPPri@',
-  'librarian.open': 'Lo que dice la BibliotecAPPri@',
-  'librarian.close': 'Guardar la BibliotecAPPri@',
-  'librarian.dismiss': 'No otra vez',
-  'librarian.dismissWhy': 'Ocultar la BibliotecAPPri@ en todas las páginas a partir de ahora',
+  // -- BibliotecAPPri@ ---------------------------------------------------
+  'librarian.name': 'BibliotecAPPri@',
+  'librarian.open': 'Lo que dice BibliotecAPPri@',
+  'librarian.close': 'Guardar BibliotecAPPri@',
+  'librarian.dismiss': 'Ocultar',
+  'librarian.dismissWhy': 'Ocultar BibliotecAPPri@ en todas las páginas a partir de ahora',
 
   'librarian.empty': 'Todavía no hay nada en las estanterías. Una foto de una de ellas es la forma más rápida de empezar.',
   'librarian.welcome': 'Bienvenido de nuevo. Hay {n} {n:libro|libros} catalogado{n:|s} y esperando.',
@@ -315,7 +315,7 @@ export default {
   'catalog.empty.recover': 'Recuperar una',
   'catalog.empty.shelf': 'Leer una foto de la estantería',
   'catalog.empty.list': 'Subir una lista',
-  'catalog.typeIn': 'Escribir un libro',
+  'catalog.typeIn': 'Crear libro',
   'catalog.countOne': '{total} libro',
   'catalog.countAll': '{total} libros',
   'catalog.countSome': '{shown} de {total} libros',
@@ -346,9 +346,9 @@ export default {
   // -- biblioteca -----------------------------------------------------------
   'storage.intro':
     'Dónde vive tu catálogo, con qué se construyó y cómo llevarlo a otro dispositivo.',
-  'storage.owlHidden': 'La BibliotecAPPri@ está oculta en todas las páginas. Al recuperarla vuelve a aparecer el distintivo en la esquina.',
+  'storage.owlHidden': 'BibliotecAPPri@ está oculta en todas las páginas. Al recuperarla vuelve a aparecer el distintivo en la esquina.',
   'storage.owlRestore': 'Recuperarla',
-  'storage.owlBack': 'La BibliotecAPPri@ ha vuelto.',
+  'storage.owlBack': 'BibliotecAPPri@ ha vuelto.',
   'backups.head': 'Copias de seguridad',
   'backups.countN': '{n} {n:copia|copias}',
   'backups.intro':
@@ -564,7 +564,7 @@ export default {
 
   // -- el escritorio --------------------------------------------------------
   'desk.nothingYet': 'Aún no hay con qué trabajar: construye primero un catálogo.',
-  'desk.intro': 'La mano experta de BibliotecAPPri@ te echa una mano.',
+  'desk.intro': 'BibliotecAPPri@ te echa una mano.',
   'desk.neverOpened': 'Comprados y nunca abiertos',
   'desk.waitingAtLeast': 'esperando al menos',
   'desk.year': '{n} año',
