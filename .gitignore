@@ -33,3 +33,7 @@ redesign_handoff/
 
 # A review of the prompts and drafts of new ones: working notes, not source.
 prompts/prompt-suggestions/
+
+# Tours and screenshots of the demo, and the tooling that takes them. Made
+# from what is already in the repo, and remade whenever they are wanted.
+media/
