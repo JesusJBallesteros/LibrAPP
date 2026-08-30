@@ -608,39 +608,39 @@ general.
 
 ### What it shows you without being asked
 
+Three shelves, one at a time. The arrows move between them, and so do the names
+either side. All three are drawn as spines, and any book on one opens the same
+panel the catalog opens, so it can be read, corrected or removed without going
+looking for it.
+
 **Bought, and never opened** — books you own and have not read, ordered by how
 long they have waited and weighted by how much you evidently wanted them at the
 time: filing a book into a collection, or putting it on several devices, is a
 record of intent that a purchase date alone is not. Only books *known* to be
-unread appear. They are drawn as a shelf, with the years each has waited above
-its spine.
+unread appear. The years each has waited sit above its spine.
 
-**Away from the shelf** — what you lent and to whom, what you borrowed and from
-whom, and how long each has been gone. See
+**Your favourites** — the books you starred, with a link through to the same
+filter in the catalog. See [Favourites and notes](#favourites-and-notes).
+
+**Lent and borrowed** — what you lent and to whom, what you borrowed and from
+whom, with the name above each spine. See
 [Lending and borrowing](#lending-and-borrowing).
 
-**The ones marked** — the books you starred, each with its note underneath, and
-a link through to the same filter in the catalog. See
-[Favourites and notes](#favourites-and-notes).
+**Genres** — the largest genres as a share of the whole, with the long tail
+grouped as *other*. Genre labels come from your sources and are not a controlled
+list, so the chart says how much of the collection the named genres actually
+cover. Genres are matched ignoring case and accents, so one written two ways is
+one slice, named by whichever spelling your shelf uses most. **Name more
+genres** opens it up from five to eleven, slices and legend together, and
+appears only when there is a tail to open up.
 
-Any book named in those three lists opens the same panel the catalog opens, so
-it can be read, corrected or removed without going looking for it.
-
-**What the collection is made of** — the largest genres as a share of the
-whole, with the long tail grouped as *other*. Genre labels come from your
-sources and are not a controlled list, so the chart says how much of the
-collection the named genres actually cover. Genres are matched ignoring case
-and accents, so one written two ways is one slice, named by whichever spelling
-your shelf uses most. **Name more genres** opens it up from five to eleven,
-slices and legend together, and appears only when there is a tail to open up.
-
-**What it keeps coming back to** — a cloud of the keywords used by more than one
-book, drawn larger the more often they appear. Pick a word to open the catalog
-filtered to it.
+**Keywords** — the words used by more than two books, drawn larger the more
+often they appear. Pick one to open the catalog filtered to it.
 
 ### What you can ask it
 
-Three requests, as tabs above the box.
+Six requests, one at a time on a row that wraps at both ends. The arrows move
+along it, and the faint names either side are pressable too.
 
 **Synopsis.** Any book described to somebody whose shelf is already known: what
 it argues, where it sits, what it does that the books you own do not, and
@@ -652,8 +652,30 @@ shelf it follows from or argues with. It is told to read the trajectory rather
 than the pile, to consider your unread books before suggesting a purchase, and
 not to recommend by resemblance.
 
-**Fill in gaps.** Described below. Unlike the other two, this one writes to your
+**What to read next.** Chosen from the books you already own, for the week you
+describe: a long flight, a free evening, something short, something that is not
+a novel. Nothing to buy.
+
+**Read the shelf.** The collection described to the person who built it. This is
+the one request that answers with nothing typed into it, since the collection is
+already in the profile. A box is there if you want a particular angle.
+
+**Quick question.** Your own words, sent with your catalog attached and no
+framing beyond it.
+
+**Fill in gaps.** Described below. Unlike the others, this one writes to your
 catalog, and only after you have seen what it wants to write.
+
+### Keeping an answer
+
+An answer appears below the box and the page moves to it. **Keep this answer**
+writes it to `answers.json` beside the catalog, and the ones kept are listed at
+the bottom of the desk behind **See them**, newest first, each with the question
+it came from and the date. Delete one from there.
+
+Kept answers are not part of the catalog. A rebuild does not touch them, a reset
+leaves them, and an export does not carry them: a bundle is what a catalog is
+built from, and an answer is not a source. To move one, copy it.
 
 ### What it knows when it answers
 

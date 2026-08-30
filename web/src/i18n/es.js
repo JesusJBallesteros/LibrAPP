@@ -106,9 +106,11 @@ export default {
   'librarian.guide.discard':
     'Cada vía de entrada termina en una lista para revisar, y cualquier línea suelta se puede descartar antes de guardar el resto. Todo se conserva salvo lo que se aparte, y no se escribe nada hasta entonces.',
   'librarian.guide.desk.1':
-    'Tres peticiones: una sinopsis de cualquier libro, una recomendaci\u00f3n medida por hacia d\u00f3nde va la lectura, y rellenar los datos que faltan en el cat\u00e1logo.',
+    'Seis peticiones, de una en una: una sinopsis, una recomendaci\u00f3n, qu\u00e9 leer a continuaci\u00f3n, una lectura de la estanter\u00eda, una pregunta con tus palabras, y rellenar los datos que faltan en el cat\u00e1logo. Las flechas recorren la fila.',
   'librarian.guide.desk.2':
-    'Las tres funcionan sin clave de API, preparando la petici\u00f3n para pegarla en otro sitio. Con clave, el coste se ve antes de enviar y la cifra real despu\u00e9s.',
+    'Todas funcionan sin clave de API, preparando la petici\u00f3n para pegarla en otro sitio. Con clave, el coste se ve antes de enviar y la cifra real despu\u00e9s.',
+  'librarian.guide.desk.3':
+    'Guardar esta respuesta la escribe junto al cat\u00e1logo. Las guardadas se listan al final de esta p\u00e1gina.',
 
   'librarian.guide.storage.1':
     'El cat\u00e1logo est\u00e1 donde lo pusiste: una carpeta elegida en este dispositivo, o el almacenamiento que gestiona el navegador. En ambos casos se queda aqu\u00ed.',
@@ -294,7 +296,7 @@ export default {
   'list.missing.acquired_on':
     'Sin columna de fecha. Nada de este archivo puede ordenarse por lo que lleva esperando, que es el orden de "Comprados y nunca abiertos".',
   'list.missing.genre':
-    'Sin columna de género. Estos libros no aportan nada a "De qué se compone la colección". Rellenar huecos, en el escritorio, puede pedir géneros a un modelo.',
+    'Sin columna de género. Estos libros no aportan nada a Géneros, en el escritorio. Rellenar huecos, en el escritorio, puede pedir géneros a un modelo.',
   'list.missing.authors':
     'Sin columna de autoría. Estos libros no se pueden agrupar por autor, y el mismo libro llegando de otra fuente es más difícil de reconocer.',
   'list.missing.series':

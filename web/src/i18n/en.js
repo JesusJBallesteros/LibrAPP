@@ -117,9 +117,11 @@ export default {
   'librarian.guide.discard':
     'Every way in ends with a list to check, and any single line on it can be discarded before the rest is kept. Everything is kept unless it is set aside, and nothing is written until then.',
   'librarian.guide.desk.1':
-    'Three requests: a synopsis of any book, a recommendation weighed against where the reading is going, and filling in the details the catalog is missing.',
+    'Six requests, one at a time: a synopsis, a recommendation, what to read next, a reading of the shelf, a question in your own words, and filling in the details the catalog is missing. The arrows move along the row.',
   'librarian.guide.desk.2':
-    'All three work without an API key by preparing the request to paste elsewhere. With a key, the cost is shown before sending and the real figure after.',
+    'They all work without an API key by preparing the request to paste elsewhere. With a key, the cost is shown before sending and the real figure after.',
+  'librarian.guide.desk.3':
+    'Keep this answer writes a reply next to the catalog. The ones kept are listed at the bottom of this page.',
 
   'librarian.guide.storage.1':
     'The catalog lives where it was put: a folder chosen on this device, or storage the browser manages. Either way it stays here.',
@@ -309,7 +311,7 @@ export default {
   'list.missing.acquired_on':
     'No date column. Nothing from this file can be ranked by how long it has waited, which is what "Bought, and never opened" is ordered by.',
   'list.missing.genre':
-    'No genre column. These books add nothing to "What the collection is made of". Fill in gaps, at the desk, can ask a model for genres.',
+    'No genre column. These books add nothing to Genres, at the desk. Fill in gaps, at the desk, can ask a model for genres.',
   'list.missing.authors':
     'No author column. These books cannot be grouped by author, and the same book arriving from another source is harder to recognise as the same book.',
   'list.missing.series':

@@ -1,5 +1,84 @@
 # Changelog
 
+## v2.5.3
+
+The desk fits on a page again. Three more questions, and the answers stay.
+
+### Six questions on a ring, not six tabs on two lines
+
+**What to read next** chooses from the shelf and nothing else, which is the
+question Recommendation cannot answer without going to the shop. **Read the
+shelf** describes the collection to the person who built it, and is the one ask
+that answers with nothing typed into it. **Quick question** takes your own
+words, with the catalog attached.
+
+Six labels do not fit across a panel 421 pixels wide. One is shown at a time,
+the two either side sit faintly by the arrows, and both the arrows and those
+names move along the row. It wraps at both ends, so no press is a dead one, and
+with six questions the way back is never more than three. Thirty-nine pixels
+rather than ninety-four.
+
+The whole list is still there for a keyboard and a screen reader, off screen,
+where three names built for the eye serve neither.
+
+### The three shelves become one, and all of them draw spines
+
+Bought and never opened, Your favourites, and Lent and borrowed are the same
+books seen three ways. Stacked as three headings they ran to the length of the
+collection and pushed everything else off the page. They are on a ring of their
+own now, one at a time.
+
+All three draw as spines, as the waiting pile already did. Above each spine goes
+the one fact its shelf exists for: how long a book has waited, who has it.
+Nothing above a starred one, since the spine carries the title and the author
+was the only thing left to say.
+
+### An answer can be kept
+
+A reply arrived at the bottom of a long page after a wait of up to a minute, and
+nothing moved to it. The page goes there now.
+
+And it went when the page did. Most of them should: a synopsis of one book is
+worth reading once. A description of the whole collection is not, and there was
+nothing to keep it with except the clipboard. **Keep this answer** writes it to
+`answers.json` beside the catalog, and the ones kept are listed at the desk
+behind **See them**.
+
+Their own file rather than part of the catalog. A rebuild does not touch them, a
+reset leaves them, and an export does not carry them, since a bundle is what a
+catalog is built from and an answer is not a source.
+
+### Shorter labels, and two long lists that start shut
+
+**What it keeps coming back to** is **Keywords**, and **What the collection is
+made of** is **Genres**. Both notes said at length what a cloud is; they say what
+a click does. Keywords are drawn from three books up rather than two: they
+arrive uncontrolled from every source, and at two the cloud was nineteen words
+of which most were noise.
+
+Your favourites and Lent and borrowed both ran to the length of the shelf. Both
+start shut behind **See them**, with a way back at the bottom of each.
+
+The desk's opening paragraph explained where each half of the page computes. The
+page shows it.
+
+### The prompts
+
+Five rules described the document the desk sends rather than any request made
+with it, and were copied across prompts that had already drifted apart in
+wording. They are emitted with the profile now, under a heading of their own,
+and the two rules that name a section which is not always there are stated only
+when it is.
+
+Completing a collection and auditing a catalog were considered and dropped.
+Series information is not in the profile, and an audit needs the whole catalog,
+a review screen of its own, and the power to rewrite titles.
+
+### Spanish
+
+The librarian is BibliotecAPPri@ rather than La BibliotecAPPri@ throughout, and
+a handful of labels are shorter.
+
 ## v2.5.2
 
 An adversarial read of the four prompts, worked through. What it got wrong is
