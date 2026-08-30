@@ -179,6 +179,18 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
     [catalog],
   )
 
+  // Which of the two long lists are open. Both run to the length of the shelf,
+  // and between them they pushed everything else off the page, so both start
+  // shut. Independently: opening one is not a reason to close the other.
+  const [opened, setOpened] = useState(() => new Set())
+  const toggle = (which) =>
+    setOpened((on) => {
+      const next = new Set(on)
+      if (next.has(which)) next.delete(which)
+      else next.add(which)
+      return next
+    })
+
   const chosen = ASKS.find((a) => a.id === ask)
 
   const gaps = useMemo(() => gapsByField(catalog?.books || []), [catalog])
@@ -368,6 +380,12 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                 <span className="tabular tiny faint">{favourites.length}</span>
               </div>
               <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.favouritesNote')}</p>
+              {!opened.has('favourites') ? (
+                <button className="btn" onClick={() => toggle('favourites')}>
+                  {t('desk.seeThem')}
+                </button>
+              ) : (
+                <>
               {favourites.map((book) => (
                 <button
                   className="forgotten-item spread"
@@ -387,13 +405,19 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                   </span>
                 </button>
               ))}
-              <button
-                className="btn link"
-                style={{ marginTop: 12, paddingLeft: 0 }}
-                onClick={() => onGo?.('catalog', { favourite: 'yes' })}
-              >
-                {t('desk.showFavourites')}
-              </button>
+              <div className="row" style={{ marginTop: 12, gap: 8 }}>
+                <button className="btn small" onClick={() => toggle('favourites')}>
+                  {t('desk.hideThem')}
+                </button>
+                <button
+                  className="btn link"
+                  onClick={() => onGo?.('catalog', { favourite: 'yes' })}
+                >
+                  {t('desk.showFavourites')}
+                </button>
+              </div>
+                </>
+              )}
             </section>
           )}
 
@@ -405,7 +429,13 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               <p className="muted">{t('desk.nothingAway')}</p>
             )}
 
-            {[
+            {(lent.length > 0 || borrowedIn.length > 0) && opened !== 'away' && (
+              <button className="btn" onClick={() => toggle('away')}>
+                {t('desk.seeThem')}
+              </button>
+            )}
+
+            {opened.has('away') && [
               ['desk.lentGroup', lent, 'desk.withWhom'],
               ['desk.borrowedGroup', borrowedIn, 'desk.fromWhom'],
             ].map(([heading, rows, whoKey]) =>
@@ -439,6 +469,12 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                 </div>
               ) : null,
             )}
+
+            {opened.has('away') && (
+              <button className="btn small" style={{ marginTop: 12 }} onClick={() => toggle('away')}>
+                {t('desk.hideThem')}
+              </button>
+            )}
           </section>
 
           {/* The cloud leads and the chart follows. Both answer what the
@@ -452,6 +488,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.themesNote')}</p>
             <WordCloud
               books={catalog.books}
+              least={3}
               onPick={(word) => onGo?.('catalog', { tag: word.key, label: word.value })}
             />
           </section>

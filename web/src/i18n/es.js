@@ -576,9 +576,8 @@ export default {
   'desk.nothingWaited': 'Nada lleva esperando tanto tiempo.',
   'desk.showFive': 'Ver solo los cinco primeros',
   'desk.showAll': 'Ver los {n}',
-  'desk.madeOf': 'De qué se compone la colección',
-  'desk.madeOfNote':
-    'Los géneros que anotaron tus fuentes, con el tamaño según cuántos libros lleva cada uno. Solo se dibujan los que usa más de un libro. Pulsa uno para filtrar el catálogo.',
+  'desk.madeOf': 'G\u00e9neros',
+  'desk.madeOfNote': 'Haz clic para ver los libros.',
 
   'desk.eyebrow': 'Consultas',
   'desk.askEyebrow': 'Plantea una pregunta',
@@ -948,6 +947,8 @@ export default {
   'catalog.borrowed': 'de otra persona',
 
   'desk.away': 'Prestados y tomados prestados',
+  'desk.seeThem': 'Verlos',
+  'desk.hideThem': 'Ocultarlos',
   'desk.favourites': 'Tus favoritos',
   'desk.favouritesNote': 'Libros se\u00f1alados a mano. Pesan m\u00e1s que cualquier cosa que el cat\u00e1logo deduzca por su cuenta.',
   'desk.showFavourites': 'Verlos todos en el cat\u00e1logo',
@@ -961,10 +962,9 @@ export default {
   'desk.sinceUnknown': 'sin fecha anotada',
 
   // -- la nube de palabras --------------------------------------------------
-  'desk.themes': 'A lo que vuelve una y otra vez',
-  'desk.themesNote':
-    'Palabras clave usadas por m\u00e1s de un libro, m\u00e1s grandes cuanto m\u00e1s aparecen. Elige una para ver esos libros.',
-  'cloud.keyword.none': 'Todav\u00eda no hay ninguna palabra clave usada por m\u00e1s de un libro.',
+  'desk.themes': 'Palabras clave',
+  'desk.themesNote': 'Usadas m\u00e1s de dos veces. Haz clic para ver los libros.',
+  'cloud.keyword.none': 'Todav\u00eda no hay ninguna palabra clave usada por m\u00e1s de dos libros.',
   'cloud.keyword.noneHow':
     'Las palabras clave vienen de tus fuentes. Una foto solo las registra si la lista de extras las pidió, y una hoja de cálculo solo si tenía esa columna.',
   'cloud.genre.none': 'Todavía ningún género lo usa más de un libro.',
@@ -972,8 +972,8 @@ export default {
     'Los géneros vienen de tus fuentes. Rellenar huecos, aquí arriba, puede pedir a un modelo los que falten.',
   'cloud.count': 'la usan {n} libros',
   'cloud.label': '{word}, la usan {n} libros',
-  'cloud.keyword.note': 'Se muestran {drawn} de {distinct} palabras clave. Las dem\u00e1s aparecen una sola vez.',
-  'cloud.genre.note': 'Se muestran {drawn} de {distinct} palabras clave. Las dem\u00e1s aparecen una sola vez.',
+  'cloud.keyword.note': 'Se muestran {drawn} de {distinct} palabras clave. Las dem\u00e1s aparecen una o dos veces.',
+  'cloud.genre.note': 'Se muestran {drawn} de {distinct} g\u00e9neros. Las dem\u00e1s aparecen una sola vez.',
   'catalog.taggedWith': 'etiquetado {tag}',
 
   // -- extras que se le pueden pedir al modelo ------------------------------

@@ -32,7 +32,7 @@ const SCALE = {
 }
 
 /** Tags of one kind worth drawing, heaviest first. */
-export function summariseWords(books, { kind = 'keyword', limit = MAX_WORDS } = {}) {
+export function summariseWords(books, { kind = 'keyword', limit = MAX_WORDS, least = 2 } = {}) {
   const counts = new Map()
   for (const book of books || []) {
     for (const tag of book.tags || []) {
@@ -42,7 +42,10 @@ export function summariseWords(books, { kind = 'keyword', limit = MAX_WORDS } = 
       else counts.set(tag.key, { key: tag.key, value: tag.value, count: 1 })
     }
   }
-  const repeated = [...counts.values()].filter((w) => w.count > 1)
+  // How many books have to share a word before it is worth drawing. Two for
+  // genres, which are few and deliberate; three for keywords, which arrive
+  // uncontrolled from every source and bury the shelf in words used twice.
+  const repeated = [...counts.values()].filter((w) => w.count >= least)
   // Ties are broken alphabetically so the cloud does not reshuffle when two
   // words are used equally often.
   repeated.sort((a, b) => b.count - a.count || a.value.localeCompare(b.value))
@@ -60,9 +63,9 @@ export const sizeFor = (count, max, { min, max: top }) => {
   return Math.round(min + share * (top - min))
 }
 
-export default function WordCloud({ books, onPick, kind = 'keyword' }) {
+export default function WordCloud({ books, onPick, kind = 'keyword', least }) {
   const { t } = useT()
-  const { words, distinct, drawn } = summariseWords(books, { kind })
+  const { words, distinct, drawn } = summariseWords(books, { kind, least })
 
   if (!words.length) {
     return (

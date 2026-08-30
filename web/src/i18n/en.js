@@ -590,9 +590,8 @@ export default {
   'desk.nothingWaited': 'Nothing has waited that long.',
   'desk.showFive': 'Show only the first five',
   'desk.showAll': 'Show all {n}',
-  'desk.madeOf': 'What the collection is made of',
-  'desk.madeOfNote':
-    'The genres your sources recorded, sized by how many books carry each. Only the ones used more than once are drawn. Pick one to filter the catalog by it.',
+  'desk.madeOf': 'Genres',
+  'desk.madeOfNote': 'Click to see books.',
 
   'desk.eyebrow': 'Enquiries',
   'desk.askEyebrow': 'Put a question',
@@ -960,6 +959,8 @@ export default {
   'catalog.borrowed': 'borrowed',
 
   'desk.away': 'Lent and borrowed',
+  'desk.seeThem': 'See them',
+  'desk.hideThem': 'Hide them',
   'desk.favourites': 'Your favourites',
   'desk.favouritesNote': 'Books singled out by hand. These carry more weight than anything the catalog works out on its own.',
   'desk.showFavourites': 'See them all in the catalog',
@@ -973,10 +974,9 @@ export default {
   'desk.sinceUnknown': 'no date recorded',
 
   // -- the word cloud -------------------------------------------------------
-  'desk.themes': 'What it keeps coming back to',
-  'desk.themesNote':
-    'Keywords used by more than one book, drawn larger the more often they appear. Pick one to see those books.',
-  'cloud.keyword.none': 'No keyword is used by more than one book yet.',
+  'desk.themes': 'Keywords',
+  'desk.themesNote': 'Used more than twice. Click to see books.',
+  'cloud.keyword.none': 'No keyword is used by more than two books yet.',
   'cloud.keyword.noneHow':
     'Keywords come from your sources. A photograph records them only when the checklist asked, and a spreadsheet only where it had a column.',
   'cloud.genre.none': 'No genre is used by more than one book yet.',
@@ -984,8 +984,8 @@ export default {
     'Genres come from your sources. Fill in gaps, above, can ask a model for the ones that are missing.',
   'cloud.count': 'used by {n} books',
   'cloud.label': '{word}, used by {n} books',
-  'cloud.keyword.note': 'Showing {drawn} of {distinct} keywords. The rest are used once each.',
-  'cloud.genre.note': 'Showing {drawn} of {distinct} keywords. The rest are used once each.',
+  'cloud.keyword.note': 'Showing {drawn} of {distinct} keywords. The rest are used once or twice.',
+  'cloud.genre.note': 'Showing {drawn} of {distinct} genres. The rest are used once each.',
   'catalog.taggedWith': 'tagged {tag}',
 
   // -- extras a model can be asked for --------------------------------------
