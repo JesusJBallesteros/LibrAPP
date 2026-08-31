@@ -554,12 +554,16 @@ export default {
   'shelf.stepBring': '{n} · Trae tú la transcripción',
   'shelf.bringNote.optional': '(opcional, y no hace falta clave)',
   'shelf.bringNote':
-    'Lee los recortes en cualquier sesión de IA con el prompt de arriba y suelta aquí el JSON.',
+    'Lee los recortes en cualquier sesión de IA con el prompt de arriba y trae aquí el JSON: suelta el archivo o pega la respuesta.',
   'shelf.bringNote.how':
     'Esta es la vía que no necesita clave: la lectura ocurre donde ya tengas una sesión de IA, y LibrAPP solo recoge el resultado. Un archivo con un libro sin título o con un valor de confianza desconocido se rechaza aquí, no se importa.',
   'shelf.dropTranscription': 'Suelta aquí la transcripción',
   'shelf.dropTranscriptionHint': 'el archivo JSON que escribió el modelo',
-  'shelf.result': '{n} libros leídos de la foto.',
+  'shelf.pasteTranscription': 'O pega aqu\u00ed la respuesta',
+  'shelf.pasteTranscription.hint': '{ "photo": "\u2026", "shelves": [ \u2026 ] }',
+  'shelf.useThisText': 'Usar este texto',
+  'shelf.pastedName': 'transcripci\u00f3n pegada',
+  'shelf.result': '{n} {n:libro|libros} leído{n:|s}.',
   'shelf.uncertain': '{n} lomo(s) dudosos',
   'shelf.resultNote':
     'Una foto no puede ver la fecha de compra ni si lo has leído, así que eso queda sin saber hasta que lo diga otra fuente.',

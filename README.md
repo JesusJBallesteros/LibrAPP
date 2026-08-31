@@ -269,6 +269,11 @@ Photograph the shelf straight on at your camera's **full resolution**.
      both to any AI assistant. Bring back the JSON it writes.
 5. Check what it read, then import.
 
+**Step five takes the reply either way.** Drop the JSON file, or paste the text
+straight into the box under it and press **Use this text**. It needs no key and
+no photograph loaded, so coming back to it in a fresh tab works: it is the whole
+of the keyless route's second half.
+
 ![Six pieces cut from the photograph, each with Discard and Save under it, one of them greyed out and struck through as discarded](docs/images/photo-pieces.png)
 
 One piece here holds no readable spine and has been set aside. Discarded pieces

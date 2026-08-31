@@ -6,9 +6,26 @@ A reader reading a shelf with Gemini got this back:
 
     This model models/gemini-2.5-pro is no longer available to new users.
 
-The name was right, the key was right, and the request was refused anyway.
-Google had retired it for anyone who had not used it before. The app had been
-suggesting it since the day that provider was added.
+The name was right and the key was right. That message is Google's own, and it
+is the only account of what happened: the public changelog for the API does not
+mention retiring the model. The app had been suggesting the name since the day
+that provider was added, nine days earlier.
+
+### Bringing a transcription back
+
+The box for the reply asked for a file, and named no file types, so the picker
+on a phone offered the camera. Photographing a shelf is what the reader did four
+steps earlier; this end of the page wants what an AI session just wrote.
+
+It takes text now. Paste the reply into the box and press **Use this text**. A
+file still works and the two go through one reader, so what is accepted and what
+is refused is the same either way.
+
+The box also only existed while the cut pieces did, and the pieces live in the
+page rather than on disk. So the route was: cut the photograph, take the pieces
+and the prompt somewhere else, come back, and find that the way back had gone
+with the tab. Step five stands on its own now, and so does the review of what
+was read, which a paste can produce with no photograph in the page at all.
 
 ### The names, brought up to date
 

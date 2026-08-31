@@ -81,6 +81,8 @@ export default function Shelf({ lib, onOwl }) {
   // The name of a transcription brought in as a file, kept only to name the
   // source when the transcription does not name a photograph itself.
   const [droppedName, setDroppedName] = useState(null)
+  // A transcription typed or pasted in rather than saved to a file first.
+  const [pasted, setPasted] = useState('')
   // Which batch is in flight. A long shelf is read in several requests, and a
   // button that says nothing for two minutes looks like a button that failed.
   const [progress, setProgress] = useState(null)
@@ -264,16 +266,20 @@ export default function Shelf({ lib, onOwl }) {
    * same look before it is written, and routing it here means the books in it
    * can be discarded one at a time like any others.
    */
-  const onTranscription = async (file) => {
+  /**
+   * A transcription written somewhere else, however it got here.
+   *
+   * Parsed once, here, so a malformed one is refused at the box rather than
+   * after a review of books that were never going to be written.
+   */
+  const takeTranscription = (text, name) => {
     setSaveError(null)
     try {
-      const transcription = JSON.parse(await file.text())
-      // Parsed once here so a malformed file is refused at the drop zone rather
-      // than after a review of books that were never going to be written.
+      const transcription = JSON.parse(text)
       const { records } = loadTranscription(transcription)
       const books = (transcription.shelves || []).flatMap((shelf) => shelf.books || [])
       resetBooks()
-      setDroppedName(file.name)
+      setDroppedName(name)
       setProposed({
         transcription,
         // Nothing was spent here: the reading happened somewhere else.
@@ -281,9 +287,25 @@ export default function Shelf({ lib, onOwl }) {
         counted: records.length,
         recalled: books.filter((b) => b.recalled).length,
       })
+      return true
     } catch (err) {
       setSaveError(err.message)
+      return false
     }
+  }
+
+  const onTranscription = async (file) => takeTranscription(await file.text(), file.name)
+
+  /**
+   * The same, from the box below it.
+   *
+   * A reply from an AI session is text on a screen, and saving it to a file
+   * first is a step that exists only because the app asked for a file. On a
+   * phone it is worse than a step: the file picker offers the camera, which is
+   * the wrong end of this page entirely.
+   */
+  const onPastedTranscription = () => {
+    if (takeTranscription(pasted.trim(), t('shelf.pastedName'))) setPasted('')
   }
 
   // A failure that renders off-screen is the bug being fixed here, so put it
@@ -648,119 +670,140 @@ export default function Shelf({ lib, onOwl }) {
         </section>
       )}
 
+      {proposed && (
+        <section className="shelf-step" style={{ marginTop: 34 }} ref={review}>
+          {/* Said as well as scrolled to. A screen reader is not moved by
+              scrolling, and somebody who has looked away from a minute-long
+              read needs telling rather than showing. */}
+          <p className="notice" role="status" style={{ marginBottom: 14 }}>
+            {t('shelf.readyBelow', { n: proposed.counted })}
+          </p>
+          <div className="spread">
+            <h3 className="step-head">{t('shelf.checkWhatItRead')}</h3>
+            <span className="tabular tiny faint">
+              {t('shelf.bookCount', { n: proposed.counted })}
+              {proposed.recalled > 0 &&
+                ` · ${t('shelf.recalledCount', { n: proposed.recalled })}`}
+              {spent !== null && ` · ${t('shelf.cost', { amount: dollars(spent) })}`}
+            </span>
+          </div>
+          <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.checkNote')}</p>
+          <p className="tiny faint" style={{ marginTop: 6 }}>{t('keep.note')}</p>
 
-      {tiles && (
-        <>
-          {proposed && (
-            <section className="shelf-step" style={{ marginTop: 34 }} ref={review}>
-              {/* Said as well as scrolled to. A screen reader is not moved by
-                  scrolling, and somebody who has looked away from a minute-long
-                  read needs telling rather than showing. */}
-              <p className="notice" role="status" style={{ marginBottom: 14 }}>
-                {t('shelf.readyBelow', { n: proposed.counted })}
-              </p>
-              <div className="spread">
-                <h3 className="step-head">{t('shelf.checkWhatItRead')}</h3>
-                <span className="tabular tiny faint">
-                  {t('shelf.bookCount', { n: proposed.counted })}
-                  {proposed.recalled > 0 &&
-                    ` · ${t('shelf.recalledCount', { n: proposed.recalled })}`}
-                  {spent !== null && ` · ${t('shelf.cost', { amount: dollars(spent) })}`}
-                </span>
+          {(proposed.transcription.shelves || []).map((shelf, i) => (
+            <div key={i} style={{ marginTop: 12 }}>
+              <div className="group-head" style={{ position: 'static' }}>
+                {shelf.location || t('shelf.unplaced')}{' '}
+                <span className="faint">· {shelf.books?.length || 0}</span>
               </div>
-              <p className="muted tiny" style={{ marginTop: 8 }}>{t('shelf.checkNote')}</p>
-              <p className="tiny faint" style={{ marginTop: 6 }}>{t('keep.note')}</p>
-
-              {(proposed.transcription.shelves || []).map((shelf, i) => (
-                <div key={i} style={{ marginTop: 12 }}>
-                  <div className="group-head" style={{ position: 'static' }}>
-                    {shelf.location || t('shelf.unplaced')}{' '}
-                    <span className="faint">· {shelf.books?.length || 0}</span>
-                  </div>
-                  {(shelf.books || []).map((book, j) => {
-                    const isDropped = droppedBooks.has(bookKey(i, j))
-                    return (
-                    <div
-                      className={`forgotten-item spread${isDropped ? ' discarded' : ''}`}
-                      key={j}
-                    >
-                      <span>
-                        <span className="title">{book.title}</span>
-                        <br />
-                        <span className="tiny muted">
-                          {(book.authors || []).join(', ') || '—'}
-                          {book.publisher ? ` · ${book.publisher}` : ''}
-                        </span>
-                        {book.notes && <div className="why">{book.notes}</div>}
-                      </span>
-                      <span className="row" style={{ gap: 10, alignItems: 'center' }}>
-                        {isDropped ? (
-                          <span className="tiny faint">{t('keep.discardedTag')}</span>
-                        ) : (
-                          <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
-                            {t(`confidence.${book.confidence}`)}
-                          </span>
-                        )}
-                        <KeepToggle
-                          dropped={isDropped}
-                          disabled={lib.busy}
-                          onToggle={() => toggleBook(bookKey(i, j))}
-                        />
-                      </span>
-                    </div>
-                    )
-                  })}
-                </div>
-              ))}
-
-              <KeepSummary kept={keptCount} total={proposed.counted} />
-
-              {saveError && (
-                <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
-                  <p className="tiny">{saveError}</p>
-                </div>
-              )}
-
-              <div className="row" style={{ marginTop: 14 }}>
-                <button
-                  className="btn primary"
-                  onClick={acceptProposed}
-                  disabled={lib.busy || !keptCount}
+              {(shelf.books || []).map((book, j) => {
+                const isDropped = droppedBooks.has(bookKey(i, j))
+                return (
+                <div
+                  className={`forgotten-item spread${isDropped ? ' discarded' : ''}`}
+                  key={j}
                 >
-                  {t('shelf.importThese', { n: keptCount })}
-                </button>
-                <button className="btn" onClick={() => setProposed(null)} disabled={lib.busy}>
-                  {t('shelf.discard')}
-                </button>
-              </div>
-            </section>
+                  <span>
+                    <span className="title">{book.title}</span>
+                    <br />
+                    <span className="tiny muted">
+                      {(book.authors || []).join(', ') || '—'}
+                      {book.publisher ? ` · ${book.publisher}` : ''}
+                    </span>
+                    {book.notes && <div className="why">{book.notes}</div>}
+                  </span>
+                  <span className="row" style={{ gap: 10, alignItems: 'center' }}>
+                    {isDropped ? (
+                      <span className="tiny faint">{t('keep.discardedTag')}</span>
+                    ) : (
+                      <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
+                        {t(`confidence.${book.confidence}`)}
+                      </span>
+                    )}
+                    <KeepToggle
+                      dropped={isDropped}
+                      disabled={lib.busy}
+                      onToggle={() => toggleBook(bookKey(i, j))}
+                    />
+                  </span>
+                </div>
+                )
+              })}
+            </div>
+          ))}
+
+          <KeepSummary kept={keptCount} total={proposed.counted} />
+
+          {saveError && (
+            <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+              <p className="tiny">{saveError}</p>
+            </div>
           )}
 
-          {/* The heading and its note stand where the other four do; only the
-              drop target is a box. */}
-          <section className="shelf-step" style={{ marginTop: 34 }}>
-            <h3 className="step-head">{t('shelf.stepFive')}</h3>
-            <p style={{ marginTop: 8 }}>
-              {t('shelf.bringNote')} <span className="faint">{t('shelf.bringNote.optional')}</span>
-            </p>
-            <TellMeHow>
-              <p>{t('shelf.bringNote.how')}</p>
-            </TellMeHow>
-            <DropZone
-              mark="page"
-              title={t('shelf.dropTranscription')}
-              hint={t('shelf.dropTranscriptionHint')}
-              disabled={lib.busy}
-              onFile={onTranscription}
-            />
-            {saveError && !proposed && (
-              <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
-                <p className="tiny">{saveError}</p>
-              </div>
-            )}
-          </section>
-        </>
+          <div className="row" style={{ marginTop: 14 }}>
+            <button
+              className="btn primary"
+              onClick={acceptProposed}
+              disabled={lib.busy || !keptCount}
+            >
+              {t('shelf.importThese', { n: keptCount })}
+            </button>
+            <button className="btn" onClick={() => setProposed(null)} disabled={lib.busy}>
+              {t('shelf.discard')}
+            </button>
+          </div>
+        </section>
       )}
+
+      {/* Standing on its own, because it has to. A transcription written
+          somewhere else arrives after a trip out of this page, and a page
+          that has been reloaded has no pieces in it any more. Gating this
+          on them put the way back behind the very thing the reader had
+          just lost. It asks for no key and no photograph. */}
+      <section className="shelf-step" style={{ marginTop: 34 }}>
+        <h3 className="step-head">{t('shelf.stepFive')}</h3>
+        <p style={{ marginTop: 8 }}>
+          {t('shelf.bringNote')} <span className="faint">{t('shelf.bringNote.optional')}</span>
+        </p>
+        <TellMeHow>
+          <p>{t('shelf.bringNote.how')}</p>
+        </TellMeHow>
+        <DropZone
+          mark="page"
+          title={t('shelf.dropTranscription')}
+          hint={t('shelf.dropTranscriptionHint')}
+          // Named types, or the picker on a phone offers the camera.
+          accept=".json,.txt,application/json,text/plain"
+          disabled={lib.busy}
+          onFile={onTranscription}
+        />
+
+        <label className="tiny muted" style={{ display: 'grid', gap: 6, marginTop: 14 }}>
+          {t('shelf.pasteTranscription')}
+          <textarea
+            className="paste"
+            rows={5}
+            value={pasted}
+            disabled={lib.busy}
+            onChange={(e) => setPasted(e.target.value)}
+            placeholder={t('shelf.pasteTranscription.hint')}
+            spellCheck="false"
+          />
+        </label>
+        <button
+          className="btn"
+          style={{ marginTop: 10 }}
+          disabled={lib.busy || !pasted.trim()}
+          onClick={onPastedTranscription}
+        >
+          {t('shelf.useThisText')}
+        </button>
+        {saveError && !proposed && (
+          <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+            <p className="tiny">{saveError}</p>
+          </div>
+        )}
+      </section>
 
       {result && (
         <div className="notice good">

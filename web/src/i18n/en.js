@@ -568,12 +568,16 @@ export default {
   'shelf.stepBring': '{n} · Bring a transcription back yourself',
   'shelf.bringNote.optional': '(optional, and no key is needed)',
   'shelf.bringNote':
-    'Read the pieces in any AI session using the prompt above, then drop the JSON here.',
+    'Read the pieces in any AI session using the prompt above, then bring the JSON back here: drop the file, or paste the reply.',
   'shelf.bringNote.how':
     'This is the route that needs no key: the reading happens wherever you already have an AI session, and LibrAPP only takes the result. A file holding an untitled book or an unknown confidence value is refused here rather than imported.',
   'shelf.dropTranscription': 'Drop the transcription',
   'shelf.dropTranscriptionHint': 'the JSON file the model wrote',
-  'shelf.result': '{n} books read from the photograph.',
+  'shelf.pasteTranscription': 'Or paste the reply here',
+  'shelf.pasteTranscription.hint': '{ "photo": "…", "shelves": [ … ] }',
+  'shelf.useThisText': 'Use this text',
+  'shelf.pastedName': 'pasted transcription',
+  'shelf.result': '{n} {n:book|books} read.',
   'shelf.uncertain': '{n} spine(s) uncertain',
   'shelf.resultNote':
     'A photograph cannot see a purchase date or whether you read something, so those stay unknown until another source says.',

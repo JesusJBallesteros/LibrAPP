@@ -1593,6 +1593,22 @@ textarea.compose {
 }
 textarea.compose:focus { outline: none; border-color: var(--accent); }
 
+/* The same box, for a machine-readable document rather than a sentence. Set in
+   the mono face for the same reason the file listings are: a bracket out of
+   place is the thing being looked for. */
+textarea.paste {
+  width: 100%;
+  min-height: 110px;
+  border: 1px solid var(--control-line);
+  border-radius: var(--radius);
+  padding: 11px 12px;
+  background: var(--paper);
+  font: 400 12px/1.5 var(--mono);
+  color: var(--ink);
+  resize: vertical;
+}
+textarea.paste:focus { outline: none; border-color: var(--accent); }
+
 /* The key box and the extras checklist: recessed rather than raised, so they
    read as apparatus beside the page rather than part of it. */
 .sunk-panel {
