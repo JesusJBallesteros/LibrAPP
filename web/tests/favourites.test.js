@@ -260,6 +260,12 @@ describe('the controls on a spine', () => {
   const wall = readFileSync(new URL('../src/views/Catalog.jsx', import.meta.url), 'utf8')
   const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
 
+  /** One spine's slot, from the markup, which is where its order lives. */
+  const sliceSlot = (source) => {
+    const from = source.indexOf('className={`spine-slot')
+    return source.slice(from, source.indexOf('spine-caption', from))
+  }
+
   it('offers read and unread as one choice, not two switches', () => {
     expect(wall).toContain("<div className=\"segmented\" role=\"group\"")
     expect(wall).toMatch(/\['read', 'unread'\]\.map/)
@@ -282,7 +288,7 @@ describe('the controls on a spine', () => {
   })
 
   it('draws them after the spine, so a tab from it lands on them', () => {
-    const slot = wall.slice(wall.indexOf('className={`spine-slot'), wall.indexOf('</div>\n            )\n          }'))
+    const slot = sliceSlot(wall)
     expect(slot.indexOf('spine-tools')).toBeGreaterThan(slot.indexOf('className={`spine${done'))
   })
 
@@ -290,9 +296,25 @@ describe('the controls on a spine', () => {
     // The mark above a resting spine says which books were singled out. As a
     // second button with the same name it offered every book twice to anybody
     // listening rather than looking.
-    const slot = wall.slice(wall.indexOf('className={`spine-slot'), wall.indexOf('</div>\n            )\n          }'))
+    const slot = sliceSlot(wall)
     expect(slot).toContain('<span className="star-mark" aria-hidden="true">')
     expect((slot.match(/<Star /g) || []).length).toBe(1)
+  })
+
+  it('keeps the mark above the spine, where a wall can be read at a glance', () => {
+    // It travelled below the spine when the controls moved after it, which
+    // lifted every starred book off the shelf line by the height of a star.
+    const slot = sliceSlot(wall)
+    expect(slot.indexOf('star-mark')).toBeLessThan(slot.indexOf('className={`spine${done'))
+  })
+
+  it('does not pull a spine out on a touch screen, and keeps the controls by it', () => {
+    // A tapped spine at nearly twice its height is most of a phone. Nothing
+    // grows there, so the controls sit against the top of the spine rather than
+    // at the height a pulled-out one would have reached.
+    const touch = css.slice(css.indexOf('@media (hover: none) {', css.indexOf('.spine-slot:hover .spine,')))
+    expect(touch).toMatch(/\.spine-slot\.peeked \.spine \{ transform: none/)
+    expect(css).toContain('.spine-tools { bottom: var(--spine-h, 200px); }')
   })
 
   it('hangs them clear of the spine at its pulled-out height', () => {

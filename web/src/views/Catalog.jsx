@@ -730,6 +730,17 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
               // goes into the slot for the stylesheet to work from.
               style={{ width: spineWidth(book), '--spine-h': `${spineHeight(book)}px` }}
             >
+              {/* A mark, not a control. The one in the tools above does the
+                  starring, and two buttons with the same name in one slot is
+                  the same book offered twice to anybody listening rather than
+                  looking. This says which books are singled out while the wall
+                  sits still, which is what it was for. */}
+              {book.favourite && (
+                <span className="star-mark" aria-hidden="true">
+                  {'★'}
+                </span>
+              )}
+
               <button
                 className={`spine${done ? ' read' : ''}`}
                 aria-selected={selected?.id === book.id}
@@ -796,16 +807,6 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
                 <Star book={book} onToggle={onToggle} t={t} busy={busy} />
               </div>
 
-              {/* A mark, not a control. The one in the tools above does the
-                  starring, and two buttons with the same name in one slot is
-                  the same book offered twice to anybody listening rather than
-                  looking. This says which books are singled out while the wall
-                  sits still, which is what it was for. */}
-              {book.favourite && (
-                <span className="star-mark" aria-hidden="true">
-                  {'★'}
-                </span>
-              )}
             </div>
           )
         })}

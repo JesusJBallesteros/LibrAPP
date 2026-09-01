@@ -1237,11 +1237,15 @@ pre.snippet {
     inset 3px 0 4px rgba(255, 255, 255, .12),
     0 6px 20px rgba(20, 18, 15, .45);
 }
-/* Hover does the pulling out on a mouse. A touch screen reports hover on the
-   last thing tapped and would leave a spine stuck out, so there the class does
-   it and a second tap opens the book. */
+/* Nothing is pulled out on a touch screen. A tapped spine grown to nearly twice
+   its height is most of a phone, and the thing wanted from a tap there is the
+   author and the two controls, which fit beside it as it stands. Said here for
+   all three states rather than left to happen: hover sticks to the last thing
+   tapped, and it was cancelling the class that does the work. */
 @media (hover: none) {
-  .spine-slot:hover .spine { transform: none; z-index: auto; }
+  .spine-slot:hover .spine,
+  .spine-slot:focus-within .spine,
+  .spine-slot.peeked .spine { transform: none; z-index: 6; }
 }
 
 /* Read, unread and the star, on the spine that is out.
@@ -1277,6 +1281,10 @@ pre.snippet {
   .spine-slot:hover .spine-tools { display: none; }
   .spine-slot:focus-within .spine-tools,
   .spine-slot.peeked .spine-tools { display: flex; }
+  /* And down against the top of the spine, since nothing grew: the height above
+     is where a pulled-out spine would have been, and there is no reason for a
+     control to sit that far from the book it belongs to. */
+  .spine-tools { bottom: var(--spine-h, 200px); }
 }
 
 /* Small, because this hangs over the shelf and a full-sized pair of buttons
