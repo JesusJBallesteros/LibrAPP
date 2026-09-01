@@ -107,7 +107,7 @@ export default function ListImport({ lib, onOwl }) {
   const [thenLookUp, setThenLookUp] = useState(false)
   const [rowError, setRowError] = useState(null)
   const [shown, setShown] = useState(ROWS_AT_A_TIME)
-  const { dropped, toggle, reset } = useKeepSet()
+  const { dropped, toggle, dropAll, reset } = useKeepSet()
 
   const onFile = async (file) => {
     setError(null)
@@ -200,6 +200,18 @@ export default function ListImport({ lib, onOwl }) {
   // How many of these could be looked up without guessing, which is the whole
   // of the argument for doing it.
   const withIsbn = rows ? rows.filter((r) => r.isbn).length : 0
+
+  /**
+   * Rows with nothing in the author column.
+   *
+   * Worth pointing at rather than counting quietly. A title on its own is the
+   * one record this app cannot do much with: it cannot be grouped by author,
+   * and the same book arriving from a photograph or a barcode will not be
+   * recognised as the same book, so it lands twice.
+   */
+  const anonymous = rows
+    ? rows.map((r, i) => [r, i]).filter(([r]) => !(r.authors || []).length).map(([, i]) => i)
+    : []
   const formatColumn = columns?.find((c) => c.field === 'format' && c.used) || null
 
   const doImport = () =>
@@ -436,6 +448,21 @@ export default function ListImport({ lib, onOwl }) {
               <>
                 <p className="tiny faint" style={{ marginTop: 8 }}>{t('keep.note')}</p>
 
+                {anonymous.length > 0 && (
+                  <div className="notice warn">
+                    <p className="tiny">{t('list.noAuthorRows', { n: anonymous.length })}</p>
+                    <p className="tiny faint">{t('list.noAuthorWhy')}</p>
+                    <button
+                      className="btn small"
+                      style={{ marginTop: 8 }}
+                      disabled={anonymous.every((i) => dropped.has(i))}
+                      onClick={() => dropAll(anonymous)}
+                    >
+                      {t('list.discardNoAuthor')}
+                    </button>
+                  </div>
+                )}
+
                 <ul className="lookup-list">
                   {rows.slice(0, shown).map((record, i) => {
                     const isDropped = dropped.has(i)
@@ -545,7 +572,9 @@ export default function ListImport({ lib, onOwl }) {
               </p>
               <ul className="tiny">
                 {result.missing.map((field) => (
-                  <li key={field}>{t(`list.missing.${field}`)}</li>
+                  <li key={field} className={field === 'authors' ? 'warn' : undefined}>
+                    {t(`list.missing.${field}`)}
+                  </li>
                 ))}
               </ul>
               <p className="tiny faint">{t('list.missingHow')}</p>

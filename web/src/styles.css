@@ -1025,6 +1025,11 @@ main:focus { outline: none; }
 .file-button.shut { opacity: .45; cursor: not-allowed; }
 .bulk-offer { margin: 6px 0 0; }
 .bulk-offer .btn.link { margin-left: 8px; }
+.notice.warn { border-left-color: var(--warn); }
+/* One line of a list of findings, marked because it is the one worth acting on
+   before the others. The text takes the colour; the list has no border to give
+   it. */
+.missing-columns li.warn { color: var(--warn); }
 .notice.bad { border-left-color: var(--bad); color: var(--bad); }
 .notice.good { border-left-color: var(--good); color: var(--good); }
 .notice p { margin: 0; }

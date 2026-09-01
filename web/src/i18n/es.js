@@ -284,6 +284,9 @@ export default {
   'list.trust': 'Confianza',
   'list.whatItHolds': '{n} {n:fila|filas} en esta lista',
   'list.showingSome': 'Mostrando {shown} de {n}.',
+  'list.noAuthorRows': '{n} de estos no {n:tiene|tienen} autor.',
+  'list.noAuthorWhy': 'Un título solo no se puede agrupar por autor, y el mismo libro llegando de una foto o de un código de barras no se reconocerá como el mismo libro.',
+  'list.discardNoAuthor': 'Descartarlos',
   'list.showMore': 'Ver {n} m\u00e1s',
   'list.showAll': 'Mostrar las {n}',
   'list.importAction': 'Importar y reconstruir',
@@ -295,7 +298,7 @@ export default {
   'list.missing.genre':
     'No se ha encontrado columna de género. Prueba a pedirle a BibliotecAPPri@ que rellene huecos, en su escritorio.',
   'list.missing.authors':
-    'Sin columna de autoría. Estos libros no se pueden agrupar por autor, y el mismo libro llegando de otra fuente es más difícil de reconocer.',
+    'No se ha encontrado información de autoría. Plantéate descartarlos y traerlos desde un archivo que nombre a los autores.',
   'list.missing.series': 'No se ha encontrado información de serie ni de volumen.',
   'list.missing.publisher': 'Sin información de editorial.',
   'list.missingHow':

@@ -299,6 +299,9 @@ export default {
   'list.trust': 'Trust',
   'list.whatItHolds': 'The {n} {n:row|rows} in this list',
   'list.showingSome': 'Showing {shown} of {n}.',
+  'list.noAuthorRows': '{n} of these {n:has|have} no author.',
+  'list.noAuthorWhy': 'A title on its own cannot be grouped by author, and the same book arriving from a photograph or a barcode will not be recognised as the same book.',
+  'list.discardNoAuthor': 'Discard them',
   'list.showMore': 'Show {n} more',
   'list.showAll': 'Show all {n}',
   'list.importAction': 'Import and rebuild',
@@ -310,7 +313,7 @@ export default {
   'list.missing.genre':
     'No genre column found. Try asking the LibrAPPrian to "Fill in gaps", at its desk.',
   'list.missing.authors':
-    'No author column. These books cannot be grouped by author, and the same book arriving from another source is harder to recognise as the same book.',
+    'No author information found. Consider discarding these and bringing them in from a file that names the authors.',
   'list.missing.series': 'No series or volume information found.',
   'list.missing.publisher': 'No publisher information.',
   'list.missingHow':

@@ -32,11 +32,17 @@ export function useKeepSet() {
     })
   }, [])
 
+  // Several at once, for a whole group a page has offered to set aside. Adds
+  // rather than replaces: a row already discarded by hand stays discarded.
+  const dropAll = useCallback((keys) => {
+    setDropped((current) => new Set([...current, ...keys]))
+  }, [])
+
   // Called whenever the list underneath changes. Keys mean something different
   // in a new list, so carrying the old set over would discard the wrong rows.
   const reset = useCallback(() => setDropped(new Set()), [])
 
-  return { dropped, toggle, reset }
+  return { dropped, toggle, dropAll, reset }
 }
 
 /** The control on one row. Says what pressing it will do, not what the row is. */
