@@ -17,16 +17,25 @@ import { readZip, readZipText } from './zip.js'
 // Column names understood, in the order they are searched.
 export const COLUMNS = {
   title: ['title', 'titulo', 'titel', 'titre', 'book', 'libro', 'obra', 'name', 'nombre'],
-  authors: ['author', 'authors', 'autor', 'autores', 'writer', 'by', 'verfasser'],
+  authors: ['author', 'authors', 'autor', 'autores', 'writer', 'by', 'verfasser',
+    // Goodreads writes the same name twice, once each way round. Either will
+    // do, and the one it does not use shows in the column table as unused.
+    'author l f'],
   genre: ['genre', 'genero', 'genre subject', 'subject', 'categoria', 'category', 'materia'],
-  keywords: ['keywords', 'keyword', 'tags', 'palabras clave', 'temas', 'notes', 'notas'],
+  keywords: ['keywords', 'keyword', 'tags', 'palabras clave', 'temas', 'notes', 'notas',
+    // A Goodreads shelf is a tag by another name: fiction, sci-fi, to-read-someday.
+    'bookshelves'],
   series: ['series', 'serie', 'saga', 'collection', 'coleccion'],
   series_index: ['series index', 'series_index', 'volume', 'volumen', 'vol', 'numero', 'n'],
   publisher: ['publisher', 'editorial', 'editor', 'verlag', 'imprint'],
   acquired_on: ['acquired', 'acquired on', 'acquired_on', 'adquirido', 'fecha', 'date',
     'purchased', 'comprado'],
-  read: ['read', 'leido', 'gelesen', 'status', 'estado'],
-  format: ['format', 'formato', 'media', 'soporte', 'source', 'fuente', 'edition'],
+  // Goodreads keeps this in a column it calls exclusive, because a book is on
+  // exactly one of read, currently-reading and to-read.
+  read: ['read', 'leido', 'gelesen', 'status', 'estado', 'exclusive shelf'],
+  format: ['format', 'formato', 'media', 'soporte', 'source', 'fuente', 'edition',
+    // Goodreads: Hardcover, Paperback, Kindle Edition, Audiobook.
+    'binding'],
   location: ['location', 'shelf', 'estanteria', 'ubicacion', 'where'],
   // The number printed on the edition. Worth carrying even though nothing here
   // uses it, because it is the one field that lets a book be looked up later
@@ -35,8 +44,18 @@ export const COLUMNS = {
   // Amazon's own number. Not an ISBN and not interchangeable with one: it
   // identifies a Kindle edition, which frequently has no ISBN at all.
   asin: ['asin', 'amazon id', 'kindle id'],
+  // The year the work first appeared, not the year this edition was printed.
+  // Goodreads carries both and they are different facts; only the first has a
+  // home here, so a file naming its edition year leaves that column unused
+  // rather than filing it under a heading that means something else.
   published_year: ['published', 'first published', 'published year', 'pubdate',
-    'publication date', 'year', 'ano', 'publicado', 'erscheinungsjahr'],
+    'publication date', 'year', 'ano', 'publicado', 'erscheinungsjahr',
+    'original publication year'],
+  // Everybody's rating, not the reader's own. Goodreads writes both and this
+  // is the community one: a reader's own opinion of a book is a note or a
+  // star, and the prompts are told in as many words that a rating is not it.
+  rating: ['average rating', 'rating medio'],
+  pages: ['pages', 'number of pages', 'page count', 'paginas', 'seiten'],
 }
 
 // Header spellings that name a date a book entered a collection rather than a
@@ -46,7 +65,11 @@ export const COLUMNS = {
 COLUMNS.acquired_on.push('timestamp', 'date added', 'added', 'anadido', 'created')
 
 const TRUE_WORDS = new Set(['y', 'yes', 'true', '1', 'x', 'si', 'sí', 'leido', 'leído', 'read', 'ja', 'gelesen'])
-const FALSE_WORDS = new Set(['n', 'no', 'false', '0', '', 'unread', 'pendiente', 'nein', 'ungelesen'])
+// A book being read is a book not read. Three values, and neither of these is
+// the third: nobody who has a book on their currently-reading shelf is
+// uncertain whether they have finished it.
+const FALSE_WORDS = new Set(['n', 'no', 'false', '0', '', 'unread', 'pendiente', 'nein',
+  'ungelesen', 'to read', 'currently reading'])
 
 // What a format or provenance cell may say. A row can name more than one, so a
 // hand-kept list can record a book owned both on paper and on a device.
@@ -85,6 +108,7 @@ const SECTION_ELEMENTS = new Set(['book', 'item', 'entry', 'record'])
 export const SHAPES = [
   { id: 'kindle', needs: ['asin'] },
   { id: 'calibre', needs: ['timestamp', 'pubdate'] },
+  { id: 'goodreads', needs: ['book id', 'exclusive shelf'] },
 ]
 
 export function detectShape(columns) {
@@ -131,6 +155,10 @@ export function parseDate(value) {
   const text = String(value ?? '').trim()
   let m = /^(\d{4})-(\d{2})-(\d{2})/.exec(text)
   if (m) return `${m[1]}-${m[2]}-${m[3]}`
+  // Year first is unambiguous, whatever the separator. Goodreads writes
+  // 2018/11/30 and a spreadsheet often writes 2018.11.30.
+  m = /^(\d{4})[/.](\d{1,2})[/.](\d{1,2})$/.exec(text)
+  if (m) return `${m[1]}-${String(Number(m[2])).padStart(2, '0')}-${String(Number(m[3])).padStart(2, '0')}`
   m = /^(\d{1,2})[/.](\d{1,2})[/.](\d{4})$/.exec(text)
   if (m) return `${m[3]}-${String(Number(m[2])).padStart(2, '0')}-${String(Number(m[1])).padStart(2, '0')}`
   return null
@@ -143,11 +171,37 @@ export function parseDate(value) {
  */
 export function parseFormats(value) {
   const found = []
+  const take = (word) => {
+    const kind = FORMAT_WORDS[word]
+    if (kind && !found.includes(kind)) found.push(kind)
+  }
   for (const part of String(value ?? '').split(/[,;/+&]| and /u)) {
-    const word = FORMAT_WORDS[headerKey(part)]
-    if (word && !found.includes(word)) found.push(word)
+    const whole = headerKey(part)
+    take(whole)
+    // And word by word, because a cell often names the form inside a longer
+    // phrase: Goodreads writes Kindle Edition, Mass Market Paperback, Audio CD.
+    // The whole phrase is tried first, so a two-word name can still be listed
+    // above and beat its own parts.
+    for (const word of whole.split(' ')) take(word)
   }
   return found
+}
+
+/** A whole number above zero, or nothing. Zero pages is a cell nobody filled. */
+export function parseCount(value) {
+  const number = Number(String(value ?? '').trim())
+  return Number.isInteger(number) && number > 0 ? number : null
+}
+
+/**
+ * A rating out of five, or nothing.
+ *
+ * Zero is what a site writes for a book nobody has rated, and averaging it in
+ * with real scores would drag every reading of the shelf downwards.
+ */
+export function parseRating(value) {
+  const number = Number(String(value ?? '').trim())
+  return Number.isFinite(number) && number > 0 && number <= 5 ? number : null
 }
 
 /** A volume number, whole or fractional, or null where the cell says nothing. */
@@ -409,6 +463,8 @@ export function rowsToRecords(rows, section = null, { tally = null, mapping = nu
       isbn: keptIsbn(picked.isbn),
       asin: cleanAsin(picked.asin),
       published_year: parseYear(picked.published_year || ''),
+      rating: parseRating(picked.rating),
+      pages: parseCount(picked.pages),
     }
     if (collapsed) record.listed_volumes = title
     if (tally) {

@@ -20,6 +20,7 @@ import {
   keptIsbn,
   loadTable,
   parseIndex,
+  parseRating,
   parseYear,
   rowsToRecords,
 } from '../src/ingest/table.js'
@@ -307,5 +308,96 @@ describe('the column table has a name for every field it offers', () => {
       expect(labelled.has(field), `no label for ${field}`).toBe(true)
       expect(en[labelled.get(field)], `no English for ${field}`).toBeTruthy()
     }
+  })
+})
+
+/**
+ * A Goodreads export, from the column list the site documents.
+ *
+ * Written here rather than taken from a real export, and said so: the headings
+ * are the published ones and the values are made up to match what each column
+ * is described as holding. If a real file disagrees, this is the thing that is
+ * wrong.
+ */
+const GOODREADS = [
+  'Book Id,Title,Author,Author l-f,Additional Authors,ISBN,ISBN13,My Rating,Average Rating,' +
+    'Publisher,Binding,Number of Pages,Year Published,Original Publication Year,Date Read,' +
+    'Date Added,Bookshelves,Exclusive Shelf,My Review,Spoiler,Private Notes,Read Count,Owned Copies',
+  '"1618","Dune","Frank Herbert","Herbert, Frank","","=""0441013597""","=""9780441013593""",' +
+    '"5","4.26","Ace","Paperback","604","2005","1965","2019/04/02","2018/11/30",' +
+    '"fiction, sci-fi","read","","false","","1","1"',
+  '"830502","Ancillary Justice","Ann Leckie","Leckie, Ann","","=""""","=""""",' +
+    '"0","4.02","Orbit","Kindle Edition","409","2013","2013","","2021/07/14",' +
+    '"sci-fi","to-read","","false","","0","1"',
+].join(String.fromCharCode(10))
+
+describe('a Goodreads export', () => {
+  it('is recognised by the two columns only it writes', async () => {
+    const { columns } = await read('g.csv', GOODREADS)
+    expect(detectShape(columns)).toBe('goodreads')
+  })
+
+  it('reads the shelf a book is on as whether it was read', async () => {
+    // read, currently-reading and to-read are the three it allows, and two of
+    // them mean the book is not read. None of them means nobody said.
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records.map((r) => r.read)).toEqual([true, false])
+  })
+
+  it('gets past the quoting the site uses to stop a spreadsheet eating the number', async () => {
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records[0].isbn).toBe('9780441013593')
+  })
+
+  it('leaves the ISBN alone where the export wrote an empty one', async () => {
+    expect((await read('g.csv', GOODREADS)).records[1].isbn).toBeNull()
+  })
+
+  it('takes the year the work first appeared, not the year this edition was printed', async () => {
+    // Dune is 1965 and that Ace paperback is 2005. Only one of those is what
+    // "first published" means, and the file offers both.
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records[0].published_year).toBe(1965)
+  })
+
+  it('leaves the edition year unread rather than filing it under the wrong name', async () => {
+    const { columns } = await read('g.csv', GOODREADS)
+    expect(columns.find((c) => c.header === 'Year Published').field).toBeNull()
+    expect(columns.find((c) => c.header === 'Original Publication Year').field).toBe('published_year')
+  })
+
+  it("takes everybody's rating and not the reader's own", async () => {
+    // The prompts are told in as many words that a rating is not the reader's
+    // opinion. Filing My Rating here would make that a lie.
+    const { records, columns } = await read('g.csv', GOODREADS)
+    expect(records[0].rating).toBe(4.26)
+    expect(columns.find((c) => c.header === 'My Rating').field).toBeNull()
+  })
+
+  it('keeps a community rating that is a real one', async () => {
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records[1].rating).toBe(4.02)
+    // Zero is what a site writes for a book nobody has rated, and averaging it
+    // in with real scores would drag every reading of the shelf downwards.
+    expect(parseRating('0')).toBeNull()
+    expect(parseRating('6')).toBeNull()
+  })
+
+  it('reads the shelves as tags and the binding as a format', async () => {
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records[0].keywords).toBe('fiction, sci-fi')
+    expect(records[0].formats).toEqual(['physical'])
+    expect(records[1].formats).toEqual(['ebook'])
+  })
+
+  it('keeps the page count and the date the book was added', async () => {
+    const { records } = await read('g.csv', GOODREADS)
+    expect(records[0].pages).toBe(604)
+    expect(records[0].acquired_on).toBe('2018-11-30')
+  })
+
+  it('produces records the contract accepts', async () => {
+    const { records } = await read('g.csv', GOODREADS)
+    expect(() => records.map(normalise)).not.toThrow()
   })
 })

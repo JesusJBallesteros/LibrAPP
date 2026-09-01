@@ -14,6 +14,7 @@ import { linesFromPdf } from '../ingest/pdftext.js'
 import { stemOf } from '../store/library.js'
 import DemoWarning from '../components/DemoWarning.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
+import FillFromIsbn from '../components/FillFromIsbn.jsx'
 import { useT } from '../i18n/index.jsx'
 
 const FORMATS = ['physical', 'ebook', 'audio']
@@ -40,6 +41,9 @@ const FIELD_LABEL = {
   isbn: 'book.isbn',
   asin: 'book.asin',
   published_year: 'book.published',
+  // Everybody's rating, which is what the card and the prompts both call it.
+  rating: 'fill.field.rating',
+  pages: 'book.pages',
 }
 
 /** What a file of this shape most likely holds, where that is worth assuming. */
@@ -109,6 +113,10 @@ export default function ListImport({ lib, onOwl }) {
   const [columns, setColumns] = useState(null)
   const [mapping, setMapping] = useState({})
   const [shape, setShape] = useState(null)
+  // Whether to put this list's ISBNs to Open Library once it is in. Off unless
+  // asked: this is the one step that leaves the device, and a page that sends
+  // something because nobody unticked a box is not asking.
+  const [thenLookUp, setThenLookUp] = useState(false)
   const [rowError, setRowError] = useState(null)
   const [showAll, setShowAll] = useState(false)
   const { dropped, toggle, reset } = useKeepSet()
@@ -249,6 +257,10 @@ export default function ListImport({ lib, onOwl }) {
       const catalog = await library.rebuild()
       setPending(null)
       setResult({
+        // Kept for the step below, because the rows themselves go with the
+        // panel and these are what it needs.
+        codes: thenLookUp ? [...new Set(records.map((r) => r.isbn).filter(Boolean))] : [],
+        format,
         records: records.length,
         counts: catalog.counts,
         written,
@@ -340,7 +352,7 @@ export default function ListImport({ lib, onOwl }) {
               <label className="field">
                 {t('list.whichShape')}
                 <select value={shape || 'other'} onChange={(e) => chooseShape(e.target.value)}>
-                  {['kindle', 'calibre', 'other'].map((id) => (
+                  {['kindle', 'calibre', 'goodreads', 'other'].map((id) => (
                     <option key={id} value={id}>
                       {t(`list.shape.${id}`)}
                     </option>
@@ -367,11 +379,26 @@ export default function ListImport({ lib, onOwl }) {
             </p>
 
             {rows && (
-              <p className="tiny" style={{ marginTop: 12 }}>
-                {withIsbn
-                  ? t('list.withIsbn', { n: withIsbn, total: rows.length })
-                  : t('list.noIsbn')}
-              </p>
+              <div style={{ marginTop: 14 }}>
+                <p className="tiny">
+                  {withIsbn
+                    ? t('list.withIsbn', { n: withIsbn, total: rows.length })
+                    : t('list.noIsbn')}
+                </p>
+                {withIsbn > 0 && (
+                  <label className="tiny" style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <input
+                      type="checkbox"
+                      checked={thenLookUp}
+                      onChange={(e) => setThenLookUp(e.target.checked)}
+                    />
+                    <span>
+                      {t('list.thenLookUp')}{' '}
+                      <span className="faint">{t('list.thenLookUpNote')}</span>
+                    </span>
+                  </label>
+                )}
+              </div>
             )}
 
             {columns && (
@@ -560,6 +587,14 @@ export default function ListImport({ lib, onOwl }) {
             </div>
           )}
         </div>
+      )}
+
+      {/* Step five ------------------------------------------------------- */}
+      {result?.codes?.length > 0 && (
+        <section className="shelf-step" style={{ marginTop: 34 }}>
+          <h3 className="step-head">{t('list.stepFive')}</h3>
+          <FillFromIsbn lib={lib} codes={result.codes} format={result.format} />
+        </section>
       )}
     </div>
   )
