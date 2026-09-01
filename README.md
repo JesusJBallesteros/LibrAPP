@@ -21,8 +21,8 @@ and photograph a shelf.
 
 **Point a camera at a bookcase.** LibrAPP cuts the photograph up on your device
 and reads the spines into a catalog you can search, filter and browse. Bring in a
-spreadsheet, a store export or a barcode as well, and the same book arriving from
-three places becomes one entry rather than three.
+spreadsheet or a barcode as well, and the same book arriving from three places
+becomes one entry rather than three.
 
 **Then ask it things.** The [LibrAPPrian's desk](#the-desk) takes your own
 shelves as context: what to read next and why, which books by an author you have
@@ -73,7 +73,7 @@ The interface is in English and Spanish, chosen on the opening page.
 
 | | |
 |---|---|
-| **Import** | shelf photographs, spreadsheets, CSV, XML, store exports as PDF |
+| **Import** | shelf photographs, spreadsheets, CSV, barcodes |
 | **Merge** | the same book from several sources becomes one entry, not duplicates |
 | **Browse** | search, filter and group offline — no network, no waiting |
 | **Correct** | edit or remove any entry; corrections outlast every rebuild |
@@ -157,7 +157,7 @@ Internet Explorer and browsers older than the versions above are not supported.
 | Origin Private File System | keeping the catalog | nothing works |
 | Regex lookbehind and Unicode escapes | matching titles and names | nothing works |
 | File System Access API | saving to a folder you choose | browser storage is used instead |
-| `DecompressionStream` | reading `.xlsx` spreadsheets | CSV, XML and PDF still import |
+| `DecompressionStream` | reading `.xlsx` spreadsheets | CSV still imports |
 | `OffscreenCanvas`, `createImageBitmap` | tiling a photograph | import from a list instead |
 | Service workers | installing, and offline use | runs online only |
 
@@ -347,7 +347,7 @@ already in the catalog. See [Filling gaps](#filling-gaps-in-the-records).
 
 ### A list you already keep
 
-Open **Upload list** and drop in a `.xlsx`, `.csv`, `.tsv` or `.xml` file.
+Open **Upload list** and drop in a `.xlsx`, `.csv` or `.tsv` file.
 
 Columns are matched by name in English, Spanish and German, so a sheet headed
 `Autor / Título / Género` works as well as `author / title / genre`. Recognised
@@ -362,14 +362,6 @@ importing anything.
 out of the file, and any row can be **discarded**: a header line that parsed as
 a title, a wishlist entry sitting among books owned, anything in the sheet that
 is not a book. Everything is kept unless it is set aside.
-
-### A store export
-
-Export your library from Amazon's **Manage Your Content and Devices** page,
-printing the list to PDF, then drop the PDF into **Upload list**.
-
-This recovers the title, authors, publisher, purchase date, read status and how
-many devices and collections each book is in.
 
 ### Reading barcodes
 
@@ -526,7 +518,7 @@ vouch for its own format and not for what somebody typed into it:
   text with a year of 180 is right and is left alone.
 
 When two sources disagree, the more reliable one wins on facts it can know. A
-store export knows the purchase date; a photograph does not. Judgements like
+spreadsheet knows the purchase date; a photograph does not. Judgements like
 genre come from whichever source recorded one.
 
 ---
@@ -1055,7 +1047,7 @@ The suite covers the parts where being wrong is both easy and quiet:
 | `tests/build.test.js` | merging — one book from several sources, and which source wins a disagreement |
 | `tests/overrides.test.js` | corrections, and that a removal survives a rebuild |
 | `tests/records.test.js` | the source contract, and everything it refuses |
-| `tests/ingest.test.js` | spreadsheet, CSV and XML reading, tiling geometry, transcription validation |
+| `tests/ingest.test.js` | spreadsheet and CSV reading, tiling geometry, transcription validation |
 | `tests/matching.test.js` | title and author matching, the heuristics that decide identity |
 | `tests/providers.test.js` | the AI registry, the schema in all three dialects, and cost arithmetic |
 | `tests/i18n.test.js` | that both languages define the same keys with the same placeholders |
@@ -1068,8 +1060,8 @@ There are no browser tests. Everything here runs in Node against pure functions;
 the interface is checked by hand, and the deploy checks that the built app can
 actually be installed.
 
-The app has no backend. Everything runs in the browser: PDFs are read with
-pdf.js, spreadsheets with a small zip reader, photographs are pieced on a canvas.
+The app has no backend. Everything runs in the browser: spreadsheets are read
+with a small zip reader, photographs are pieced on a canvas.
 
 ```
 web/src/core/      matching, merging and the catalog format
@@ -1103,5 +1095,5 @@ issue](https://github.com/JesusJBallesteros/LibrAPP/issues) to ask.
 
 Note that this is a source-available licence, not an OSI-approved open source
 one. LibrAPP's own dependencies remain under their own terms: React, Zod and the
-Anthropic SDK under MIT, pdf.js under Apache-2.0. The app lists them itself, on
+Anthropic SDK under MIT, and the barcode reader under MIT. The app lists them
 its **About** page.

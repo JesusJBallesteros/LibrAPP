@@ -29,7 +29,6 @@ const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0'
 // font licences travel with the files, in public/fonts.
 const BUNDLED = [
   { name: 'React', licence: 'MIT', url: 'https://github.com/facebook/react' },
-  { name: 'pdf.js', licence: 'Apache-2.0', url: 'https://github.com/mozilla/pdf.js' },
   { name: 'Zod', licence: 'MIT', url: 'https://github.com/colinhacks/zod' },
   {
     name: 'Anthropic SDK',

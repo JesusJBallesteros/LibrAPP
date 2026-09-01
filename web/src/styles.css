@@ -550,6 +550,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* And the rows in that list, for the browsers that colour those separately. */
 .field select option { background: var(--paper-raised); color: var(--ink); }
 
+/* A sentence under a field, saying what that field does. The label above it is
+   set in small capitals with letter spacing, which is right for a two-word
+   caption and unreadable for a sentence. */
+.field-note {
+  font: 400 12px/1.4 var(--sans);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
 .more-filters { align-self: flex-end; padding-bottom: 5px; }
 .filter-count {
   display: inline-block;
@@ -1422,7 +1433,10 @@ pre.snippet {
 .import-controls {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  /* Top rather than bottom. These used to be a row of equal fields and either
+     lined them up; now some carry a sentence underneath and only the top edge
+     is common to all of them. */
+  align-items: start;
   gap: 24px;
   margin-top: 18px;
 }

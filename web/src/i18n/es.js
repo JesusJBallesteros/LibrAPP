@@ -12,7 +12,7 @@ export default {
   'landing.option.photo': 'Fotografía una estantería',
   'landing.option.photo.hint': 'La forma más rápida de catalogar los libros que tienes en papel.',
   'landing.option.list': 'Sube una lista',
-  'landing.option.list.hint': 'Una hoja de cálculo, un CSV, un XML o una lista en PDF.',
+  'landing.option.list.hint': 'Una hoja de c\u00e1lculo o un archivo CSV.',
   'landing.option.barcode': 'Lee códigos de barras',
   'landing.option.barcode.hint': 'Escanea o escribe el código de barras. Gratis, exacto y sin clave.',
   'landing.option.import': 'Trae un catálogo',
@@ -88,7 +88,7 @@ export default {
     'La lista de abajo pide m\u00e1s que los t\u00edtulos. El primer grupo est\u00e1 impreso en el lomo; el segundo lo recuerda el modelo, y queda marcado en cada libro que lo lleve.',
 
   'librarian.guide.list.1':
-    'Una hoja de c\u00e1lculo, CSV, TSV, XML, o un extracto de tienda en PDF. Tenga las columnas que tenga, se usan las que se reconocen y las dem\u00e1s se dejan estar.',
+    'Una hoja de c\u00e1lculo, un CSV o un TSV. Tenga las columnas que tenga, la p\u00e1gina ense\u00f1a qu\u00e9 ha entendido de cada una antes de importar nada.',
   'librarian.guide.list.2':
     'Un archivo con varias listas pregunta cu\u00e1l tomar. Importar una lista de deseos como biblioteca es el error que merece una pregunta de m\u00e1s.',
   'librarian.guide.list.3':
@@ -272,8 +272,7 @@ export default {
   'format.ebook': 'ebook',
   'format.audio': 'audiolibro',
 
-  'list.intro':
-    'Una hoja de cálculo, un CSV, un catálogo en XML o una lista en PDF. Las columnas se reconocen por su nombre en varios idiomas, así que una hoja con Autor / Título / Género funciona igual que una con author / title / genre. Todo se lee en este dispositivo.',
+  'list.intro': 'Usa un archivo que contenga la informaci\u00f3n de tus libros.',
   'list.drop': 'Suelta aquí una lista',
   'list.reading': 'Leyéndola…',
   'list.whatIsIn': '¿Qué hay en {name}?',
@@ -284,19 +283,19 @@ export default {
   'list.theseAre': 'Son',
   'list.trust': 'Confianza',
   'list.whatItHolds': '{n} {n:fila|filas} en esta lista',
-  'list.showingSome': 'Se muestran las primeras {shown}.',
+  'list.showingSome': 'Mostrando {shown} de {n}.',
+  'list.showMore': 'Ver {n} m\u00e1s',
   'list.showAll': 'Mostrar las {n}',
   'list.importAction': 'Importar y reconstruir',
-  'list.theseAreNote': 'es solo un valor por defecto: las filas que indican su propio formato lo conservan.',
-  'list.trustNote':
-    'decide quién gana cuando dos fuentes discrepan sobre el mismo libro: un extracto verificado pesa más que una lista hecha a mano.',
+  'list.theseAreNote': 'Un valor por defecto. Una fila que indica su propio formato lo conserva.',
+  'list.trustNote': 'Si dos fuentes discrepan, gana la de más confianza.',
   'list.missingTitle': 'Esta lista no traía todo lo que LibrAPP puede aprovechar.',
   'list.missing.read':
     'Sin columna de lectura. Todos los libros de este archivo constan como no registrados, y la pila de pendientes del escritorio excluye los libros sin estado de lectura.',
   'list.missing.acquired_on':
     'Sin columna de fecha. Nada de este archivo puede ordenarse por lo que lleva esperando, que es el orden de "Comprados y nunca abiertos".',
   'list.missing.genre':
-    'Sin columna de género. Estos libros no aportan nada a Géneros, en el escritorio. Rellenar huecos, en el escritorio, puede pedir géneros a un modelo.',
+    'No se ha encontrado columna de género. Prueba a pedirle a BibliotecAPPri@ que rellene huecos, en su escritorio.',
   'list.missing.authors':
     'Sin columna de autoría. Estos libros no se pueden agrupar por autor, y el mismo libro llegando de otra fuente es más difícil de reconocer.',
   'list.missing.series':
@@ -452,7 +451,7 @@ export default {
   'cap.unzip.label': 'Descompresión',
   'cap.unzip.needed': 'leer hojas .xlsx',
   'cap.unzip.fix':
-    'Las importaciones de CSV, XML y PDF siguen funcionando. Necesita Firefox 113 o Safari 16.4 y posteriores.',
+    'Las importaciones de CSV siguen funcionando. Necesita Firefox 113 o Safari 16.4 y posteriores.',
   'cap.canvas.label': 'Lienzo fuera de pantalla',
   'cap.canvas.needed': 'dividir una foto en recortes legibles',
   'cap.canvas.fix': 'Sin esto, importa tus libros desde una lista en vez de desde una foto.',
@@ -523,8 +522,6 @@ export default {
   'list.stepOne.note': 'Sube tu lista, en uno de estos formatos:',
   'list.format.xlsx': 'Una hoja de cálculo (.xlsx, .xlsm)',
   'list.format.csv': 'Un archivo CSV o TSV (.csv, .tsv, .txt)',
-  'list.format.xml': 'Un catálogo XML (.xml)',
-  'list.format.pdf': 'Una exportación de tienda en PDF (.pdf)',
 
   'list.stepTwo': 'Paso dos · Qué contiene',
   'list.whichShape': 'Lo escribió',

@@ -14,9 +14,7 @@ import {
   missingFields,
   parseRead,
   readCsv,
-  readXml,
   rowsToRecords,
-  xmlSections,
 } from '../src/ingest/table.js'
 import { TranscriptionError, loadTranscription, suggestGrid, tileBoxes } from '../src/ingest/shelf.js'
 
@@ -128,29 +126,6 @@ describe('CSV', () => {
   it('reads an escaped quote inside a quoted field', () => {
     const rows = readCsv('title\n"He said ""no"""\n')
     expect(rows[1][0]).toBe('He said "no"')
-  })
-})
-
-describe('XML', () => {
-  const XML = `<?xml version="1.0"?>
-    <library>
-      <section name="Library">
-        <book><title>Dune</title><author>Frank Herbert</author></book>
-      </section>
-      <section name="Wishlist">
-        <book><title>Not Mine Yet</title><author>Someone</author></book>
-      </section>
-    </library>`
-
-  it('lists the named sections a file holds', () => {
-    expect(xmlSections(readXml(XML))).toEqual(expect.arrayContaining(['Library', 'Wishlist']))
-  })
-
-  it('imports only the section asked for', () => {
-    // Importing a wishlist as a library is the mistake sections exist to
-    // prevent.
-    const mine = rowsToRecords(readXml(XML), 'Library')
-    expect(mine.map((r) => r.title)).toEqual(['Dune'])
   })
 })
 

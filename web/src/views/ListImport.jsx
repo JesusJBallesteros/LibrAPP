@@ -1,16 +1,6 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import {
-  FIELDS,
-  detectShape,
-  loadTable,
-  missingFields,
-  readXlsx,
-  readXml,
-  xmlSections,
-} from '../ingest/table.js'
-import { parseKindle } from '../ingest/kindle.js'
-import { linesFromPdf } from '../ingest/pdftext.js'
+import { FIELDS, detectShape, loadTable, missingFields, readXlsx } from '../ingest/table.js'
 import { stemOf } from '../store/library.js'
 import DemoWarning from '../components/DemoWarning.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
@@ -50,20 +40,18 @@ const FIELD_LABEL = {
 const FORMAT_FOR_SHAPE = { kindle: 'ebook' }
 const CONFIDENCES = ['high', 'medium', 'low']
 
-// How many rows to draw before asking. A spreadsheet exported from a store
-// can hold a few thousand, and every row here is a button and three pieces of
-// text. Drawing all of them costs a phone a visible pause for a list nobody
-// reads to the end.
-const ROWS_AT_FIRST = 200
+// How many rows to draw at a time. A spreadsheet can hold a few thousand and
+// every row here is a button and three pieces of text, so drawing all of them
+// costs a phone a visible pause for a list nobody reads to the end. Five is
+// enough to see what kind of thing came out of the file, which is what this
+// step is for; the count beside the heading says how many there are in total.
+const ROWS_AT_A_TIME = 5
 
 const suffixOf = (name) => (/\.[^.]+$/.exec(name || '') || [''])[0].toLowerCase()
 
-/** Which named lists a file holds, so a wishlist is never imported as a library. */
+/** Which sheets a workbook holds, so the wrong one is never imported. */
 async function probe(file) {
   const suffix = suffixOf(file.name)
-  if (suffix === '.xml') {
-    return { suffix, sections: xmlSections(readXml(await file.text())) }
-  }
   if (suffix === '.xlsx' || suffix === '.xlsm') {
     // readXlsx names its sheets in the error when asked for one that is absent,
     // which is a cheap way to list them without a second code path.
@@ -118,35 +106,14 @@ export default function ListImport({ lib, onOwl }) {
   // something because nobody unticked a box is not asking.
   const [thenLookUp, setThenLookUp] = useState(false)
   const [rowError, setRowError] = useState(null)
-  const [showAll, setShowAll] = useState(false)
+  const [shown, setShown] = useState(ROWS_AT_A_TIME)
   const { dropped, toggle, reset } = useKeepSet()
 
   const onFile = async (file) => {
     setError(null)
     setResult(null)
     setWorking(true)
-    const before = lib.catalog?.counts?.books ?? 0
     try {
-      if (suffixOf(file.name) === '.pdf') {
-        const pdfjs = await import('pdfjs-dist/build/pdf.mjs')
-        pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          'pdfjs-dist/build/pdf.worker.mjs',
-          import.meta.url,
-        ).href
-        const pages = await linesFromPdf(pdfjs, new Uint8Array(await file.arrayBuffer()))
-        const { records, stats } = parseKindle(pages)
-        await lib.run(async (library) => {
-          const { file: written } = await library.putSource({
-            name: await library.nameFor(`export-${stemOf(file.name)}`, file.name),
-            kind: 'store-export', origin: file.name,
-            format: 'ebook', confidence: 'high', records, stats,
-          })
-          const catalog = await library.rebuild()
-          setResult({ records: records.length, counts: catalog.counts, stats, written })
-          onOwl?.(arrival(before, catalog.counts?.books, records.length))
-        }, { onError: setError })
-        return
-      }
       const info = await probe(file)
       setPending({ file, ...info })
       setSection(info.sections[0] || '')
@@ -169,7 +136,7 @@ export default function ListImport({ lib, onOwl }) {
     let cancelled = false
     setRows(null)
     setRowError(null)
-    setShowAll(false)
+    setShown(ROWS_AT_A_TIME)
     reset()
     ;(async () => {
       try {
@@ -288,7 +255,7 @@ export default function ListImport({ lib, onOwl }) {
         <h3 className="step-head">{t('list.stepOne')}</h3>
         <p style={{ marginTop: 8 }}>{t('list.stepOne.note')}</p>
         <ul className="tiny faint" style={{ margin: '6px 0 0', paddingLeft: 18 }}>
-          {['xlsx', 'csv', 'xml', 'pdf'].map((kind) => (
+          {['xlsx', 'csv'].map((kind) => (
             <li key={kind}>{t(`list.format.${kind}`)}</li>
           ))}
         </ul>
@@ -305,8 +272,8 @@ export default function ListImport({ lib, onOwl }) {
           <DropZone
             mark="page"
             title={t('list.drop')}
-            hint=".xlsx · .csv · .tsv · .xml · .pdf"
-            accept=".xlsx,.xlsm,.csv,.tsv,.txt,.xml,.pdf"
+            hint=".xlsx · .csv · .tsv"
+            accept=".xlsx,.xlsm,.csv,.tsv,.txt"
             disabled={working || lib.busy}
             onFile={onFile}
           />
@@ -369,6 +336,10 @@ export default function ListImport({ lib, onOwl }) {
                     </option>
                   ))}
                 </select>
+                {/* Under the field it is about. It used to sit at the foot of
+                    the panel with the note about trust, where neither was
+                    beside the thing it described. */}
+                <span className="field-note">{t('list.theseAreNote')}</span>
               </label>
             </div>
 
@@ -466,7 +437,7 @@ export default function ListImport({ lib, onOwl }) {
                 <p className="tiny faint" style={{ marginTop: 8 }}>{t('keep.note')}</p>
 
                 <ul className="lookup-list">
-                  {(showAll ? rows : rows.slice(0, ROWS_AT_FIRST)).map((record, i) => {
+                  {rows.slice(0, shown).map((record, i) => {
                     const isDropped = dropped.has(i)
                     return (
                       <li key={i} className={isDropped ? 'discarded' : undefined}>
@@ -496,10 +467,16 @@ export default function ListImport({ lib, onOwl }) {
                   })}
                 </ul>
 
-                {rows.length > ROWS_AT_FIRST && !showAll && (
+                {rows.length > shown && (
                   <p className="tiny faint">
-                    {t('list.showingSome', { shown: ROWS_AT_FIRST, n: rows.length })}{' '}
-                    <button className="btn link" onClick={() => setShowAll(true)}>
+                    {t('list.showingSome', { shown: Math.min(shown, rows.length), n: rows.length })}{' '}
+                    <button
+                      className="btn link"
+                      onClick={() => setShown((was) => was + ROWS_AT_A_TIME)}
+                    >
+                      {t('list.showMore', { n: Math.min(ROWS_AT_A_TIME, rows.length - shown) })}
+                    </button>{' '}
+                    <button className="btn link" onClick={() => setShown(rows.length)}>
                       {t('list.showAll', { n: rows.length })}
                     </button>
                   </p>
@@ -529,13 +506,10 @@ export default function ListImport({ lib, onOwl }) {
                     </option>
                   ))}
                 </select>
+                <span className="field-note">{t('list.trustNote')}</span>
               </label>
             </div>
 
-            <p className="tiny faint" style={{ marginTop: 10 }}>
-              <strong>{t('list.theseAre')}</strong> {t('list.theseAreNote')}{' '}
-              <strong>{t('list.trust')}</strong> {t('list.trustNote')}
-            </p>
 
             {/* Beside the button, not at the top of a page this long. */}
             {error && (
@@ -564,15 +538,6 @@ export default function ListImport({ lib, onOwl }) {
             {t('list.nowHolds', { n: result.counts.books })}
             {result.written && ` ${t('list.savedAs', { name: result.written })}`}
           </p>
-          {result.stats?.amazon_declared_total ? (
-            <p className="tiny">
-              {t('list.declared', {
-                declared: result.stats.amazon_declared_total,
-                read: result.stats.parsed_records,
-                difference: result.stats.parsed_records - result.stats.amazon_declared_total,
-              })}
-            </p>
-          ) : null}
           {result.missing?.length > 0 && (
             <div className="missing-columns">
               <p className="tiny">

@@ -95,8 +95,6 @@ const MEANS_NOTHING = new Set(['n a', 'na', 'none', 'null', 'nil', 'unknown', 'd
 
 const MULTI_VOLUME = /(?<![\p{L}\p{N}_])vol(?:s|umes|umen|\.)?(?![\p{L}\p{N}_])|(?<![\p{L}\p{N}_])tomos?(?![\p{L}\p{N}_])/iu
 
-const SECTION_ELEMENTS = new Set(['book', 'item', 'entry', 'record'])
-
 /**
  * Which program wrote this file, judged by the columns only it writes.
  *
@@ -318,42 +316,6 @@ export async function readXlsx(bytes, sheet) {
   return rows.filter((r) => r.some((c) => c.trim()))
 }
 
-/**
- * Read a nested XML catalog, using child element names as columns.
- *
- * A file may hold more than one list, such as books owned beside books wanted,
- * so each row remembers the named group it came from and the caller decides
- * which groups to keep.
- */
-export function readXml(text) {
-  const doc = parseXml(text)
-  const out = []
-
-  const visit = (node, section) => {
-    const here = node.attrs?.name || node.attrs?.id || section
-    for (const child of node.children) {
-      if (SECTION_ELEMENTS.has(child.tag.toLowerCase()) && child.children.length) {
-        const row = {}
-        for (const gc of child.children) row[headerKey(gc.tag)] = clean(textOf(gc))
-        for (const [k, v] of Object.entries(child.attrs || {})) {
-          const key = headerKey(k)
-          if (!(key in row)) row[key] = clean(v)
-        }
-        row._section = here
-        out.push(row)
-      } else {
-        visit(child, here)
-      }
-    }
-  }
-  visit(doc, null)
-  return out
-}
-
-/** The named groups an XML catalog holds, for choosing between them. */
-export const xmlSections = (rows) =>
-  [...new Set(rows.map((r) => r._section).filter(Boolean))].sort()
-
 // ---------------------------------------------------------------------------
 
 /**
@@ -568,17 +530,6 @@ export function describeColumns(headers, rows, { fed = new Map(), mapping = null
   })
 }
 
-/** The columns an XML catalog turned out to have, which are its element names. */
-const xmlHeaders = (rows) => {
-  const seen = []
-  for (const row of rows) {
-    for (const key of Object.keys(row)) {
-      if (key !== '_section' && !seen.includes(key)) seen.push(key)
-    }
-  }
-  return seen
-}
-
 /**
  * Read any supported list file.
  *
@@ -591,26 +542,6 @@ const xmlHeaders = (rows) => {
  */
 export async function loadTable({ name, bytes, text, section = null, mapping = null }) {
   const suffix = (/\.[^.]+$/.exec(name || '') || [''])[0].toLowerCase()
-
-  if (suffix === '.xml') {
-    const rows = readXml(text ?? new TextDecoder('utf-8').decode(bytes))
-    const groups = xmlSections(rows)
-    if (section && !groups.map(headerKey).includes(headerKey(section))) {
-      throw new Error(`${name} has no section ${section}; it has ${JSON.stringify(groups)}`)
-    }
-    if (!section && groups.length > 1) {
-      throw new Error(
-        `${name} holds several lists: ${JSON.stringify(groups)}. ` +
-          'Choose one, or ask for every row.',
-      )
-    }
-    const wanted = (section || '').toLowerCase() === 'all' ? null : section
-    const fed = new Map()
-    return {
-      records: rowsToRecords(rows, wanted, { tally: fed, mapping }),
-      columns: describeColumns(xmlHeaders(rows), rows, { fed, mapping }),
-    }
-  }
 
   let table
   if (suffix === '.xlsx' || suffix === '.xlsm') {

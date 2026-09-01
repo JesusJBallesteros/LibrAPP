@@ -19,7 +19,7 @@ export default {
   'landing.option.photo': 'Photograph a shelf',
   'landing.option.photo.hint': 'The quickest way to catalog books you own on paper.',
   'landing.option.list': 'Upload a list',
-  'landing.option.list.hint': 'A spreadsheet, a CSV, an XML file, or a store export as PDF.',
+  'landing.option.list.hint': 'A spreadsheet or a CSV file.',
   'landing.option.barcode': 'Read barcodes',
   'landing.option.barcode.hint': 'Scan or type the barcode number. Free, exact, and no key needed.',
   'landing.option.import': 'Bring a catalog over',
@@ -99,7 +99,7 @@ export default {
     'The checklist below asks for more than titles. The first group is printed on the spine; the second is recalled by the model and is marked on every book that carries it.',
 
   'librarian.guide.list.1':
-    'A spreadsheet, CSV, TSV, XML, or a store export as PDF. Whatever columns it has, the ones it recognises are used and the rest are left alone.',
+    'A spreadsheet, a CSV or a TSV. Whatever columns it has, the page shows what it made of each one before anything is imported.',
   'librarian.guide.list.2':
     'A file holding several lists asks which one to take. Importing a wishlist as a library is the mistake worth one extra question.',
   'librarian.guide.list.3':
@@ -287,8 +287,7 @@ export default {
   'format.ebook': 'ebook',
   'format.audio': 'audio',
 
-  'list.intro':
-    'A spreadsheet, a CSV, an XML catalog, or a store export as PDF. Columns are matched by name in several languages, so a sheet headed Autor / Título / Género works as well as author / title / genre. Everything is read on this device.',
+  'list.intro': 'Use a file that contains your books information.',
   'list.drop': 'Drop a list',
   'list.reading': 'Reading it…',
   'list.whatIsIn': 'What is in {name}?',
@@ -299,19 +298,19 @@ export default {
   'list.theseAre': 'These are',
   'list.trust': 'Trust',
   'list.whatItHolds': 'The {n} {n:row|rows} in this list',
-  'list.showingSome': 'Showing the first {shown}.',
+  'list.showingSome': 'Showing {shown} of {n}.',
+  'list.showMore': 'Show {n} more',
   'list.showAll': 'Show all {n}',
   'list.importAction': 'Import and rebuild',
-  'list.theseAreNote': 'is only a fallback: rows naming their own format keep it.',
-  'list.trustNote':
-    'decides who wins when two sources disagree about the same book. A verified export outranks a hand-kept list.',
+  'list.theseAreNote': 'A fallback. A row naming its own format keeps it.',
+  'list.trustNote': 'If two sources disagree, higher trust wins.',
   'list.missingTitle': 'This list did not carry everything LibrAPP can use.',
   'list.missing.read':
     'No read column. Every book from this file counts as not recorded, and the unread pile at the desk excludes books with no read state.',
   'list.missing.acquired_on':
     'No date column. Nothing from this file can be ranked by how long it has waited, which is what "Bought, and never opened" is ordered by.',
   'list.missing.genre':
-    'No genre column. These books add nothing to Genres, at the desk. Fill in gaps, at the desk, can ask a model for genres.',
+    'No genre column found. Try asking the LibrAPPrian to "Fill in gaps", at its desk.',
   'list.missing.authors':
     'No author column. These books cannot be grouped by author, and the same book arriving from another source is harder to recognise as the same book.',
   'list.missing.series':
@@ -466,7 +465,7 @@ export default {
     'Only Chrome and Edge on a desktop offer this. Everywhere else LibrAPP uses its own storage, which works the same but is not visible to other programs.',
   'cap.unzip.label': 'Decompression',
   'cap.unzip.needed': 'reading .xlsx spreadsheets',
-  'cap.unzip.fix': 'CSV, XML and PDF imports still work. Needs Firefox 113 or Safari 16.4 and later.',
+  'cap.unzip.fix': 'CSV imports still work. Needs Firefox 113 or Safari 16.4 and later.',
   'cap.canvas.label': 'Offscreen canvas',
   'cap.canvas.needed': 'cutting a photograph into readable pieces',
   'cap.canvas.fix': 'Without it, import your books from a list instead of a photograph.',
@@ -537,8 +536,6 @@ export default {
   'list.stepOne.note': 'Upload your existing list, in one of these formats:',
   'list.format.xlsx': 'A spreadsheet (.xlsx, .xlsm)',
   'list.format.csv': 'A CSV or TSV file (.csv, .tsv, .txt)',
-  'list.format.xml': 'An XML catalog (.xml)',
-  'list.format.pdf': 'A store export as PDF (.pdf)',
 
   'list.stepTwo': 'Step two · What is in it',
   'list.whichShape': 'Written by',
