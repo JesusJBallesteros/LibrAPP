@@ -488,9 +488,14 @@ one size on every spine, large enough to read across a room, and a title longer
 than its spine ends in an ellipsis. The whole title is always in the tooltip and
 in the accessible name.
 
-**A book that has been read carries a stamp** at the foot of its spine: a ring
-with a check in it. Only read is marked; unread and not recorded are left
-blank, and the difference between those two is on the book's own record.
+**Every book that has been answered for carries a stamp** at the foot of its
+spine: a ring with a check in it for read, the same ring with a cross for
+unread. A book nobody has recorded is left bare, which is what makes that state
+readable from the shelf at all.
+
+**Point at a spine, or tap one on a phone, and it offers both.** Read and unread
+as one choice, and the star. Pressing the state a book is already in puts it
+back to not recorded.
 
 **Switch between Day and Night** from the sidebar, or leave it alone and it
 follows whatever your system asks for. The landing page has it too.

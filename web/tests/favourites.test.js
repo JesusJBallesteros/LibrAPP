@@ -289,7 +289,7 @@ describe('the controls on a spine', () => {
 
   it('draws them after the spine, so a tab from it lands on them', () => {
     const slot = sliceSlot(wall)
-    expect(slot.indexOf('spine-tools')).toBeGreaterThan(slot.indexOf('className={`spine${done'))
+    expect(slot.indexOf('spine-tools')).toBeGreaterThan(slot.indexOf('className={`spine${marked'))
   })
 
   it('leaves one star per slot, and it is the one in the controls', () => {
@@ -305,7 +305,7 @@ describe('the controls on a spine', () => {
     // It travelled below the spine when the controls moved after it, which
     // lifted every starred book off the shelf line by the height of a star.
     const slot = sliceSlot(wall)
-    expect(slot.indexOf('star-mark')).toBeLessThan(slot.indexOf('className={`spine${done'))
+    expect(slot.indexOf('star-mark')).toBeLessThan(slot.indexOf('className={`spine${marked'))
   })
 
   it('does not pull a spine out on a touch screen, and keeps the controls by it', () => {

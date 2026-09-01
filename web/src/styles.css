@@ -1178,7 +1178,8 @@ pre.snippet {
 /* A read spine keeps its foot clear. The title's max-height is 100% of this
    box, so the padding is what stops a long name running under the stamp
    rather than a second rule that would have to be kept in step with it. */
-.spine.read { padding-bottom: 26px; }
+/* Room at the foot for the stamp, whichever of the two it is. */
+.spine.stamped { padding-bottom: 26px; }
 
 /* The stamp itself. Absolute so it hangs off the foot without joining the
    flex row the lettering sits in, and turned a few degrees because a mark

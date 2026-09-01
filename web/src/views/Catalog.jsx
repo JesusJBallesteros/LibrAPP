@@ -718,7 +718,9 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
           }
           const book = item.book
           const name = byline(book, authors)
-          const done = readState(book) === 'read'
+          // Two of the three are stamped. Not recorded is the blank one.
+          const marked = readState(book)
+          const done = marked === 'read'
           return (
             <div
               key={book.id}
@@ -742,7 +744,7 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
               )}
 
               <button
-                className={`spine${done ? ' read' : ''}`}
+                className={`spine${marked === 'unknown' ? '' : ' stamped'}`}
                 aria-selected={selected?.id === book.id}
                 title={[book.title, name, done ? t('read.read') : null]
                   .filter(Boolean)
@@ -773,7 +775,7 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
                 {name && <span className="spine-author">{name}</span>}
                 {/* At the foot, where a library stamps one, and clear of the
                     lettering because a read spine carries the padding for it. */}
-                {done && <ReadMark />}
+                {marked !== 'unknown' && <ReadMark state={marked} />}
               </button>
 
               {/* What can be said about a book without opening it: whether it

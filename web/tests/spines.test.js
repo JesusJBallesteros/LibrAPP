@@ -294,7 +294,7 @@ describe('the read stamp', () => {
 
   const size = px('.spine-mark {', 'width')
   const foot = px('.spine-mark {', 'bottom')
-  const reserve = px('.spine.read {', 'padding-bottom')
+  const reserve = px('.spine.stamped {', 'padding-bottom')
 
   it('reserves enough of the spine that the lettering clears it', () => {
     // The title's max-height is 100% of the content box, so this padding is the
@@ -316,11 +316,27 @@ describe('the read stamp', () => {
     expect(mark).not.toMatch(/fill="(?!none)/)
   })
 
-  it('marks read and nothing else', () => {
-    // Unread and unrecorded are different answers and neither is one a stamp
-    // can give, so only the true case draws anything.
-    expect(catalog).toContain("readState(book) === 'read'")
-    expect(catalog).toContain('{done && <ReadMark />}')
+  it('marks two of the three states and leaves the third bare', () => {
+    // Not recorded has to be the blank one: a blank is what it means. Stamping
+    // the other two is what makes it legible, because a wall of unstamped
+    // spines used to say either "nobody has said" or "read it, did not say so"
+    // with no way to tell which from the shelf.
+    expect(catalog).toContain('const marked = readState(book)')
+    expect(catalog).toContain("{marked !== 'unknown' && <ReadMark state={marked} />}")
+  })
+
+  it('draws a different glyph for each of the two, not a different colour', () => {
+    // The eight spine fills are how a book is recognised across sorts and
+    // filters. Shape has to carry this, for the same reason the stamp is drawn
+    // rather than the spine tinted.
+    expect(mark).toContain("state === 'read' ?")
+    const glyphs = [...mark.matchAll(/d="([^"]+)"/g)].map((m) => m[1])
+    expect(glyphs).toHaveLength(2)
+    expect(glyphs[0]).not.toBe(glyphs[1])
+  })
+
+  it('says which state it is to anybody who cannot see it', () => {
+    expect(mark).toContain('t(`read.${state}`)')
   })
 
   it('does not take the click away from the spine', () => {
