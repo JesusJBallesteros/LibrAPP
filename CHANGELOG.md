@@ -1,5 +1,114 @@
 # Changelog
 
+## v2.6.0
+
+Two real exports went through the list importer and most of what they held fell
+on the floor. Fixing that turned into the whole of this version.
+
+### What the files were already carrying
+
+A Calibre library of 1164 books lost every acquisition date, every publication
+year and all 479 volume numbers. A Kindle export lost every ASIN and 80 ISBNs.
+None of it was refused: it was read, not recognised, and dropped without a word.
+
+Columns understood now: isbn, asin, published_year, and timestamp and date added
+for the date a book entered a collection. Calibre writes timestamp for that and
+pubdate for publication, and the two the wrong way round would date a whole
+library to the day it was catalogued.
+
+Three things the values themselves needed. A volume number written 1.0 is a
+volume number; the check was for digits only. But Calibre writes 1.0 in that
+column for every book it holds, series or not, so a volume number now belongs to
+a series or it is nothing. And 0101-01-01, which is what Calibre writes for a
+publication date nobody filled in, would date a shelf to the second century.
+
+A cell saying N/A is an empty cell. The first column holding anything claims a
+field, so a row whose ISBN-13 said N/A kept the N/A and dropped the real number
+sitting in ISBN-10 beside it.
+
+**Goodreads**, from its published column list. Its shelves are tags, its binding
+is a format, and its Exclusive Shelf is whether the book was read: two of that
+column's three values mean not read. It writes both Year Published and Original
+Publication Year, which are different facts, and only the second is what first
+published means. It writes both My Rating and Average Rating, and the community
+one is taken, because the prompts tell a model in as many words that a rating is
+not the reader's own.
+
+### Upload list, in five steps
+
+Step one is the file. Step two is what is in it, and everything in it is
+answered already: which program wrote it, guessed from the columns only one of
+them writes; what form the books are owned in, which a Kindle export settles on
+its own; how many carry an ISBN; and every column, with its heading as written,
+a value out of the file, what it was taken to mean and how many records it
+filled. A column read wrongly is pointed at the right field, and one that should
+be left alone is set to ignore.
+
+That last part is what makes the old report honest. The Calibre file was told it
+had no date column while carrying a date in all 1164 rows, under a heading
+nobody here had thought of. A column that is missing and a column that is
+present and unrecognised had been indistinguishable from the outside.
+
+Step three is the books, five at a time. Books with no author are counted there
+in the warning colour and can be set aside in one press: a title on its own
+cannot be grouped by author, and the same book arriving later from a photograph
+will not be recognised as the same book.
+
+Step four is the import. Step five fills in what is missing.
+
+### Filling books in
+
+**By ISBN.** The numbers a list carried, put to Open Library. Off unless asked:
+this is the step that leaves the device. After the import rather than before it,
+because the catalog must not wait on a network to exist. What comes back is
+shown with the book each record would fill in named, because a service asked for
+an ISBN it does not hold answers with some other book rather than with an error.
+
+**By title and author**, for the books a number cannot reach. Every hit is
+judged before it is offered, with the catalog's own matching rules: the title has
+to score and the author has to share a name. Run against a real Kindle export,
+14 of 100 matched, which is the data rather than the query: those books are
+Spanish and Open Library holds the works under their English titles. Which is
+the argument for the judging. The first hit for Artemisa is a poem by Carlos
+Sabat Ercasty, and it is refused.
+
+A hundred at a press, paced, cancellable. One request per book against a free
+service run by a charity.
+
+### Books on a Kindle
+
+Amazon ships no export button, and for a lot of people the Kindle is the largest
+collection they own. A fourth door on the front page gives two routes: ask
+Amazon for the data, which needs nothing but patience and gets more, or read the
+list off the page with a short script.
+
+The second route asks somebody to paste code into a console on a page where they
+are signed in to Amazon. That is how accounts get stolen, so the page says so
+plainly and says never to do it because a website asked, including this one. The
+script lost its ISBN lookup and with it every network call, which is what makes
+that warning short enough to be true.
+
+### On the shelf
+
+Read and unread as one choice, and the star, on the spine that is pulled out.
+Pressing the state a book is already in puts it back to not recorded. On a touch
+screen the tap that was already there brings them up, beside a spine that does
+not grow, because one at nearly twice its height is most of a phone.
+
+Unread carries a stamp of its own now: the same milled ring as read, with a
+cross instead of a check. A bare spine used to mean either "nobody has said" or
+"read it, did not say so", and stamping two of the three is what makes the third
+legible.
+
+Found while building it: hovering a spine had been hiding the star it was meant
+to reveal, because a spine scales from its foot and covers anything above it.
+
+### Two formats dropped
+
+XML catalogs and PDF store exports are gone, and with them the XML reader, the
+PDF text reader, the Kindle store-export parser and pdfjs-dist, which was the
+largest dependency here.
+
 ## v2.5.4
 
 A reader reading a shelf with Gemini got this back:
