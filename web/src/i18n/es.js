@@ -154,6 +154,7 @@ export default {
   'sidebar.working': 'trabajando…',
 
   'common.cancel': 'Cancelar',
+  'common.toTop': 'Volver arriba',
   'common.close': 'Cerrar',
   'common.tellMeHow': 'Cómo se hace',
   'common.dismiss': 'Descartar',

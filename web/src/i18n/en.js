@@ -165,6 +165,7 @@ export default {
   'sidebar.working': 'working…',
 
   'common.cancel': 'Cancel',
+  'common.toTop': 'Back to the top',
   'common.close': 'Close',
   'common.tellMeHow': 'Tell me how',
   'common.dismiss': 'Dismiss',

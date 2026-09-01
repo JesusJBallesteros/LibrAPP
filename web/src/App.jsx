@@ -3,6 +3,7 @@ import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
 import Librarian from './components/Librarian.jsx'
+import ToTop from './components/ToTop.jsx'
 import { dismiss as dismissLibrarian, isDismissed, restore as restoreLibrarian } from './store/librarian.js'
 import Landing from './views/Landing.jsx'
 import About from './views/About.jsx'
@@ -218,6 +219,8 @@ export default function App() {
             setView('catalog')
           }}
         />
+        <ToTop />
+
         <Librarian
           view="home"
           counts={counts}
@@ -393,6 +396,10 @@ export default function App() {
             }}
           />
         )}
+
+        {/* On every page, About included: it is a long one and this only goes
+            somewhere. */}
+        <ToTop />
 
         {/* Not on About: that is the page where the app explains itself, and a
             character talking over the explanation reads badly. */}

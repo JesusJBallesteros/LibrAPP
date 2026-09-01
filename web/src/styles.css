@@ -1803,6 +1803,39 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 .about-section p { color: var(--ink-soft); font-size: 14.5px; max-width: 68ch; }
 .view .about-section { max-width: 760px; }
 
+/* ------------------------------------------------------ back to the top -- */
+
+/* Opposite the owl and quieter than it: the owl has something to say and this
+   only goes somewhere. Half there until it is pointed at, so a long page is not
+   read past a solid button in the corner of every screenful. */
+.to-top {
+  position: fixed;
+  left: 26px;
+  bottom: 24px;
+  z-index: 60;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--paper-sunk);
+  color: var(--ink-soft);
+  cursor: pointer;
+  opacity: .45;
+  transition: opacity .14s, border-color .14s, color .14s;
+}
+.to-top:hover,
+.to-top:focus-visible { opacity: 1; border-color: var(--accent); color: var(--accent); }
+.to-top svg { width: 20px; height: 20px; display: block; }
+
+/* Clear of the sidebar, which is 252px of sticky column and has its own links
+   along the bottom. Below that width there is no sidebar to clear. */
+@media (min-width: 821px) {
+  .to-top { left: calc(252px + 26px); }
+}
+
 /* --------------------------------------------------- the LibrAPPrian -- */
 
 .librarian {
