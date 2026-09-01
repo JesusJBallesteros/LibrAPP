@@ -305,19 +305,16 @@ export default {
   'list.theseAreNote': 'A fallback. A row naming its own format keeps it.',
   'list.trustNote': 'If two sources disagree, higher trust wins.',
   'list.missingTitle': 'This list did not carry everything LibrAPP can use.',
-  'list.missing.read':
-    'No read column. Every book from this file counts as not recorded, and the unread pile at the desk excludes books with no read state.',
-  'list.missing.acquired_on':
-    'No date column. Nothing from this file can be ranked by how long it has waited, which is what "Bought, and never opened" is ordered by.',
+  'list.missing.read': 'No book has information about its read state.',
+  'list.missing.acquired_on': 'No book has information about acquisition date.',
   'list.missing.genre':
     'No genre column found. Try asking the LibrAPPrian to "Fill in gaps", at its desk.',
   'list.missing.authors':
     'No author column. These books cannot be grouped by author, and the same book arriving from another source is harder to recognise as the same book.',
-  'list.missing.series':
-    'No series column. Nothing from this file groups into a series, and volume numbers are lost.',
-  'list.missing.publisher': 'No publisher column.',
+  'list.missing.series': 'No series or volume information found.',
+  'list.missing.publisher': 'No publisher information.',
   'list.missingHow':
-    'Nothing is wrong with the import. Add the column and bring the same file again and it replaces this one rather than duplicating it.',
+    'If the corresponding columns are filled in the future, you can upload the file again.',
   'list.imported': '{n} records imported.',
   'list.nowHolds': 'The catalog now holds {n} books.',
   'list.declared':

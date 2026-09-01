@@ -290,19 +290,16 @@ export default {
   'list.theseAreNote': 'Un valor por defecto. Una fila que indica su propio formato lo conserva.',
   'list.trustNote': 'Si dos fuentes discrepan, gana la de más confianza.',
   'list.missingTitle': 'Esta lista no traía todo lo que LibrAPP puede aprovechar.',
-  'list.missing.read':
-    'Sin columna de lectura. Todos los libros de este archivo constan como no registrados, y la pila de pendientes del escritorio excluye los libros sin estado de lectura.',
-  'list.missing.acquired_on':
-    'Sin columna de fecha. Nada de este archivo puede ordenarse por lo que lleva esperando, que es el orden de "Comprados y nunca abiertos".',
+  'list.missing.read': 'Ningún libro trae información sobre si está leído.',
+  'list.missing.acquired_on': 'Ningún libro trae información sobre su fecha de adquisición.',
   'list.missing.genre':
     'No se ha encontrado columna de género. Prueba a pedirle a BibliotecAPPri@ que rellene huecos, en su escritorio.',
   'list.missing.authors':
     'Sin columna de autoría. Estos libros no se pueden agrupar por autor, y el mismo libro llegando de otra fuente es más difícil de reconocer.',
-  'list.missing.series':
-    'Sin columna de serie. Nada de este archivo se agrupa en saga, y se pierden los números de volumen.',
-  'list.missing.publisher': 'Sin columna de editorial.',
+  'list.missing.series': 'No se ha encontrado información de serie ni de volumen.',
+  'list.missing.publisher': 'Sin información de editorial.',
   'list.missingHow':
-    'La importación no ha ido mal. Añade la columna y trae el mismo archivo otra vez: sustituirá a este en vez de duplicarlo.',
+    'Si en el futuro rellenas esas columnas, puedes volver a subir el archivo.',
   'list.imported': '{n} registros importados.',
   'list.nowHolds': 'El catálogo tiene ahora {n} libros.',
   'list.declared':
