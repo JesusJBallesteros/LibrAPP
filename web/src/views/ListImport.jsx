@@ -5,6 +5,7 @@ import { stemOf } from '../store/library.js'
 import DemoWarning from '../components/DemoWarning.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import FillFromIsbn from '../components/FillFromIsbn.jsx'
+import FillFromSearch from '../components/FillFromSearch.jsx'
 import { useT } from '../i18n/index.jsx'
 
 const FORMATS = ['physical', 'ebook', 'audio']
@@ -105,6 +106,10 @@ export default function ListImport({ lib, onOwl }) {
   // asked: this is the one step that leaves the device, and a page that sends
   // something because nobody unticked a box is not asking.
   const [thenLookUp, setThenLookUp] = useState(false)
+  // And whether to search for the ones with no number at all. Off for the same
+  // reason, and for one more: this asks with words rather than with an
+  // identifier, and what comes back is a guess.
+  const [thenSearch, setThenSearch] = useState(false)
   const [rowError, setRowError] = useState(null)
   const [shown, setShown] = useState(ROWS_AT_A_TIME)
   const { dropped, toggle, dropAll, reset } = useKeepSet()
@@ -239,6 +244,11 @@ export default function ListImport({ lib, onOwl }) {
         // Kept for the step below, because the rows themselves go with the
         // panel and these are what it needs.
         codes: thenLookUp ? [...new Set(records.map((r) => r.isbn).filter(Boolean))] : [],
+        // The ones a number cannot reach. A book with an ISBN is better served
+        // by the lookup above, so it is not asked about twice.
+        toSearch: thenSearch
+          ? records.filter((r) => !r.isbn && r.title).map((r) => ({ title: r.title, authors: r.authors }))
+          : [],
         format,
         records: records.length,
         counts: catalog.counts,
@@ -378,6 +388,19 @@ export default function ListImport({ lib, onOwl }) {
                     <span>
                       {t('list.thenLookUp')}{' '}
                       <span className="faint">{t('list.thenLookUpNote')}</span>
+                    </span>
+                  </label>
+                )}
+                {rows.length > withIsbn && (
+                  <label className="tiny" style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <input
+                      type="checkbox"
+                      checked={thenSearch}
+                      onChange={(e) => setThenSearch(e.target.checked)}
+                    />
+                    <span>
+                      {t('list.thenSearch', { n: rows.length - withIsbn })}{' '}
+                      <span className="faint">{t('list.thenSearchNote')}</span>
                     </span>
                   </label>
                 )}
@@ -584,10 +607,19 @@ export default function ListImport({ lib, onOwl }) {
       )}
 
       {/* Step five ------------------------------------------------------- */}
-      {result?.codes?.length > 0 && (
+      {(result?.codes?.length > 0 || result?.toSearch?.length > 0) && (
         <section className="shelf-step" style={{ marginTop: 34 }}>
           <h3 className="step-head">{t('list.stepFive')}</h3>
-          <FillFromIsbn lib={lib} codes={result.codes} format={result.format} />
+          {result.codes.length > 0 && (
+            <FillFromIsbn lib={lib} codes={result.codes} format={result.format} />
+          )}
+          {result.toSearch.length > 0 && (
+            <>
+              {result.codes.length > 0 && <hr className="rule" style={{ marginTop: 24 }} />}
+              <h3 className="panel-head" style={{ marginTop: 18 }}>{t('fillSearch.head')}</h3>
+              <FillFromSearch lib={lib} books={result.toSearch} format={result.format} />
+            </>
+          )}
         </section>
       )}
     </div>

@@ -13,6 +13,7 @@
 import { build } from '../core/build.js'
 import { applyOverrides, emptyOverrides, readOverrides } from '../core/overrides.js'
 import { makeSource, normalise, readSource, SourceError } from '../core/records.js'
+import { fold } from '../core/textmatch.js'
 
 const SOURCES = 'sources'
 const CATALOG = 'catalog.json'
@@ -23,6 +24,10 @@ const MANUAL = 'manual'
 // Shared with the preview in ingest/isbn.js, so what is shown before keeping
 // and what is written on keeping cannot drift apart.
 const LOOKUP = 'isbn'
+// The other lookup: found by title and author rather than by number, and kept
+// apart from it because the two are not equally trustworthy and the reader
+// should be able to delete one without losing the other.
+const SEARCH = 'search'
 
 export class Library {
   constructor(backend) {
@@ -193,6 +198,40 @@ export class Library {
       origin: 'openlibrary.org',
       format,
       confidence: 'high',
+      records: kept,
+      stats: { entries: kept.length },
+    })
+  }
+
+  /**
+   * Records found by searching for a title and an author.
+   *
+   * Its own source, and low confidence, which is the honest label: a search
+   * returns what ranks highest for some words, and the judging that happens
+   * before anything gets here narrows that without making it certain. Kept
+   * apart from the ISBN lookup so a reader who decides they do not trust this
+   * can delete it and keep the other.
+   *
+   * Keyed by title and author, since these have no number: searching for the
+   * same book again corrects its entry rather than adding a second one.
+   */
+  async addSearchRecords(records, { format = 'physical' } = {}) {
+    const text = await this.backend.readText(`${SOURCES}/${SEARCH}.json`)
+    const existing = text ? readSource(JSON.parse(text), `${SEARCH}.json`).records : []
+    const byBook = new Map()
+    const keyOf = (r) => `${fold(r.title)}\u0000${fold((r.authors || [])[0] || '')}`
+    for (const record of existing) {
+      const { _source, ...rest } = record
+      byBook.set(keyOf(rest), rest)
+    }
+    for (const record of records) byBook.set(keyOf(record), normalise(record))
+    const kept = [...byBook.values()]
+    return this.putSource({
+      name: SEARCH,
+      kind: 'lookup',
+      origin: 'openlibrary.org',
+      format,
+      confidence: 'low',
       records: kept,
       stats: { entries: kept.length },
     })

@@ -504,6 +504,23 @@ export default {
   'list.thenLookUpNote': 'No se envía nada hasta que pulses el botón del paso cinco.',
   'list.stepFive': 'Paso cinco · Rellenar lo que falta',
 
+  'list.thenSearch': 'Buscar los otros {n} por título y autor.',
+  'list.thenSearchNote': 'Menos fiable. Cada coincidencia se enseña antes de guardarla.',
+
+  'fillSearch.head': 'Los que no traen número',
+  'fillSearch.offer': '{n} {n:libro no trae|libros no traen} ISBN. Se pueden buscar por título y autor.',
+  'fillSearch.what': 'Una petición por libro, así que esto es más lento y menos seguro que la búsqueda de arriba. Solo se ofrece coincidencia cuando el título y el autor encajan; lo demás vuelve como no encontrado.',
+  'fillSearch.ask': 'Buscar {n}',
+  'fillSearch.asking': 'Buscando…',
+  'fillSearch.progress': '{done} de {total}',
+  'fillSearch.soFar': '{done} de {total} hechos.',
+  'fillSearch.back': '{found} han encajado. {missing} no se han podido situar.',
+  'fillSearch.check': 'Comprueba cada coincidencia con el título que tiene al lado. Una búsqueda responde con lo más parecido que tiene, y lo más parecido no siempre es el libro.',
+  'fillSearch.matched': 'encaja con: {title}',
+  'fillSearch.nothingNew': 'no añade nada más que la coincidencia',
+  'fillSearch.keep': 'Guardar {n}',
+  'fillSearch.written': 'Guardados {n}. El catálogo tiene ahora {books} libros.',
+
   'fillIsbn.offer': '{n} de estos {n:libro trae|libros traen} ISBN, que identifica la edición exacta.',
   'fillIsbn.what': 'Open Library puede devolver las páginas, el año, las materias y la editorial de cada uno. Solo se envían los números.',
   'fillIsbn.ask': 'Buscar {n}',

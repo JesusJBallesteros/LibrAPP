@@ -518,6 +518,23 @@ export default {
   'list.thenLookUpNote': 'Nothing is sent until you press the button in step five.',
   'list.stepFive': 'Step five · Fill in what is missing',
 
+  'list.thenSearch': 'Search for the other {n} by title and author.',
+  'list.thenSearchNote': 'Less reliable. Every match is shown before it is kept.',
+
+  'fillSearch.head': 'The ones with no number',
+  'fillSearch.offer': '{n} {n:book has|books have} no ISBN. They can be searched for by title and author instead.',
+  'fillSearch.what': 'One request per book, so this is slower and less certain than the lookup above. A match is only offered where the title and the author both answer; anything else comes back as not found.',
+  'fillSearch.ask': 'Search for {n}',
+  'fillSearch.asking': 'Searching…',
+  'fillSearch.progress': '{done} of {total}',
+  'fillSearch.soFar': '{done} of {total} done.',
+  'fillSearch.back': '{found} matched. {missing} could not be placed.',
+  'fillSearch.check': 'Check each match against the title beside it. A search answers with the closest thing it has, and the closest thing is not always the book.',
+  'fillSearch.matched': 'matched: {title}',
+  'fillSearch.nothingNew': 'nothing to add beyond the match itself',
+  'fillSearch.keep': 'Keep {n}',
+  'fillSearch.written': 'Kept {n}. The catalog now holds {books} books.',
+
   'fillIsbn.offer': '{n} of these {n:book carries|books carry} an ISBN, which names the exact edition.',
   'fillIsbn.what': 'Open Library can return the page count, the year, the subjects and the publisher for each. Only the numbers are sent.',
   'fillIsbn.ask': 'Look up {n}',
