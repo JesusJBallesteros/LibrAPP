@@ -48,19 +48,7 @@ export default function Kindle({ onGo, onBack }) {
         <p>{t('kindle.intro')}</p>
       </div>
 
-      {/* Said before either route, because it is what decides whether the next
-          twenty minutes are worth spending. */}
       <section className="shelf-step" style={{ marginTop: 28 }}>
-        <h3 className="step-head">{t('kindle.whatYouGet')}</h3>
-        <ul style={{ marginTop: 8 }}>
-          <li>{t('kindle.get.title')}</li>
-          <li>{t('kindle.get.author')}</li>
-          <li>{t('kindle.get.asin')}</li>
-        </ul>
-        <p className="tiny faint" style={{ marginTop: 8 }}>{t('kindle.notGet')}</p>
-      </section>
-
-      <section className="shelf-step" style={{ marginTop: 34 }}>
         <h3 className="step-head">{t('kindle.ask.head')}</h3>
         <p style={{ marginTop: 8 }}>{t('kindle.ask.intro')}</p>
         <ol style={{ marginTop: 10 }}>
@@ -69,7 +57,7 @@ export default function Kindle({ onGo, onBack }) {
           <li>{t('kindle.ask.3')}</li>
           <li>{t('kindle.ask.4')}</li>
         </ol>
-        <p className="tiny faint" style={{ marginTop: 10 }}>{t('kindle.ask.note')}</p>
+        <p style={{ marginTop: 10 }}>{t('kindle.ask.note')}</p>
       </section>
 
       <section className="shelf-step" style={{ marginTop: 34 }}>
@@ -106,7 +94,6 @@ export default function Kindle({ onGo, onBack }) {
 
       <section className="shelf-step" style={{ marginTop: 34 }}>
         <h3 className="step-head">{t('kindle.then.head')}</h3>
-        <p style={{ marginTop: 8 }}>{t('kindle.then.intro')}</p>
         <div className="row" style={{ marginTop: 14 }}>
           <button className="btn primary" onClick={() => onGo('list')}>
             {t('kindle.then.go')}

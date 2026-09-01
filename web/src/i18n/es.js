@@ -568,24 +568,19 @@ export default {
   'nav.kindle': 'Libros en un Kindle',
   'kindle.eyebrow': 'Ingresos',
   'kindle.title': 'Libros en un Kindle',
-  'kindle.intro': 'Amazon no tiene botón de exportar. Hay dos formas de sacar la lista, y las dos acaban en un archivo que esta app sabe leer.',
+  'kindle.intro': 'Como Amazon no tiene una opci\u00f3n r\u00e1pida de exportar, tienes dos opciones:',
 
-  'kindle.whatYouGet': 'Qué se obtiene',
-  'kindle.get.title': 'El título de cada libro de tu biblioteca Kindle.',
-  'kindle.get.author': 'El autor, tal y como lo escribe Amazon.',
-  'kindle.get.asin': 'El número que Amazon le da a cada libro.',
-  'kindle.notGet': 'No la fecha de compra, ni el estado de lectura, ni las páginas, ni el ISBN. El paso cinco de Subir una lista puede buscar algo de eso después, y encuentra más para libros en inglés que en otros idiomas.',
 
-  'kindle.ask.head': 'O bien: pedirle los datos a Amazon',
-  'kindle.ask.intro': 'Más lento, y no requiere nada más que paciencia. Amazon envía un archivo por correo.',
+  'kindle.ask.head': '1. Recomendado: p\u00eddele tus datos a Amazon',
+  'kindle.ask.intro': 'M\u00e1s lento, y solo requiere paciencia.',
   'kindle.ask.1': 'Entra en Amazon y abre Mi cuenta, luego Privacidad de datos, luego Solicitar tus datos.',
   'kindle.ask.2': 'Elige la categoría que cubre el contenido digital y los pedidos, y envía la solicitud.',
   'kindle.ask.3': 'Confirma desde el correo que Amazon envía en el momento.',
   'kindle.ask.4': 'El enlace de descarga llega después, normalmente en unos días. Descomprime y busca el archivo que lista el contenido digital.',
-  'kindle.ask.note': 'Ese archivo trae más que el otro camino, fechas de compra incluidas. LibrAPP todavía no reconoce sus columnas, así que tendrás que asignarlas en el paso dos de Subir una lista, que está hecho para eso.',
+  'kindle.ask.note': 'Este archivo trae m\u00e1s informaci\u00f3n que la segunda opci\u00f3n. LibrAPP todav\u00eda no reconoce sus columnas, as\u00ed que as\u00edgnalas en el paso dos de Subir una lista.',
 
-  'kindle.run.head': 'O bien: leer la lista de la página tú mismo',
-  'kindle.run.intro': 'Más rápido, cuestión de minutos. Requiere pegar código en tu navegador.',
+  'kindle.run.head': '2. Leer la lista t\u00fa mismo',
+  'kindle.run.intro': 'Cuesti\u00f3n de minutos. Vas a pegar c\u00f3digo en tu navegador, mejor en un port\u00e1til. Esto da los t\u00edtulos, los autores y los n\u00fameros de serie de Amazon. Nada m\u00e1s.',
 
   'kindle.warn.head': 'Lee esto antes de pegar nada.',
   'kindle.warn.1': 'Vas a pegar código en una página donde tienes la sesión de Amazon abierta. El código que se pega ahí puede hacer todo lo que tú puedes hacer en esa página.',
@@ -601,8 +596,7 @@ export default {
   'kindle.copy': 'Copiar el código',
   'kindle.run.fails': 'Si dice que no ha encontrado libros, Amazon ha cambiado la página. No hay nada roto por tu parte y no se ha enviado nada.',
 
-  'kindle.then.head': 'Después trae el archivo aquí',
-  'kindle.then.intro': 'Subir una lista lo lee. Reconoce una exportación de Kindle y marca los libros como ebooks por su cuenta.',
+  'kindle.then.head': 'Ahora trae tu archivo aqu\u00ed',
   'kindle.then.go': 'Ir a Subir una lista',
 
   'list.eyebrow': 'Ingresos',
