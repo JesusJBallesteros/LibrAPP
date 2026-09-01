@@ -1145,6 +1145,7 @@ export default {
   'catalog.hiddenFiltersOn': 'Tambi\u00e9n filtrando por {filters}, que est\u00e1 oculto.',
   'catalog.showThem': 'Mostrar esos filtros',
   'catalog.clearTag': 'Quitar',
+  'catalog.readState': 'Leído o sin leer',
   'catalog.viewMode': 'C\u00f3mo mostrar los libros',
   'catalog.mode.list': 'Lista',
   'catalog.mode.spines': 'Lomos',

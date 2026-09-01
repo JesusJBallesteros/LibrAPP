@@ -1138,6 +1138,8 @@ pre.snippet {
   align-items: center;
   justify-content: flex-end;
   gap: 2px;
+  /* For the tools, which hang above the spine at its pulled-out height. */
+  position: relative;
 }
 /* Quiet, so a wall of unmarked books is not a row of stars, but never hidden
    outright: on a touch screen there is no hover to reveal it with, and a
@@ -1145,13 +1147,17 @@ pre.snippet {
 /* The glyph stays small; the area that answers a finger does not. A spine is
    26px wide, so the target takes the whole width and gains its height from
    padding. */
-.spine-slot .star-cell { padding: 6px 0; width: 100%; font-size: 16px; opacity: .3; }
-@media (hover: hover) {
-  .spine-slot .star-cell { opacity: 0; }
-  .spine-slot:hover .star-cell { opacity: 1; }
+/* Which books were singled out, readable across the whole wall without
+   touching anything. A mark rather than a control: the starring is done from
+   the tools that appear on the spine that is out. */
+.star-mark {
+  padding: 6px 0;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--accent);
 }
-.spine-slot .star-cell:focus-visible,
-.spine-slot.marked .star-cell { opacity: 1; }
 
 .spine {
   border: 0;
@@ -1222,6 +1228,7 @@ pre.snippet {
   transition: transform .14s ease;
 }
 .spine-slot:hover .spine,
+.spine-slot:focus-within .spine,
 .spine-slot.peeked .spine {
   transform: scale(1.75);
   z-index: 6;
@@ -1235,6 +1242,78 @@ pre.snippet {
    it and a second tap opens the book. */
 @media (hover: none) {
   .spine-slot:hover .spine { transform: none; z-index: auto; }
+}
+
+/* Read, unread and the star, on the spine that is out.
+
+   Above the pulled-out spine rather than above the slot: the spine scales from
+   its foot, so at 1.75 it reaches three quarters of its own height past the
+   slot's top and would cover anything sitting there. Which is what it had been
+   doing to the star.
+
+   The box touches the spine's top edge and holds its gap as padding, so a
+   pointer travelling from the spine to these controls never crosses a strip
+   belonging to neither and never loses the hover that is showing them. */
+.spine-tools {
+  position: absolute;
+  bottom: calc(var(--spine-h, 200px) * 1.75);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+/* Focus as well as hover, or these would be reachable with a mouse and with a
+   finger and by no other means: a keyboard cannot hover, and a control that is
+   display:none is not in the tab order to begin with. Tabbing to a spine brings
+   them up, and the next Tab lands on them. */
+.spine-slot:hover .spine-tools,
+.spine-slot:focus-within .spine-tools,
+.spine-slot.peeked .spine-tools { display: flex; }
+@media (hover: none) {
+  .spine-slot:hover .spine-tools { display: none; }
+  .spine-slot:focus-within .spine-tools,
+  .spine-slot.peeked .spine-tools { display: flex; }
+}
+
+/* Small, because this hangs over the shelf and a full-sized pair of buttons
+   would cover the books either side of the one being read. */
+.spine-tools .segmented {
+  background: var(--paper-raised);
+  box-shadow: 0 6px 18px rgba(20, 18, 15, .45);
+}
+.spine-tools .segmented button { padding: 5px 9px; font-size: 11px; }
+.spine-tools .star-cell {
+  width: auto;
+  padding: 4px 7px;
+  opacity: 1;
+  font-size: 15px;
+  border-radius: var(--radius);
+  background: var(--paper-raised);
+  border: 1px solid var(--control-line);
+  box-shadow: 0 6px 18px rgba(20, 18, 15, .45);
+}
+
+/* Narrower where the wall is narrow. A strip centred on the first spine of a
+   row hangs past the edge of a phone, and half of Read goes with it. */
+@media (max-width: 620px) {
+  .spine-tools { gap: 4px; }
+  .spine-tools .segmented button { padding: 4px 6px; font-size: 10px; letter-spacing: .06em; }
+  .spine-tools .star-cell { padding: 3px 5px; font-size: 13px; }
+}
+
+/* The mark is behind the pulled-out spine, and the tools carry a star of their
+   own, so it goes while they are up. */
+.spine-slot:hover .star-mark,
+.spine-slot:focus-within .star-mark,
+.spine-slot.peeked .star-mark { visibility: hidden; }
+@media (hover: none) {
+  .spine-slot:hover .star-mark { visibility: visible; }
+  .spine-slot:focus-within .star-mark,
+  .spine-slot.peeked .star-mark { visibility: hidden; }
 }
 
 /* The author, beside the title across the thickness of the spine. Hidden until
@@ -1253,9 +1332,11 @@ pre.snippet {
   margin-inline-start: 3px;
 }
 .spine-slot:hover .spine-author,
+.spine-slot:focus-within .spine-author,
 .spine-slot.peeked .spine-author { display: block; }
 @media (hover: none) {
   .spine-slot:hover .spine-author { display: none; }
+  .spine-slot:focus-within .spine-author,
   .spine-slot.peeked .spine-author { display: block; }
 }
 

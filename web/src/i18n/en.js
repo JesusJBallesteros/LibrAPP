@@ -1157,6 +1157,7 @@ export default {
   'catalog.hiddenFiltersOn': 'Also filtering by {filters}, which is hidden.',
   'catalog.showThem': 'Show those filters',
   'catalog.clearTag': 'Clear',
+  'catalog.readState': 'Read or unread',
   'catalog.viewMode': 'How to show the books',
   'catalog.mode.list': 'List',
   'catalog.mode.spines': 'Spines',

@@ -247,3 +247,58 @@ describe('the three things only the reader knows', () => {
     }
   })
 })
+
+// What a spine offers without being opened.
+//
+// Read state and the star are the two things about a book that can only come
+// from the reader, and both needed the card open. They are on the spine that is
+// pulled out now, which meant deciding three things that source assertions are
+// the right shape for: that the pair does not lose the third read value, that
+// the controls are reachable without a mouse, and that there is one star per
+// slot rather than two.
+describe('the controls on a spine', () => {
+  const wall = readFileSync(new URL('../src/views/Catalog.jsx', import.meta.url), 'utf8')
+  const css = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
+
+  it('offers read and unread as one choice, not two switches', () => {
+    expect(wall).toContain("<div className=\"segmented\" role=\"group\"")
+    expect(wall).toMatch(/\['read', 'unread'\]\.map/)
+    expect(wall).toContain("aria-pressed={book.read === value}")
+  })
+
+  it('puts a book back to not recorded when its own state is pressed again', () => {
+    // The catalog holds three values and a pair of buttons can show two. Without
+    // this the third would be reachable from the book's form and nowhere else,
+    // and a state set by a slip of the finger could not be undone here.
+    expect(wall).toContain('const next = book.read === value ? null : value')
+  })
+
+  it('shows the controls on focus, not only on hover', () => {
+    // A keyboard cannot hover, and an element that is display:none is not in
+    // the tab order to be focused in the first place. Both rules: the one for
+    // a pointer that hovers and the one for a screen that does not.
+    const rules = css.match(/\.spine-slot:focus-within \.spine-tools/g) || []
+    expect(rules.length).toBe(2)
+  })
+
+  it('draws them after the spine, so a tab from it lands on them', () => {
+    const slot = wall.slice(wall.indexOf('className={`spine-slot'), wall.indexOf('</div>\n            )\n          }'))
+    expect(slot.indexOf('spine-tools')).toBeGreaterThan(slot.indexOf('className={`spine${done'))
+  })
+
+  it('leaves one star per slot, and it is the one in the controls', () => {
+    // The mark above a resting spine says which books were singled out. As a
+    // second button with the same name it offered every book twice to anybody
+    // listening rather than looking.
+    const slot = wall.slice(wall.indexOf('className={`spine-slot'), wall.indexOf('</div>\n            )\n          }'))
+    expect(slot).toContain('<span className="star-mark" aria-hidden="true">')
+    expect((slot.match(/<Star /g) || []).length).toBe(1)
+  })
+
+  it('hangs them clear of the spine at its pulled-out height', () => {
+    // The spine scales from its foot, so it covers anything sitting at the top
+    // of the slot. Which is what it had been doing to the star.
+    expect(wall).toContain("'--spine-h': `${spineHeight(book)}px`")
+    expect(css).toContain('bottom: calc(var(--spine-h, 200px) * 1.75)')
+  })
+})

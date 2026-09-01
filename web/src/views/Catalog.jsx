@@ -188,6 +188,23 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       await library.rebuild()
     })
 
+  /**
+   * Read or unread, from the shelf itself.
+   *
+   * Pressing the state a book is already in clears it back to not recorded.
+   * The catalog holds three values and the pair on a spine can only show two,
+   * so without that the third would be reachable from the book's own form and
+   * nowhere else, and a book marked read by a slip of the finger could not be
+   * put back to what it was.
+   */
+  const setBookRead = (book, value) =>
+    lib?.run(async (library) => {
+      const overrides = await library.readOverrides()
+      const next = book.read === value ? null : value
+      await library.writeOverrides(setOverride(overrides, book, { read: next }))
+      await library.rebuild()
+    })
+
   const hiddenNames = hiddenActiveFilters({ format, source, loan, favourite }).map((name) =>
     t(LABEL[name]),
   )
@@ -543,6 +560,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
           selected={selected}
           onPick={setSelected}
           onToggle={toggleFavourite}
+          onRead={setBookRead}
           busy={lib?.busy}
           items={wall}
           t={t}
@@ -676,7 +694,7 @@ function Star({ book, onToggle, t, busy }) {
  * height that looked like a page count and was not would be the app inventing
  * data about the books.
  */
-function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t }) {
+function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, busy, t }) {
   // Which spine a finger has pulled out. A mouse does this with hover and needs
   // no state; a touch screen has no hover, so the first tap reads the spine and
   // the second opens it. Without that, a tap would open a book whose title the
@@ -707,12 +725,11 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
               className={`spine-slot${book.favourite ? ' marked' : ''}${
                 peeked === book.id ? ' peeked' : ''
               }`}
-              style={{ width: spineWidth(book) }}
+              // The tools below sit above the spine once it is pulled out, and
+              // how far above depends on how tall this one is, so the height
+              // goes into the slot for the stylesheet to work from.
+              style={{ width: spineWidth(book), '--spine-h': `${spineHeight(book)}px` }}
             >
-              {/* Above the spine rather than on it: a spine is 26 pixels wide
-                  and its lettering already fills it. First in the column, so
-                  it sits over the spine rather than down on the shelf board. */}
-              <Star book={book} onToggle={onToggle} t={t} busy={busy} />
               <button
                 className={`spine${done ? ' read' : ''}`}
                 aria-selected={selected?.id === book.id}
@@ -747,6 +764,48 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, busy, t 
                     lettering because a read spine carries the padding for it. */}
                 {done && <ReadMark />}
               </button>
+
+              {/* What can be said about a book without opening it: whether it
+                  has been read, and whether it was singled out. Both are the
+                  reader's own, neither can come from a source, and both used to
+                  need the card open. Above the spine at its pulled-out height,
+                  because a spine is 26 pixels wide and this is not.
+
+                  After the spine in the markup, though it is drawn above it.
+                  These appear when the spine is focused, and a control that
+                  came first would be behind the focus that revealed it. */}
+              <div className="spine-tools">
+                <div className="segmented" role="group" aria-label={t('catalog.readState')}>
+                  {['read', 'unread'].map((state) => {
+                    const value = state === 'read'
+                    return (
+                      <button
+                        key={state}
+                        aria-pressed={book.read === value}
+                        disabled={busy}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onRead(book, value)
+                        }}
+                      >
+                        {t(`read.${state}`)}
+                      </button>
+                    )
+                  })}
+                </div>
+                <Star book={book} onToggle={onToggle} t={t} busy={busy} />
+              </div>
+
+              {/* A mark, not a control. The one in the tools above does the
+                  starring, and two buttons with the same name in one slot is
+                  the same book offered twice to anybody listening rather than
+                  looking. This says which books are singled out while the wall
+                  sits still, which is what it was for. */}
+              {book.favourite && (
+                <span className="star-mark" aria-hidden="true">
+                  {'★'}
+                </span>
+              )}
             </div>
           )
         })}
