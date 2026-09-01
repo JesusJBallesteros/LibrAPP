@@ -25,7 +25,11 @@ const kindleSource = makeSource({
 })
 
 const xmlText = readFileSync(xmlPath, 'utf8')
-const listRecords = await loadTable({ name: 'biblioteca.xml', text: xmlText, section: 'Owned' })
+const { records: listRecords } = await loadTable({
+  name: 'biblioteca.xml',
+  text: xmlText,
+  section: 'Owned',
+})
 const listSource = makeSource({
   name: 'catalog', kind: 'table', origin: 'biblioteca.xml',
   format: 'physical', confidence: 'medium', records: listRecords,

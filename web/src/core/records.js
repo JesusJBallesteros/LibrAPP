@@ -48,6 +48,10 @@ export const RECORD_FIELDS = {
   // looked up is not looked up again, and so a later lookup can be matched back
   // to the entry it belongs to.
   isbn: null,
+  // Amazon's own number for an edition. Not an ISBN and not convertible into
+  // one: a Kindle edition often has no ISBN at all, and this is the only stable
+  // handle such a book has.
+  asin: null,
   collapsed: false,
   listed_volumes: null,
   flags: [],

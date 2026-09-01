@@ -10,6 +10,7 @@
 // cell, is marked `collapsed` rather than treated as a single book.
 
 import { clean, creditsAndLabel, stripAccents } from '../core/textmatch.js'
+import { cleanIsbn, toIsbn13, validIsbn } from './isbn.js'
 import { findAll, parseXml, textOf } from './xml.js'
 import { readZip, readZipText } from './zip.js'
 
@@ -27,7 +28,22 @@ export const COLUMNS = {
   read: ['read', 'leido', 'gelesen', 'status', 'estado'],
   format: ['format', 'formato', 'media', 'soporte', 'source', 'fuente', 'edition'],
   location: ['location', 'shelf', 'estanteria', 'ubicacion', 'where'],
+  // The number printed on the edition. Worth carrying even though nothing here
+  // uses it, because it is the one field that lets a book be looked up later
+  // without guessing, and a list that has one is throwing it away otherwise.
+  isbn: ['isbn', 'isbn13', 'isbn 13', 'isbn10', 'isbn 10', 'ean', 'barcode'],
+  // Amazon's own number. Not an ISBN and not interchangeable with one: it
+  // identifies a Kindle edition, which frequently has no ISBN at all.
+  asin: ['asin', 'amazon id', 'kindle id'],
+  published_year: ['published', 'first published', 'published year', 'pubdate',
+    'publication date', 'year', 'ano', 'publicado', 'erscheinungsjahr'],
 }
+
+// Header spellings that name a date a book entered a collection rather than a
+// date it was published. Calibre writes `timestamp` for the former and
+// `pubdate` for the latter, and getting them the wrong way round would date a
+// whole library to the day it was catalogued.
+COLUMNS.acquired_on.push('timestamp', 'date added', 'added', 'anadido', 'created')
 
 const TRUE_WORDS = new Set(['y', 'yes', 'true', '1', 'x', 'si', 'sí', 'leido', 'leído', 'read', 'ja', 'gelesen'])
 const FALSE_WORDS = new Set(['n', 'no', 'false', '0', '', 'unread', 'pendiente', 'nein', 'ungelesen'])
@@ -42,6 +58,17 @@ const FORMAT_WORDS = {
   hardback: 'physical', paperback: 'physical', 'tapa dura': 'physical', bolsillo: 'physical',
   audio: 'audio', audiobook: 'audio', audiolibro: 'audio',
 }
+
+/**
+ * Cells that are a way of writing an empty cell.
+ *
+ * An exporter that has nothing to put in a column often writes something
+ * rather than leaving it blank. Taken at face value it wins the column: a row
+ * whose ISBN-13 says N/A and whose ISBN-10 holds a real number would keep the
+ * N/A and drop the number, because the first column to hold anything claims
+ * the field.
+ */
+const MEANS_NOTHING = new Set(['n a', 'na', 'none', 'null', 'nil', 'unknown', 'desconocido', '-', '--'])
 
 const MULTI_VOLUME = /(?<![\p{L}\p{N}_])vol(?:s|umes|umen|\.)?(?![\p{L}\p{N}_])|(?<![\p{L}\p{N}_])tomos?(?![\p{L}\p{N}_])/iu
 
@@ -61,6 +88,22 @@ export function parseRead(value) {
   if (TRUE_WORDS.has(word)) return true
   if (FALSE_WORDS.has(word)) return word === '' ? null : false
   return null
+}
+
+/**
+ * A four-digit year from a date cell, where the cell names a plausible one.
+ *
+ * Calibre writes 0101-01-01 for a book whose publication date nobody filled
+ * in, and 43 rows of one real library carry it. Written through, that becomes
+ * a shelf the profile describes as reaching back to the second century.
+ */
+export function parseYear(value) {
+  const m = /(\d{4})/.exec(String(value ?? '').trim())
+  if (!m) return null
+  const year = Number(m[1])
+  // The printing press at one end and next year at the other, since a
+  // pre-order is a book somebody owns.
+  return year >= 1450 && year <= new Date().getFullYear() + 1 ? year : null
 }
 
 export function parseDate(value) {
@@ -84,6 +127,14 @@ export function parseFormats(value) {
     if (word && !found.includes(word)) found.push(word)
   }
   return found
+}
+
+/** A volume number, whole or fractional, or null where the cell says nothing. */
+export function parseIndex(value) {
+  const text = String(value ?? '').trim()
+  if (!/^\d+(\.\d+)?$/.test(text)) return null
+  const number = Number(text)
+  return Number.isFinite(number) ? number : null
 }
 
 /**
@@ -230,43 +281,118 @@ export const xmlSections = (rows) =>
 
 // ---------------------------------------------------------------------------
 
+/**
+ * An ISBN as thirteen digits, or nothing.
+ *
+ * A cell may hold either length, and the two are the same book. Storing both
+ * spellings would make one book look like two to anything comparing them.
+ */
+export function keptIsbn(value) {
+  const code = cleanIsbn(value)
+  return code && validIsbn(code) ? toIsbn13(code) : null
+}
+
+/** Amazon's ten characters, which are not digits and carry no check. */
+export function cleanAsin(value) {
+  const code = String(value ?? '').trim().toUpperCase()
+  return /^[A-Z0-9]{10}$/.test(code) ? code : null
+}
+
 const FIELD_FOR = new Map(
   Object.entries(COLUMNS).flatMap(([field, names]) => names.map((n) => [n, field])),
 )
 
-/** Turn already-keyed rows into source records, optionally one group only. */
-export function rowsToRecords(rows, section = null) {
+/**
+ * Which column fed which field, for one row.
+ *
+ * The first column holding something usable claims a field, so an export
+ * writing both ISBN-13 and ISBN-10 fills the ISBN from whichever of the two
+ * that row actually has. `from` is the same decision seen the other way round,
+ * and is what lets the reading report itself without a second rule that could
+ * disagree with this one.
+ */
+export function pickFields(row) {
+  const picked = {}
+  const from = {}
+  for (const [key, value] of Object.entries(row)) {
+    const field = FIELD_FOR.get(key)
+    if (!field || !value || field in picked) continue
+    if (MEANS_NOTHING.has(headerKey(value))) continue
+    picked[field] = value
+    from[field] = key
+  }
+  return { picked, from }
+}
+
+/**
+ * Whether a column's value survived into the record.
+ *
+ * Feeding a field is not the same as filling one. Calibre writes a series index
+ * on every row it holds, and the ones with no series are dropped; a publication
+ * date of 0101 is dropped as well. A report counting cells rather than values
+ * would credit those columns with rows they did not fill.
+ */
+const landed = (record, field) => {
+  const value = field === 'format' ? record.formats : record[field]
+  if (Array.isArray(value)) return value.length > 0
+  return value !== null && value !== undefined && value !== ''
+}
+
+/**
+ * Turn already-keyed rows into source records, optionally one group only.
+ *
+ * `tally`, when given, is filled with the number of records each column
+ * actually put something into, so an account of the reading can be given
+ * without a second pass that might read the file differently.
+ */
+export function rowsToRecords(rows, section = null, tally = null) {
   const out = []
   for (const row of rows) {
     if (section && headerKey(row._section || '') !== headerKey(section)) continue
 
-    const picked = {}
-    for (const [key, value] of Object.entries(row)) {
-      const field = FIELD_FOR.get(key)
-      if (field && value && !(field in picked)) picked[field] = value
-    }
+    const { picked, from } = pickFields(row)
     const title = clean(picked.title || '')
     if (!title) continue
 
     const [authors, label] = creditsAndLabel(picked.authors || '')
-    const indexRaw = picked.series_index || ''
-    const collapsed = isCollapsed(title, indexRaw)
+    // A volume number belongs to a series. Calibre writes 1.0 in this column
+    // for every book it holds, series or not, so read on its own it would put
+    // 'volume 1' on 685 standalone books of one real library and, worse, tell
+    // the check below that every one of them is a numbered volume.
+    const series = picked.series || null
+    const index = series ? parseIndex(picked.series_index) : null
+    const collapsed = isCollapsed(title, index)
     const record = {
       title,
       authors,
       author_label: label,
       genre: picked.genre || null,
       keywords: picked.keywords || null,
-      series: picked.series || null,
-      series_index: /^\d+$/.test(String(indexRaw).trim()) ? Number(indexRaw) : null,
+      series,
+      // Calibre writes 1.0 rather than 1, and 479 volumes of one real library
+      // came through numberless because of it. A fractional index is a real
+      // thing in that world (2.5 for a novella between two novels), so the
+      // number is kept as written rather than rounded to the nearest whole.
+      series_index: index,
       publisher: picked.publisher || null,
       acquired_on: parseDate(picked.acquired_on || ''),
       read: parseRead(picked.read || ''),
       location: picked.location || null,
       collapsed,
       formats: parseFormats(picked.format || ''),
+      // Only a number that checks out. An ISBN is kept so a book need not be
+      // looked up twice and so a later lookup can be matched back to its
+      // entry, and a mistyped one would do the opposite of both.
+      isbn: keptIsbn(picked.isbn),
+      asin: cleanAsin(picked.asin),
+      published_year: parseYear(picked.published_year || ''),
     }
     if (collapsed) record.listed_volumes = title
+    if (tally) {
+      for (const [field, key] of Object.entries(from)) {
+        if (landed(record, field)) tally.set(key, (tally.get(key) || 0) + 1)
+      }
+    }
     out.push(record)
   }
   return out
@@ -316,10 +442,62 @@ function keyRows(table) {
 }
 
 /**
- * Read any supported list file into source records.
+ * What each column in the file was taken to mean.
+ *
+ * A file has always been read silently: a column whose heading this app does
+ * not recognise is dropped without a word, and afterwards a report of what the
+ * list "did not carry" is worked out from the records. The two are
+ * indistinguishable from the outside, and the difference matters. One real
+ * export was told it had no date column while carrying a date in all 1164 of
+ * its rows, under a heading nobody here had thought of.
+ *
+ * So the reading says what it did. One entry per column, in the order the file
+ * writes them, carrying the heading as written, the field it fed, and a value
+ * out of the file so a heading like `timestamp` can be judged by what is
+ * underneath it rather than by its name.
+ *
+ * `rows` counts how many rows a column actually fed, which is not the same as
+ * whether it names a field. An export writing both ISBN-13 and ISBN-10 has two
+ * columns for one field; the second is not idle, it fills in for the rows where
+ * the first says nothing. Counted rather than reasoned about, from the same
+ * function that fills the records.
+ */
+export function describeColumns(headers, rows, fed = new Map()) {
+  return headers.map((header) => {
+    const key = headerKey(header)
+    const field = FIELD_FOR.get(key) ?? null
+    let sample = null
+    for (const row of rows) {
+      const value = String(row?.[key] ?? '').trim()
+      if (value && !MEANS_NOTHING.has(headerKey(value))) {
+        sample = value
+        break
+      }
+    }
+    return { header: String(header), key, field, used: (fed.get(key) || 0) > 0, rows: fed.get(key) || 0, sample }
+  })
+}
+
+/** The columns an XML catalog turned out to have, which are its element names. */
+const xmlHeaders = (rows) => {
+  const seen = []
+  for (const row of rows) {
+    for (const key of Object.keys(row)) {
+      if (key !== '_section' && !seen.includes(key)) seen.push(key)
+    }
+  }
+  return seen
+}
+
+/**
+ * Read any supported list file.
  *
  * `bytes` for a spreadsheet, `text` for anything else; the caller knows which
  * because it knows the file's name.
+ *
+ * Returns the records and an account of how the file's columns were read. Both
+ * come from one pass, so what the page shows about a column and what ends up
+ * in a record cannot disagree.
  */
 export async function loadTable({ name, bytes, text, section = null }) {
   const suffix = (/\.[^.]+$/.exec(name || '') || [''])[0].toLowerCase()
@@ -336,7 +514,12 @@ export async function loadTable({ name, bytes, text, section = null }) {
           'Choose one, or ask for every row.',
       )
     }
-    return rowsToRecords(rows, (section || '').toLowerCase() === 'all' ? null : section)
+    const wanted = (section || '').toLowerCase() === 'all' ? null : section
+    const tally = new Map()
+    return {
+      records: rowsToRecords(rows, wanted, tally),
+      columns: describeColumns(xmlHeaders(rows), rows, tally),
+    }
   }
 
   let table
@@ -348,5 +531,10 @@ export async function loadTable({ name, bytes, text, section = null }) {
     throw new Error(`cannot read ${suffix || 'a file with no extension'}`)
   }
   if (!table.length) throw new Error(`${name} is empty`)
-  return rowsToRecords(keyRows(table))
+  const rows = keyRows(table)
+  const tally = new Map()
+  return {
+    records: rowsToRecords(rows, null, tally),
+    columns: describeColumns(table[0], rows, tally),
+  }
 }

@@ -125,7 +125,7 @@ export default function ListImport({ lib, onOwl }) {
     ;(async () => {
       try {
         const bytes = new Uint8Array(await pending.file.arrayBuffer())
-        const records = await loadTable({
+        const { records } = await loadTable({
           name: pending.file.name,
           bytes,
           text: new TextDecoder('utf-8').decode(bytes),

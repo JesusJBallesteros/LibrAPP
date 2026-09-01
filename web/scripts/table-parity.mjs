@@ -10,7 +10,7 @@ import { normalise } from '../src/core/records.js'
 
 const [path, section, expectedPath] = process.argv.slice(2)
 const bytes = new Uint8Array(readFileSync(path))
-const parsed = await loadTable({
+const { records: parsed, columns } = await loadTable({
   name: basename(path),
   bytes,
   text: new TextDecoder('utf-8').decode(bytes),
@@ -19,6 +19,13 @@ const parsed = await loadTable({
 // Python's file has been through records.normalise, which fills defaults and
 // sorts the format list; compare like against like.
 const records = parsed.map(normalise)
+
+// What the reading made of each column, since a parity gap is usually a column
+// one side claimed and the other did not.
+for (const c of columns) {
+  const said = c.field ? (c.used ? c.field : `${c.field} (already filled)`) : 'not used'
+  console.log(`  ${c.header.padEnd(18)} -> ${said}`)
+}
 
 console.log(`rows read by js     : ${records.length}`)
 if (!expectedPath) {

@@ -44,7 +44,36 @@ describe('column headings', () => {
   })
 
   it('does not claim a heading it has no field for', () => {
-    expect(fieldFor('ISBN')).toBeNull()
+    // Calibre writes its user-defined columns as #something, and nothing here
+    // can know what one means.
+    expect(fieldFor('#rev')).toBeNull()
+    expect(fieldFor('My Rating')).toBeNull()
+  })
+
+  it('claims the columns a real export turned out to be carrying', () => {
+    // Each of these was present in a file somebody imported and dropped on the
+    // floor. The date one cost the most: a whole library dated to nothing, and
+    // the desk's waiting pile empty because it is ordered by that field.
+    expect(fieldFor('ISBN')).toBe('isbn')
+    expect(fieldFor('ISBN-13')).toBe('isbn')
+    expect(fieldFor('ASIN')).toBe('asin')
+    expect(fieldFor('timestamp')).toBe('acquired_on')
+    expect(fieldFor('Date Added')).toBe('acquired_on')
+    expect(fieldFor('pubdate')).toBe('published_year')
+  })
+
+  it('tells a date of publication from a date of acquisition', () => {
+    // Calibre carries both. Swapped, a library is dated to the day it was
+    // catalogued and every book claims to have been published then.
+    expect(fieldFor('pubdate')).not.toBe('acquired_on')
+    expect(fieldFor('timestamp')).not.toBe('published_year')
+  })
+
+  it('reads a Calibre custom column that happens to name a field it knows', () => {
+    // #read is a column somebody added to Calibre by hand. The # is punctuation
+    // and falls away, which is the right answer by luck rather than by design,
+    // so it is pinned here.
+    expect(fieldFor('#read')).toBe('read')
   })
 })
 
