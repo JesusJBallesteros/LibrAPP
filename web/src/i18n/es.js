@@ -21,7 +21,7 @@ export default {
   'landing.option.browse.hint': 'Ir directamente al catálogo.',
   'landing.option.browse.count': '{n} {n:libro|libros} aquí.',
   'landing.privacyLink': 'Qué sale de este dispositivo',
-  'landing.licenceName': 'PolyForm Noncommercial',
+  'landing.licenceName': 'AGPL v3',
   'landing.storageFirst': 'El almacenamiento se configura por el camino.',
 
   'landing.demo.action': 'Prueba una biblioteca de muestra',
@@ -950,8 +950,9 @@ export default {
 
   'about.licence': 'Licencia',
   'about.licenceBody':
-    'LibrAPP se puede usar, leer, modificar y compartir libremente para cualquier fin que no sea comercial. Venderla, o montar sobre ella un servicio de pago, requiere permiso previo. Los términos completos:',
-  'about.licenceName': 'PolyForm Noncommercial 1.0.0',
+    'LibrAPP se puede usar, leer, modificar y compartir libremente, para lo que sea. Si pasas una copia que has cambiado, pasa también su código, con la misma licencia. Integrarla en algo cerrado requiere permiso, y basta con pedirlo. Los términos completos:',
+  'about.sourceOffer': 'Esta app es el c\u00f3digo, entregado a tu navegador. Todo \u00e9l, sin minificar y con su historia:',
+  'about.licenceName': 'GNU Affero General Public License v3',
   'about.attributions': 'Construida con',
   'about.attributionsBody':
     'Esto es trabajo de otras personas, incluido en la app y usado según sus propios términos:',

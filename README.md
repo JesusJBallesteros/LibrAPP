@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/tests.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/tests.yml)
 [![Deploy](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml)
-[![Licence: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/licence-PolyForm%20NC%201.0.0-blue)](LICENSE.md)
+[![Licence: AGPL v3](https://img.shields.io/badge/licence-AGPL%20v3-blue)](LICENSE.md)
 
 ### Photograph your shelves. Get a catalog that answers questions.
 
@@ -1114,17 +1114,26 @@ Your own library is never part of this repository: `sources/` and
 
 ## Licence
 
-[PolyForm Noncommercial 1.0.0](LICENSE.md).
+[GNU Affero General Public License v3](LICENSE.md), or any later version.
 
-**Free for any non-commercial use** — personal, hobby, study, research, and use
-by charities, schools, universities, and public institutions. Use it, change it,
-share it.
+**Use it, change it, share it, for anything.** Including in a business.
 
-**Commercial use requires a separate licence.** If you want to use LibrAPP in or
-for a business, [open an
-issue](https://github.com/JesusJBallesteros/LibrAPP/issues) to ask.
+**If you pass it on, pass the source on with it.** That applies to a modified
+copy you host as well as one you hand over: this app is delivered to every
+visitor as JavaScript, so putting it on the web is handing it over. Publish your
+changes under the same licence and you have done what the licence asks.
 
-Note that this is a source-available licence, not an OSI-approved open source
-one. LibrAPP's own dependencies remain under their own terms: React, Zod and the
-Anthropic SDK under MIT, and the barcode reader under MIT. The app lists them
-its **About** page.
+**A commercial exception is available.** If you want to build LibrAPP into
+something closed, [open an
+issue](https://github.com/JesusJBallesteros/LibrAPP/issues) and ask. The
+copyright is held in one place, so it can be given.
+
+LibrAPP was under [PolyForm
+Noncommercial](https://polyformproject.org/licenses/noncommercial/1.0.0) until
+v2.6.1. That licence barred commercial use outright, which also kept the project
+out of every free-software directory and off the list of things most people are
+allowed to contribute to. Versions up to v2.6.0 remain available under it.
+
+Its dependencies keep their own terms: React, Zod, the Anthropic SDK and the
+barcode reader under MIT, the two typefaces under the SIL Open Font Licence. The
+app lists them on its **About** page.

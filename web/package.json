@@ -1,7 +1,8 @@
 {
   "name": "librapp-web",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.6.1",
+  "license": "AGPL-3.0-or-later",
   "type": "module",
   "scripts": {
     "dev": "vite",

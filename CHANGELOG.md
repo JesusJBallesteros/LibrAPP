@@ -1,5 +1,41 @@
 # Changelog
 
+## v2.6.1
+
+### The licence
+
+LibrAPP is under the GNU Affero General Public License v3, and was under
+PolyForm Noncommercial until this version. Versions up to v2.6.0 remain
+available under that one.
+
+PolyForm barred commercial use outright, which is a real thing to want and cost
+two things worth more here. It is not an OSI-approved licence, so the project
+was excluded from every free-software directory somebody might have found it in.
+And most developers will not send a patch to a noncommercial-only project, some
+because their employer forbids it, so it was a project nobody else could join.
+
+The AGPL asks the one thing worth asking: pass on the source with any copy you
+pass on. That applies to a modified copy somebody hosts, not only to one they
+hand over, and it applies here in the plainest possible way, because this app is
+delivered to every visitor as JavaScript. Putting it on the web is handing it
+over.
+
+A commercial exception is available for anyone who wants to build it into
+something closed. The copyright is held in one place, so it can be given.
+
+The About page now offers the source beside the terms that ask for it, rather
+than only in the privacy section further up.
+
+### A way back to the top of a long page
+
+The catalog in list mode is ten screens tall and the shelf on a phone is five.
+A faint chevron opposite the owl goes back to the top, on any page of three
+screens or more, and takes the keyboard focus with it.
+
+It appears by how long the page is rather than by how far down somebody has
+scrolled: a control that turns up partway through a scroll is one nobody knows
+is there until they have already done without it.
+
 ## v2.6.0
 
 Two real exports went through the list importer and most of what they held fell

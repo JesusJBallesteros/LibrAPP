@@ -29,10 +29,8 @@ export default {
   'landing.option.browse.count': '{n} {n:book|books} here.',
   // Storage left the row of doors. It is a real choice and some people want
   // to make it first, but it is the only technical one on the page.
-  // Leads with what it allows: noncommercial alarms people who would have
-  // been fine, and the restriction is the shorter half of the sentence.
   'landing.privacyLink': 'What leaves this device',
-  'landing.licenceName': 'PolyForm Noncommercial',
+  'landing.licenceName': 'AGPL v3',
   'landing.storageFirst': 'Storage is set up on the way.',
 
   'landing.demo.action': 'Try a demo library',
@@ -960,8 +958,9 @@ export default {
 
   'about.licence': 'Licence',
   'about.licenceBody':
-    'LibrAPP is free to use, read, modify and share for anything that is not commercial. Selling it, or building a paid service on it, needs permission first. The full terms:',
-  'about.licenceName': 'PolyForm Noncommercial 1.0.0',
+    'LibrAPP is free to use, read, modify and share, for anything. If you pass on a copy you have changed, pass on its source too, under the same licence. Building it into something closed needs permission first, and asking is enough. The full terms:',
+  'about.sourceOffer': 'This app is the source, delivered to your browser. The whole of it, unminified and with its history:',
+  'about.licenceName': 'GNU Affero General Public License v3',
   'about.attributions': 'Built with',
   'about.attributionsBody':
     'These are other people’s work, included in the app and used under their own terms:',

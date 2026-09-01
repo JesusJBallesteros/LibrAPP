@@ -20,7 +20,7 @@ const CV = 'https://jesusjballesteros.github.io/'
 const GITHUB = 'https://github.com/JesusJBallesteros'
 const REPO = 'https://github.com/JesusJBallesteros/LibrAPP'
 const ISSUES = 'https://github.com/JesusJBallesteros/LibrAPP/issues'
-const LICENCE = 'https://polyformproject.org/licenses/noncommercial/1.0.0'
+const LICENCE = 'https://www.gnu.org/licenses/agpl-3.0.html'
 
 // Everything that ships inside the built app, with the terms it ships under.
 // Attribution is a condition of MIT, Apache-2.0 and the Open Font Licence, so
@@ -152,6 +152,13 @@ export default function About({ onBack, focus, inShell = false }) {
           <p className="muted tiny">{t('about.licenceBody')}</p>
           <p className="tiny" style={{ marginTop: 8 }}>
             <Out href={LICENCE}>{t('about.licenceName')}</Out>
+          </p>
+          {/* The licence asks that whoever is handed the program be told where
+              its source is, and this app is handed to every visitor as
+              JavaScript. So the offer is here, beside the terms that make it,
+              rather than only in the privacy section further up. */}
+          <p className="tiny faint" style={{ marginTop: 8 }}>
+            {t('about.sourceOffer')} <Out href={REPO}>{t('about.readSource')}</Out>.
           </p>
 
           <h4 style={{ margin: '18px 0 7px', font: '500 13px var(--sans)' }}>
