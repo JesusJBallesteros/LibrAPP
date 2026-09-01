@@ -74,6 +74,27 @@ const MULTI_VOLUME = /(?<![\p{L}\p{N}_])vol(?:s|umes|umen|\.)?(?![\p{L}\p{N}_])|
 
 const SECTION_ELEMENTS = new Set(['book', 'item', 'entry', 'record'])
 
+/**
+ * Which program wrote this file, judged by the columns only it writes.
+ *
+ * Worth knowing because the answer changes what the defaults should be: a
+ * Kindle library is ebooks, and a Calibre one may be anything. It is a guess
+ * and it is stated as one, with a way to say otherwise, because the columns
+ * are the only evidence and another program could write the same ones.
+ */
+export const SHAPES = [
+  { id: 'kindle', needs: ['asin'] },
+  { id: 'calibre', needs: ['timestamp', 'pubdate'] },
+]
+
+export function detectShape(columns) {
+  const keys = new Set((columns || []).map((c) => c.key))
+  return SHAPES.find((shape) => shape.needs.every((k) => keys.has(k)))?.id || null
+}
+
+/** The fields a column may be pointed at, for a reader correcting one. */
+export const FIELDS = Object.keys(COLUMNS)
+
 /** Header names compared without accents, case or punctuation. */
 export const headerKey = (text) =>
   stripAccents(String(text ?? ''))
@@ -311,11 +332,13 @@ const FIELD_FOR = new Map(
  * and is what lets the reading report itself without a second rule that could
  * disagree with this one.
  */
-export function pickFields(row) {
+export function pickFields(row, mapping = null) {
   const picked = {}
   const from = {}
   for (const [key, value] of Object.entries(row)) {
-    const field = FIELD_FOR.get(key)
+    // A reader who can see what a column was taken to mean can say otherwise,
+    // and null is a decision too: it means leave this column out.
+    const field = mapping && key in mapping ? mapping[key] : FIELD_FOR.get(key)
     if (!field || !value || field in picked) continue
     if (MEANS_NOTHING.has(headerKey(value))) continue
     picked[field] = value
@@ -345,12 +368,12 @@ const landed = (record, field) => {
  * actually put something into, so an account of the reading can be given
  * without a second pass that might read the file differently.
  */
-export function rowsToRecords(rows, section = null, tally = null) {
+export function rowsToRecords(rows, section = null, { tally = null, mapping = null } = {}) {
   const out = []
   for (const row of rows) {
     if (section && headerKey(row._section || '') !== headerKey(section)) continue
 
-    const { picked, from } = pickFields(row)
+    const { picked, from } = pickFields(row, mapping)
     const title = clean(picked.title || '')
     if (!title) continue
 
@@ -462,10 +485,11 @@ function keyRows(table) {
  * the first says nothing. Counted rather than reasoned about, from the same
  * function that fills the records.
  */
-export function describeColumns(headers, rows, fed = new Map()) {
+export function describeColumns(headers, rows, { fed = new Map(), mapping = null } = {}) {
   return headers.map((header) => {
     const key = headerKey(header)
-    const field = FIELD_FOR.get(key) ?? null
+    const guessed = FIELD_FOR.get(key) ?? null
+    const field = mapping && key in mapping ? mapping[key] : guessed
     let sample = null
     for (const row of rows) {
       const value = String(row?.[key] ?? '').trim()
@@ -474,7 +498,17 @@ export function describeColumns(headers, rows, fed = new Map()) {
         break
       }
     }
-    return { header: String(header), key, field, used: (fed.get(key) || 0) > 0, rows: fed.get(key) || 0, sample }
+    return {
+      header: String(header),
+      key,
+      field,
+      // What this app made of the heading on its own, kept so a reader can be
+      // shown what they changed and put it back.
+      guessed,
+      used: (fed.get(key) || 0) > 0,
+      rows: fed.get(key) || 0,
+      sample,
+    }
   })
 }
 
@@ -499,7 +533,7 @@ const xmlHeaders = (rows) => {
  * come from one pass, so what the page shows about a column and what ends up
  * in a record cannot disagree.
  */
-export async function loadTable({ name, bytes, text, section = null }) {
+export async function loadTable({ name, bytes, text, section = null, mapping = null }) {
   const suffix = (/\.[^.]+$/.exec(name || '') || [''])[0].toLowerCase()
 
   if (suffix === '.xml') {
@@ -515,10 +549,10 @@ export async function loadTable({ name, bytes, text, section = null }) {
       )
     }
     const wanted = (section || '').toLowerCase() === 'all' ? null : section
-    const tally = new Map()
+    const fed = new Map()
     return {
-      records: rowsToRecords(rows, wanted, tally),
-      columns: describeColumns(xmlHeaders(rows), rows, tally),
+      records: rowsToRecords(rows, wanted, { tally: fed, mapping }),
+      columns: describeColumns(xmlHeaders(rows), rows, { fed, mapping }),
     }
   }
 
@@ -532,9 +566,9 @@ export async function loadTable({ name, bytes, text, section = null }) {
   }
   if (!table.length) throw new Error(`${name} is empty`)
   const rows = keyRows(table)
-  const tally = new Map()
+  const fed = new Map()
   return {
-    records: rowsToRecords(rows, null, tally),
-    columns: describeColumns(table[0], rows, tally),
+    records: rowsToRecords(rows, null, { tally: fed, mapping }),
+    columns: describeColumns(table[0], rows, { fed, mapping }),
   }
 }

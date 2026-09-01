@@ -11,9 +11,12 @@
 // pinned because the cost of getting them wrong is silent.
 
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import {
+  FIELDS,
   cleanAsin,
   describeColumns,
+  detectShape,
   keptIsbn,
   loadTable,
   parseIndex,
@@ -21,12 +24,13 @@ import {
   rowsToRecords,
 } from '../src/ingest/table.js'
 import { normalise } from '../src/core/records.js'
+import en from '../src/i18n/en.js'
 
 /** A Calibre export, headings and quirks as Calibre writes them. */
 const CALIBRE = [
   'authors,publisher,tags,timestamp,isbn,pubdate,series,series_index,title,#rev',
   '"Greg Bear","Júcar","Ciencia ficción","2013-11-08T13:26:45+01:00","9788433440235",' +
-    '"1989-12-15T16:09:14+01:00","","1.0","La Fragua de Dios",""',
+    '"1989-12-15T16:09:14+01:00","","1.0","La Fragua de Dios","attic"',
   '"Orson Scott Card","Edicions B","LEER","2013-11-08T13:27:20+01:00","",' +
     '"0101-01-01T00:00:00+00:00","La saga del retorno","2.0","La Memoria de la tierra",""',
 ].join('\n')
@@ -198,7 +202,7 @@ describe('the pieces on their own', () => {
 
   it('describes columns from rows it is handed, without a file', () => {
     const rows = [{ title: 'Dune', asin: 'B000FC0PDA' }]
-    const columns = describeColumns(['Title', 'ASIN'], rows, new Map([['asin', 1]]))
+    const columns = describeColumns(['Title', 'ASIN'], rows, { fed: new Map([['asin', 1]]) })
     expect(columns.map((c) => [c.field, c.rows])).toEqual([
       ['title', 0],
       ['asin', 1],
@@ -224,5 +228,84 @@ describe('the record contract', () => {
   it('leaves a row with no title out, however much else it holds', () => {
     const kept = rowsToRecords([{ title: '', asin: 'B0CW18VSCX', isbn: '9788433440235' }])
     expect(kept).toEqual([])
+  })
+})
+
+describe('which program wrote the file', () => {
+  it('knows a Kindle export by its ASIN column', async () => {
+    const { columns } = await read('k.csv', KINDLE)
+    expect(detectShape(columns)).toBe('kindle')
+  })
+
+  it('knows a Calibre export by the pair of dates only it writes', async () => {
+    const { columns } = await read('c.csv', CALIBRE)
+    expect(detectShape(columns)).toBe('calibre')
+  })
+
+  it('says nothing rather than guessing at a file it does not recognise', async () => {
+    // A hand-kept spreadsheet is the common case, and naming a program that did
+    // not write it would be worse than saying nothing.
+    const plain = ['Title,Author', '"Dune","Frank Herbert"'].join(String.fromCharCode(10))
+    const { columns } = await read('mine.csv', plain)
+    expect(detectShape(columns)).toBeNull()
+  })
+
+  it('is judged on columns alone, so a file renamed is still itself', async () => {
+    const { columns } = await read('anything.txt', KINDLE)
+    expect(detectShape(columns)).toBe('kindle')
+  })
+})
+
+describe('a column pointed somewhere else', () => {
+  const withMapping = (text, mapping) => loadTable({ name: 'c.csv', text, mapping })
+
+  it('is read as the field it was pointed at', async () => {
+    // Calibre's tags are the nearest thing that file has to a genre, and only
+    // the person whose library it is can say whether they are.
+    const { records } = await withMapping(CALIBRE, { tags: 'genre' })
+    expect(records[0].genre).toBe('Ciencia ficción')
+    expect(records[0].keywords).toBeNull()
+  })
+
+  it('is left out when pointed at nothing', async () => {
+    const { records } = await withMapping(CALIBRE, { publisher: null })
+    expect(records[0].publisher).toBeNull()
+    expect(records[0].title).toBe('La Fragua de Dios')
+  })
+
+  it('says what it was pointed at, and what it would have been', async () => {
+    // Both, so a correction can be shown as a correction and put back.
+    const { columns } = await withMapping(CALIBRE, { tags: 'genre' })
+    const tags = columns.find((c) => c.header === 'tags')
+    expect(tags.field).toBe('genre')
+    expect(tags.guessed).toBe('keywords')
+  })
+
+  it('counts what it filled under its new meaning', async () => {
+    const { columns } = await withMapping(CALIBRE, { tags: 'genre' })
+    expect(columns.find((c) => c.header === 'tags').rows).toBe(2)
+    const off = await withMapping(CALIBRE, { tags: null })
+    expect(off.columns.find((c) => c.header === 'tags').rows).toBe(0)
+  })
+
+  it('can be pointed at a field this app never guesses from a heading', async () => {
+    // #rev is a Calibre custom column and means whatever its owner meant.
+    const { records } = await withMapping(CALIBRE, { rev: 'location' })
+    expect(records[0].location).toBe('attic')
+  })
+})
+
+describe('the column table has a name for every field it offers', () => {
+  it('names each of them in English', () => {
+    // The select is built from FIELDS and its labels are looked up by variable,
+    // which the key audit cannot see. A field added without a label would show
+    // its own key to the reader.
+    const source = readFileSync(new URL('../src/views/ListImport.jsx', import.meta.url), 'utf8')
+    const block = source.slice(source.indexOf('const FIELD_LABEL'), source.indexOf('const FORMAT_FOR_SHAPE'))
+    const labelled = new Map([...block.matchAll(/(\w+):\s*'([\w.]+)'/g)].map((m) => [m[1], m[2]]))
+    for (const field of FIELDS) {
+      expect(labelled.has(field), `no label for ${field}`).toBe(true)
+      expect(en[labelled.get(field)], `no English for ${field}`).toBeTruthy()
+    }
   })
 })

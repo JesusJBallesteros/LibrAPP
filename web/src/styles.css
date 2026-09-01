@@ -2018,3 +2018,30 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 /* The control on the row is how the discard is undone, so it stays at full
    strength and unstruck. */
 .discarded .btn { opacity: 1; text-decoration: none; }
+
+/* The column table on the upload page: what each heading in the file was taken
+   to mean, and a way to say otherwise.
+
+   A grid rather than a table element, because the middle column is a control
+   and the row has to fold on a phone, where a heading and its meaning stack. */
+.column-map { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.column-map li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px 80px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper-sunk);
+}
+.column-name { display: grid; gap: 2px; min-width: 0; }
+/* The value from the file, which is what makes a heading like `timestamp`
+   readable. Held to one line: some of them are a whole paragraph. */
+.column-sample { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.column-count { text-align: right; }
+
+@media (max-width: 620px) {
+  .column-map li { grid-template-columns: 1fr auto; }
+  .column-name { grid-column: 1 / -1; }
+}

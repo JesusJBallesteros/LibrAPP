@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
-import { loadTable, missingFields, readXlsx, readXml, xmlSections } from '../ingest/table.js'
+import {
+  FIELDS,
+  detectShape,
+  loadTable,
+  missingFields,
+  readXlsx,
+  readXml,
+  xmlSections,
+} from '../ingest/table.js'
 import { parseKindle } from '../ingest/kindle.js'
 import { linesFromPdf } from '../ingest/pdftext.js'
 import { stemOf } from '../store/library.js'
@@ -9,6 +17,33 @@ import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
 const FORMATS = ['physical', 'ebook', 'audio']
+
+/**
+ * What to call each field in the column table.
+ *
+ * Almost all of these already have a name somewhere in the app, and a book
+ * whose date is called Acquired on its own card should not be called
+ * acquired_on here.
+ */
+const FIELD_LABEL = {
+  title: 'editor.title',
+  authors: 'editor.authors',
+  genre: 'book.genre',
+  keywords: 'book.tags',
+  series: 'book.series',
+  series_index: 'editor.volume',
+  publisher: 'book.publisher',
+  acquired_on: 'book.acquired',
+  read: 'book.read',
+  format: 'book.formats',
+  location: 'book.where',
+  isbn: 'book.isbn',
+  asin: 'book.asin',
+  published_year: 'book.published',
+}
+
+/** What a file of this shape most likely holds, where that is worth assuming. */
+const FORMAT_FOR_SHAPE = { kindle: 'ebook' }
 const CONFIDENCES = ['high', 'medium', 'low']
 
 // How many rows to draw before asking. A spreadsheet exported from a store
@@ -68,6 +103,12 @@ export default function ListImport({ lib, onOwl }) {
   // settled. This page used to write a spreadsheet without ever showing what
   // was in it, which made it the one way in with nothing to check.
   const [rows, setRows] = useState(null)
+  // What the reading made of each column, and any correction to it. The
+  // correction is keyed by column rather than by field, because two columns
+  // can name one field and only one of them is being talked about.
+  const [columns, setColumns] = useState(null)
+  const [mapping, setMapping] = useState({})
+  const [shape, setShape] = useState(null)
   const [rowError, setRowError] = useState(null)
   const [showAll, setShowAll] = useState(false)
   const { dropped, toggle, reset } = useKeepSet()
@@ -125,13 +166,25 @@ export default function ListImport({ lib, onOwl }) {
     ;(async () => {
       try {
         const bytes = new Uint8Array(await pending.file.arrayBuffer())
-        const { records } = await loadTable({
+        const read = await loadTable({
           name: pending.file.name,
           bytes,
           text: new TextDecoder('utf-8').decode(bytes),
           section: section || null,
+          mapping,
         })
-        if (!cancelled) setRows(records)
+        if (cancelled) return
+        setRows(read.records)
+        setColumns(read.columns)
+        // Only on the first reading. A re-reading after a correction must not
+        // decide again what the file is, or a reader who has just said it is
+        // not a Kindle export would be told that it is.
+        setShape((was) => {
+          if (was !== null) return was
+          const found = detectShape(read.columns)
+          if (found && FORMAT_FOR_SHAPE[found]) setFormat(FORMAT_FOR_SHAPE[found])
+          return found
+        })
       } catch (err) {
         if (!cancelled) setRowError(err.message)
       }
@@ -140,12 +193,39 @@ export default function ListImport({ lib, onOwl }) {
       cancelled = true
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pending, section])
+  }, [pending, section, mapping])
 
   // Row numbers are the key. Nothing in a spreadsheet row is reliably unique,
   // and two copies of the same title are two books until somebody says
   // otherwise.
   const keptRows = rows ? rows.filter((_, i) => !dropped.has(i)) : []
+
+  /**
+   * Point a column at a different field, or at nothing.
+   *
+   * Kept per column rather than per field: two columns can name one field, and
+   * a reader correcting one of them is not saying anything about the other.
+   * The file is read again, because a column's meaning is the reading.
+   */
+  const point = (key, field) => setMapping((was) => ({ ...was, [key]: field }))
+
+  /**
+   * Say what wrote this file, which is a guess the reader can overrule.
+   *
+   * A Kindle library is ebooks and saying so saves a second answer. Nothing is
+   * assumed for the others: a Calibre library holds whatever its owner put in
+   * it, and guessing there would be guessing about the books rather than about
+   * the file.
+   */
+  const chooseShape = (id) => {
+    setShape(id)
+    if (FORMAT_FOR_SHAPE[id]) setFormat(FORMAT_FOR_SHAPE[id])
+  }
+
+  // How many of these could be looked up without guessing, which is the whole
+  // of the argument for doing it.
+  const withIsbn = rows ? rows.filter((r) => r.isbn).length : 0
+  const formatColumn = columns?.find((c) => c.field === 'format' && c.used) || null
 
   const doImport = () =>
     lib.run(async (library) => {
@@ -191,174 +271,263 @@ export default function ListImport({ lib, onOwl }) {
 
       <DemoWarning lib={lib} />
 
-      {/* The drop zone is right below this, so a failure to read a file
-          lands beside it. A failure to import does not: that button is at the
-          bottom of the panel below, and its message goes there. */}
-      {error && !pending && (
-        <div className="notice bad" role="alert">
-          <p>{error}</p>
-        </div>
-      )}
+      {/* Step one --------------------------------------------------------- */}
+      <section className="shelf-step" style={{ marginTop: 28 }}>
+        <h3 className="step-head">{t('list.stepOne')}</h3>
+        <p style={{ marginTop: 8 }}>{t('list.stepOne.note')}</p>
+        <ul className="tiny faint" style={{ margin: '6px 0 0', paddingLeft: 18 }}>
+          {['xlsx', 'csv', 'xml', 'pdf'].map((kind) => (
+            <li key={kind}>{t(`list.format.${kind}`)}</li>
+          ))}
+        </ul>
 
-      <div className="drop-wide">
-        <DropZone
-          mark="page"
-          title={t('list.drop')}
-          hint=".xlsx · .csv · .tsv · .xml · .pdf"
-          accept=".xlsx,.xlsm,.csv,.tsv,.txt,.xml,.pdf"
-          disabled={working || lib.busy}
-          onFile={onFile}
-        />
-        {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('list.reading')}</p>}
-      </div>
+        {/* A failure to read a file lands beside the box it was dropped in. A
+            failure to import does not: that button is three steps down. */}
+        {error && !pending && (
+          <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <div className="drop-wide" style={{ marginTop: 14 }}>
+          <DropZone
+            mark="page"
+            title={t('list.drop')}
+            hint=".xlsx · .csv · .tsv · .xml · .pdf"
+            accept=".xlsx,.xlsm,.csv,.tsv,.txt,.xml,.pdf"
+            disabled={working || lib.busy}
+            onFile={onFile}
+          />
+          {working && <p className="tiny faint" style={{ marginTop: 10 }}>{t('list.reading')}</p>}
+        </div>
+      </section>
 
       {pending && (
-        <section className="desk-section" style={{ marginTop: 34 }}>
-          <div className="section-head spread">
-            <h3>{t('list.whatIsIn', { name: pending.file.name })}</h3>
-            {/* A plain CSV has no named sections. Reporting "0 lists found"
-                for it would state something the file never said. */}
-            {pending.sections.length > 0 && (
-              <span className="tabular tiny faint">
-                {t('list.listsFound', { n: pending.sections.length })}
-              </span>
-            )}
-          </div>
-
-          {pending.sections.length > 1 && (
-            <div className="notice">
-              <p className="tiny">{t('list.manyLists')}</p>
+        <>
+          {/* Step two ----------------------------------------------------- */}
+          <section className="shelf-step" style={{ marginTop: 34 }}>
+            <div className="spread">
+              <h3 className="step-head">{t('list.stepTwo')}</h3>
+              <span className="tabular tiny faint">{pending.file.name}</span>
             </div>
-          )}
 
-          <div className="import-controls">
-            {pending.sections.length > 0 && (
+            {/* Everything here is answered already. A reader who agrees with
+                all of it goes straight on to the books below. */}
+            <p style={{ marginTop: 8 }}>
+              {shape ? t('list.readAs', { what: t(`list.shape.${shape}`) }) : t('list.readAsOther')}
+            </p>
+
+            {pending.sections.length > 1 && (
+              <div className="notice" style={{ marginTop: 12 }}>
+                <p className="tiny">{t('list.manyLists')}</p>
+              </div>
+            )}
+
+            <div className="import-controls" style={{ marginTop: 14 }}>
+              {pending.sections.length > 0 && (
+                <label className="field">
+                  {t('list.whichList')}
+                  <select value={section} onChange={(e) => setSection(e.target.value)}>
+                    {pending.sections.map((one) => (
+                      <option key={one} value={one}>
+                        {one}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
               <label className="field">
-                {t('list.whichList')}
-                <select value={section} onChange={(e) => setSection(e.target.value)}>
-                  {pending.sections.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
+                {t('list.whichShape')}
+                <select value={shape || 'other'} onChange={(e) => chooseShape(e.target.value)}>
+                  {['kindle', 'calibre', 'other'].map((id) => (
+                    <option key={id} value={id}>
+                      {t(`list.shape.${id}`)}
                     </option>
                   ))}
                 </select>
               </label>
+
+              <label className="field">
+                {t('list.theseAre')}
+                <select value={format} onChange={(e) => setFormat(e.target.value)}>
+                  {FORMATS.map((f) => (
+                    <option key={f} value={f}>
+                      {t(`format.${f}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <p className="tiny faint" style={{ marginTop: 8 }}>
+              {formatColumn
+                ? t('list.formatFromFile', { column: formatColumn.header })
+                : t('list.formatForAll')}
+            </p>
+
+            {rows && (
+              <p className="tiny" style={{ marginTop: 12 }}>
+                {withIsbn
+                  ? t('list.withIsbn', { n: withIsbn, total: rows.length })
+                  : t('list.noIsbn')}
+              </p>
             )}
 
-            <label className="field">
-              {t('list.callIt')}
-              <input value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
+            {columns && (
+              <>
+                {/* A panel heading rather than a section one: this sits
+                    inside a step that already has a heading, and the section
+                    rule under a second one clipped its own count off the edge
+                    of a phone. */}
+                <div className="spread" style={{ marginTop: 22 }}>
+                  <h3 className="panel-head" style={{ margin: 0 }}>{t('list.columns')}</h3>
+                  <span className="tabular tiny faint">
+                    {t('list.columnsRead', {
+                      n: columns.filter((c) => c.field).length,
+                      of: columns.length,
+                    })}
+                  </span>
+                </div>
+                <p className="tiny faint">{t('list.columnsNote')}</p>
 
-            <label className="field">
-              {t('list.theseAre')}
-              <select value={format} onChange={(e) => setFormat(e.target.value)}>
-                {FORMATS.map((f) => (
-                  <option key={f} value={f}>
-                    {t(`format.${f}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="field">
-              {t('list.trust')}
-              <select value={confidence} onChange={(e) => setConfidence(e.target.value)}>
-                {CONFIDENCES.map((c) => (
-                  <option key={c} value={c}>
-                    {t(`confidence.${c}`)}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-          </div>
-
-          {/* What is actually in the file. Everything above this decides how the
-              rows are read; this is the rows. */}
-          {rowError ? (
-            <div className="notice bad" role="alert" style={{ marginTop: 14 }}>
-              <p className="tiny">{rowError}</p>
-            </div>
-          ) : rows === null ? (
-            <p className="tiny faint" style={{ marginTop: 14 }}>{t('list.reading')}</p>
-          ) : (
-            <>
-              <div className="section-head spread" style={{ marginTop: 20 }}>
-                <h3>{t('list.whatItHolds', { n: rows.length })}</h3>
-              </div>
-              <p className="tiny faint">{t('keep.note')}</p>
-
-              <ul className="lookup-list">
-                {(showAll ? rows : rows.slice(0, ROWS_AT_FIRST)).map((record, i) => {
-                  const isDropped = dropped.has(i)
-                  return (
-                    <li key={i} className={isDropped ? 'discarded' : undefined}>
-                      <span>
-                        <span className="title">{record.title}</span>
-                        <br />
-                        <span className="tiny muted">
-                          {[
-                            (record.authors || []).join(', ') || t('isbn.noAuthor'),
-                            record.publisher,
-                            record.published_year,
-                          ]
-                            .filter(Boolean)
-                            .join(' · ')}
-                        </span>
-                      </span>
-                      <span className="lookup-fate tiny">
-                        {isDropped && (
-                          <span className="faint">{t('keep.discardedTag')}</span>
+                <ul className="column-map">
+                  {columns.map((column) => (
+                    <li key={column.key}>
+                      <span className="column-name">
+                        <span className="tabular">{column.header}</span>
+                        {column.sample && (
+                          <span className="tiny faint column-sample">{column.sample}</span>
                         )}
-                        <KeepToggle
-                          dropped={isDropped}
-                          disabled={lib.busy}
-                          onToggle={() => toggle(i)}
-                        />
+                      </span>
+                      <select
+                        value={column.field || ''}
+                        aria-label={t('list.columnIs', { column: column.header })}
+                        onChange={(e) => point(column.key, e.target.value || null)}
+                      >
+                        <option value="">{t('list.column.ignore')}</option>
+                        {FIELDS.map((field) => (
+                          <option key={field} value={field}>
+                            {t(FIELD_LABEL[field])}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="tiny faint column-count">
+                        {column.field ? t('list.columnFilled', { n: column.rows }) : ''}
                       </span>
                     </li>
-                  )
-                })}
-              </ul>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
 
-              {rows.length > ROWS_AT_FIRST && !showAll && (
-                <p className="tiny faint">
-                  {t('list.showingSome', { shown: ROWS_AT_FIRST, n: rows.length })}{' '}
-                  <button className="btn link" onClick={() => setShowAll(true)}>
-                    {t('list.showAll', { n: rows.length })}
-                  </button>
-                </p>
-              )}
+          {/* Step three --------------------------------------------------- */}
+          <section className="shelf-step" style={{ marginTop: 34 }}>
+            <h3 className="step-head">
+              {rows ? t('list.stepThree', { n: rows.length }) : t('list.stepThreeWaiting')}
+            </h3>
 
-              <KeepSummary kept={keptRows.length} total={rows.length} />
-
-              {/* Beside the button, not at the top of the page. This panel is
-                  long enough on a phone that the two are never on screen
-                  together. */}
-              {error && (
-                <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
-                  <p className="tiny">{error}</p>
-                </div>
-              )}
-
-              <div className="row" style={{ marginTop: 14 }}>
-                <button
-                  className="btn primary"
-                  onClick={doImport}
-                  disabled={lib.busy || !keptRows.length}
-                >
-                  {lib.busy ? t('common.importing') : t('list.importAction')}
-                </button>
+            {rowError ? (
+              <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+                <p className="tiny">{rowError}</p>
               </div>
-            </>
-          )}
+            ) : rows === null ? (
+              <p className="tiny faint" style={{ marginTop: 10 }}>{t('list.reading')}</p>
+            ) : (
+              <>
+                <p className="tiny faint" style={{ marginTop: 8 }}>{t('keep.note')}</p>
 
-          <p className="tiny faint" style={{ marginTop: 10 }}>
-            <strong>{t('list.theseAre')}</strong> {t('list.theseAreNote')}{' '}
-            <strong>{t('list.trust')}</strong> {t('list.trustNote')}
-          </p>
-        </section>
+                <ul className="lookup-list">
+                  {(showAll ? rows : rows.slice(0, ROWS_AT_FIRST)).map((record, i) => {
+                    const isDropped = dropped.has(i)
+                    return (
+                      <li key={i} className={isDropped ? 'discarded' : undefined}>
+                        <span>
+                          <span className="title">{record.title}</span>
+                          <br />
+                          <span className="tiny muted">
+                            {[
+                              (record.authors || []).join(', ') || t('isbn.noAuthor'),
+                              record.publisher,
+                              record.published_year,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </span>
+                        </span>
+                        <span className="lookup-fate tiny">
+                          {isDropped && <span className="faint">{t('keep.discardedTag')}</span>}
+                          <KeepToggle
+                            dropped={isDropped}
+                            disabled={lib.busy}
+                            onToggle={() => toggle(i)}
+                          />
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ul>
+
+                {rows.length > ROWS_AT_FIRST && !showAll && (
+                  <p className="tiny faint">
+                    {t('list.showingSome', { shown: ROWS_AT_FIRST, n: rows.length })}{' '}
+                    <button className="btn link" onClick={() => setShowAll(true)}>
+                      {t('list.showAll', { n: rows.length })}
+                    </button>
+                  </p>
+                )}
+
+                <KeepSummary kept={keptRows.length} total={rows.length} />
+              </>
+            )}
+          </section>
+
+          {/* Step four ---------------------------------------------------- */}
+          <section className="shelf-step" style={{ marginTop: 34 }}>
+            <h3 className="step-head">{t('list.stepFour')}</h3>
+
+            <div className="import-controls" style={{ marginTop: 14 }}>
+              <label className="field">
+                {t('list.callIt')}
+                <input value={name} onChange={(e) => setName(e.target.value)} />
+              </label>
+
+              <label className="field">
+                {t('list.trust')}
+                <select value={confidence} onChange={(e) => setConfidence(e.target.value)}>
+                  {CONFIDENCES.map((c) => (
+                    <option key={c} value={c}>
+                      {t(`confidence.${c}`)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <p className="tiny faint" style={{ marginTop: 10 }}>
+              <strong>{t('list.theseAre')}</strong> {t('list.theseAreNote')}{' '}
+              <strong>{t('list.trust')}</strong> {t('list.trustNote')}
+            </p>
+
+            {/* Beside the button, not at the top of a page this long. */}
+            {error && (
+              <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
+                <p className="tiny">{error}</p>
+              </div>
+            )}
+
+            <div className="row" style={{ marginTop: 14 }}>
+              <button
+                className="btn primary"
+                onClick={doImport}
+                disabled={lib.busy || !keptRows.length}
+              >
+                {lib.busy ? t('common.importing') : t('list.importAction')}
+              </button>
+            </div>
+          </section>
+        </>
       )}
 
       {result && (
