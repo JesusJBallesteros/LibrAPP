@@ -32,6 +32,10 @@ const WAYS_IN = [
   { id: 'photo', view: 'shelf' },
   { id: 'list', view: 'list' },
   { id: 'barcode', view: 'barcode' },
+  // Not a way of reading books into the app but a way of getting a list out of
+  // somewhere that has no export button, which is the question people arrive
+  // with and the one the other three do not answer.
+  { id: 'kindle', view: 'kindle' },
 ]
 
 const COMING_BACK = [

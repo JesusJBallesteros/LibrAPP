@@ -82,7 +82,7 @@ export function arrival(before, after, records) {
   return { kind: 'imported', added, known: Math.max(0, records - added) }
 }
 
-export default function ListImport({ lib, onOwl }) {
+export default function ListImport({ lib, onGo, onOwl }) {
   const { t } = useT()
   const [pending, setPending] = useState(null)
   const [name, setName] = useState('list')
@@ -289,6 +289,12 @@ export default function ListImport({ lib, onOwl }) {
             <p>{error}</p>
           </div>
         )}
+
+        <p className="tiny" style={{ marginTop: 10 }}>
+          <button className="btn link" style={{ padding: 0 }} onClick={() => onGo?.('kindle')}>
+            {t('list.fromKindle')}
+          </button>
+        </p>
 
         <div className="drop-wide" style={{ marginTop: 14 }}>
           <DropZone

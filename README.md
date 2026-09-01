@@ -363,6 +363,32 @@ out of the file, and any row can be **discarded**: a header line that parsed as
 a title, a wishlist entry sitting among books owned, anything in the sheet that
 is not a book. Everything is kept unless it is set aside.
 
+### Books on a Kindle
+
+Amazon ships no export button, and for a lot of people the Kindle is the largest
+collection they own. **Books on a Kindle**, on the front page, gives two routes
+and says what each one costs.
+
+**Ask Amazon for the data.** Account, then Data Privacy, then Request Your
+Information. A download link arrives by email, usually within a few days. It
+carries more than the other route, purchase dates included; its columns are not
+recognised yet, so point them at the right fields in step two of Upload list.
+
+**Read the list off the page yourself.** A short script, kept in
+[`tools/kindle-library-exporter/`](tools/kindle-library-exporter) and shown on
+that page from the same file, saves the library page as a CSV. It makes no
+network request and touches nothing but the page in front of it.
+
+The page carries a plain warning about the second route, and it is meant
+seriously: pasting code into a console on a site where you are signed in is how
+accounts get stolen, and nobody should do it because a website asked. The code
+is short so that it can be read first.
+
+Either route gives you the title, the author and Amazon's own number for each
+book. Not the purchase date, the read state, the page count or the ISBN. Step
+five of Upload list can look some of that up afterwards, and finds more for
+books in English than for books in other languages.
+
 ### Reading barcodes
 
 The number under a barcode identifies the exact edition, so where **[Open

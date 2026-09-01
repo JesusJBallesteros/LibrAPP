@@ -576,6 +576,49 @@ export default {
   'list.stepThreeWaiting': 'Step three · The books',
   'list.stepFour': 'Step four · Import',
 
+  'landing.option.kindle': 'Books on a Kindle',
+  'landing.option.kindle.hint': 'Amazon has no export button. Two ways to get the list out.',
+  'list.fromKindle': 'Your books are on a Kindle?',
+  'nav.kindle': 'Books on a Kindle',
+  'kindle.eyebrow': 'Accessions',
+  'kindle.title': 'Books on a Kindle',
+  'kindle.intro': 'Amazon has no export button. There are two ways to get the list out, and both end with a file this app can read.',
+
+  'kindle.whatYouGet': 'What you get',
+  'kindle.get.title': 'The title of every book in your Kindle library.',
+  'kindle.get.author': 'The author, as Amazon writes it.',
+  'kindle.get.asin': "Amazon's own number for each book.",
+  'kindle.notGet': 'Not the purchase date, the read state, the page count or the ISBN. Step five of Upload list can look some of that up afterwards, and it finds more for books in English than for books in other languages.',
+
+  'kindle.ask.head': 'Either: ask Amazon for the data',
+  'kindle.ask.intro': 'Slower, and it needs nothing from you but patience. Amazon sends a file by email.',
+  'kindle.ask.1': 'Sign in to Amazon and open Account, then Data Privacy, then Request Your Information.',
+  'kindle.ask.2': 'Choose the category covering digital content and orders, and send the request.',
+  'kindle.ask.3': 'Confirm it from the email Amazon sends straight away.',
+  'kindle.ask.4': 'A download link arrives later, usually within a few days. Unzip it and look for the file listing digital content.',
+  'kindle.ask.note': 'That file has more in it than the other route, purchase dates included. LibrAPP does not recognise its columns yet, so you will have to point them at the right fields in step two of Upload list, which that step is built for.',
+
+  'kindle.run.head': 'Or: read the list off the page yourself',
+  'kindle.run.intro': 'Faster, and it takes a few minutes. It needs you to paste code into your browser.',
+
+  'kindle.warn.head': 'Read this before you paste anything.',
+  'kindle.warn.1': 'You are about to paste code into a page where you are signed in to Amazon. Code pasted there can do anything you can do on that page.',
+  'kindle.warn.2': 'This is how accounts get stolen. Never paste code into a browser console because a website, an email, a video or a stranger told you to. Not even this one.',
+  'kindle.warn.3': 'Read the code below first. It is short so that you can. It reads the titles on the page and saves a file. It sends nothing anywhere, and it does not touch your account, your orders or your payment details.',
+  'kindle.warn.4': 'If you would rather not, use the other route above. It gets you more.',
+
+  'kindle.run.1': 'Open read.amazon.com/kindle-library and sign in.',
+  'kindle.run.2': 'Scroll to the bottom of the list, so every book has loaded.',
+  'kindle.run.3': 'Open the browser console: F12 on Windows and Linux, Option-Command-I on a Mac, then the Console tab.',
+  'kindle.run.4': 'Copy the code below, paste it in the console and press Enter.',
+  'kindle.run.5': 'A file called kindle-books.csv is saved to your downloads.',
+  'kindle.copy': 'Copy the code',
+  'kindle.run.fails': 'If it says no books were found, Amazon has changed the page. Nothing is broken on your side and nothing was sent.',
+
+  'kindle.then.head': 'Then bring the file here',
+  'kindle.then.intro': 'Upload list reads it. It recognises a Kindle export and marks the books as ebooks on its own.',
+  'kindle.then.go': 'Go to Upload list',
+
   'list.eyebrow': 'Accessions',
   'barcode.eyebrow': 'Accessions',
   'barcode.intro':

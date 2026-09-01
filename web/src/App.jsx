@@ -9,6 +9,7 @@ import About from './views/About.jsx'
 import Catalog from './views/Catalog.jsx'
 import Shelf from './views/Shelf.jsx'
 import ListImport from './views/ListImport.jsx'
+import Kindle from './views/Kindle.jsx'
 import Barcode from './views/Barcode.jsx'
 import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
@@ -99,10 +100,13 @@ export default function App() {
     (next, wanted = null) => {
       setFocus(wanted)
       // About needs no storage, so it must not be routed through the storage
-      // question the way the working views are.
-      if (next === 'about') {
-        setBefore((current) => (view === 'about' ? current : view))
-        setView('about')
+      // question the way the working views are. Nor does the Kindle page: it is
+      // instructions and a file to download, and asking where to keep a catalog
+      // before somebody may read how to get their books out of Amazon is a door
+      // in front of a door.
+      if (next === 'about' || next === 'kindle') {
+        setBefore((current) => (view === next ? current : view))
+        setView(next)
         return
       }
       if (next !== 'home' && lib.status !== 'ready') {
@@ -124,6 +128,14 @@ export default function App() {
   // put it in at that point, so it gets a page of its own with a way back.
   if (view === 'about' && lib.status !== 'ready') {
     return <About focus={focus} onBack={() => setView(before)} />
+  }
+
+  // And so does the Kindle page. It writes nothing: it is instructions and a
+  // file to download, and asking somebody where to keep a catalog before they
+  // are allowed to read how to get their books out of Amazon is a door in front
+  // of a door.
+  if (view === 'kindle' && lib.status !== 'ready') {
+    return <Kindle onGo={go} onBack={() => setView(before)} />
   }
 
   if (lib.status === 'permit') {
@@ -359,11 +371,15 @@ export default function App() {
         ) : view === 'shelf' ? (
           <Shelf lib={lib} onOwl={setOwlEvent} />
         ) : view === 'list' ? (
-          <ListImport lib={lib} onOwl={setOwlEvent} />
+          <ListImport lib={lib} onGo={go} onOwl={setOwlEvent} />
         ) : view === 'barcode' ? (
           <Barcode lib={lib} />
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
+        ) : view === 'kindle' ? (
+          // Reached from the front page and from Upload list, not from the
+          // sidebar: it is a thing somebody does once.
+          <Kindle onGo={go} />
         ) : view === 'about' ? (
           <About focus={focus} inShell />
         ) : (
