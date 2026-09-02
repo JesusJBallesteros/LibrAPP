@@ -10,9 +10,8 @@
 
 ## → [**See it with books in it**](https://jesusjballesteros.github.io/LibrAPP/#demo) ←
 
-That link opens a working library of 91 example books, real ones with their
-real details, on a shelf nobody actually owns: browse it, open a book, ask the
-desk something. Nothing to install, nothing to sign up for, nothing
+That link opens a working library of 91 example books: browse the shelf, open a
+book, ask the desk something. Nothing to install, nothing to sign up for, nothing
 saved to your device. Reload and it is gone.
 
 When you want your own in it, [**open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/)
