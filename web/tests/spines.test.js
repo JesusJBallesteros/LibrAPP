@@ -59,35 +59,48 @@ describe('the colour a spine keeps', () => {
 })
 
 // Thickness is the one measurement on a shelf that is a fact about the book, so
-// it is the one the page count drives. Three bands, because a shelf is read by
-// eye and nobody is telling 260 pages from 280.
+// it is the one the page count drives, and it follows the count rather than
+// sorting books into sizes: a real shelf has as many thicknesses as it has
+// books on it.
 describe('how thick a spine is', () => {
   it('draws a short book thinner than a long one', () => {
     expect(spineWidth({ pages: 100 })).toBeLessThan(spineWidth({ pages: 500 }))
   })
 
-  it('puts each band where it says it does', () => {
-    expect(spineWidth({ pages: 1 })).toBe(34)
-    expect(spineWidth({ pages: 150 })).toBe(34)
-    expect(spineWidth({ pages: 151 })).toBe(42)
-    expect(spineWidth({ pages: 300 })).toBe(42)
-    expect(spineWidth({ pages: 301 })).toBe(52)
-    expect(spineWidth({ pages: 4000 })).toBe(52)
+  it('grows with the count rather than stepping between widths', () => {
+    // Fifty pages apart is a different spine, anywhere along the scale. Three
+    // bands drew a wall that looked sorted into small, medium and large.
+    const widths = [200, 300, 400, 500, 600, 700].map((pages) => spineWidth({ pages }))
+    for (let i = 1; i < widths.length; i += 1) expect(widths[i]).toBeGreaterThan(widths[i - 1])
+    expect(new Set(widths).size).toBe(widths.length)
   })
 
-  it('is wide enough at its thinnest for a line of title', () => {
-    // One line at 17px with a 1.15 line height is about 20px across the spine,
-    // and the thinnest band has to hold it with room to sit in.
+  it('stops narrowing where the content stops fitting', () => {
+    // The floor is set by what a spine has to hold: one line of title at 17px,
+    // which is about 20px across, and the stamp at its foot. Nothing about a
+    // short book makes it right to draw one thinner than its own lettering.
+    expect(spineWidth({ pages: 1 })).toBe(34)
+    expect(spineWidth({ pages: 100 })).toBe(34)
     expect(spineWidth({ pages: 1 })).toBeGreaterThanOrEqual(20)
   })
 
-  it('draws a book with no page count at the middle width', () => {
-    // Not because it is average, but because nothing is known. Drawing it thin
-    // would be the app inventing a fact about the book.
+  it('stops widening before one book takes a row to itself', () => {
+    // A thousand-page book is ten times the thickness of a hundred-page one and
+    // drawing it that way would make the wall about that book.
+    expect(spineWidth({ pages: 1000 })).toBe(76)
+    expect(spineWidth({ pages: 4000 })).toBe(76)
+    expect(spineWidth({ pages: 4000 })).toBeLessThan(spineWidth({ pages: 100 }) * 3)
+  })
+
+  it('draws a book with no page count at an unremarkable width', () => {
+    // Not the middle of the scale, which would draw it as a five-hundred-page
+    // book. Nothing is known, and drawing it thin or thick would be the app
+    // inventing a fact about the book.
     for (const pages of [null, undefined, 0, -20, 'many', NaN]) {
       expect(spineWidth({ title: 'A', pages })).toBe(42)
     }
     expect(spineWidth({})).toBe(42)
+    expect(spineWidth({})).toBeLessThan(spineWidth({ pages: 500 }))
   })
 
   it('reads a count that arrived as a string, since a form field gives one', () => {
@@ -269,7 +282,7 @@ describe('height no longer comes from the page count', () => {
       { id: '3', title: 'It', pages: 1138 },
     ]
     expect(wall.map(spineMeasured)).toEqual([true, false, true])
-    expect(wall.map(spineWidth)).toEqual([52, 42, 52])
+    expect(wall.map(spineWidth)).toEqual([49, 42, 76])
   })
 })
 

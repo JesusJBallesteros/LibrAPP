@@ -814,7 +814,6 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
         })}
       </div>
       <div className="shelf-board" />
-      <p className="spine-caption">{t('catalog.spinesCaption')}</p>
     </div>
   )
 }

@@ -263,7 +263,7 @@ describe('the controls on a spine', () => {
   /** One spine's slot, from the markup, which is where its order lives. */
   const sliceSlot = (source) => {
     const from = source.indexOf('className={`spine-slot')
-    return source.slice(from, source.indexOf('spine-caption', from))
+    return source.slice(from, source.indexOf('shelf-board', from))
   }
 
   it('offers read and unread as one choice, not two switches', () => {

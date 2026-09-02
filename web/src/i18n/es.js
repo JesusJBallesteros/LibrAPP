@@ -1160,7 +1160,5 @@ export default {
     'Todos los libros que dejan a la vista los filtros, no solo los que caben en pantalla. Es una corrección como cualquier otra: se puede deshacer libro a libro, o de golpe desde El depósito.',
   'catalog.bulk.doIt': 'Marcar los {n}',
   'catalog.spineWall': 'Los libros como lomos en un estante',
-  'catalog.spinesCaption':
-    'El grosor sale del n\u00famero de p\u00e1ginas cuando consta; un libro sin \u00e9l se dibuja con el ancho intermedio en vez de adivinarlo. La altura sale de la longitud del t\u00edtulo y el color es fijo para cada libro, as\u00ed que ambos son decorativos.',
   'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
 }

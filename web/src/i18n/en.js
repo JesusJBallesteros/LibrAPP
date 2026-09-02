@@ -1170,7 +1170,5 @@ export default {
     'Every book the filters have left on screen, not only the ones in view. This is a correction like any other: it can be undone book by book, or all at once from The stacks.',
   'catalog.bulk.doIt': 'Mark all {n}',
   'catalog.spineWall': 'The books as spines on a shelf',
-  'catalog.spinesCaption':
-    'Thickness comes from the page count, where one was recorded; a book with none is drawn at the middle width rather than guessed at. Height comes from the length of the title and colour is fixed per book, so both are decoration.',
   'catalog.spinesEmpty': 'No book here has a spine to draw.',
 }

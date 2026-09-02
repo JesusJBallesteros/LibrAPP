@@ -475,16 +475,17 @@ like any other, so any of them can be undone.
 side by side; **List** is one button away and is where searching and sorting are
 easiest to read.
 
-**Thickness is the one real measurement.** It comes from the page count, in
-three bands: under 150 pages is thin, 150 to 300 is medium, over 300 is thick.
-A book with no page count recorded is drawn at the middle width, because nothing
-is known about it and drawing it thin would be inventing a fact. Page counts
-arrive from the extras checklist while a photograph is read, or from **Fill in
-gaps** at the desk.
+**Thickness is the one real measurement.** It follows the page count in
+proportion, so fifty pages either way is a different spine. It stops narrowing
+at the point where a spine can no longer hold its own lettering, and stops
+widening before one long book takes a row to itself. A book with no page count
+recorded is drawn at an unremarkable width, because nothing is known about it
+and drawing it thin or thick would be inventing a fact. Page counts arrive from
+the extras checklist while a photograph is read, or from **Fill in gaps** at the
+desk.
 
-**Height and colour are decoration, and the wall says so underneath.** Height
-comes from the length of the title, so a tall spine means a long name and not a
-big book. Colour is fixed per book so a spine keeps its own. Titles are set at
+**Height and colour are decoration.** Height comes from the length of the
+title, so a tall spine means a long name and not a big book. Colour is fixed per book so a spine keeps its own. Titles are set at
 one size on every spine, large enough to read across a room, and a title longer
 than its spine ends in an ellipsis. The whole title is always in the tooltip and
 in the accessible name.

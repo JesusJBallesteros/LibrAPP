@@ -210,33 +210,46 @@ export function spineHash(id, range) {
 /** 1..8, matching the --spine-N custom properties. */
 export const spineTint = (book) => spineHash(book?.id, 8) + 1
 
-// Where a book stops being thin and starts being thick, in pages. Three bands
-// rather than a smooth scale: a shelf is read by eye, and nobody looking at it
-// is measuring the difference between 260 pages and 280.
-export const PAGE_BANDS = { thin: 150, thick: 300 }
+// The thinnest a spine may be drawn, in pixels, and it is the content that
+// sets it rather than any book: one line of title at the size every spine uses,
+// with the read stamp at its foot, and room to sit in. Nothing gets narrower
+// than this however short it is, because below it the spine stops being
+// readable and starts being a rule.
+const FLOOR = 34
 
-// Wide enough for one line of title at the size every spine uses, which is set
-// to be read on a screen rather than to fit the longest name. A title that
-// outruns its spine ends in an ellipsis.
-const THIN = 34
-const MEDIUM = 42
-const THICK = 52
+// And the widest, which is a decision about the shelf rather than about books.
+// A thousand-page book really is ten times the thickness of a hundred-page one,
+// and drawn that way one volume would take a row to itself. Two and a bit times
+// reads as much thicker without the wall becoming about one book.
+const CEILING = 76
+
+// Between these two the width is proportional. Outside them it is flat: under a
+// hundred pages the content floor has already been reached, and over a thousand
+// the difference has stopped being legible anyway.
+const FEW = 100
+const MANY = 1000
+
+// What a book with no page count gets. Not the middle of the scale, which would
+// draw it as a five-hundred-page book, but the width of an unremarkable one.
+const UNKNOWN = 42
 
 /**
  * How thick to draw the spine, in pixels.
  *
- * From the page count, which is the only honest measure of thickness, and only
- * where one was recorded. A book with no page count is drawn at the middle
- * width: not because it is average, but because the app does not know, and
- * guessing thin or thick would be inventing a fact about the book. The caption
- * under the wall says so.
+ * From the page count, which is the only honest measure of thickness a catalog
+ * holds, and in proportion to it rather than in bands. A shelf of real books
+ * has as many thicknesses as it has books, and three widths made a wall of
+ * them look sorted into sizes.
+ *
+ * A book with no page count is drawn at a fixed unremarkable width: not because
+ * it is average, but because nothing is known, and drawing it thin or thick
+ * would be inventing a fact about the book.
  */
 export function spineWidth(book) {
   const pages = Number(book?.pages)
-  if (!Number.isFinite(pages) || pages <= 0) return MEDIUM
-  if (pages <= PAGE_BANDS.thin) return THIN
-  if (pages <= PAGE_BANDS.thick) return MEDIUM
-  return THICK
+  if (!Number.isFinite(pages) || pages <= 0) return UNKNOWN
+  const held = Math.min(Math.max(pages, FEW), MANY)
+  return Math.round(FLOOR + ((held - FEW) / (MANY - FEW)) * (CEILING - FLOOR))
 }
 
 /** Whether a spine's width came from a recorded page count or from not knowing. */
