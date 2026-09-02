@@ -11,7 +11,8 @@ import { setOverride } from '../core/overrides.js'
  * pile with its reasoning, the chart, the keyword cloud, were all behind the
  * work rather than in front of it.
  *
- * The shelf here is invented. It is a plausible one rather than a tidy one:
+ * The books are real and their details are right; the shelf they sit on is the
+ * made-up part. It is a plausible shelf rather than a tidy one:
  * books nobody recorded a read state for, a couple with no genre, two lent out
  * and one borrowed, and a pile bought years ago and never opened, because a
  * demo whose every panel is full and neat demonstrates something the app does

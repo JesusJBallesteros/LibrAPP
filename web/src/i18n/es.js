@@ -28,12 +28,12 @@ export default {
 
   'demo.banner': 'Estás viendo una biblioteca de muestra.',
   'demo.bannerWhy':
-    'Estos libros son inventados. Todo funciona, incluidas las ediciones y las importaciones, y todo desaparece al recargar. Tu catálogo no se toca.',
+    'Los libros son reales y sus datos son correctos. Lo inventado es la colección. Todo funciona, incluidas las ediciones y las importaciones, y todo desaparece al recargar. Tu catálogo no se toca.',
   'demo.leave': 'Salir de la muestra',
   'demo.tryYours': 'Prueba con la tuya',
   'demo.importWarning': 'Lo que traigas aquí forma parte de la muestra.',
   'demo.importWarningWhy':
-    'Se leerá y se combinará igual que en tu propia biblioteca, y desaparecerá al recargar junto con los libros inventados. Tu biblioteca no se toca en ningún caso. Para conservar lo que importes, empieza antes la tuya.',
+    'Se leerá y se combinará igual que en tu propia biblioteca, y desaparecerá al recargar junto con el resto de la muestra. Tu biblioteca no se toca en ningún caso. Para conservar lo que importes, empieza antes la tuya.',
 
   'landing.language': 'Idioma',
   'landing.learnMore': 'Más sobre LibrAPP',
