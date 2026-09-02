@@ -366,8 +366,9 @@ is not a book. Everything is kept unless it is set aside.
 ### Books on a Kindle
 
 Amazon ships no export button, and for a lot of people the Kindle is the largest
-collection they own. **Books on a Kindle**, on the front page, gives two routes
-and says what each one costs.
+collection they own. **[Books on a
+Kindle](https://jesusjballesteros.github.io/LibrAPP/#kindle)**, on the front
+page, gives two routes and says what each one costs.
 
 **Ask Amazon for the data.** Account, then Data Privacy, then Request Your
 Information. A download link arrives by email, usually within a few days. It

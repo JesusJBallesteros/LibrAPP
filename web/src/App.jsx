@@ -74,6 +74,17 @@ export default function App() {
     if (lib.error) banner.current?.scrollIntoView({ block: 'center' })
   }, [lib.error])
 
+  // #kindle opens the page about getting a library out of Amazon. That page is
+  // the answer to a question people go looking for on its own — Amazon has no
+  // export button — and it needs no library, so it can be linked to directly
+  // and read by somebody who has never opened this app.
+  useEffect(() => {
+    if (!/(^|[?&#])kindle(=|&|$)/.test(window.location.hash)) return
+    setBefore('home')
+    setView('kindle')
+    window.history.replaceState(null, '', window.location.pathname + window.location.search)
+  }, [])
+
   useEffect(() => {
     if (demoAsked.current || lib.status === 'opening' || lib.isDemo) return
     if (!/(^|[?&#])demo(=|&|$)/.test(window.location.search + window.location.hash)) return
