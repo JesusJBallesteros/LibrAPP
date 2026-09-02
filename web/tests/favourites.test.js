@@ -279,6 +279,28 @@ describe('the controls on a spine', () => {
     expect(wall).toContain('const next = book.read === value ? null : value')
   })
 
+  it('hands focus back after a press that came from a pointer', () => {
+    // The controls are shown while the slot holds focus, which is what makes
+    // them reachable by keyboard. But focus outlives the pointer, so a spine
+    // pressed with a mouse stood out until something else was clicked.
+    expect(wall).toContain('const letGo = (e) => {')
+    expect(wall).toContain('if (e.detail > 0) e.currentTarget.blur()')
+  })
+
+  it('keeps the focus a key press needs', () => {
+    // detail is the click count and it is zero when the click came from the
+    // keyboard. Blurring there would drop somebody out of the wall mid-press,
+    // so no blur in this file may stand without that guard beside it.
+    for (const line of wall.split(String.fromCharCode(10))) {
+      if (line.includes('.blur()')) expect(line, line).toContain('detail > 0')
+    }
+  })
+
+  it('uses it on both controls, since both are pressed the same way', () => {
+    const uses = (wall.match(/letGo\(e\)/g) || []).length
+    expect(uses).toBe(2)
+  })
+
   it('shows the controls on focus, not only on hover', () => {
     // A keyboard cannot hover, and an element that is display:none is not in
     // the tab order to be focused in the first place. Both rules: the one for

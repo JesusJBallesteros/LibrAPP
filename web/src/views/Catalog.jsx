@@ -664,6 +664,22 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
  * control and not decoration. It stops the click from reaching whatever sits
  * behind it, so pressing the star never also opens the book.
  */
+/**
+ * Hand focus back after a press that came from a pointer.
+ *
+ * The controls on a spine are shown while the slot holds focus, which is what
+ * makes them reachable by keyboard at all. But a mouse click leaves focus on
+ * the button it pressed, and focus outlives the pointer, so a spine pressed
+ * with a mouse stood out until something else was clicked.
+ *
+ * detail is the click count, and it is zero when a click came from the keyboard
+ * rather than from a pointer. So a key press keeps its focus, which it needs,
+ * and a mouse press gives it up, which is what a mouse expects.
+ */
+const letGo = (e) => {
+  if (e.detail > 0) e.currentTarget.blur()
+}
+
 function Star({ book, onToggle, t, busy }) {
   return (
     <button
@@ -674,6 +690,7 @@ function Star({ book, onToggle, t, busy }) {
       aria-label={book.favourite ? t('catalog.unmark') : t('catalog.mark')}
       onClick={(e) => {
         e.stopPropagation()
+        letGo(e)
         onToggle(book)
       }}
     >
@@ -798,6 +815,7 @@ function SpineWall({ books, authors, items, selected, onPick, onToggle, onRead, 
                         disabled={busy}
                         onClick={(e) => {
                           e.stopPropagation()
+                          letGo(e)
                           onRead(book, value)
                         }}
                       >
