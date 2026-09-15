@@ -25,7 +25,7 @@ choose; everywhere else it goes into browser storage, which works identically
 from inside the app but is not visible to other programs. See [where your
 library lives](your-library.md).
 
-**Not sure about yours?** Open LibrAPP and go to **The stacks → Your browser**. It
+**Not sure about yours?** Open LibrAPP and go to **Stacks → Your browser**. It
 tests each feature and tells you what works, which is more reliable than any
 table — including this one.
 
@@ -39,7 +39,7 @@ delete a library kept in browser storage.** If you use those settings:
 
 - prefer saving to a folder (Chromium desktop), or
 - allow LibrAPP's storage as an exception, or
-- keep an export — **The stacks → Export**.
+- keep an export — **Stacks → Export**.
 
 LibrAPP warns you when its storage is not marked persistent.
 

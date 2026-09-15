@@ -35,6 +35,7 @@ const BUNDLED = [
     licence: 'MIT',
     url: 'https://github.com/anthropics/anthropic-sdk-typescript',
   },
+  { name: 'Lucide icons', licence: 'ISC', url: 'https://github.com/lucide-icons/lucide' },
   {
     name: 'EB Garamond',
     licence: 'SIL Open Font Licence 1.1',

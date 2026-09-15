@@ -1,5 +1,64 @@
 # Changelog
 
+## v2.7.0
+
+### A new shell
+
+Six places, each an icon with its name: Start, Catalog, Add, Desk, Stacks and
+About. On a phone they are a bar along the foot of the screen, which replaces
+the Menu button and the folded sidebar. From 640 pixels wide they are a rail
+down the left, with Day and Night as a sun and a moon at its foot. From 1040
+pixels a column on the right holds the counts of what is here and Rebuild
+catalog; narrower than that, the same column follows the Stacks page.
+
+Start is a place inside the app once a library is open: the headline, six doors
+with icons, what is set up so far, and installing on a phone. Before a library
+is open it is still a page of its own.
+
+The four ways in share one place, Add, and are stepped through on the same ring
+the desk uses. Their routes and links are unchanged.
+
+Icons are the Lucide set, bundled with the app, so there is still no
+third-party request. About lists them with their licence.
+
+### The catalog
+
+The number of books shown is the heading, with the total beside it when a filter
+narrows the list, and the build line behind an i. Search, Type a book in and the
+two views are icons. Grouping is a select in the list view, marking in bulk sits
+under the filters and asks in a tinted card, and list rows draw read state as a
+check, a cross or a dash with a legend above them. On a phone the rows keep the
+title, the marks and the year. The catalog takes the full width of its column.
+
+### The ways in, the desk and the stacks
+
+Step headings carry their number in a circle, filled for the step being worked
+on. Keep or discard is a small check or cross on every import list, and a
+photograph's review shows how sure each read is in its own colour.
+
+Tell me how is an encircled i with its words beside it, and each one on the
+photograph page now gives only the presses that step needs. The reasons they
+used to carry are in the adding-books guide.
+
+Notes that stood under headings on the desk and the stacks, and the paragraphs
+in Ask for more than the titles, open from an i beside their heading. Setup
+offers its two choices as doors.
+
+### The owl lights up
+
+When a key step finishes the owl glows instead of speaking: books ready to
+check, an import saved, a bulk mark, the desk's answers ready or written, a
+rebuild. Opening it shows the line and puts the light out. A screen reader hears
+the same line, and with reduced motion it lights without moving.
+
+### Since v2.6.1
+
+A spine is as thick as its book's page count, between a floor that still holds
+its lettering and a ceiling, rather than one of three widths. A spine lets go
+when the mouse leaves it after a tool on it was pressed. The Kindle page has a
+link of its own, `#kindle`. The manual moved out of the README into `docs/`,
+and the demo is described as a made-up collection of real books.
+
 ## v2.6.1
 
 ### The licence
