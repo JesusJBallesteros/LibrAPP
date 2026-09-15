@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
 import { InfoHeading } from '../components/Info.jsx'
+import ColourScheme from '../components/ColourScheme.jsx'
 import Backups from '../components/Backups.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
@@ -357,6 +358,8 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
           </div>
         )}
       </section>
+
+      <ColourScheme />
 
       <section className="desk-section">
         <InfoHeading

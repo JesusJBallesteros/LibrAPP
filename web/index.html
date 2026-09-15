@@ -10,6 +10,12 @@
         var t = localStorage.getItem('librapp-theme')
         if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
       } catch (e) {}
+      // The colour scheme, for the same reason. The tokens were worked out when
+      // it was chosen; the app works them out again once it starts.
+      try {
+        var s = JSON.parse(localStorage.getItem('librapp-scheme') || 'null')
+        if (s && s.vars) for (var k in s.vars) document.documentElement.style.setProperty('--' + k, s.vars[k])
+      } catch (e) {}
     </script>
     <link rel="stylesheet" href="./fonts/fonts.css" />
     <title>LibrAPP: your library catalog and your own personal librarian</title>

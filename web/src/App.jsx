@@ -19,6 +19,11 @@ import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
 import Add, { ADD_VIEWS } from './views/Add.jsx'
 import { leaveForYourOwn, wantedStart } from './components/DemoWarning.jsx'
+import { restoreScheme } from './store/scheme.js'
+
+// Once, before the first render. index.html has already painted the stored
+// colours; this works them out again in case the arithmetic has changed.
+restoreScheme()
 
 // Six places. The four ways in share one, Add, which opens on the photograph
 // and carries the other three as tabs.
