@@ -109,12 +109,15 @@ export default function IsbnLookup({ lib, onDone }) {
 
   const keep = () =>
     lib.run(async (library) => {
+      const before = lib.catalog?.counts?.books ?? 0
       await library.addLookupRecords(keeping, { format })
       const catalog = await library.rebuild()
       setWritten({ n: keeping.length, books: catalog.counts?.books })
       setFound(null)
       setText('')
-      onDone?.()
+      // What arrived, for whoever reports it: new books and ones already held.
+      const added = Math.max(0, (catalog.counts?.books ?? 0) - before)
+      onDone?.({ kind: 'imported', added, known: Math.max(0, keeping.length - added) })
     }, { onError: setError })
 
   const onFile = async (file) => {

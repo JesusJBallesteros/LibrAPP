@@ -203,8 +203,16 @@ export is for.
 Before any books exist, all three are about how to begin.
 
 It also speaks while something is happening, and then it says only that: how
-many pieces are being read, that a question is in flight, how many books an
-import brought and how many were already there.
+many pieces are being read, or that a question is in flight.
+
+**When a key step finishes it lights up instead**: a tan glow, a ring moving out
+and a dot, until you open it. That happens when books are ready to check after a
+photograph is read or a transcription pasted, when an import is saved from a
+photograph, a list or barcodes, when the catalog is marked in bulk, when the
+desk's answers are ready to check and again when they are written, and when
+**Rebuild catalog** finishes. Opening it shows what happened and puts the light
+out, and so does leaving the page. With reduced motion asked for, it lights
+without moving.
 
 It is not a chat surface, and it has nowhere to type on purpose. Anything worth
 typing belongs at the desk, where the question gets your catalog as context and
@@ -215,5 +223,5 @@ it cannot count. If your books have no read state recorded, it says that, rather
 than congratulating you on having read them all.
 
 **Press *Not again* in its bubble to dismiss it for good.** That choice survives
-reloads. The way back is in **The stacks**, with the other settings, and appears
+reloads. The way back is in **Stacks**, with the other settings, and appears
 only once there is something to undo.

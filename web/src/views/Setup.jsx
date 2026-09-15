@@ -1,3 +1,4 @@
+import { ChevronRight, FolderOpen, Globe } from 'lucide-react'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -6,6 +7,9 @@ import { useT } from '../i18n/index.jsx'
  * Reached when something needs storage and none has been chosen, rather than
  * at startup, so the reason for asking is already established by the time this
  * appears.
+ *
+ * The two choices are doors like the ones on Start: an icon, the name, a line
+ * about it, and a chevron. The one this browser can do best is marked.
  */
 export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, error, chosen, onNext }) {
   const { t } = useT()
@@ -15,13 +19,14 @@ export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, erro
   // a picker is easy to answer with the wrong directory.
   if (chosen) {
     return (
-      <div className="view" style={{ maxWidth: 640 }}>
-        <header>
-          <h2>{t('setup.chosen.title')}</h2>
+      <div className="view setup" style={{ maxWidth: 640 }}>
+        <header className="start-head">
+          <h2 className="start-title">{t('setup.chosen.title')}</h2>
+          <hr className="start-rule" />
         </header>
-        <div className="card">
+        <div className="saved-card">
           <p className="tabular">{chosen}</p>
-          <p className="muted tiny" style={{ marginTop: 8 }}>{t('setup.chosen.body')}</p>
+          <p>{t('setup.chosen.body')}</p>
           <div className="row" style={{ gap: 8, marginTop: 14 }}>
             <button className="btn primary" onClick={onNext}>
               {t('setup.chosen.next')}
@@ -35,11 +40,22 @@ export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, erro
     )
   }
 
+  const doors = [
+    canPickFolder && {
+      id: 'folder',
+      Icon: FolderOpen,
+      onClick: onFolder,
+      primary: true,
+    },
+    { id: 'browser', Icon: Globe, onClick: onBrowser, primary: !canPickFolder },
+  ].filter(Boolean)
+
   return (
-    <div className="view" style={{ maxWidth: 640 }}>
-      <header>
-        <h2>{t('setup.title')}</h2>
-        <p>{t('setup.intro')}</p>
+    <div className="view setup" style={{ maxWidth: 640 }}>
+      <header className="start-head">
+        <h2 className="start-title">{t('setup.title')}</h2>
+        <hr className="start-rule" />
+        <p className="muted" style={{ marginTop: 14 }}>{t('setup.intro')}</p>
       </header>
 
       {error && (
@@ -48,33 +64,30 @@ export default function Setup({ canPickFolder, onFolder, onBrowser, onBack, erro
         </div>
       )}
 
-      {canPickFolder ? (
-        <div className="card">
-          <h3>{t('setup.folder.title')}</h3>
-          <p className="muted tiny">{t('setup.folder.body')}</p>
-          <button className="btn primary" onClick={onFolder} style={{ marginTop: 12 }}>
-            {t('setup.folder.action')}
-          </button>
-        </div>
-      ) : (
+      {!canPickFolder && (
         <div className="notice">
           <p className="tiny">{t('setup.noPicker')}</p>
         </div>
       )}
 
-      <div className="card">
-        <h3>{t('setup.browser.title')}</h3>
-        <p className="muted tiny">{t('setup.browser.body')}</p>
-        <button
-          className={canPickFolder ? 'btn' : 'btn primary'}
-          onClick={onBrowser}
-          style={{ marginTop: 12 }}
-        >
-          {t('setup.browser.action')}
-        </button>
+      <div className="landing-options" style={{ marginTop: 22 }}>
+        {doors.map(({ id, Icon, onClick, primary }) => (
+          <button
+            key={id}
+            className={`landing-option${primary ? ' primary' : ''}`}
+            onClick={onClick}
+          >
+            <Icon className="landing-option-icon" aria-hidden="true" focusable="false" />
+            <span className="landing-option-text">
+              <strong>{t(`setup.${id}.action`)}</strong>
+              <span className="tiny faint">{t(`setup.${id}.body`)}</span>
+            </span>
+            <ChevronRight className="landing-option-go" aria-hidden="true" focusable="false" />
+          </button>
+        ))}
       </div>
 
-      <p className="tiny faint">{t('setup.either')}</p>
+      <p className="tiny faint" style={{ marginTop: 14 }}>{t('setup.either')}</p>
 
       {onBack && (
         <button className="btn" onClick={onBack} style={{ marginTop: 14 }}>

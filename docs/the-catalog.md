@@ -8,22 +8,30 @@ Searching, filtering, the shelf view, and the three things only you can record.
 
 #Using the catalog
 
-**Search** opens the controls: search across titles, authors, series and tags,
-filter by read status, format, source, whether a book is away from the shelf and
-whether you marked it a favourite, and group and sort the result.
+**The count is the heading.** The catalog opens on the number of books shown.
+When a search or a filter narrows the list, it says how many of the whole
+catalog that is. The **i** beside it opens when the catalog was built and how
+many entries carry a correction.
 
-They stay folded until you press it, and while they are folded the button
+**The magnifier** opens the controls: search across titles, authors, series and
+tags, filter by read status, and sort. *more filters* adds format, source,
+whether a book is away from the shelf and whether you marked it a favourite. In
+the list, *Group by* gathers the books under their author or their series.
+
+They stay folded until you press it, and while they are folded the magnifier
 carries a count of anything still narrowing the list, so a shelf that looks
-short always says why.
+short always says why. **The pencil** beside it is *Type a book in*.
 
-**Mark many books at once.** Under the count is *Mark all N shown as read /
+**Mark many books at once.** Under the filters is *Mark all N shown as read /
 unread / not recorded*, which applies to every book the search and filters have
 left on screen. It asks first and names the number, and each one is a correction
 like any other, so any of them can be undone.
 
-**The catalog opens as a shelf.** Spines draws the filtered books standing
-side by side; **List** is one button away and is where searching and sorting are
-easiest to read.
+**The catalog opens as a shelf.** The last two icons in the header switch
+between **Spines**, the filtered books standing side by side, and **List**,
+where searching and sorting are easiest to read. In the list a check marks a
+book as read, a cross as unread and a dash as not recorded, and a line above the
+rows says so.
 
 **Thickness is the one real measurement.** It follows the page count in
 proportion, so fifty pages either way is a different spine. It stops narrowing
@@ -49,11 +57,21 @@ readable from the shelf at all.
 as one choice, and the star. Pressing the state a book is already in puts it
 back to not recorded.
 
-**Switch between Day and Night** from the sidebar, or leave it alone and it
-follows whatever your system asks for. The landing page has it too.
+### Finding your way
 
-**On a narrow screen** the sidebar folds behind a **Menu** button and opens on
-a press. Choosing a page closes it again.
+Six places, each an icon with its name under it: **Start**, **Catalog**,
+**Add**, **Desk**, **Stacks** and **About**. On a phone they sit in a bar along
+the foot of the screen; on anything wider they run down the left. From 1040
+pixels wide a column on the right keeps the counts of what is here, with
+**Rebuild catalog** under them. Narrower than that, the same counts sit at the
+foot of **Stacks**.
+
+**Day and Night** are the sun and the moon at the foot of the rail, and the
+opening page has them too. Leave both alone and the theme follows whatever your
+system asks for.
+
+**An i beside a heading** opens a short note about that section in place, and
+closes it again. Nothing opens by itself.
 
 **Click any book** for the full record: series and volume, formats, purchase
 date, publisher, genre and tags, where it is shelved, which sources know about
@@ -157,7 +175,7 @@ rebuilt from your sources every time, a removal is stored as a decision rather
 than a deletion — otherwise the next rebuild would bring the book straight
 back.
 
-Everything you have corrected is listed under **The stacks → Corrections you have
+Everything you have corrected is listed under **Stacks → Corrections you have
 made**, where removals can be restored and edits undone.
 
 Three other things land here, because they are corrections in the same sense:

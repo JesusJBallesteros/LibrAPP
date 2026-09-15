@@ -108,8 +108,8 @@ between rows are drawn as strongly as the boundary of a control, since at low
 vision the structure of a page matters as much as the words. There used to be a
 switch offering a lower level; there is nothing to switch to now.
 
-**By keyboard**, a skip link is the first thing Tab reaches, past the sidebar
-and into the catalog. The book panel is a real dialog: it takes focus when it
+**By keyboard**, a skip link is the first thing Tab reaches, past the rail of
+places and into the catalog. The book panel is a real dialog: it takes focus when it
 opens, keeps it while open, closes on Escape, and hands focus back to the row
 you opened. The current page is marked as such, and the page title names the
 view you are on.
@@ -137,10 +137,10 @@ being asked, and writes out the manual route where it does not: on an iPhone,
 *Share* then *Add to Home Screen*; on Android, the browser menu then *Install
 app*. Both do the same thing.
 
-<img src="docs/images/phone-desk.png" alt="The desk on a phone: the sidebar folded behind a Menu button, and the shelves shown one at a time with the names either side of the chosen one" width="320">
+<img src="docs/images/phone-desk.png" alt="The desk on a phone: the six places in a bar along the foot of the screen, and the shelves shown one at a time with the names either side of the chosen one" width="320">
 
 **Your catalog does not travel with it.** Each device keeps its own, so moving
-one across is a file: export it in **The stacks** on one device, and bring that
+one across is a file: export it in **Stacks** on one device, and bring that
 file in on the other. A backup works for this too, since a backup is the same
 file.
 
@@ -161,7 +161,7 @@ Requirements: Node 20+ to build. Nothing to run it.
 
 The opening page has a footer: **About · Privacy · Licence · Source code ·
 Report a problem**. They all lead to one page, each landing on its own section,
-reachable from the sidebar once you are inside.
+which is **About** among the six places once you are inside.
 
 There is no contact form, because there is no server to receive one. Anything
 about the app goes to
@@ -189,7 +189,7 @@ is thirteen digits printed on the back of a book anybody can buy.
 **The camera** is asked for only when you press *Scan with the camera*, and it
 is handed back the moment you stop, leave the page, or switch to another tab.
 
-**Version.** **The stacks** shows which build you are running, when it was
+**Version.** **Stacks** shows which build you are running, when it was
 made, and a button that throws the cached copy away and fetches the current one.
 An installed app keeps a copy of itself so it can open offline, and that copy can
 occasionally be older than what is published. The button discards only the app —
@@ -255,5 +255,6 @@ out of every free-software directory and off the list of things most people are
 allowed to contribute to. Versions up to v2.6.0 remain available under it.
 
 Its dependencies keep their own terms: React, Zod, the Anthropic SDK and the
-barcode reader under MIT, the two typefaces under the SIL Open Font Licence. The
+barcode reader under MIT, the Lucide icons under ISC, the two typefaces under the
+SIL Open Font Licence. The
 app lists them on its **About** page.

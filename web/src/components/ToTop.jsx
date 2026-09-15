@@ -14,8 +14,8 @@ import { useT } from '../i18n/index.jsx'
  * there until they have already done without it.
  *
  * Opposite the owl, and quieter than it. The owl speaks and this only goes
- * somewhere, so it is smaller, half there until it is pointed at, and out of
- * the way of the sidebar on a screen wide enough to have one.
+ * somewhere, so it is smaller, half there until it is pointed at, and clear of
+ * the rail, or of the bar of places on a phone.
  */
 export default function ToTop() {
   const { t } = useT()

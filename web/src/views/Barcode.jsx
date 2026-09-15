@@ -13,7 +13,7 @@ import { useT } from '../i18n/index.jsx'
  *
  * The page is a frame; the work is in IsbnLookup, which the desk used to hold.
  */
-export default function Barcode({ lib }) {
+export default function Barcode({ lib, onOwl }) {
   const { t } = useT()
 
   return (
@@ -27,7 +27,7 @@ export default function Barcode({ lib }) {
 
       <DemoWarning lib={lib} />
 
-      <IsbnLookup lib={lib} />
+      <IsbnLookup lib={lib} onDone={onOwl} />
     </div>
   )
 }

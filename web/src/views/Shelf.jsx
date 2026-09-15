@@ -17,6 +17,8 @@ import { idbGet, idbSet } from '../store/idb.js'
 import promptText from '../../../prompts/ingest-shelf.md?raw'
 import DemoWarning from '../components/DemoWarning.jsx'
 import TellMeHow from '../components/TellMeHow.jsx'
+import StepHead from '../components/StepHead.jsx'
+import { InfoHeading } from '../components/Info.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
@@ -171,6 +173,8 @@ export default function Shelf({ lib, onOwl }) {
   }
 
   const readWithKey = async () => {
+    // What the owl reports once the read is back: the books waiting to be checked.
+    let ready = null
     setReadError(null)
     setReading(true)
     onOwl?.({ kind: 'reading', tiles: kept.length })
@@ -199,6 +203,7 @@ export default function Shelf({ lib, onOwl }) {
       ).length
       resetBooks()
       setProposed({ transcription, usage, counted: books.length, recalled })
+      ready = { kind: 'review', n: books.length }
       // Some tiles came back and some did not. What arrived is worth keeping,
       // and the reader has to know the rest is missing before importing it as
       // though it were the whole shelf.
@@ -217,7 +222,7 @@ export default function Shelf({ lib, onOwl }) {
       inFlight.current = null
       setReading(false)
       setProgress(null)
-      onOwl?.(null)
+      onOwl?.(ready)
     }
   }
 
@@ -232,6 +237,7 @@ export default function Shelf({ lib, onOwl }) {
 
   const acceptProposed = () =>
     lib.run(async (library) => {
+      const before = lib.catalog?.counts?.books ?? 0
       const { records, stats } = loadTranscription(keptTranscription)
       // Named after the photograph, so a second shelf does not overwrite the
       // first and re-reading the same one still replaces it.
@@ -250,6 +256,8 @@ export default function Shelf({ lib, onOwl }) {
       const catalog = await library.rebuild()
       setProposed(null)
       setResult({ count: records.length, stats, counts: catalog.counts })
+      const added = Math.max(0, (catalog.counts?.books ?? 0) - before)
+      onOwl?.({ kind: 'imported', added, known: Math.max(0, records.length - added) })
     }, { onError: setSaveError })
 
   const regrid = (dCols, dRows) => {
@@ -287,6 +295,7 @@ export default function Shelf({ lib, onOwl }) {
         counted: records.length,
         recalled: books.filter((b) => b.recalled).length,
       })
+      onOwl?.({ kind: 'review', n: records.length })
       return true
     } catch (err) {
       setSaveError(err.message)
@@ -406,7 +415,7 @@ export default function Shelf({ lib, onOwl }) {
           there instead. */}
       <div className={`shelf-steps${tiles ? ' cut' : ''}`}>
         <section className="shelf-step shelf-one">
-          <h3 className="step-head">{t('shelf.stepOne')}</h3>
+          <StepHead n={1} text={t('shelf.stepOne')} state={tiles ? 'done' : 'now'} />
           <DropZone
             mark="camera"
             title={photoUrl ? photo.name : t('shelf.dropPhoto')}
@@ -445,7 +454,7 @@ export default function Shelf({ lib, onOwl }) {
         {tiles && (
           <section className="shelf-step shelf-two">
             <div className="spread">
-              <h3 className="step-head">{t('shelf.stepTwo')}</h3>
+              <StepHead n={2} text={t('shelf.stepTwo')} state="done" />
               <span className="tabular tiny faint">
                 {tiles.photo} · {tiles.photoSize[0]}×{tiles.photoSize[1]} ·{' '}
                 {t('shelf.tileCount', { n: tiles.tiles.length })}
@@ -537,20 +546,32 @@ export default function Shelf({ lib, onOwl }) {
 
       {tiles && (
         <section className="shelf-step" style={{ marginTop: 34 }}>
-          <h3 className="step-head">{t('shelf.stepThree')}</h3>
+          <StepHead n={3} text={t('shelf.stepThree')} state="done" />
           <p style={{ marginTop: 8 }}>{t('shelf.stepThree.note')}</p>
 
             <div className="sunk-panel" style={{ marginTop: 12 }}>
-              <h3 className="panel-head">{t('shelf.extras')}</h3>
-              <p className="tiny faint" style={{ margin: '6px 0 10px' }}>{t('shelf.extrasNote')}</p>
+              <InfoHeading
+                className="panel-head"
+                title={t('shelf.extras')}
+                label={t('common.moreAbout', { what: t('shelf.extras') })}
+              >
+                <p>{t('shelf.extrasNote')}</p>
+                <p>{t('shelf.noCover')}</p>
+              </InfoHeading>
 
               {['read', 'recalled'].map((kind) => (
-                <div key={kind} style={{ marginTop: kind === 'recalled' ? 14 : 0 }}>
-                  <span className="tiny muted">{t(`shelf.extras.${kind}`)}</span>
-                  {kind === 'recalled' && (
-                    <p className="tiny faint" style={{ margin: '4px 0 0' }}>
-                      {t('shelf.extras.recalledWarning')}
-                    </p>
+                <div key={kind} style={{ marginTop: 14 }}>
+                  {kind === 'recalled' ? (
+                    <InfoHeading
+                      as="span"
+                      className="tiny muted"
+                      title={t('shelf.extras.recalled')}
+                      label={t('common.moreAbout', { what: t('shelf.extras.recalled') })}
+                    >
+                      <p>{t('shelf.extras.recalledWarning')}</p>
+                    </InfoHeading>
+                  ) : (
+                    <span className="tiny muted">{t(`shelf.extras.${kind}`)}</span>
                   )}
                   <div style={{ marginTop: 6 }}>
                     {EXTRAS.filter((extra) => extra.kind === kind).map((extra) => (
@@ -566,15 +587,13 @@ export default function Shelf({ lib, onOwl }) {
                   </div>
                 </div>
               ))}
-
-              <p className="tiny faint" style={{ margin: '12px 0 0' }}>{t('shelf.noCover')}</p>
             </div>
         </section>
       )}
 
       {tiles && (
         <section className="shelf-step" style={{ marginTop: 34 }}>
-          <h3 className="step-head">{t('shelf.stepFour')}</h3>
+          <StepHead n={4} text={t('shelf.stepFour')} state={proposed || result ? 'done' : 'now'} />
           <p style={{ marginTop: 8 }}>{t('shelf.stepFour.note')}</p>
           <TellMeHow>
             <p>{t('shelf.stepFour.how')}</p>
@@ -699,33 +718,29 @@ export default function Shelf({ lib, onOwl }) {
               {(shelf.books || []).map((book, j) => {
                 const isDropped = droppedBooks.has(bookKey(i, j))
                 return (
-                <div
-                  className={`forgotten-item spread${isDropped ? ' discarded' : ''}`}
-                  key={j}
-                >
-                  <span>
+                <div className={`review-row${isDropped ? ' discarded' : ''}`} key={j}>
+                  <KeepToggle
+                    dropped={isDropped}
+                    disabled={lib.busy}
+                    onToggle={() => toggleBook(bookKey(i, j))}
+                  />
+                  <span className="review-main">
                     <span className="title">{book.title}</span>
-                    <br />
                     <span className="tiny muted">
                       {(book.authors || []).join(', ') || '—'}
                       {book.publisher ? ` · ${book.publisher}` : ''}
                     </span>
-                    {book.notes && <div className="why">{book.notes}</div>}
+                    {book.notes && <span className="why">{book.notes}</span>}
                   </span>
-                  <span className="row" style={{ gap: 10, alignItems: 'center' }}>
-                    {isDropped ? (
-                      <span className="tiny faint">{t('keep.discardedTag')}</span>
-                    ) : (
-                      <span className={`pill ${book.confidence === 'high' ? 'read' : book.confidence === 'low' ? 'flag' : 'unread'}`}>
-                        {t(`confidence.${book.confidence}`)}
-                      </span>
-                    )}
-                    <KeepToggle
-                      dropped={isDropped}
-                      disabled={lib.busy}
-                      onToggle={() => toggleBook(bookKey(i, j))}
-                    />
-                  </span>
+                  {/* The confidence in its own colour, so the doubtful rows can
+                      be found without reading them. */}
+                  {isDropped ? (
+                    <span className="conf">{t('keep.discardedTag')}</span>
+                  ) : (
+                    <span className={`conf ${book.confidence}`}>
+                      {t(`confidence.${book.confidence}`)}
+                    </span>
+                  )}
                 </div>
                 )
               })}
@@ -761,7 +776,7 @@ export default function Shelf({ lib, onOwl }) {
           on them put the way back behind the very thing the reader had
           just lost. It asks for no key and no photograph. */}
       <section className="shelf-step" style={{ marginTop: 34 }}>
-        <h3 className="step-head">{t('shelf.stepFive')}</h3>
+        <StepHead n={5} text={t('shelf.stepFive')} state={proposed && !tiles ? 'done' : undefined} />
         <p style={{ marginTop: 8 }}>
           {t('shelf.bringNote')} <span className="faint">{t('shelf.bringNote.optional')}</span>
         </p>
@@ -806,7 +821,7 @@ export default function Shelf({ lib, onOwl }) {
       </section>
 
       {result && (
-        <div className="notice good">
+        <div className="saved-card" role="status">
           <p>
             <strong>
               {t('shelf.result', { n: result.count })}

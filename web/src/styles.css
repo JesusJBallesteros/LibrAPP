@@ -236,25 +236,119 @@
   color: var(--ink);
 }
 
-/* The explanation, folded. Set as a link rather than a control with a box,
-   because it reveals a paragraph rather than doing anything. */
+/* The explanation, folded behind an encircled i with its words beside it, and
+   opened in place on the sunk ground with a tan rule. */
 .tell-me-how { margin-top: 8px; }
 .tell-me-how > summary {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   cursor: pointer;
-  color: var(--accent);
-  font-size: 12.5px;
-  text-decoration: underline;
+  list-style: none;
   padding: 4px 0;
+  font-size: 12.5px;
+  color: var(--ink-faint);
 }
 .tell-me-how > summary::marker { content: ''; }
+.tell-me-how > summary::-webkit-details-marker { display: none; }
+.tell-me-how > summary::before {
+  content: 'i';
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: italic 400 12px/1 var(--serif);
+}
+.tell-me-how > summary:hover,
+.tell-me-how[open] > summary { color: var(--accent); }
 .tell-me-how-body {
-  margin-top: 4px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: var(--paper-sunk);
+  border-left: 2px solid var(--tan);
   color: var(--ink-soft);
   font-size: 13px;
   max-width: 64ch;
+  animation: infoIn .18s ease-out;
 }
 .tell-me-how-body p { margin: 0 0 8px; }
+.tell-me-how-body p:last-child { margin-bottom: 0; }
+
+/* A step's number in a circle: filled for the step being worked on, tinted
+   for one behind it, outlined for one ahead. */
+.step-head.numbered { display: flex; align-items: center; gap: 10px; }
+.step-num {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font: 400 11.5px/1 var(--mono);
+  color: var(--ink-faint);
+}
+.step-head.now .step-num { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.step-head.done .step-num { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent); }
+
+/* Keep or discard, on every list an import proposes. */
+.keep-toggle {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--paper);
+  cursor: pointer;
+}
+.keep-toggle svg { width: 14px; height: 14px; }
+.keep-toggle.off { border-color: var(--control-line); background: transparent; color: var(--ink-faint); }
+.keep-toggle:disabled { opacity: .5; cursor: default; }
+
+/* One book a photograph proposed: the toggle, the book, how sure the read is. */
+.review-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.review-main { display: grid; flex: 1 1 auto; min-width: 0; }
+.review-main .title { font: 400 17px/1.3 var(--serif); overflow-wrap: anywhere; }
+.review-main .tiny.muted { font-size: 12.5px; color: var(--ink-soft); }
+.review-main .why { font-size: 12px; color: var(--ink-faint); }
+.conf {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-faint);
+}
+.conf.medium { color: var(--warn); }
+.conf.low { color: var(--bad); }
+
+/* What was just written, on the tinted ground the design gives a finished step. */
+.saved-card {
+  margin: 34px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.saved-card p { margin: 0; }
+.saved-card p + p { margin-top: 4px; font-size: 12.5px; color: var(--ink-soft); }
+
+/* Inside the shell the rail already names the page, so its heading is smaller. */
+.main .view-head h2 { font-size: 30px; }
 
 /* Numbers, filenames, costs and anything that should line up in a column. */
 .tabular { font-family: var(--mono); font-variant-numeric: tabular-nums; }
@@ -332,19 +426,55 @@ button, input, select, textarea { font: inherit; color: inherit; }
   transform: translateY(-1px);
 }
 
-.landing-start h2 { font: 400 23px/1.2 var(--serif); margin: 0 0 4px; }
-.landing-options { display: grid; gap: 9px; margin-top: 18px; }
+/* The front door before a library is open: the name, then the two choices that
+   apply before anything is set up. */
+.landing-head-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.landing-head-row .landing-brand { font: 500 24px/1 var(--serif); }
 
-/* Rows on the page, not raised cards: a hairline, a flat surface, and a tint
-   on hover. The arrow is the only ornament. */
-.landing-option {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 14px;
+/* Start opens with a strapline, the claim and a rule, and nothing else. */
+.start-head .eyebrow { margin: 0 0 6px; }
+/* Two classes deep, to outrank the shell's `.view h2`. */
+.start-head .start-title { font: 400 30px/1.15 var(--serif); margin: 0; max-width: 24ch; }
+.start-rule { border: 0; border-top: 1px solid var(--rule); margin: 18px 0 0; }
+
+/* The label that opens a section: small capitals in the faint ink. */
+.section-label,
+.view .section-label {
+  display: flex;
   align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 30px 0 12px;
+  font: 400 10.5px/1.4 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.section-label svg { width: 17px; height: 17px; flex: 0 0 auto; }
+.section-label:focus { outline: none; }
+.landing-start .section-label { padding-top: 22px; }
+
+.landing-options {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+}
+
+/* An icon, a name with its hint, and a chevron. */
+.landing-option {
+  display: flex;
+  align-items: center;
+  gap: 13px;
   width: 100%;
   text-align: left;
-  padding: 15px 17px;
+  padding: 15px 16px;
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   background: var(--paper-raised);
@@ -354,65 +484,57 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 .landing-option:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-soft); }
 .landing-option:disabled { opacity: .5; cursor: not-allowed; }
-/* The door a returning reader came for. Marked rather than merely first,
-   because first is only obvious once, and this row is read at a glance. */
+/* The door a returning reader came for. */
 .landing-option.primary {
   border-color: var(--accent);
   background: var(--accent-soft);
+  color: var(--accent);
 }
-.landing-option.primary .landing-option-go { color: var(--accent); }
-.landing-option-text { display: grid; gap: 3px; min-width: 0; }
+.landing-option-icon { width: 20px; height: 20px; flex: 0 0 auto; }
+.landing-option-text { display: grid; gap: 1px; min-width: 0; flex: 1 1 auto; }
 .landing-option-text strong { font: 400 17px/1.3 var(--serif); }
-.landing-option-go { color: var(--ink-faint); font-size: 17px; }
+.landing-option-go { width: 15px; height: 15px; flex: 0 0 auto; opacity: .5; }
 
 /* Three lines of state: where the catalog is kept, how many books are in it,
-   whether a key is stored. Each answered somewhere else, and nothing gathered
-   the answers. */
-.set-up-so-far { margin-top: 34px; }
+   whether a key is stored. */
 .set-up-so-far ul { list-style: none; margin: 0; padding: 0; }
 .set-up-so-far li {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 7px 0;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
   border-bottom: 1px solid var(--rule-soft);
-  font-size: 13px;
+  font-size: 13.5px;
 }
-.set-up-so-far li:last-child { border-bottom: 0; }
-.set-up-so-far .mark { width: 1em; color: var(--ink-faint); }
-.set-up-so-far li.done .mark { color: var(--accent); }
-.set-up-so-far .what { color: var(--ink-soft); min-width: 7em; }
-.set-up-so-far .said { color: var(--ink); }
-
-/* Recessed, like the key box: apparatus beside the page rather than part of
-   the run of options above it. */
-.landing-next {
-  margin-top: 34px;
-  padding: 24px;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius);
-  background: var(--paper-sunk);
+.set-up-so-far .mark {
+  width: 18px;
+  flex: 0 0 auto;
+  text-align: center;
+  font: 400 13px/1 var(--mono);
+  color: var(--ink-faint);
 }
-.landing-next h2 { font: 400 23px/1.2 var(--serif); margin: 0 0 6px; }
-
-.landing-foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--rule); }
-
-/* A wide screen. Below this the single column is right, and on About it stays
-   right at every width, which is why these rules need .landing-home. */
-@media (min-width: 1000px) {
-  .landing-home { max-width: 1120px; }
-  .landing-home .landing-brand { font-size: 52px; }
-  .landing-home .landing-tagline { max-width: 42ch; }
-  .landing-home .landing-intro { font-size: 16px; }
-  .landing-home .landing-facts { gap: 34px; }
-  .landing-home .landing-options { grid-template-columns: 1fr 1fr; gap: 12px; }
-  .landing-home .landing-option { padding: 17px 19px; }
-  /* Five options do not halve. The last one is the way out of the setting-up
-     and into the catalog, so it takes the full width and reads as a step on
-     its own rather than as a fifth of a kind. */
-  .landing-home .landing-option:last-child { grid-column: 1 / -1; }
-
+.set-up-so-far li.done .mark { color: var(--good); }
+.set-up-so-far .what { flex: 1 0 auto; color: var(--ink); }
+.set-up-so-far .said {
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font: 400 12px/1.4 var(--mono);
+  color: var(--ink-faint);
 }
+.set-up-so-far .btn.small { flex: 0 0 auto; }
+
+.on-your-phone p { margin: 0; }
+.btn.with-icon { display: inline-flex; align-items: center; gap: 8px; }
+.btn.with-icon svg { width: 15px; height: 15px; }
+
+.landing-terms { margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.start-lang { display: flex; align-items: center; gap: 8px; color: var(--ink-faint); }
+.start-lang svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.start-lang .landing-lang { display: flex; align-items: center; gap: 8px; }
+.start-lang .landing-lang .tiny { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.landing-foot { margin-top: 22px; padding-top: 14px; border-top: 1px solid var(--rule-soft); }
 .landing-foot a { color: var(--accent); }
 
 .brand-button {
@@ -482,30 +604,96 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink-faint);
 }
 
+/* The count is the heading, over the one full-ink rule in the design. The tools
+   sit at the right end of it. */
+.catalog-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink);
+}
+.catalog-count { display: flex; align-items: baseline; gap: 10px; }
+.count-big { font: 400 46px/1 var(--serif); font-variant-numeric: tabular-nums; }
+.count-word {
+  font: 400 12px/1.2 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.catalog-count .info-mark { align-self: center; }
+.info-block .catalog-meta { color: var(--ink-soft); }
+
 .toolbar {
   position: static;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 26px;
-  margin: 0 0 18px;
-  padding: 0 0 16px;
+  gap: 16px 20px;
+  margin: 0;
+  padding: 16px 0;
   background: none;
   border: 0;
   border-bottom: 1px solid var(--rule);
   border-radius: 0;
 }
-.toolbar-more { margin-top: -6px; }
 /* The row that is always there: a way into the controls, and the choice of how
    the books are drawn. */
-.toolbar-head {
-  display: flex;
+.toolbar-head { display: flex; align-items: center; gap: 12px; }
+
+/* An icon that does something, with its name as the title. */
+.tool {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin: 0 0 18px;
+  gap: 6px;
+  padding: 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
 }
+.tool svg { width: 19px; height: 19px; flex: 0 0 auto; }
+.tool:hover:not(:disabled),
+.tool[aria-pressed='true'],
+.tool[aria-expanded='true'] { color: var(--accent); }
+.tool:disabled { opacity: .5; cursor: default; }
+.tool .filter-count { margin-left: 0; }
+
+/* The encircled i and what it opens. */
+.info-mark {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--ink-faint);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+  font: italic 400 12px/1 var(--serif);
+}
+.info-mark.small { width: 17px; height: 17px; font-size: 11px; }
+.info-mark:hover,
+.info-mark[aria-expanded='true'] { border-color: var(--accent); color: var(--accent); }
+.info-block {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--paper-sunk);
+  border-left: 2px solid var(--tan);
+  font-size: 13px;
+  color: var(--ink-soft);
+  animation: infoIn .18s ease-out;
+}
+.info-block p { margin: 0; }
+@keyframes infoIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* The catalog takes the whole width between the rail and the holdings: a
+   shelf is the one page that fills whatever room it is given. */
+.shell[data-view='catalog'] .main { max-width: none; }
 
 .search {
   display: flex;
@@ -517,7 +705,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--control-line);
   position: static;
 }
-.search .glyph { font-size: 17px; color: var(--ink-faint); }
+.search .glyph { width: 16px; height: 16px; flex: 0 0 auto; color: var(--ink-faint); }
 .search input {
   flex: 1;
   border: 0;
@@ -572,12 +760,45 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font: 400 10.5px/1.6 var(--mono);
   text-decoration: none;
 }
-.view-mode { margin-left: auto; align-self: flex-end; }
+.view-mode { display: flex; gap: 2px; }
 
+/* A filter left on behind the disclosure, named above the shelf. */
 .hidden-filters {
-  margin: -8px 0 16px;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--accent);
   font-size: 12.5px;
   color: var(--ink-soft);
+}
+
+.bulk-offer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; padding: 16px 0 6px; }
+.bulk-label {
+  font: 400 10.5px/1.4 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* A change about to be made to many books at once, waiting for a yes. */
+.confirm-card {
+  margin: 8px 0;
+  padding: 13px 15px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.confirm-card p { margin: 0; }
+.confirm-card p + p { margin-top: 4px; font-size: 12.5px; color: var(--ink-soft); }
+
+.read-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 14px 0 18px;
+  font-size: 12px;
+  color: var(--ink-faint);
 }
 
 /* The rows sit directly on the page, so the list itself carries no gap and
@@ -625,16 +846,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .group-head {
-  position: static;
-  background: none;
-  padding: 26px 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 22px 0 7px;
   border-bottom: 1px solid var(--rule);
-  font: 400 13px/1.3 var(--sans);
-  letter-spacing: .2em;
+  font: 400 12px/1.3 var(--sans);
+  letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-.group-head .faint { font-family: var(--mono); font-size: 11.5px; letter-spacing: normal; }
+.group-count { font: 400 11.5px/1 var(--mono); letter-spacing: normal; }
 
 .book-row {
   display: grid;
@@ -644,15 +866,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--rule-soft);
   transition: background .12s;
 }
-/* Everything except the mark opens the book. */
+/* Everything except the star opens the book: the read mark, the title with
+   its author, the formats, where it is, and the year. */
 .row-open {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px 20px;
+  display: flex;
   align-items: baseline;
+  gap: 12px;
   width: 100%;
   text-align: left;
-  padding: 13px 10px 13px 0;
+  padding: 11px 6px 11px 0;
   border: 0;
   border-radius: 0;
   background: none;
@@ -660,6 +882,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink);
   font: inherit;
 }
+.row-mark {
+  width: 18px;
+  flex: 0 0 auto;
+  text-align: center;
+  font: 400 13px/1 var(--mono);
+}
+.row-mark.read { color: var(--good); }
+.row-mark.unread { color: var(--warn); }
+.row-mark.unknown { color: var(--ink-faint); }
+.row-star { color: var(--accent); }
+.row-main { display: grid; flex: 1 1 auto; min-width: 0; }
 .book-row:hover { background: var(--accent-soft); }
 .book-row[aria-selected='true'] { background: var(--accent-soft); }
 
@@ -680,69 +913,261 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .star-cell:focus-visible { opacity: 1; color: var(--accent); }
 .star-cell.on { opacity: 1; color: var(--accent); }
 .star-cell:disabled { cursor: default; }
-.book-row .title { font: 400 18px/1.35 var(--serif); }
-.book-row .byline { font-size: 13px; color: var(--ink-soft); }
+.book-row .title { font: 400 17px/1.3 var(--serif); }
+.book-row .byline { font-size: 12.5px; color: var(--ink-faint); }
 
-.book-row .meta {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  white-space: nowrap;
-}
 .book-row .formats {
-  font-size: 12px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 11.5px;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-.book-row .state {
-  font-size: 11.5px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.book-row .state.read { color: var(--good); }
-.book-row .state.unread { color: var(--warn); }
-.book-row .state.unknown { color: var(--ink-faint); }
 .book-row .away {
-  font-size: 11.5px;
-  letter-spacing: .1em;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 11px;
+  letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--warn);
 }
 /* A fixed column so the years line up down the page rather than drifting with
    whatever sits to their left. */
 .book-row .year {
-  width: 34px;
+  flex: 0 0 auto;
+  width: 38px;
   text-align: right;
   font: 400 12px/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
   color: var(--ink-faint);
+}
+
+/* A phone keeps the title, the marks and the year. */
+@media (max-width: 639px) {
+  .book-row .byline,
+  .book-row .formats { display: none; }
 }
 
 /* ---------------------------------------------------------------- shell -- */
 
-.shell { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+/* Three widths. Under 640px the six places are a bar along the foot of the
+   screen. From 640px they are a rail down the left. From 1040px a third column
+   carries the holdings. */
+.shell { min-height: 100vh; padding-bottom: 76px; }
 
-.sidebar {
+.rail {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: stretch;
   background: var(--paper-sunk);
-  border-right: 1px solid var(--rule);
-  padding: 34px 0 26px;
+  border-top: 1px solid var(--rule);
+  padding: 2px 2px env(safe-area-inset-bottom);
+}
+.rail-places { display: flex; flex: 1 1 auto; min-width: 0; }
+.rail-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 34px;
-  position: sticky;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font: 400 9.5px/1.2 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: color .12s;
+}
+.rail-item svg { width: 21px; height: 21px; flex: 0 0 auto; }
+.rail-item:hover,
+.rail-item[aria-current='page'] { color: var(--accent); }
+/* The current place is marked by a rule, not a fill. */
+.rail-item[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  height: 2px;
+  background: var(--accent);
+}
+.rail-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-foot { display: none; }
+
+.theme-icons { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.theme-icons button {
+  display: grid;
+  place-items: center;
+  padding: 7px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+}
+.theme-icons svg { width: 17px; height: 17px; }
+.theme-icons button:hover,
+.theme-icons button[aria-pressed='true'] { color: var(--accent); }
+
+.main { min-width: 0; padding: 20px 18px 40px; }
+.main .view { padding: 0; max-width: none; }
+
+.shell-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.wordmark {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+  font: 500 24px/1 var(--serif);
+  letter-spacing: .005em;
+}
+.wordmark em { font-style: normal; color: var(--accent); }
+.wordmark:hover { color: var(--accent); }
+
+/* On every page while the demo is open. A tan border and a tinted ground, so it
+   reads as a standing condition rather than as a failure. */
+.demo-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13px;
+}
+.demo-bar-icon { flex: 0 0 auto; width: 17px; height: 17px; color: var(--accent); }
+.demo-bar-text { flex: 1 1 220px; min-width: 0; }
+.demo-bar-text p { margin: 0; color: var(--ink); }
+.demo-bar-text p + p { margin-top: 2px; font-size: 12.5px; color: var(--ink-soft); }
+.demo-bar-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.margin { display: none; }
+.margin section { min-width: 0; }
+.margin dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 10px;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.margin dt { color: var(--ink-soft); }
+.margin dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.margin-rebuild {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+}
+.margin-rebuild svg { width: 14px; height: 14px; }
+.margin-links { color: var(--ink-faint); font-size: 12.5px; }
+.margin-links .btn.link {
+  color: var(--ink-faint);
+  padding: 0;
+  text-decoration: none;
+  font-size: 12.5px;
+}
+.margin-links .btn.link:hover { color: var(--accent); text-decoration: underline; }
+
+/* The four ways in, on the same ring the desk uses. */
+.add-ring { margin: 0 0 22px; }
+
+/* A heading with its i beside it. The class on the row keeps a section's rule
+   or a panel heading's size; the heading inside takes the row's type. */
+.info-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; }
+.info-heading > h3 { min-width: 0; }
+.info-heading > h3,
+.info-heading > p,
+.info-heading > span:first-child { font: inherit; margin: 0; color: inherit; letter-spacing: inherit; text-transform: inherit; }
+.desk-section .section-head.info-heading,
+.section-head.info-heading { justify-content: flex-start; align-items: center; }
+.info-heading-aside { margin-left: auto; white-space: nowrap; }
+.info-heading + .info-block { margin: 0 0 14px; }
+.info-block p + p { margin-top: 8px; }
+.detail-close { display: flex; align-items: center; gap: 6px; }
+.detail-close svg { width: 15px; height: 15px; }
+
+@media (min-width: 640px) {
+  .shell { display: grid; grid-template-columns: 82px minmax(0, 1fr); padding-bottom: 0; }
+  .rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-direction: column;
+    padding: 20px 0 14px;
+    border-top: 0;
+    border-right: 1px solid var(--rule);
+  }
+  .rail-places { flex: 0 0 auto; flex-direction: column; gap: 2px; }
+  .rail-item { flex: 0 0 auto; }
+  .rail-item[aria-current='page']::before { left: 0; right: auto; top: 8px; bottom: 8px; width: 2px; height: auto; }
+  .rail-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding: 14px 0 4px;
+    border-top: 1px solid var(--rule);
+  }
+  .main { width: 100%; max-width: 760px; padding: 30px 34px 60px; }
 }
 
-.brand { padding: 0 26px; }
-.brand h1 {
-  font: 500 30px/1 var(--serif);
-  margin: 0;
-  letter-spacing: .005em;
-  color: var(--accent);
+@media (min-width: 1040px) {
+  .shell { grid-template-columns: 82px minmax(0, 1fr) 292px; }
+  .main { max-width: 820px; padding: 34px 44px 70px; }
+  .margin {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    /* Clears the owl, which sits over the foot of this column. */
+    padding: 34px 26px 96px;
+    background: var(--paper-sunk);
+    border-left: 1px solid var(--rule);
+    font-size: 13px;
+  }
 }
-.brand h1 em { font-style: normal; color: var(--accent); }
+
+/* Narrower than that, the holdings follow the stacks page. */
+@media (max-width: 1039px) {
+  .shell[data-view='storage'] .margin {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 0 18px 40px;
+    font-size: 13px;
+  }
+}
+@media (min-width: 640px) and (max-width: 1039px) {
+  .shell[data-view='storage'] .margin { grid-column: 2; max-width: 760px; padding: 0 34px 60px; }
+}
+
 /* Two lines of different weight, the way a title page rules off a heading. */
 .brand-rule {
   display: block;
@@ -757,62 +1182,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-top: 1px solid var(--ink);
   opacity: .36;
 }
-.brand p { margin: 0; }
-
-.nav { display: flex; flex-direction: column; }
-/* The name leads and the gloss follows it, quieter and on its own line, so the
-   column still scans as a list of places rather than a list of sentences. */
-.nav-hint {
-  display: block;
-  margin-top: 1px;
-  font-size: 11.5px;
-  line-height: 1.3;
-  color: var(--ink-faint);
-}
-.nav button[aria-current='page'] .nav-hint { color: var(--ink-soft); }
-.nav button {
-  width: 100%;
-  padding: 9px 26px;
-  border: 0;
-  border-left: 2px solid transparent;
-  border-radius: 0;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-  font: 400 14.5px/1.4 var(--sans);
-  color: var(--ink-soft);
-  transition: color .12s, border-color .12s;
-}
-.nav button:hover { color: var(--ink); }
-.nav button[aria-current='true'] {
-  border-left-color: var(--accent);
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.sidebar-foot {
-  margin-top: auto;
-  padding: 0 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  font-size: 13px;
-}
-.sidebar-foot dl {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 5px 10px;
-  margin: 9px 0 0;
-  padding: 0;
-}
-.sidebar-foot dt { color: var(--ink-soft); }
-.sidebar-foot dd {
-  margin: 0;
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--ink);
-}
-
 .theme-toggle,
 .segmented {
   display: flex;
@@ -837,22 +1206,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .segmented button + button { border-left: 1px solid var(--rule); }
 .theme-toggle button[aria-pressed='true'],
 .segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
-
-.sidebar-links {
-  padding-top: 18px;
-  border-top: 1px solid var(--rule);
-  color: var(--ink-faint);
-  font-size: 12.5px;
-}
-.sidebar-links .btn.link {
-  color: var(--ink-faint);
-  padding: 0;
-  text-decoration: none;
-  font-size: 12.5px;
-}
-.sidebar-links .btn.link:hover { color: var(--accent); text-decoration: underline; }
-
-.main { min-width: 0; display: flex; flex-direction: column; }
 
 .view { padding: 26px 30px 60px; max-width: 1180px; width: 100%; }
 .view > header { margin-bottom: 20px; }
@@ -1023,8 +1376,6 @@ main:focus { outline: none; }
    label looking as pressable as ever. This is what :disabled would have done
    if the label could carry it. */
 .file-button.shut { opacity: .45; cursor: not-allowed; }
-.bulk-offer { margin: 6px 0 0; }
-.bulk-offer .btn.link { margin-left: 8px; }
 .notice.warn { border-left-color: var(--warn); }
 /* One line of a list of findings, marked because it is the one worth acting on
    before the others. The text takes the colour; the list has no border to give
@@ -1379,7 +1730,15 @@ pre.snippet {
    The spine sets its own width here rather than filling the slot, which is
    what it does in the catalog wall where there is no label to make room for. */
 .spine-slot.labelled .spine { width: auto; }
-.empty { padding: 50px 10px; text-align: center; color: var(--ink-faint); }
+.empty {
+  margin: 34px 0;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-faint);
+}
 
 /* --------------------------------------------------------------- detail -- */
 
@@ -1823,10 +2182,12 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 .to-top:focus-visible { opacity: 1; border-color: var(--accent); color: var(--accent); }
 .to-top svg { width: 20px; height: 20px; display: block; }
 
-/* Clear of the sidebar, which is 252px of sticky column and has its own links
-   along the bottom. Below that width there is no sidebar to clear. */
-@media (min-width: 821px) {
-  .to-top { left: calc(252px + 26px); }
+/* Above the bar on a phone, and clear of the 82px rail on anything wider. */
+@media (max-width: 639px) {
+  .to-top { left: 16px; bottom: 88px; }
+}
+@media (min-width: 640px) {
+  .to-top { left: calc(82px + 22px); bottom: 22px; }
 }
 
 /* --------------------------------------------------- the LibrAPPrian -- */
@@ -1856,6 +2217,42 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
   transition: border-color .12s;
 }
 .owl-badge:hover { border-color: var(--accent); }
+.owl-badge { position: relative; }
+
+/* A key step has finished. A tan halo breathing, a ring moving out, and a dot,
+   until the bubble is opened. All three are drawn only while it is lit. */
+.owl-badge.alert { border-color: var(--tan); }
+.owl-glow {
+  position: absolute;
+  inset: -16px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--tan) 0%, transparent 70%);
+  opacity: .28;
+  pointer-events: none;
+  animation: owlGlow 2.2s ease-in-out infinite;
+}
+.owl-ring {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--tan);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: owlRing 2.2s ease-out infinite;
+}
+.owl-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--paper);
+  border-radius: 50%;
+  background: var(--tan);
+  pointer-events: none;
+}
+@keyframes owlGlow { 0%, 100% { opacity: .28; } 50% { opacity: .62; } }
+@keyframes owlRing { 0% { transform: scale(.88); opacity: .85; } 100% { transform: scale(1.35); opacity: 0; } }
 
 /* The one blink in the app. It is slow and it is the whole animation budget
    for this component. */
@@ -1922,14 +2319,23 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .owl-eyes { animation: none; }
   .owl-bubble { animation: none; }
+  /* The owl still lights up, with the halo held and the dot shown, but nothing
+     pulses. */
+  .owl-glow { animation: none; opacity: .5; }
+  .owl-ring { display: none; }
+  .info-block,
+  .tell-me-how-body { animation: none; }
   /* The spine still comes out, it just stops sliding out. */
   .spine { transition: none; }
 }
 
-/* On a phone the sidebar is a bar across the top and the owl would sit over
-   the content, so it tucks smaller into the corner. */
-@media (max-width: 820px) {
-  .librarian { right: 14px; bottom: 14px; gap: 8px; max-width: calc(100vw - 28px); }
+@media (min-width: 640px) {
+  .librarian { right: 22px; bottom: 22px; }
+}
+
+/* On a phone it sits above the bar of places, smaller. */
+@media (max-width: 639px) {
+  .librarian { right: 16px; bottom: 88px; gap: 8px; max-width: calc(100vw - 32px); }
   .owl-badge { width: 46px; height: 46px; }
   .owl-badge svg { width: 32px; height: 32px; }
   .owl-bubble { max-width: min(280px, calc(100vw - 90px)); }
@@ -2032,95 +2438,20 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 .book-row .byline,
 .forgotten-item .title { overflow-wrap: anywhere; }
 
-/* Wide enough for a column down the side: the menu button has nothing to do
-   and the shell is always open. */
-.menu-button { display: none; }
-
 @media (max-width: 820px) {
-  .shell { grid-template-columns: 1fr; }
-  .sidebar {
-    position: static;
-    height: auto;
-    flex-direction: column;
-    gap: 14px;
-    padding: 14px;
-    overflow: visible;
-  }
-
-  /* Folded, the shell is a name and a way in. The nav and the counts under it
-     took 545 of the 663 pixels it was spending before a single book appeared. */
-  .sidebar-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .menu-button {
-    display: inline-flex;
-    align-items: center;
-    flex: 0 0 auto;
-    padding: 9px 14px;
-    border: 1px solid var(--control-line);
-    border-radius: var(--radius);
-    background: none;
-    color: var(--ink);
-    font: 400 14.5px/1 var(--sans);
-    cursor: pointer;
-  }
-  .sidebar .nav,
-  .sidebar .sidebar-foot { display: none; }
-  .sidebar.open .nav { display: flex; }
-  .sidebar.open .sidebar-foot { display: flex; }
-  /* A left border marks the current item in a column. In a row it would mark
-     the wrong edge, so the underline does the work instead. */
-  .nav { flex-direction: row; flex-wrap: wrap; gap: 2px; }
-  .nav button {
-    /* The column rule sets width:100%, which in a row makes every item its own
-       row. */
-    width: auto;
-    flex: 1 1 auto;
-    padding: 8px 12px;
-    text-align: center;
-    border-left: 0;
-    border-bottom: 2px solid transparent;
-  }
-  .nav button[aria-current='true'] { border-bottom-color: var(--accent); }
-  .brand { padding: 0; }
-  .sidebar-foot { padding: 0; gap: 14px; }
   .view { padding: 18px 14px 60px; }
 
   /* A heading and its control stop sharing a line once there is no line to
      share; the toolbar's controls each take a full row rather than half of
      one, which is unusable at this width. */
   .spread { flex-wrap: wrap; }
-  .toolbar { position: static; padding: 11px; }
+  .toolbar { position: static; }
   .field, .field select { width: 100%; }
   .field { flex: 1 1 140px; }
   .segmented { width: 100%; }
   .segmented button { flex: 1 1 0; }
   .detail { width: 100%; padding: 18px 16px 40px; }
   .tiles { grid-template-columns: 1fr; }
-  .sidebar-foot dl { grid-template-columns: 1fr auto; }
-}
-
-/* The row is two columns because the metadata is short. On a phone it is not
-   short enough: the metadata refuses to wrap, so it takes the width it wants
-   and leaves the title a column of single words. Below this the row stacks and
-   the metadata reads as a second line under the title. */
-@media (max-width: 560px) {
-  /* The row itself keeps its mark column. What stacks is the part that opens
-     the book, since the metadata will not wrap and was leaving the title a
-     column of single words. */
-  .row-open {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .book-row .meta {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-  }
-  .book-row .year { width: auto; text-align: left; }
 }
 
 @media (max-width: 420px) {
@@ -2148,7 +2479,7 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
    reflowed under the finger that pressed it would slide the next row into the
    place just tapped, and a discard that cannot be taken back is not a review,
    it is a deletion. */
-.discarded { opacity: .5; }
+.discarded { opacity: .62; }
 .discarded .title { text-decoration: line-through; }
 /* The control on the row is how the discard is undone, so it stays at full
    strength and unstruck. */

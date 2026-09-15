@@ -8,10 +8,16 @@ Five ways in: a photograph, a list you already keep, a Kindle library, a barcode
 
 #Adding your books
 
-The opening page asks what you have rather than asking for your storage.
-Arriving with nothing, there are three ways in: a photograph of a shelf, a list
-you already keep, or the barcodes on the books themselves. Once there is a
+**Start** asks what you have rather than asking for your storage. Arriving with
+nothing, there are four ways in: a photograph of a shelf, a list you already
+keep, the barcodes on the books themselves, or a Kindle library. Once there is a
 catalog here, opening it and bringing one over from another device join them.
+
+![Start: the strapline and the headline over a rule, then six doors, each an icon with a name and a line under it, See my catalog first](images/start.png)
+
+Inside the app the same ways in are **Add**. It opens on **Shelf picture**, and
+the arrows either side step round to **Upload list**, **Read barcodes** and
+**Books on a Kindle**, with the names of the neighbours in view.
 
 Whichever you pick sets up storage on the way, so choosing where the catalog is
 kept is a decision you can make first if you want to and never have to make on
@@ -21,13 +27,14 @@ You need at least one source. Any one of these is enough on its own.
 
 Every one of them ends in a list to check before anything is written, and any
 single line of that list can be **discarded** on its own. Everything is kept
-unless it is set aside.
+unless it is set aside: the square beside each line shows a check while it is
+kept, and a cross once it is discarded.
 
 ### A photograph of a shelf
 
 Photograph the shelf straight on at your camera's **full resolution**.
 
-1. Open **Shelf picture** and choose the photo. It appears in the box you
+1. Open **Add**, which starts on **Shelf picture**, and choose the photo. It appears in the box you
    chose it from, and that box is also how to swap it for a different one. On a
    phone, **Take a photograph** beside the box opens the camera instead.
 
@@ -43,22 +50,35 @@ Photograph the shelf straight on at your camera's **full resolution**.
 3. Check the pieces. Any that hold no readable spine, a wall, a lamp, the edge
    of a rug, can be **discarded**: they are not sent and not counted in the cost.
 4. Read the pieces:
-   - With an [AI key](ai-key.md): press **Read them**.
-   - Without one: press **Copy the instructions**, save the pieces, and give
+   - With an [AI key](ai-key.md): press **Read these pieces for me**.
+   - Without one: press **Copy the prompt** and **Save all pieces**, and give
      both to any AI assistant. Bring back the JSON it writes.
-5. Check what it read, then import.
+5. Check what it read, then press **Import these**.
+
+Each step is numbered, and the number is filled in for the step you are on. A
+step's **Tell me how** gives only the presses that step needs. The reasons
+behind them are here:
+
+- **Full resolution, straight on.** Resolution decides how much of the lettering
+  can be read. A shelf photographed at an angle puts the far end out of focus
+  and out of shape.
+- **Pieces rather than one image.** A whole bookcase in one image is too small
+  to read. Each piece keeps the resolution of the original, and neighbouring
+  pieces overlap, so a book that falls on a seam is whole in one of them.
 
 **Step five takes the reply either way.** Drop the JSON file, or paste the text
 straight into the box under it and press **Use this text**. It needs no key and
 no photograph loaded, so coming back to it in a fresh tab works: it is the whole
-of the keyless route's second half.
+of the keyless route's second half. A transcription holding a book with no
+title, or a confidence value it does not know, is refused there rather than
+imported.
 
 ![Six pieces cut from the photograph, each with Discard and Save under it, one of them greyed out and struck through as discarded](images/photo-pieces.png)
 
 One piece here holds no readable spine and has been set aside. Discarded pieces
 are not sent and not paid for, and **Keep** puts one back.
 
-![The checklist: five fields read from the photograph, six the model would be recalling, each a checkbox, under a note that anything recalled is marked on the book and counted as lower confidence](images/photo-extras.png)
+![The checklist: five fields read from the photograph and six the model would be recalling, each a checkbox, with an i beside the heading and beside Recalled by the model](images/photo-extras.png)
 
 The checklist decides what is asked for beyond the titles, split into what is
 printed on the spine and what the model would be recalling from elsewhere.
@@ -126,7 +146,8 @@ already in the catalog. See [Filling gaps](the-desk.md#filling-gaps-in-the-recor
 
 ### A list you already keep
 
-Open **Upload list** and drop in a `.xlsx`, `.csv` or `.tsv` file.
+In **Add**, step round to **Upload list** and drop in a `.xlsx`, `.csv` or
+`.tsv` file.
 
 Columns are matched by name in English, Spanish and German, so a sheet headed
 `Autor / Título / Género` works as well as `author / title / genre`. Recognised
@@ -153,8 +174,8 @@ is not a book. Everything is kept unless it is set aside.
 
 Amazon ships no export button, and for a lot of people the Kindle is the largest
 collection they own. **[Books on a
-Kindle](https://jesusjballesteros.github.io/LibrAPP/#kindle)**, on the front
-page, gives two routes and says what each one costs.
+Kindle](https://jesusjballesteros.github.io/LibrAPP/#kindle)**, on **Start** and
+in **Add**, gives two routes and says what each one costs.
 
 **Ask Amazon for the data.** Account, then Data Privacy, then Request Your
 Information. A download link arrives by email, usually within a few days. It
@@ -189,8 +210,8 @@ Open Library is a free catalogue run by the Internet Archive, and it is the one
 service LibrAPP asks anything of. What it is sent is a list of ISBNs and nothing
 else.
 
-Paste the codes, one per line or out of a spreadsheet column, or read them from
-a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
+In **Add**, step round to **Read barcodes**. Paste the codes, one per line or out
+of a spreadsheet column, or read them from a file. Hyphens, spaces and ISBN-10s are all fine, and the same book written as
 a 10 and a 13 is looked up once.
 
 **Or point the camera at them.** *Scan with the camera* opens a viewfinder and

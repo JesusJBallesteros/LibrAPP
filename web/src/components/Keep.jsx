@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { Check, X } from 'lucide-react'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -45,13 +46,21 @@ export function useKeepSet() {
   return { dropped, toggle, dropAll, reset }
 }
 
-/** The control on one row. Says what pressing it will do, not what the row is. */
+/**
+ * The control on one row. The icon shows the row's state, a filled check while
+ * it is kept and an outlined cross once discarded; the name says what pressing
+ * it will do.
+ */
 export function KeepToggle({ dropped, onToggle, disabled }) {
   const { t } = useT()
+  const label = dropped ? t('keep.restore') : t('keep.discard')
+  const Icon = dropped ? X : Check
   return (
     <button
-      className="btn small"
+      className={`keep-toggle${dropped ? ' off' : ''}`}
       disabled={disabled}
+      title={label}
+      aria-label={label}
       onClick={(e) => {
         // The rows of these lists are not buttons today, but the shelf review
         // sits inside a panel that grows controls over time.
@@ -59,7 +68,7 @@ export function KeepToggle({ dropped, onToggle, disabled }) {
         onToggle()
       }}
     >
-      {dropped ? t('keep.restore') : t('keep.discard')}
+      <Icon aria-hidden="true" focusable="false" />
     </button>
   )
 }

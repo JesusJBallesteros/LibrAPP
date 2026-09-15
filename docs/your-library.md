@@ -26,7 +26,7 @@ the device.
 After you pick a folder LibrAPP shows which one and waits: **Use this folder**
 or **Choose a different one**. Nothing is written until you say.
 
-Either can be changed later from **The stacks**.
+Either can be changed later from **Stacks**.
 
 **Set up so far** on the opening page lists the three things that decide what
 the app can do: where the catalog is kept, how many books are in it, and whether
@@ -35,14 +35,14 @@ anything missing.
 
 ### Moving between devices
 
-**The stacks → Export** writes one file holding your sources and corrections.
+**Stacks → Export** writes one file holding your sources and corrections.
 Import it on the other device and the catalog is rebuilt there.
 
 This is a copy, not a sync. Changes on one device do not appear on the other.
 
 ### Backups
 
-**The stacks** keeps copies of the whole library: every source and every
+**Stacks** keeps copies of the whole library: every source and every
 correction, which is everything that cannot be derived again. One is made
 before the catalog is reset, and one before a recovery replaces what is there,
 so neither of those is a one-way door. **Make a backup now** takes one at any
@@ -72,7 +72,7 @@ with a note of when and why it was made carried alongside and ignored by
 anything reading it as an export.
 
 To move a catalog between devices without resetting anything, use **Export** in
-**The stacks** and bring the file over the same way. The file is judged by what
+**Stacks** and bring the file over the same way. The file is judged by what
 is in it rather than by what your file picker calls it, so a phone that labels
 a downloaded `.json` as something else does not hide it from you.
 
