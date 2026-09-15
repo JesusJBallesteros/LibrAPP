@@ -1168,4 +1168,7 @@ export default {
   'catalog.bulk.doIt': 'Marcar los {n}',
   'catalog.spineWall': 'Los libros como lomos en un estante',
   'catalog.spinesEmpty': 'Ning\u00fan libro de aqu\u00ed tiene lomo que dibujar.',
+  'catalog.countWord': '{n:libro|libros}',
+  'catalog.countOf': 'de {n} {n:libro|libros}',
+  'catalog.aboutCount': 'Cu\u00e1ndo se construy\u00f3',
 }

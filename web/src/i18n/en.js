@@ -1178,4 +1178,7 @@ export default {
   'catalog.bulk.doIt': 'Mark all {n}',
   'catalog.spineWall': 'The books as spines on a shelf',
   'catalog.spinesEmpty': 'No book here has a spine to draw.',
+  'catalog.countWord': '{n:book|books}',
+  'catalog.countOf': 'of {n} {n:book|books}',
+  'catalog.aboutCount': 'When this was built',
 }

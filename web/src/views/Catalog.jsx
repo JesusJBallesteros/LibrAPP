@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { LayoutGrid, List, Pencil, Search } from 'lucide-react'
 import BookEditor from '../components/BookEditor.jsx'
 import BookPanel from '../components/BookPanel.jsx'
+import { InfoBlock, InfoMark, useDisclosure } from '../components/Info.jsx'
 import ReadMark from '../components/ReadMark.jsx'
 import { setOverride } from '../core/overrides.js'
 import {
@@ -22,6 +24,10 @@ import {
 import { useT } from '../i18n/index.jsx'
 
 const GROUPINGS = ['title', 'author', 'series']
+
+// The mark in a list row. Three values, so three shapes; the word goes to a
+// screen reader beside it.
+const READ_GLYPH = { read: '✓', unread: '✗', unknown: '—' }
 
 // Read is three-valued and the third is not a shade of no, so marking in bulk
 // has to be able to put books back to unrecorded as well as forward.
@@ -74,6 +80,8 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
   const [bulk, setBulk] = useState(null)
   // How many backups are held, asked for only when the catalog is empty.
   const [held, setHeld] = useState(0)
+  // When the catalog was built and what was corrected, behind the i by the count.
+  const figures = useDisclosure()
 
   const authors = useMemo(() => authorNames(catalog), [catalog])
 
@@ -319,99 +327,93 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
     )
   }
 
+  const filtered = shown.length !== prepared.length
+
   return (
     <div className="view">
-      <header className="view-head">
-        <div className="spread">
-          <div>
-            <p className="eyebrow">{t('catalog.eyebrow')}</p>
-            <h2>{t('nav.catalog')}</h2>
-          </div>
-          <button className="btn" onClick={() => setEditing('new')} disabled={lib?.busy}>
-            {t('catalog.typeIn')}
-          </button>
+      {/* The count is the heading. The name of the page is on the rail, and
+          kept here for a screen reader. */}
+      <header className="catalog-head">
+        <h2 className="offscreen">{t('nav.catalog')}</h2>
+        <div className="catalog-count">
+          <span className="count-big">{shown.length}</span>
+          <span className="count-word">
+            {filtered
+              ? t('catalog.countOf', { n: prepared.length })
+              : t('catalog.countWord', { n: shown.length })}
+          </span>
+          <InfoMark disclosure={figures} label={t('catalog.aboutCount')} />
         </div>
-        <hr className="rule" />
-        {bulk && (
-          <div className="notice bulk-confirm">
-            <p>
-              <strong>{t('catalog.bulk.confirm', { n: shown.length, state: t(`catalog.bulk.as.${bulk}`) })}</strong>
-            </p>
-            <p className="tiny">{t('catalog.bulk.confirmWhy')}</p>
-            <span className="row" style={{ gap: 8, marginTop: 8 }}>
-              <button className="btn small primary" disabled={lib?.busy} onClick={() => markAllShown(BULK_VALUE[bulk])}>
-                {t('catalog.bulk.doIt', { n: shown.length })}
-              </button>
-              <button className="btn small" disabled={lib?.busy} onClick={() => setBulk(null)}>
-                {t('common.cancel')}
-              </button>
-            </span>
-          </div>
-        )}
-        <p className="catalog-meta">
-            {shown.length === prepared.length
-              ? t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
-                  total: prepared.length,
-                })
-              : t('catalog.countSome', { shown: shown.length, total: prepared.length })}
-            {catalog.generated_at &&
-              ` · ${t('catalog.builtAt', {
-                when: new Date(catalog.generated_at).toLocaleString(language),
-              })}`}
-            {catalog.counts?.corrected
-              ? ` · ${t('catalog.correctedCount', { n: catalog.counts.corrected })}`
-              : ''}
-            {catalog.counts?.removed
-              ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
-              : ''}
-        </p>
-        {/* Beside the count rather than in a toolbar of its own, because the
-            count is what says which books this acts on. */}
-        {shown.length > 0 && !bulk && (
-          <p className="bulk-offer tiny">
-            <span className="faint">{t('catalog.bulk.markAll', { n: shown.length })}</span>{' '}
-            {['read', 'unread', 'unknown'].map((state) => (
+
+        <div className="toolbar-head">
+          <button
+            className="tool"
+            aria-expanded={searchOpen}
+            aria-controls="catalog-filters"
+            title={t('catalog.search')}
+            onClick={() => setSearchOpen((open) => !open)}
+          >
+            <Search aria-hidden="true" focusable="false" />
+            <span className="offscreen">{t('catalog.search')}</span>
+            {!searchOpen && narrowing > 0 && <span className="filter-count">{narrowing}</span>}
+          </button>
+
+          <button
+            className="tool"
+            onClick={() => setEditing('new')}
+            disabled={lib?.busy}
+            title={t('catalog.typeIn')}
+            aria-label={t('catalog.typeIn')}
+          >
+            <Pencil aria-hidden="true" focusable="false" />
+          </button>
+
+          {/* Not a filter. It decides how the same books are drawn, so it stays
+              out where it can be reached. */}
+          <div className="view-mode" role="group" aria-label={t('catalog.viewMode')}>
+            {[
+              ['spines', LayoutGrid],
+              ['list', List],
+            ].map(([each, Icon]) => (
               <button
-                key={state}
-                className="btn link tiny"
-                disabled={lib?.busy}
-                onClick={() => setBulk(state)}
+                key={each}
+                className="tool"
+                aria-pressed={mode === each}
+                onClick={() => setMode(each)}
+                title={t(`catalog.mode.${each}`)}
+                aria-label={t(`catalog.mode.${each}`)}
               >
-                {t(`catalog.bulk.as.${state}`)}
+                <Icon aria-hidden="true" focusable="false" />
               </button>
             ))}
-          </p>
-        )}
+          </div>
+        </div>
       </header>
 
-      <div className="toolbar-head">
-        <button
-          className="btn"
-          aria-expanded={searchOpen}
-          aria-controls="catalog-filters"
-          onClick={() => setSearchOpen((open) => !open)}
-        >
-          {t('catalog.search')}
-          {!searchOpen && narrowing > 0 && <span className="filter-count">{narrowing}</span>}
-        </button>
-
-        {/* Not a filter. It decides how the same books are drawn, so it stays
-            out where it can be reached. */}
-        <div className="segmented view-mode" role="group" aria-label={t('catalog.viewMode')}>
-          {['list', 'spines'].map((each) => (
-            <button key={each} aria-pressed={mode === each} onClick={() => setMode(each)}>
-              {t(`catalog.mode.${each}`)}
-            </button>
-          ))}
-        </div>
-      </div>
+      <InfoBlock disclosure={figures}>
+        <p className="catalog-meta">
+          {filtered
+            ? t('catalog.countSome', { shown: shown.length, total: prepared.length })
+            : t(prepared.length === 1 ? 'catalog.countOne' : 'catalog.countAll', {
+                total: prepared.length,
+              })}
+          {catalog.generated_at &&
+            ` · ${t('catalog.builtAt', {
+              when: new Date(catalog.generated_at).toLocaleString(language),
+            })}`}
+          {catalog.counts?.corrected
+            ? ` · ${t('catalog.correctedCount', { n: catalog.counts.corrected })}`
+            : ''}
+          {catalog.counts?.removed
+            ? ` · ${t('catalog.removedCount', { n: catalog.counts.removed })}`
+            : ''}
+        </p>
+      </InfoBlock>
 
       {searchOpen && (
       <div className="toolbar" id="catalog-filters">
         <div className="search">
-          <span className="glyph" aria-hidden="true">
-            ⌕
-          </span>
+          <Search className="glyph" aria-hidden="true" focusable="false" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -424,16 +426,6 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             </button>
           )}
         </div>
-
-        {mode === 'list' && (
-          <div className="segmented" role="group" aria-label={t('catalog.groupBy')}>
-            {GROUPINGS.map((g) => (
-              <button key={g} aria-pressed={group === g} onClick={() => setGroup(g)}>
-                {t(`catalog.group.${g}`)}
-              </button>
-            ))}
-          </div>
-        )}
 
         <label className="field">
           {t('book.read')}
@@ -454,6 +446,20 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
             <option value="oldest">{t('catalog.sort.oldest')}</option>
           </select>
         </label>
+
+        {/* The wall bands by letter only, so grouping is offered with the list. */}
+        {mode === 'list' && (
+          <label className="field">
+            {t('catalog.groupBy')}
+            <select value={group} onChange={(e) => setGroup(e.target.value)}>
+              {GROUPINGS.map((g) => (
+                <option key={g} value={g}>
+                  {t(`catalog.group.${g}`)}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <button className="btn link more-filters" onClick={() => setShowMore((open) => !open)}>
           {showMore ? t('catalog.fewerFilters') : t('catalog.moreFilters')}
@@ -535,6 +541,41 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
         </p>
       )}
 
+      {/* Beside the filters, because what the filters have left is what this
+          acts on, and the count is in the label for the same reason. */}
+      {shown.length > 0 && !bulk && (
+        <div className="bulk-offer">
+          <span className="bulk-label">{t('catalog.bulk.markAll', { n: shown.length })}</span>
+          {['read', 'unread', 'unknown'].map((state) => (
+            <button
+              key={state}
+              className="btn small"
+              disabled={lib?.busy}
+              onClick={() => setBulk(state)}
+            >
+              {t(`catalog.bulk.as.${state}`)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {bulk && (
+        <div className="confirm-card">
+          <p>
+            <strong>{t('catalog.bulk.confirm', { n: shown.length, state: t(`catalog.bulk.as.${bulk}`) })}</strong>
+          </p>
+          <p>{t('catalog.bulk.confirmWhy')}</p>
+          <span className="row" style={{ gap: 8, marginTop: 10 }}>
+            <button className="btn small primary" disabled={lib?.busy} onClick={() => markAllShown(BULK_VALUE[bulk])}>
+              {t('catalog.bulk.doIt', { n: shown.length })}
+            </button>
+            <button className="btn small" disabled={lib?.busy} onClick={() => setBulk(null)}>
+              {t('common.cancel')}
+            </button>
+          </span>
+        </div>
+      )}
+
       {shown.length === 0 ? (
         <div className="empty">
           {t('catalog.noMatch')}{' '}
@@ -567,16 +608,24 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
         />
       ) : (
         <div className="results">
+          {/* What the three marks and the star say. Hidden from a screen reader,
+              which hears the word on each row instead. */}
+          <p className="read-legend" aria-hidden="true">
+            {['read', 'unread', 'unknown'].map((state) => (
+              <span key={state}>
+                <span className={`row-mark ${state}`}>{READ_GLYPH[state]}</span> {t(`read.${state}`)}
+              </span>
+            ))}
+            <span>
+              <span className="row-star">{'★'}</span> {t('catalog.favourites')}
+            </span>
+          </p>
           {groups.map(({ key, books }) => (
             <div key={key || '_'}>
               {key && (
                 <div className="group-head">
-                  {key === STANDALONE
-                    ? t('catalog.standalone')
-                    : key === UNCREDITED
-                      ? t('catalog.uncredited')
-                      : key}{' '}
-                  <span className="faint">· {books.length}</span>
+                  <span>{groupName(key)}</span>
+                  <span className="group-count">{books.length}</span>
                 </div>
               )}
               {/* Bands only where the list is one run. Grouping already cuts it
@@ -595,34 +644,30 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
                 >
                   <Star book={item.book} onToggle={toggleFavourite} t={t} busy={lib?.busy} />
                   <button className="row-open" onClick={() => setSelected(item.book)}>
-                  <span>
-                    <span className="title">
-                      {item.book.series_index && group === 'series'
-                        ? `${item.book.series_index}. `
-                        : ''}
-                      {item.book.title}
+                    <span className={`row-mark ${readState(item.book)}`} aria-hidden="true">
+                      {READ_GLYPH[readState(item.book)]}
                     </span>
-                    <br />
-                    <span className="byline">{item.book._byline || t('book.authorUnknown')}</span>
-                  </span>
-                  <span className="meta">
+                    <span className="offscreen">{t(`read.${readState(item.book)}`)}</span>
+                    <span className="row-main">
+                      <span className="title">
+                        {item.book.series_index && group === 'series'
+                          ? `${item.book.series_index}. `
+                          : ''}
+                        {item.book.title}
+                      </span>
+                      <span className="byline">{item.book._byline || t('book.authorUnknown')}</span>
+                    </span>
                     <span className="formats">
                       {(item.book.formats || []).map((f) => t(`format.${f}`)).join(' · ')}
                     </span>
-                    <span className={`state ${readState(item.book)}`}>
-                      {t(`read.${readState(item.book)}`)}
-                    </span>
-                    <span className="away">
-                      {lentOut(item.book)
-                        ? t('catalog.lentOut')
-                        : borrowed(item.book)
-                          ? t('catalog.borrowed')
-                          : ''}
-                    </span>
+                    {(lentOut(item.book) || borrowed(item.book)) && (
+                      <span className="away">
+                        {lentOut(item.book) ? t('catalog.lentOut') : t('catalog.borrowed')}
+                      </span>
+                    )}
                     <span className="year">
                       {item.book.acquired_on ? item.book.acquired_on.slice(0, 4) : ''}
                     </span>
-                  </span>
                   </button>
                 </div>
                 ),

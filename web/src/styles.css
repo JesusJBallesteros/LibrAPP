@@ -510,30 +510,96 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink-faint);
 }
 
+/* The count is the heading, over the one full-ink rule in the design. The tools
+   sit at the right end of it. */
+.catalog-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--ink);
+}
+.catalog-count { display: flex; align-items: baseline; gap: 10px; }
+.count-big { font: 400 46px/1 var(--serif); font-variant-numeric: tabular-nums; }
+.count-word {
+  font: 400 12px/1.2 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.catalog-count .info-mark { align-self: center; }
+.info-block .catalog-meta { color: var(--ink-soft); }
+
 .toolbar {
   position: static;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 26px;
-  margin: 0 0 18px;
-  padding: 0 0 16px;
+  gap: 16px 20px;
+  margin: 0;
+  padding: 16px 0;
   background: none;
   border: 0;
   border-bottom: 1px solid var(--rule);
   border-radius: 0;
 }
-.toolbar-more { margin-top: -6px; }
 /* The row that is always there: a way into the controls, and the choice of how
    the books are drawn. */
-.toolbar-head {
-  display: flex;
+.toolbar-head { display: flex; align-items: center; gap: 12px; }
+
+/* An icon that does something, with its name as the title. */
+.tool {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin: 0 0 18px;
+  gap: 6px;
+  padding: 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
 }
+.tool svg { width: 19px; height: 19px; flex: 0 0 auto; }
+.tool:hover:not(:disabled),
+.tool[aria-pressed='true'],
+.tool[aria-expanded='true'] { color: var(--accent); }
+.tool:disabled { opacity: .5; cursor: default; }
+.tool .filter-count { margin-left: 0; }
+
+/* The encircled i and what it opens. */
+.info-mark {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--ink-faint);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+  font: italic 400 12px/1 var(--serif);
+}
+.info-mark.small { width: 17px; height: 17px; font-size: 11px; }
+.info-mark:hover,
+.info-mark[aria-expanded='true'] { border-color: var(--accent); color: var(--accent); }
+.info-block {
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--paper-sunk);
+  border-left: 2px solid var(--tan);
+  font-size: 13px;
+  color: var(--ink-soft);
+  animation: infoIn .18s ease-out;
+}
+.info-block p { margin: 0; }
+@keyframes infoIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* The catalog takes the whole width between the rail and the holdings: a
+   shelf is the one page that fills whatever room it is given. */
+.shell[data-view='catalog'] .main { max-width: none; }
 
 .search {
   display: flex;
@@ -545,7 +611,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--control-line);
   position: static;
 }
-.search .glyph { font-size: 17px; color: var(--ink-faint); }
+.search .glyph { width: 16px; height: 16px; flex: 0 0 auto; color: var(--ink-faint); }
 .search input {
   flex: 1;
   border: 0;
@@ -600,12 +666,45 @@ button, input, select, textarea { font: inherit; color: inherit; }
   font: 400 10.5px/1.6 var(--mono);
   text-decoration: none;
 }
-.view-mode { margin-left: auto; align-self: flex-end; }
+.view-mode { display: flex; gap: 2px; }
 
+/* A filter left on behind the disclosure, named above the shelf. */
 .hidden-filters {
-  margin: -8px 0 16px;
+  margin: 12px 0 0;
+  padding: 8px 12px;
+  border-left: 2px solid var(--accent);
   font-size: 12.5px;
   color: var(--ink-soft);
+}
+
+.bulk-offer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; padding: 16px 0 6px; }
+.bulk-label {
+  font: 400 10.5px/1.4 var(--sans);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* A change about to be made to many books at once, waiting for a yes. */
+.confirm-card {
+  margin: 8px 0;
+  padding: 13px 15px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.confirm-card p { margin: 0; }
+.confirm-card p + p { margin-top: 4px; font-size: 12.5px; color: var(--ink-soft); }
+
+.read-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 14px 0 18px;
+  font-size: 12px;
+  color: var(--ink-faint);
 }
 
 /* The rows sit directly on the page, so the list itself carries no gap and
@@ -653,16 +752,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .group-head {
-  position: static;
-  background: none;
-  padding: 26px 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 22px 0 7px;
   border-bottom: 1px solid var(--rule);
-  font: 400 13px/1.3 var(--sans);
-  letter-spacing: .2em;
+  font: 400 12px/1.3 var(--sans);
+  letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-.group-head .faint { font-family: var(--mono); font-size: 11.5px; letter-spacing: normal; }
+.group-count { font: 400 11.5px/1 var(--mono); letter-spacing: normal; }
 
 .book-row {
   display: grid;
@@ -672,15 +772,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-bottom: 1px solid var(--rule-soft);
   transition: background .12s;
 }
-/* Everything except the mark opens the book. */
+/* Everything except the star opens the book: the read mark, the title with
+   its author, the formats, where it is, and the year. */
 .row-open {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px 20px;
+  display: flex;
   align-items: baseline;
+  gap: 12px;
   width: 100%;
   text-align: left;
-  padding: 13px 10px 13px 0;
+  padding: 11px 6px 11px 0;
   border: 0;
   border-radius: 0;
   background: none;
@@ -688,6 +788,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
   color: var(--ink);
   font: inherit;
 }
+.row-mark {
+  width: 18px;
+  flex: 0 0 auto;
+  text-align: center;
+  font: 400 13px/1 var(--mono);
+}
+.row-mark.read { color: var(--good); }
+.row-mark.unread { color: var(--warn); }
+.row-mark.unknown { color: var(--ink-faint); }
+.row-star { color: var(--accent); }
+.row-main { display: grid; flex: 1 1 auto; min-width: 0; }
 .book-row:hover { background: var(--accent-soft); }
 .book-row[aria-selected='true'] { background: var(--accent-soft); }
 
@@ -708,42 +819,40 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .star-cell:focus-visible { opacity: 1; color: var(--accent); }
 .star-cell.on { opacity: 1; color: var(--accent); }
 .star-cell:disabled { cursor: default; }
-.book-row .title { font: 400 18px/1.35 var(--serif); }
-.book-row .byline { font-size: 13px; color: var(--ink-soft); }
+.book-row .title { font: 400 17px/1.3 var(--serif); }
+.book-row .byline { font-size: 12.5px; color: var(--ink-faint); }
 
-.book-row .meta {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  white-space: nowrap;
-}
 .book-row .formats {
-  font-size: 12px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 11.5px;
   letter-spacing: .06em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-.book-row .state {
-  font-size: 11.5px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.book-row .state.read { color: var(--good); }
-.book-row .state.unread { color: var(--warn); }
-.book-row .state.unknown { color: var(--ink-faint); }
 .book-row .away {
-  font-size: 11.5px;
-  letter-spacing: .1em;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 11px;
+  letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--warn);
 }
 /* A fixed column so the years line up down the page rather than drifting with
    whatever sits to their left. */
 .book-row .year {
-  width: 34px;
+  flex: 0 0 auto;
+  width: 38px;
   text-align: right;
   font: 400 12px/1.4 var(--mono);
+  font-variant-numeric: tabular-nums;
   color: var(--ink-faint);
+}
+
+/* A phone keeps the title, the marks and the year. */
+@media (max-width: 639px) {
+  .book-row .byline,
+  .book-row .formats { display: none; }
 }
 
 /* ---------------------------------------------------------------- shell -- */
@@ -1194,8 +1303,6 @@ main:focus { outline: none; }
    label looking as pressable as ever. This is what :disabled would have done
    if the label could carry it. */
 .file-button.shut { opacity: .45; cursor: not-allowed; }
-.bulk-offer { margin: 6px 0 0; }
-.bulk-offer .btn.link { margin-left: 8px; }
 .notice.warn { border-left-color: var(--warn); }
 /* One line of a list of findings, marked because it is the one worth acting on
    before the others. The text takes the colour; the list has no border to give
@@ -1550,7 +1657,15 @@ pre.snippet {
    The spine sets its own width here rather than filling the slot, which is
    what it does in the catalog wall where there is no label to make room for. */
 .spine-slot.labelled .spine { width: auto; }
-.empty { padding: 50px 10px; text-align: center; color: var(--ink-faint); }
+.empty {
+  margin: 34px 0;
+  padding: 20px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ink-faint);
+}
 
 /* --------------------------------------------------------------- detail -- */
 
@@ -2215,33 +2330,13 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
      share; the toolbar's controls each take a full row rather than half of
      one, which is unusable at this width. */
   .spread { flex-wrap: wrap; }
-  .toolbar { position: static; padding: 11px; }
+  .toolbar { position: static; }
   .field, .field select { width: 100%; }
   .field { flex: 1 1 140px; }
   .segmented { width: 100%; }
   .segmented button { flex: 1 1 0; }
   .detail { width: 100%; padding: 18px 16px 40px; }
   .tiles { grid-template-columns: 1fr; }
-}
-
-/* The row is two columns because the metadata is short. On a phone it is not
-   short enough: the metadata refuses to wrap, so it takes the width it wants
-   and leaves the title a column of single words. Below this the row stacks and
-   the metadata reads as a second line under the title. */
-@media (max-width: 560px) {
-  /* The row itself keeps its mark column. What stacks is the part that opens
-     the book, since the metadata will not wrap and was leaving the title a
-     column of single words. */
-  .row-open {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .book-row .meta {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-  }
-  .book-row .year { width: auto; text-align: left; }
 }
 
 @media (max-width: 420px) {
