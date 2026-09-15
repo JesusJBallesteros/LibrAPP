@@ -58,43 +58,55 @@ describe('photographing a shelf', () => {
   })
 })
 
-// The shell on a phone.
+// The shell at three widths.
 //
-// It was taking 663 of 844 pixels before a single book appeared: seven names,
-// each two lines since the names gained their glosses, and the counts under
-// them. Every one of those is still here, one press away.
-describe('the shell folds up on a phone', () => {
+// The old sidebar took 663 of 844 pixels on a phone before a single book
+// appeared. The six places are now a bar along the foot of a phone and a rail
+// down the left of anything wider; the counts get a column of their own only
+// where there is room for one.
+describe('the shell', () => {
   const app = read('App.jsx')
   // Carriage returns stripped: the stylesheet is stored with CRLF and any
   // anchor below that spans a line would miss.
   const css = read('styles.css').split(String.fromCharCode(13)).join('')
 
-
-  it('has a control that says what it is doing', () => {
-    expect(app).toContain('className="menu-button"')
-    expect(app).toContain('aria-expanded={menuOpen}')
-    expect(app).toContain('aria-controls="shell-nav"')
-    expect(app).toContain('id="shell-nav"')
+  it('names six places and marks the current one', () => {
+    const nav = app.slice(app.indexOf('const NAV = ['), app.indexOf(']', app.indexOf('const NAV = [')))
+    for (const key of ['home', 'catalog', 'add', 'desk', 'stacks', 'about']) {
+      expect(nav, key).toContain(`key: '${key}'`)
+    }
+    expect(app).toContain("aria-current={(id === 'shelf' ? inAdd : view === id) ? 'page' : undefined}")
   })
 
-  it('folds back up on the way to wherever it was pointed', () => {
-    // Left open, the destination would arrive underneath the menu that opened
-    // it.
-    const go = app.slice(app.indexOf('const go = useCallback'), app.indexOf('if (lib.status ='))
-    expect(go).toContain('setMenuOpen(false)')
+  it('gives every icon a word beside it', () => {
+    expect(app).toContain('<Icon aria-hidden="true" focusable="false" />')
+    expect(app).toContain("{t(`nav.short.${key}`)}")
   })
 
-  it('hides the nav and the counts only while it is folded', () => {
-    const narrow = css.slice(css.indexOf('@media (max-width: 820px) {\n  .shell'))
-    expect(narrow).toContain('.sidebar .nav,')
-    expect(narrow).toContain('.sidebar.open .nav { display: flex; }')
-    expect(narrow).toContain('.sidebar.open .sidebar-foot { display: flex; }')
+  it('is a bar along the foot of a phone and a rail from 640px', () => {
+    const rail = css.slice(css.indexOf('.rail {'), css.indexOf('}', css.indexOf('.rail {')))
+    expect(rail).toContain('position: fixed')
+    expect(rail).toContain('bottom: 0')
+    const wide = css.slice(css.indexOf('@media (min-width: 640px) {\n  .shell'))
+    expect(wide).toContain('grid-template-columns: 82px minmax(0, 1fr)')
+    expect(wide).toContain('position: sticky')
   })
 
-  it('does not draw the control where there is room for the column', () => {
-    // Above the breakpoint the shell is always open and the button has nothing
-    // to do, so the state it reads is never consulted.
-    expect(css).toContain('.menu-button { display: none; }')
+  it('keeps the page clear of the bar on a phone', () => {
+    expect(css).toContain('.shell { min-height: 100vh; padding-bottom: 76px; }')
+    expect(css).toContain('.librarian { right: 16px; bottom: 88px;')
+  })
+
+  it('gives the counts a column from 1040px, and the stacks page below that', () => {
+    expect(css).toContain('grid-template-columns: 82px minmax(0, 1fr) 292px')
+    expect(css).toContain(".shell[data-view='storage'] .margin {")
+    expect(app).toContain('data-view={view}')
+  })
+
+  it('draws the four ways in as tabs over one page', () => {
+    const add = read('views/Add.jsx')
+    for (const id of ['shelf', 'list', 'barcode', 'kindle']) expect(add, id).toContain(`id: '${id}'`)
+    expect(app).toContain('<Add view={view} onGo={go}>')
   })
 })
 

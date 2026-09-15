@@ -6,8 +6,8 @@
 // Two decisions are worth holding still. It appears by how long the page is
 // rather than by how far down it somebody has scrolled, because a control that
 // turns up partway through a scroll is one nobody knows is there until they
-// have already done without it. And it clears the sidebar, which is 252 pixels
-// of sticky column with its own links along the bottom.
+// have already done without it. And it clears the rail, or on a phone the bar
+// of places along the foot of the screen.
 
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
@@ -54,11 +54,9 @@ describe('where it is', () => {
     expect(rule('.librarian')).toMatch(/right: 26px/)
   })
 
-  it('clears the sidebar on a screen wide enough to have one', () => {
-    // 252px of sticky column, with About, Privacy and Licence along its foot.
-    expect(css).toContain('.to-top { left: calc(252px + 26px); }')
-    expect(css).toContain('@media (min-width: 821px) {')
-    expect(css).toContain('.shell { grid-template-columns: 1fr; }')
+  it('clears the bar on a phone and the rail on anything wider', () => {
+    expect(css).toContain('.to-top { left: 16px; bottom: 88px; }')
+    expect(css).toContain('.to-top { left: calc(82px + 22px); bottom: 22px; }')
   })
 
   it('is smaller and quieter than the owl, which has something to say', () => {

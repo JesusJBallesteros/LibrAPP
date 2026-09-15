@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { HardDrive, House, Info, Library, Plus, RefreshCw, Sparkles, TriangleAlert } from 'lucide-react'
 import { useLibrary } from './store/useLibrary.js'
 import { checkCapabilities } from './store/capabilities.js'
 import { useT } from './i18n/index.jsx'
@@ -16,9 +17,19 @@ import Desk from './views/Desk.jsx'
 import Setup from './views/Setup.jsx'
 import Storage from './views/Storage.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
+import Add, { ADD_VIEWS } from './views/Add.jsx'
 import { leaveForYourOwn, wantedStart } from './components/DemoWarning.jsx'
 
-const VIEWS = ['catalog', 'shelf', 'list', 'barcode', 'desk', 'storage', 'about']
+// Six places. The four ways in share one, Add, which opens on the photograph
+// and carries the other three as tabs.
+const NAV = [
+  { id: 'home', key: 'home', Icon: House },
+  { id: 'catalog', key: 'catalog', Icon: Library },
+  { id: 'shelf', key: 'add', Icon: Plus },
+  { id: 'desk', key: 'desk', Icon: Sparkles },
+  { id: 'storage', key: 'stacks', Icon: HardDrive },
+  { id: 'about', key: 'about', Icon: Info },
+]
 
 const NAV_KEY = {
   catalog: 'catalog', shelf: 'shelf', list: 'list', barcode: 'barcode',
@@ -47,10 +58,6 @@ export default function App() {
   const counts = lib.catalog?.counts
   const capabilities = checkCapabilities()
   const demoAsked = useRef(false)
-  // Whether the shell is unfolded on a phone, where it is folded by default.
-  // Always open on a wide screen: the CSS below stops reading this above the
-  // breakpoint, so nothing here has to know how wide the window is.
-  const [menuOpen, setMenuOpen] = useState(false)
   // Where a failure lands when the thing that caused it has nowhere of its own
   // to put one. A star pressed at the foot of a long shelf is the case: there
   // is no room beside it for a message, so the message stays here and the page
@@ -127,7 +134,6 @@ export default function App() {
       }
       setPendingView(null)
       setView(next)
-      setMenuOpen(false)
     },
     [lib.status, view],
   )
@@ -248,139 +254,10 @@ export default function App() {
     )
   }
 
-  return (
-    <div className="shell">
-      {/* Thirteen tab stops stand between the top of the page and its content,
-          on every view, every time. This is the way past them, and it shows
-          only when focused, because it exists for the people who would
-          otherwise walk through all thirteen. It has to come before the
-          sidebar to be the first thing a Tab reaches. */}
-      <a className="skip-link" href="#content">
-        {t('a11y.skipToContent')}
-      </a>
-      <aside className={`sidebar${menuOpen ? ' open' : ''}`}>
-        <div className="sidebar-top">
-        <button className="brand brand-button" onClick={() => setView('home')}>
-          <h1>
-            Libr<em>APP</em>
-          </h1>
-          <span className="brand-rule" aria-hidden="true" />
-          <p className="eyebrow">{t('app.strapline')}</p>
-        </button>
-        {/* The shell took 79% of a phone screen before any book did. Every
-            name in it is still here, one press away. */}
-        <button
-          className="menu-button"
-          aria-expanded={menuOpen}
-          aria-controls="shell-nav"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          {t(menuOpen ? 'nav.menu.close' : 'nav.menu')}
-        </button>
-        </div>
+  const inAdd = ADD_VIEWS.includes(view)
 
-        <nav className="nav" id="shell-nav">
-          {VIEWS.map((id) => (
-            <button
-              key={id}
-              onClick={() => go(id)}
-              aria-current={view === id ? 'page' : undefined}
-            >
-              {t(`nav.${NAV_KEY[id]}`)}
-              {/* The names in here are the house vocabulary and half of them
-                  say nothing to somebody who has just arrived: a desk, some
-                  stacks. These lines already existed and were in a title
-                  attribute, which is a tooltip on a mouse and nothing at all
-                  on a phone, so the one place the wording needed explaining
-                  was the one place it was hidden. */}
-              <span className="nav-hint">{t(`nav.${NAV_KEY[id]}.hint`)}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="sidebar-foot">
-          <p className="eyebrow">{t('sidebar.holdings')}</p>
-          {counts ? (
-            <dl>
-              <dt>{t('sidebar.books')}</dt>
-              <dd>{counts.books}</dd>
-              <dt>{t('sidebar.authors')}</dt>
-              <dd>{counts.authors}</dd>
-              <dt>{t('sidebar.read')}</dt>
-              <dd>{counts.read}</dd>
-              <dt>{t('sidebar.unread')}</dt>
-              <dd>{counts.unread}</dd>
-              <dt>{t('sidebar.notRecorded')}</dt>
-              <dd>{counts.read_unknown}</dd>
-            </dl>
-          ) : (
-            <p style={{ padding: '0 8px' }}>{t('sidebar.noCatalog')}</p>
-          )}
-          <div style={{ padding: '0 8px' }}>
-            <button className="btn small" onClick={lib.rebuild} disabled={lib.busy || !lib.sources.length}>
-              {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
-            </button>
-          </div>
-          <ThemeToggle />
-
-          <nav className="sidebar-links">
-            {[
-              ['foot.about', null],
-              ['foot.privacy', 'privacy'],
-              ['foot.licence', 'licence'],
-            ].map(([key, section], i) => (
-              <span key={key}>
-                {i > 0 && <span aria-hidden="true"> · </span>}
-                <button className="btn link" onClick={() => go('about', section)}>
-                  {t(key)}
-                </button>
-              </span>
-            ))}
-          </nav>
-        </div>
-      </aside>
-
-      <main className="main" id="content" tabIndex={-1}>
-        {/* Above everything, on every page, for as long as the demo is open.
-            Somebody who forgets which library they are in and starts correcting
-            books would lose the work on the next reload, so this does not
-            dismiss. */}
-        {lib.isDemo && (
-          <div className="view" style={{ paddingBottom: 0 }}>
-            <div className="notice demo-notice">
-              <p>
-                <strong>{t('demo.banner')}</strong>
-              </p>
-              <p className="tiny">{t('demo.bannerWhy')}</p>
-              <span className="row" style={{ gap: 8, marginTop: 8 }}>
-                {/* Being persuaded and being set up were two different pages
-                    with nothing between them: leaving returned to the same five
-                    doors the visitor had already declined. */}
-                <button className="btn small primary" onClick={leaveForYourOwn}>
-                  {t('demo.tryYours')}
-                </button>
-                <button className="btn small" onClick={() => window.location.reload()}>
-                  {t('demo.leave')}
-                </button>
-              </span>
-            </div>
-          </div>
-        )}
-
-        {lib.error && (
-          <div className="view" style={{ paddingBottom: 0 }}>
-            <div className="notice bad" role="alert" ref={banner}>
-              <p>
-                <strong>{lib.error}</strong>
-              </p>
-              <button className="btn small" style={{ marginTop: 8 }} onClick={() => lib.setError(null)}>
-                {t('common.dismiss')}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {view === 'catalog' ? (
+  const page =
+    view === 'catalog' ? (
           <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} onOwl={setOwlEvent} />
@@ -391,8 +268,6 @@ export default function App() {
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
         ) : view === 'kindle' ? (
-          // Reached from the front page and from Upload list, not from the
-          // sidebar: it is a thing somebody does once.
           <Kindle onGo={go} />
         ) : view === 'about' ? (
           <About focus={focus} inShell />
@@ -406,6 +281,85 @@ export default function App() {
               setOwlGone(false)
             }}
           />
+        )
+
+  return (
+    <div className="shell" data-view={view}>
+      {/* The way past the rail's eight tab stops. Shown only when focused, and
+          first in the page so it is the first thing a Tab reaches. */}
+      <a className="skip-link" href="#content">
+        {t('a11y.skipToContent')}
+      </a>
+
+      {/* A bar along the foot of a phone, a rail down the left of anything
+          wider. The short name is the visible label; the full name and its
+          gloss are the title. */}
+      <nav className="rail" aria-label={t('nav.menu')}>
+        <div className="rail-places">
+          {NAV.map(({ id, key, Icon }) => (
+            <button
+              key={id}
+              className="rail-item"
+              onClick={() => go(id)}
+              aria-current={(id === 'shelf' ? inAdd : view === id) ? 'page' : undefined}
+              title={`${t(`nav.${key}`)} · ${t(`nav.${key}.hint`)}`}
+            >
+              <Icon aria-hidden="true" focusable="false" />
+              <span className="rail-label">{t(`nav.short.${key}`)}</span>
+            </button>
+          ))}
+        </div>
+        <div className="rail-foot">
+          <ThemeToggle icons />
+        </div>
+      </nav>
+
+      <main className="main" id="content" tabIndex={-1}>
+        <header className="shell-head">
+          <button className="wordmark" onClick={() => go('home')} title={t('nav.home')}>
+            Libr<em>APP</em>
+          </button>
+        </header>
+
+        {/* On every page for as long as the demo is open. It does not dismiss:
+            corrections made in the demo are lost on the next reload. */}
+        {lib.isDemo && (
+          <div className="demo-bar" role="note">
+            <TriangleAlert className="demo-bar-icon" aria-hidden="true" focusable="false" />
+            <div className="demo-bar-text">
+              <p>
+                <strong>{t('demo.banner')}</strong>
+              </p>
+              <p>{t('demo.bannerWhy')}</p>
+            </div>
+            <div className="demo-bar-actions">
+              <button className="btn small primary" onClick={leaveForYourOwn}>
+                {t('demo.tryYours')}
+              </button>
+              <button className="btn small" onClick={() => window.location.reload()}>
+                {t('demo.leave')}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {lib.error && (
+          <div className="notice bad" role="alert" ref={banner}>
+            <p>
+              <strong>{lib.error}</strong>
+            </p>
+            <button className="btn small" style={{ marginTop: 8 }} onClick={() => lib.setError(null)}>
+              {t('common.dismiss')}
+            </button>
+          </div>
+        )}
+
+        {inAdd ? (
+          <Add view={view} onGo={go}>
+            {page}
+          </Add>
+        ) : (
+          page
         )}
 
         {/* On every page, About included: it is a long one and this only goes
@@ -430,6 +384,53 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* A third column from 1040px. Narrower, it is drawn only under the
+          stacks page, so the counts and Rebuild are always somewhere. */}
+      <aside className="margin" aria-label={t('sidebar.holdings')}>
+        <section>
+          <p className="eyebrow">{t('sidebar.holdings')}</p>
+          {counts ? (
+            <dl>
+              <dt>{t('sidebar.books')}</dt>
+              <dd>{counts.books}</dd>
+              <dt>{t('sidebar.authors')}</dt>
+              <dd>{counts.authors}</dd>
+              <dt>{t('sidebar.read')}</dt>
+              <dd>{counts.read}</dd>
+              <dt>{t('sidebar.unread')}</dt>
+              <dd>{counts.unread}</dd>
+              <dt>{t('sidebar.notRecorded')}</dt>
+              <dd>{counts.read_unknown}</dd>
+            </dl>
+          ) : (
+            <p>{t('sidebar.noCatalog')}</p>
+          )}
+          <button
+            className="btn small margin-rebuild"
+            onClick={lib.rebuild}
+            disabled={lib.busy || !lib.sources.length}
+          >
+            <RefreshCw aria-hidden="true" focusable="false" />
+            {lib.busy ? t('sidebar.working') : t('sidebar.rebuild')}
+          </button>
+        </section>
+
+        <nav className="margin-links" aria-label={t('foot.about')}>
+          {[
+            ['foot.about', null],
+            ['foot.privacy', 'privacy'],
+            ['foot.licence', 'licence'],
+          ].map(([key, section], i) => (
+            <span key={key}>
+              {i > 0 && <span aria-hidden="true"> · </span>}
+              <button className="btn link" onClick={() => go('about', section)}>
+                {t(key)}
+              </button>
+            </span>
+          ))}
+        </nav>
+      </aside>
     </div>
   )
 }

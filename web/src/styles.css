@@ -720,29 +720,244 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 /* ---------------------------------------------------------------- shell -- */
 
-.shell { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+/* Three widths. Under 640px the six places are a bar along the foot of the
+   screen. From 640px they are a rail down the left. From 1040px a third column
+   carries the holdings. */
+.shell { min-height: 100vh; padding-bottom: 76px; }
 
-.sidebar {
+.rail {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: stretch;
   background: var(--paper-sunk);
-  border-right: 1px solid var(--rule);
-  padding: 34px 0 26px;
+  border-top: 1px solid var(--rule);
+  padding: 2px 2px env(safe-area-inset-bottom);
+}
+.rail-places { display: flex; flex: 1 1 auto; min-width: 0; }
+.rail-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 34px;
-  position: sticky;
+  align-items: center;
+  gap: 5px;
+  padding: 11px 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-soft);
+  font: 400 9.5px/1.2 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: color .12s;
+}
+.rail-item svg { width: 21px; height: 21px; flex: 0 0 auto; }
+.rail-item:hover,
+.rail-item[aria-current='page'] { color: var(--accent); }
+/* The current place is marked by a rule, not a fill. */
+.rail-item[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  left: 22%;
+  right: 22%;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  height: 2px;
+  background: var(--accent);
+}
+.rail-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-foot { display: none; }
+
+.theme-icons { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.theme-icons button {
+  display: grid;
+  place-items: center;
+  padding: 7px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+}
+.theme-icons svg { width: 17px; height: 17px; }
+.theme-icons button:hover,
+.theme-icons button[aria-pressed='true'] { color: var(--accent); }
+
+.main { min-width: 0; padding: 20px 18px 40px; }
+.main .view { padding: 0; max-width: none; }
+
+.shell-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.wordmark {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+  font: 500 24px/1 var(--serif);
+  letter-spacing: .005em;
+}
+.wordmark em { font-style: normal; color: var(--accent); }
+.wordmark:hover { color: var(--accent); }
+
+/* On every page while the demo is open. A tan border and a tinted ground, so it
+   reads as a standing condition rather than as a failure. */
+.demo-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13px;
+}
+.demo-bar-icon { flex: 0 0 auto; width: 17px; height: 17px; color: var(--accent); }
+.demo-bar-text { flex: 1 1 220px; min-width: 0; }
+.demo-bar-text p { margin: 0; color: var(--ink); }
+.demo-bar-text p + p { margin-top: 2px; font-size: 12.5px; color: var(--ink-soft); }
+.demo-bar-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.margin { display: none; }
+.margin section { min-width: 0; }
+.margin dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px 10px;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.margin dt { color: var(--ink-soft); }
+.margin dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.margin-rebuild {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 16px;
+}
+.margin-rebuild svg { width: 14px; height: 14px; }
+.margin-links { color: var(--ink-faint); font-size: 12.5px; }
+.margin-links .btn.link {
+  color: var(--ink-faint);
+  padding: 0;
+  text-decoration: none;
+  font-size: 12.5px;
+}
+.margin-links .btn.link:hover { color: var(--accent); text-decoration: underline; }
+
+/* The four ways in, as tabs. The chosen one's rule is pulled over the line. */
+.add-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 0 22px;
+  border-bottom: 1px solid var(--rule);
+}
+.add-tab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: -1px;
+  padding: 11px 13px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+  font: 400 12.5px/1.2 var(--sans);
+}
+.add-tab svg { width: 17px; height: 17px; flex: 0 0 auto; }
+.add-tab:hover { color: var(--accent); }
+.add-tab[aria-current='page'] { color: var(--accent); border-bottom-color: var(--accent); }
+
+@media (max-width: 639px) {
+  /* A phone keeps the word on the chosen tab only. The others keep it for a
+     screen reader. */
+  .add-tab:not([aria-current='page']) .add-tab-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
 }
 
-.brand { padding: 0 26px; }
-.brand h1 {
-  font: 500 30px/1 var(--serif);
-  margin: 0;
-  letter-spacing: .005em;
-  color: var(--accent);
+@media (min-width: 640px) {
+  .shell { display: grid; grid-template-columns: 82px minmax(0, 1fr); padding-bottom: 0; }
+  .rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-direction: column;
+    padding: 20px 0 14px;
+    border-top: 0;
+    border-right: 1px solid var(--rule);
+  }
+  .rail-places { flex: 0 0 auto; flex-direction: column; gap: 2px; }
+  .rail-item { flex: 0 0 auto; }
+  .rail-item[aria-current='page']::before { left: 0; right: auto; top: 8px; bottom: 8px; width: 2px; height: auto; }
+  .rail-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    padding: 14px 0 4px;
+    border-top: 1px solid var(--rule);
+  }
+  .main { width: 100%; max-width: 760px; padding: 30px 34px 60px; }
 }
-.brand h1 em { font-style: normal; color: var(--accent); }
+
+@media (min-width: 1040px) {
+  .shell { grid-template-columns: 82px minmax(0, 1fr) 292px; }
+  .main { max-width: 820px; padding: 34px 44px 70px; }
+  .margin {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    /* Clears the owl, which sits over the foot of this column. */
+    padding: 34px 26px 96px;
+    background: var(--paper-sunk);
+    border-left: 1px solid var(--rule);
+    font-size: 13px;
+  }
+}
+
+/* Narrower than that, the holdings follow the stacks page. */
+@media (max-width: 1039px) {
+  .shell[data-view='storage'] .margin {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 0 18px 40px;
+    font-size: 13px;
+  }
+}
+@media (min-width: 640px) and (max-width: 1039px) {
+  .shell[data-view='storage'] .margin { grid-column: 2; max-width: 760px; padding: 0 34px 60px; }
+}
+
 /* Two lines of different weight, the way a title page rules off a heading. */
 .brand-rule {
   display: block;
@@ -757,62 +972,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-top: 1px solid var(--ink);
   opacity: .36;
 }
-.brand p { margin: 0; }
-
-.nav { display: flex; flex-direction: column; }
-/* The name leads and the gloss follows it, quieter and on its own line, so the
-   column still scans as a list of places rather than a list of sentences. */
-.nav-hint {
-  display: block;
-  margin-top: 1px;
-  font-size: 11.5px;
-  line-height: 1.3;
-  color: var(--ink-faint);
-}
-.nav button[aria-current='page'] .nav-hint { color: var(--ink-soft); }
-.nav button {
-  width: 100%;
-  padding: 9px 26px;
-  border: 0;
-  border-left: 2px solid transparent;
-  border-radius: 0;
-  background: none;
-  cursor: pointer;
-  text-align: left;
-  font: 400 14.5px/1.4 var(--sans);
-  color: var(--ink-soft);
-  transition: color .12s, border-color .12s;
-}
-.nav button:hover { color: var(--ink); }
-.nav button[aria-current='true'] {
-  border-left-color: var(--accent);
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.sidebar-foot {
-  margin-top: auto;
-  padding: 0 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  font-size: 13px;
-}
-.sidebar-foot dl {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 5px 10px;
-  margin: 9px 0 0;
-  padding: 0;
-}
-.sidebar-foot dt { color: var(--ink-soft); }
-.sidebar-foot dd {
-  margin: 0;
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  color: var(--ink);
-}
-
 .theme-toggle,
 .segmented {
   display: flex;
@@ -837,22 +996,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .segmented button + button { border-left: 1px solid var(--rule); }
 .theme-toggle button[aria-pressed='true'],
 .segmented button[aria-pressed='true'] { background: var(--accent-soft); color: var(--accent); }
-
-.sidebar-links {
-  padding-top: 18px;
-  border-top: 1px solid var(--rule);
-  color: var(--ink-faint);
-  font-size: 12.5px;
-}
-.sidebar-links .btn.link {
-  color: var(--ink-faint);
-  padding: 0;
-  text-decoration: none;
-  font-size: 12.5px;
-}
-.sidebar-links .btn.link:hover { color: var(--accent); text-decoration: underline; }
-
-.main { min-width: 0; display: flex; flex-direction: column; }
 
 .view { padding: 26px 30px 60px; max-width: 1180px; width: 100%; }
 .view > header { margin-bottom: 20px; }
@@ -1823,10 +1966,12 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 .to-top:focus-visible { opacity: 1; border-color: var(--accent); color: var(--accent); }
 .to-top svg { width: 20px; height: 20px; display: block; }
 
-/* Clear of the sidebar, which is 252px of sticky column and has its own links
-   along the bottom. Below that width there is no sidebar to clear. */
-@media (min-width: 821px) {
-  .to-top { left: calc(252px + 26px); }
+/* Above the bar on a phone, and clear of the 82px rail on anything wider. */
+@media (max-width: 639px) {
+  .to-top { left: 16px; bottom: 88px; }
+}
+@media (min-width: 640px) {
+  .to-top { left: calc(82px + 22px); bottom: 22px; }
 }
 
 /* --------------------------------------------------- the LibrAPPrian -- */
@@ -1926,10 +2071,13 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
   .spine { transition: none; }
 }
 
-/* On a phone the sidebar is a bar across the top and the owl would sit over
-   the content, so it tucks smaller into the corner. */
-@media (max-width: 820px) {
-  .librarian { right: 14px; bottom: 14px; gap: 8px; max-width: calc(100vw - 28px); }
+@media (min-width: 640px) {
+  .librarian { right: 22px; bottom: 22px; }
+}
+
+/* On a phone it sits above the bar of places, smaller. */
+@media (max-width: 639px) {
+  .librarian { right: 16px; bottom: 88px; gap: 8px; max-width: calc(100vw - 32px); }
   .owl-badge { width: 46px; height: 46px; }
   .owl-badge svg { width: 32px; height: 32px; }
   .owl-bubble { max-width: min(280px, calc(100vw - 90px)); }
@@ -2032,61 +2180,7 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 .book-row .byline,
 .forgotten-item .title { overflow-wrap: anywhere; }
 
-/* Wide enough for a column down the side: the menu button has nothing to do
-   and the shell is always open. */
-.menu-button { display: none; }
-
 @media (max-width: 820px) {
-  .shell { grid-template-columns: 1fr; }
-  .sidebar {
-    position: static;
-    height: auto;
-    flex-direction: column;
-    gap: 14px;
-    padding: 14px;
-    overflow: visible;
-  }
-
-  /* Folded, the shell is a name and a way in. The nav and the counts under it
-     took 545 of the 663 pixels it was spending before a single book appeared. */
-  .sidebar-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .menu-button {
-    display: inline-flex;
-    align-items: center;
-    flex: 0 0 auto;
-    padding: 9px 14px;
-    border: 1px solid var(--control-line);
-    border-radius: var(--radius);
-    background: none;
-    color: var(--ink);
-    font: 400 14.5px/1 var(--sans);
-    cursor: pointer;
-  }
-  .sidebar .nav,
-  .sidebar .sidebar-foot { display: none; }
-  .sidebar.open .nav { display: flex; }
-  .sidebar.open .sidebar-foot { display: flex; }
-  /* A left border marks the current item in a column. In a row it would mark
-     the wrong edge, so the underline does the work instead. */
-  .nav { flex-direction: row; flex-wrap: wrap; gap: 2px; }
-  .nav button {
-    /* The column rule sets width:100%, which in a row makes every item its own
-       row. */
-    width: auto;
-    flex: 1 1 auto;
-    padding: 8px 12px;
-    text-align: center;
-    border-left: 0;
-    border-bottom: 2px solid transparent;
-  }
-  .nav button[aria-current='true'] { border-bottom-color: var(--accent); }
-  .brand { padding: 0; }
-  .sidebar-foot { padding: 0; gap: 14px; }
   .view { padding: 18px 14px 60px; }
 
   /* A heading and its control stop sharing a line once there is no line to
@@ -2100,7 +2194,6 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
   .segmented button { flex: 1 1 0; }
   .detail { width: 100%; padding: 18px 16px 40px; }
   .tiles { grid-template-columns: 1fr; }
-  .sidebar-foot dl { grid-template-columns: 1fr auto; }
 }
 
 /* The row is two columns because the metadata is short. On a phone it is not
