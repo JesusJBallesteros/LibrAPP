@@ -192,7 +192,20 @@ describe('announcing something in progress', () => {
     expect(announce({ kind: 'imported', added: 23, known: 4 })).toEqual({
       key: 'imported',
       values: { n: 23, known: 4 },
+      alert: true,
     })
+  })
+
+  it('opens for work in progress and lights the badge for a finished key step', () => {
+    expect(announce({ kind: 'reading', tiles: 2 }).alert).toBeUndefined()
+    expect(announce({ kind: 'asking' }).alert).toBeUndefined()
+    for (const kind of ['imported', 'review', 'fillReady', 'filled', 'marked', 'rebuilt']) {
+      expect(announce({ kind, n: 2 })?.alert, kind).toBe(true)
+    }
+  })
+
+  it('carries the state a bulk mark set', () => {
+    expect(announce({ kind: 'marked', n: 12, state: 'read' }).values).toEqual({ n: 12, state: 'read' })
   })
 
   it('falls back to zero rather than to undefined in the sentence', () => {

@@ -2217,6 +2217,42 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
   transition: border-color .12s;
 }
 .owl-badge:hover { border-color: var(--accent); }
+.owl-badge { position: relative; }
+
+/* A key step has finished. A tan halo breathing, a ring moving out, and a dot,
+   until the bubble is opened. All three are drawn only while it is lit. */
+.owl-badge.alert { border-color: var(--tan); }
+.owl-glow {
+  position: absolute;
+  inset: -16px;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--tan) 0%, transparent 70%);
+  opacity: .28;
+  pointer-events: none;
+  animation: owlGlow 2.2s ease-in-out infinite;
+}
+.owl-ring {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--tan);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: owlRing 2.2s ease-out infinite;
+}
+.owl-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--paper);
+  border-radius: 50%;
+  background: var(--tan);
+  pointer-events: none;
+}
+@keyframes owlGlow { 0%, 100% { opacity: .28; } 50% { opacity: .62; } }
+@keyframes owlRing { 0% { transform: scale(.88); opacity: .85; } 100% { transform: scale(1.35); opacity: 0; } }
 
 /* The one blink in the app. It is slow and it is the whole animation budget
    for this component. */
@@ -2283,6 +2319,12 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   .owl-eyes { animation: none; }
   .owl-bubble { animation: none; }
+  /* The owl still lights up, with the halo held and the dot shown, but nothing
+     pulses. */
+  .owl-glow { animation: none; opacity: .5; }
+  .owl-ring { display: none; }
+  .info-block,
+  .tell-me-how-body { animation: none; }
   /* The spine still comes out, it just stops sliding out. */
   .spine { transition: none; }
 }

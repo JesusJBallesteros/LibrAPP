@@ -118,6 +118,8 @@ export default function App() {
   const go = useCallback(
     (next, wanted = null) => {
       setFocus(wanted)
+      // What the owl was reporting belongs to the page it happened on.
+      if (next !== view) setOwlEvent(null)
       // About needs no storage, so it must not be routed through the storage
       // question the way the working views are. Nor does the Kindle page: it is
       // instructions and a file to download, and asking where to keep a catalog
@@ -265,13 +267,13 @@ export default function App() {
     view === 'home' ? (
       <Landing {...landing} inShell />
     ) : view === 'catalog' ? (
-          <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
+          <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} onOwl={setOwlEvent} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} onOwl={setOwlEvent} />
         ) : view === 'list' ? (
           <ListImport lib={lib} onGo={go} onOwl={setOwlEvent} />
         ) : view === 'barcode' ? (
-          <Barcode lib={lib} />
+          <Barcode lib={lib} onOwl={setOwlEvent} />
         ) : view === 'desk' ? (
           <Desk catalog={lib.catalog} onGo={go} onOwl={setOwlEvent} lib={lib} />
         ) : view === 'kindle' ? (
@@ -382,6 +384,7 @@ export default function App() {
             books={lib.catalog?.books || []}
             hasCatalog={Boolean(counts?.books)}
             event={owlEvent}
+            onSeen={() => setOwlEvent(null)}
             onGo={go}
             gone={owlGone}
             onDismiss={() => {
@@ -415,7 +418,10 @@ export default function App() {
           )}
           <button
             className="btn small margin-rebuild"
-            onClick={lib.rebuild}
+            onClick={async () => {
+              const rebuilt = await lib.rebuild()
+              if (rebuilt?.counts) setOwlEvent({ kind: 'rebuilt', n: rebuilt.counts.books })
+            }}
             disabled={lib.busy || !lib.sources.length}
           >
             <RefreshCw aria-hidden="true" focusable="false" />

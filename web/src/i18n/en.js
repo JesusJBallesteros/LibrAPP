@@ -69,6 +69,12 @@ export default {
   'librarian.reading': '{n} {n:piece|pieces}, spines top to bottom. This takes a moment.',
   'librarian.asking': 'Looking through the shelves.',
   'librarian.imported': '{n} {n:book|books} arrived, and {known} {known:was|were} already here. One entry each.',
+  'librarian.review': '{n} {n:book|books} read. Check {n:it|them} below before importing.',
+  'librarian.fillReady': '{n} {n:book has|books have} answers to check below.',
+  'librarian.filled': 'Written to {n} {n:book|books}, each one as a correction.',
+  'librarian.marked': '{n} {n:book|books} marked as {state}.',
+  'librarian.rebuilt': 'Catalog rebuilt: {n} {n:book|books}.',
+  'librarian.openAlert': 'The LibrAPPrian has something to report',
 
   'librarian.previous': 'The one before',
   'librarian.next': 'The next one',

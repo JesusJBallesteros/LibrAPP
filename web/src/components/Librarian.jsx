@@ -14,7 +14,7 @@ import { announce, observations } from '../librarian.js'
  * The bubble opens by itself only for a transient line, which reports something
  * the reader has just set in motion. Everything else waits to be asked.
  */
-export default function Librarian({ view, counts, books, hasCatalog, event, onGo, gone, onDismiss }) {
+export default function Librarian({ view, counts, books, hasCatalog, event, onGo, gone, onDismiss, onSeen }) {
   const { t } = useT()
   const [open, setOpen] = useState(false)
   // Which of the things it has to say is showing. Reset when the page changes,
@@ -23,16 +23,27 @@ export default function Librarian({ view, counts, books, hasCatalog, event, onGo
 
   const transient = announce(event)
   const lines = observations({ view, counts, books, hasCatalog })
+  // A key step finished: books ready to check, an import saved, a bulk mark
+  // applied, a rebuild done. The badge glows until it is opened.
+  const alert = Boolean(transient?.alert)
+  const glowing = alert && !open
 
   useEffect(() => {
     setAt(0)
   }, [view, hasCatalog])
 
-  // Something is happening, so the owl speaks without being asked. It closes
-  // again on its own when whoever set the event clears it.
+  // Work in progress is reported without being asked, and the bubble closes
+  // again when whoever set the event clears it. An alert does not open it.
   useEffect(() => {
-    if (transient) setOpen(true)
+    if (transient && !transient.alert) setOpen(true)
   }, [transient?.key])
+
+  // Closing the bubble on an alert means it has been read, so the event goes
+  // and the owl returns to what it says about the page.
+  const close = () => {
+    if (alert) onSeen?.()
+    setOpen(false)
+  }
 
   // A transient line replaces the lot: it is about right now, and paging
   // through the manual while a photograph is being read helps nobody.
@@ -59,7 +70,7 @@ export default function Librarian({ view, counts, books, hasCatalog, event, onGo
               className="btn link"
               onClick={() => {
                 onGo?.(action.view, action.focus ?? null)
-                setOpen(false)
+                close()
               }}
             >
               {t(`librarian.action.${action.key}`)}
@@ -91,13 +102,27 @@ export default function Librarian({ view, counts, books, hasCatalog, event, onGo
       )}
 
       <button
-        className="owl-badge"
+        className={`owl-badge${glowing ? ' alert' : ''}`}
         aria-expanded={open}
-        aria-label={open ? t('librarian.close') : t('librarian.open')}
-        onClick={() => setOpen((was) => !was)}
+        aria-label={open ? t('librarian.close') : glowing ? t('librarian.openAlert') : t('librarian.open')}
+        onClick={() => (open ? close() : setOpen(true))}
       >
+        {glowing && (
+          <>
+            <span className="owl-glow" aria-hidden="true" />
+            <span className="owl-ring" aria-hidden="true" />
+            <span className="owl-dot" aria-hidden="true" />
+          </>
+        )}
         <Owl />
       </button>
+      {/* The glow is for the eye. The same line is announced for anybody who
+          cannot see the corner of the screen. */}
+      {glowing && (
+        <span className="offscreen" role="status">
+          {line}
+        </span>
+      )}
     </div>
   )
 }

@@ -154,8 +154,18 @@ export function announce(event) {
   if (!event) return null
   if (event.kind === 'reading') return { key: 'reading', values: { n: event.tiles ?? 0 } }
   if (event.kind === 'asking') return { key: 'asking', values: {} }
+  // The rest report a key step that has finished and wants the reader's
+  // attention. They light the badge rather than opening the bubble, and the
+  // light goes out once the bubble has been opened.
   if (event.kind === 'imported') {
-    return { key: 'imported', values: { n: event.added ?? 0, known: event.known ?? 0 } }
+    return { key: 'imported', values: { n: event.added ?? 0, known: event.known ?? 0 }, alert: true }
   }
+  if (event.kind === 'review') return { key: 'review', values: { n: event.n ?? 0 }, alert: true }
+  if (event.kind === 'fillReady') return { key: 'fillReady', values: { n: event.n ?? 0 }, alert: true }
+  if (event.kind === 'filled') return { key: 'filled', values: { n: event.n ?? 0 }, alert: true }
+  if (event.kind === 'marked') {
+    return { key: 'marked', values: { n: event.n ?? 0, state: event.state ?? '' }, alert: true }
+  }
+  if (event.kind === 'rebuilt') return { key: 'rebuilt', values: { n: event.n ?? 0 }, alert: true }
   return null
 }

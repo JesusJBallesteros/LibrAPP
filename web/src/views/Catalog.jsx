@@ -52,7 +52,7 @@ const SORTS = {
   oldest: (a, b) => (a.acquired_on || '￿').localeCompare(b.acquired_on || '￿'),
 }
 
-export default function Catalog({ catalog, onGo, lib, focus }) {
+export default function Catalog({ catalog, onGo, lib, focus, onOwl }) {
   const { t, language } = useT()
   const [q, setQ] = useState('')
   const [read, setRead] = useState('all')
@@ -179,6 +179,7 @@ export default function Catalog({ catalog, onGo, lib, focus }) {
       }
       await library.writeOverrides(overrides)
       await library.rebuild()
+      onOwl?.({ kind: 'marked', n: shown.length, state: t(`catalog.bulk.as.${bulk}`) })
       setBulk(null)
     })
 

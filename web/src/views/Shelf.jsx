@@ -173,6 +173,8 @@ export default function Shelf({ lib, onOwl }) {
   }
 
   const readWithKey = async () => {
+    // What the owl reports once the read is back: the books waiting to be checked.
+    let ready = null
     setReadError(null)
     setReading(true)
     onOwl?.({ kind: 'reading', tiles: kept.length })
@@ -201,6 +203,7 @@ export default function Shelf({ lib, onOwl }) {
       ).length
       resetBooks()
       setProposed({ transcription, usage, counted: books.length, recalled })
+      ready = { kind: 'review', n: books.length }
       // Some tiles came back and some did not. What arrived is worth keeping,
       // and the reader has to know the rest is missing before importing it as
       // though it were the whole shelf.
@@ -219,7 +222,7 @@ export default function Shelf({ lib, onOwl }) {
       inFlight.current = null
       setReading(false)
       setProgress(null)
-      onOwl?.(null)
+      onOwl?.(ready)
     }
   }
 
@@ -234,6 +237,7 @@ export default function Shelf({ lib, onOwl }) {
 
   const acceptProposed = () =>
     lib.run(async (library) => {
+      const before = lib.catalog?.counts?.books ?? 0
       const { records, stats } = loadTranscription(keptTranscription)
       // Named after the photograph, so a second shelf does not overwrite the
       // first and re-reading the same one still replaces it.
@@ -252,6 +256,8 @@ export default function Shelf({ lib, onOwl }) {
       const catalog = await library.rebuild()
       setProposed(null)
       setResult({ count: records.length, stats, counts: catalog.counts })
+      const added = Math.max(0, (catalog.counts?.books ?? 0) - before)
+      onOwl?.({ kind: 'imported', added, known: Math.max(0, records.length - added) })
     }, { onError: setSaveError })
 
   const regrid = (dCols, dRows) => {
@@ -289,6 +295,7 @@ export default function Shelf({ lib, onOwl }) {
         counted: records.length,
         recalled: books.filter((b) => b.recalled).length,
       })
+      onOwl?.({ kind: 'review', n: records.length })
       return true
     } catch (err) {
       setSaveError(err.message)

@@ -60,6 +60,12 @@ export default {
   'librarian.reading': '{n} {n:recorte|recortes}, lomos de arriba abajo. Esto lleva un momento.',
   'librarian.asking': 'Revisando las estanterías.',
   'librarian.imported': '{n:Ha|Han} llegado {n} {n:libro|libros}, y {known} ya {known:estaba|estaban} aquí. Una entrada para cada uno.',
+  'librarian.review': '{n} {n:libro leído|libros leídos}. {n:Revísalo|Revísalos} abajo antes de importar.',
+  'librarian.fillReady': '{n} {n:libro tiene|libros tienen} respuestas que revisar abajo.',
+  'librarian.filled': 'Escrito en {n} {n:libro|libros}, cada uno como corrección.',
+  'librarian.marked': '{n} {n:libro marcado|libros marcados} como {state}.',
+  'librarian.rebuilt': 'Catálogo reconstruido: {n} {n:libro|libros}.',
+  'librarian.openAlert': 'BibliotecAPPri@ tiene algo que contar',
 
   'librarian.previous': 'La anterior',
   'librarian.next': 'La siguiente',

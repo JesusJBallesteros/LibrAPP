@@ -242,6 +242,8 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
   }, [context, chosen, question, fillRequest])
 
   const askClaude = async () => {
+    // What the owl reports once the answer is back, when there is something to check.
+    let ready = null
     setAskError(null)
     setAnswer('')
     setSpent(null)
@@ -262,12 +264,16 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
         },
       })
       setSpent(actualCost(usage, pricesForChoice(keyStatus)))
-      if (chosen.structured) setProposed(parseReply(whole, { books: toFill, fields }))
+      if (chosen.structured) {
+        const parsed = parseReply(whole, { books: toFill, fields })
+        setProposed(parsed)
+        ready = { kind: 'fillReady', n: parsed.proposals.length }
+      }
     } catch (err) {
       setAskError(err.message)
     } finally {
       setAsking(false)
-      onOwl?.(null)
+      onOwl?.(ready)
     }
   }
 
@@ -289,7 +295,9 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
       }
       await library.writeOverrides(overrides)
       await library.rebuild()
-      setWritten(summarise(proposed.proposals))
+      const summary = summarise(proposed.proposals)
+      setWritten(summary)
+      onOwl?.({ kind: 'filled', n: summary.books })
       setProposed(null)
       setAnswer('')
     })
@@ -623,7 +631,9 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
                     if (!text) return
                     try {
                       setAskError(null)
-                      setProposed(parseReply(text, { books: toFill, fields }))
+                      const parsed = parseReply(text, { books: toFill, fields })
+                      setProposed(parsed)
+                      onOwl?.({ kind: 'fillReady', n: parsed.proposals.length })
                     } catch (err) {
                       setAskError(err.message)
                     }
