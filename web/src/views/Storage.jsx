@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import DropZone from '../components/DropZone.jsx'
+import { InfoHeading } from '../components/Info.jsx'
 import Backups from '../components/Backups.jsx'
 import { requestPersistence, storageEstimate } from '../store/fs.js'
 import { clearOverride, setRemoved } from '../core/overrides.js'
@@ -120,14 +121,20 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
       </div>
 
       {note && (
-        <div className="notice good">
+        <div className="saved-card" role="status" style={{ margin: '0 0 22px' }}>
           <p>{note}</p>
         </div>
       )}
 
       <div className="storage-pair">
         <section className="desk-section">
-          <h3 className="section-head">{t('storage.where')}</h3>
+          <InfoHeading
+            className="section-head"
+            title={t('storage.where')}
+            label={t('common.moreAbout', { what: t('storage.where') })}
+          >
+            <p>{t('storage.forgetNote')}</p>
+          </InfoHeading>
           <p className="muted tiny">
             {lib.library?.kind ? t(`storage.kind.${lib.library.kind}`) : t('storage.kind.unknown')}
           </p>
@@ -175,24 +182,24 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
               {t('storage.elsewhere')}
             </button>
           </div>
-          <p className="tiny faint" style={{ marginTop: 8 }}>
-            {t('storage.forgetNote')}
-          </p>
         </section>
         <section className="desk-section">
-          <div className="section-head spread">
-            <h3>{t('storage.browser')}</h3>
-            <span className={`tag ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'bad'}`}>
-              {capabilities.complete
-                ? t('storage.allSupported')
-                : capabilities.usable
-                  ? t('storage.someMissing', { n: capabilities.missingOptional.length })
-                  : t('storage.notSupported')}
-            </span>
-          </div>
-          <p className="muted tiny" style={{ marginTop: 8 }}>
-            {t('storage.browserNote')}
-          </p>
+          <InfoHeading
+            className="section-head"
+            title={t('storage.browser')}
+            label={t('common.moreAbout', { what: t('storage.browser') })}
+            aside={
+              <span className={`tag ${capabilities.complete ? 'read' : capabilities.usable ? 'unread' : 'bad'}`}>
+                {capabilities.complete
+                  ? t('storage.allSupported')
+                  : capabilities.usable
+                    ? t('storage.someMissing', { n: capabilities.missingOptional.length })
+                    : t('storage.notSupported')}
+              </span>
+            }
+          >
+            <p>{t('storage.browserNote')}</p>
+          </InfoHeading>
 
           <div style={{ marginTop: 12 }}>
             {capabilities.checks.map((c) => (
@@ -222,7 +229,13 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
       </div>
 
       <section className="desk-section">
-        <h3 className="section-head">{t('storage.sources')}</h3>
+        <InfoHeading
+          className="section-head"
+          title={t('storage.sources')}
+          label={t('common.moreAbout', { what: t('storage.sources') })}
+        >
+          <p>{t('storage.sourcesNote')}</p>
+        </InfoHeading>
         {lib.sources.length === 0 ? (
           <p className="muted">{t('storage.noSources')}</p>
         ) : (
@@ -272,14 +285,16 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
           </table>
           </div>
         )}
-        <p className="tiny faint" style={{ marginTop: 10 }}>
-          {t('storage.sourcesNote')}
-        </p>
       </section>
 
       <section className="desk-section">
-        <h3 className="section-head">{t('storage.corrections')}</h3>
-        <p className="muted tiny">{t('storage.correctionsNote')}</p>
+        <InfoHeading
+          className="section-head"
+          title={t('storage.corrections')}
+          label={t('common.moreAbout', { what: t('storage.corrections') })}
+        >
+          <p>{t('storage.correctionsNote')}</p>
+        </InfoHeading>
 
         {!removed.length && !corrected.length && !orphaned.length && (
           <p className="muted" style={{ marginTop: 10 }}>{t('storage.noCorrections')}</p>
@@ -344,22 +359,25 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
       </section>
 
       <section className="desk-section">
-        <div className="section-head spread">
-          <h3>{t('version.title')}</h3>
-          <span className="tabular tiny faint">{buildLabel()}</span>
-        </div>
-        <p className="muted tiny" style={{ marginTop: 8 }}>
-          {BUILT ? t('version.built', { when: new Date(BUILT).toLocaleString(language) }) : ''}{' '}
-          {t('version.body')}
-        </p>
+        <InfoHeading
+          className="section-head"
+          title={t('version.title')}
+          label={t('common.moreAbout', { what: t('version.title') })}
+          aside={<span className="tabular tiny faint">{buildLabel()}</span>}
+        >
+          <p>{t('version.body')}</p>
+          <p>{t('version.safe')}</p>
+        </InfoHeading>
+        {BUILT && (
+          <p className="muted tiny" style={{ marginTop: 8 }}>
+            {t('version.built', { when: new Date(BUILT).toLocaleString(language) })}
+          </p>
+        )}
         <div className="row" style={{ marginTop: 12 }}>
           <button className="btn" onClick={reloadFresh}>
             {t('version.refresh')}
           </button>
         </div>
-        <p className="tiny faint" style={{ marginTop: 8 }}>
-          {t('version.safe')}
-        </p>
       </section>
 
       {owlGone && (
@@ -383,8 +401,13 @@ export default function Storage({ lib, focus, owlGone, onRestoreOwl }) {
       {/* Export moved up beside the location it would be leaving, so this is
           the way in rather than a pair of opposite doors in one box. */}
       <section className="desk-section" id="import-box">
-        <h3 className="section-head">{t('storage.move')}</h3>
-        <p className="muted tiny">{t('storage.moveNote')}</p>
+        <InfoHeading
+          className="section-head"
+          title={t('storage.move')}
+          label={t('common.moreAbout', { what: t('storage.move') })}
+        >
+          <p>{t('storage.moveNote')}</p>
+        </InfoHeading>
         <div style={{ marginTop: 18 }}>
           <DropZone
             mark="bundle"

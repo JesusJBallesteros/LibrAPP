@@ -164,6 +164,7 @@ export default {
   'common.toTop': 'Volver arriba',
   'common.close': 'Cerrar',
   'common.tellMeHow': 'Cómo se hace',
+  'common.moreAbout': 'Más sobre {what}',
   'common.dismiss': 'Descartar',
   'common.edit': 'Editar',
   'common.remove': 'Quitar',
@@ -500,7 +501,7 @@ export default {
 
   'shelf.intro': 'Fotografía la estantería de frente, a la resolución máxima de tu cámara.',
   'shelf.intro.how':
-    'La resolución decide cuánto texto se puede leer, así que una foto más grande da una transcripción mejor. De frente mantiene los títulos rectos: una estantería fotografiada en ángulo deja el extremo lejano desenfocado y deformado.',
+    'Ponte de frente a la estantería y llena el encuadre con ella. Haz la foto con la cámara a su máxima resolución, no una captura de pantalla ni una copia enviada por mensajería.',
   'shelf.whatItIsFor': 'leer una estantería',
   'shelf.eyebrow': 'Ingresos',
   'list.listsFound': '{n} listas encontradas',
@@ -618,7 +619,7 @@ export default {
   'shelf.stepFour': 'Paso cuatro \u00b7 Leer los lomos',
   'shelf.stepFour.note': 'Lee los recortes con una clave, o ll\u00e9valos t\u00fa a una sesi\u00f3n de IA.',
   'shelf.stepFour.how':
-    'Con una clave guardada, LibrAPP env\u00eda los recortes al servicio que hayas elegido y trae aqu\u00ed la respuesta. Sin clave no sale nada: copia el prompt, guarda los recortes y pega ambos en la sesi\u00f3n de IA que ya uses. La lectura es la misma en los dos casos, y en los dos ves los libros antes de guardar ninguno.',
+    'Con clave: pulsa Lee estas fotos por m\u00ed. Sin clave: pulsa Copiar el prompt y Guardar todas las fotos, d\u00e1selos a una sesi\u00f3n de IA y trae su respuesta al paso cinco.',
   'shelf.stepFive': 'Paso cinco \u00b7 Trae una transcripci\u00f3n',
   'shelf.checkWhatItRead': 'Comprueba lo que ha le\u00eddo',
   'shelf.step1': '1 · La foto',
@@ -632,7 +633,7 @@ export default {
   'shelf.piecesNote':
     'Pásale estos recortes a una IA junto con el prompt de abajo y pídele que escriba la transcripción.',
   'shelf.piecesNote.how':
-    'La foto se recorta porque una estantería entera en una sola imagen queda demasiado pequeña para leerse. Cada recorte conserva la resolución del original, y se solapan, así que un libro que cae en una junta aparece entero en alguno.',
+    'Pulsa Descartar en cualquier recorte sin lomos. Pulsa Guardar para conservar un recorte como imagen, o Guardar todas las fotos en el paso cuatro para todos.',
   'shelf.grid': 'Cuadrícula · {cols} × {rows}',
   'shelf.lessAcross': 'Quitar columna',
   'shelf.moreAcross': 'A\u00f1adir columna',
@@ -640,7 +641,7 @@ export default {
   'shelf.moreDown': 'A\u00f1adir fila',
   'shelf.gridNote': 'Trata de tener unos pocos lomos enteros en cada recorte.',
   'shelf.gridNote.how':
-    'Una estanter\u00eda ancha necesita varias columnas; un primer plano de tres libros necesita un solo recorte. Las filas son las que parten un t\u00edtulo por la mitad, as\u00ed que a\u00f1ade una solo cuando la foto muestre de verdad baldas una encima de otra.',
+    'Pulsa A\u00f1adir columna cuando un recorte tenga m\u00e1s de unos pocos lomos. Pulsa A\u00f1adir fila solo donde la foto muestre una balda encima de otra.',
   'shelf.backToSuggested': 'volver a la sugerida de {cols}×{rows}',
   'shelf.reading': 'leyendo los lomos…',
   'shelf.needsKey': 'Guarda una clave en el recuadro de servicio de IA, arriba, para leerlos aqu\u00ed.',
@@ -666,7 +667,7 @@ export default {
   'shelf.bringNote':
     'Lee los recortes en cualquier sesión de IA con el prompt de arriba y trae aquí el JSON: suelta el archivo o pega la respuesta.',
   'shelf.bringNote.how':
-    'Esta es la vía que no necesita clave: la lectura ocurre donde ya tengas una sesión de IA, y LibrAPP solo recoge el resultado. Un archivo con un libro sin título o con un valor de confianza desconocido se rechaza aquí, no se importa.',
+    'Pide a la sesión de IA que responda solo con el JSON. Guarda la respuesta como archivo .json y suéltalo en la caja, o cópiala en el recuadro de abajo y pulsa Usar este texto.',
   'shelf.dropTranscription': 'Suelta aquí la transcripción',
   'shelf.dropTranscriptionHint': 'el archivo JSON que escribió el modelo',
   'shelf.pasteTranscription': 'O pega aqu\u00ed la respuesta',

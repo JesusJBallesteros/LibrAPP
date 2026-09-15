@@ -18,6 +18,7 @@ import promptText from '../../../prompts/ingest-shelf.md?raw'
 import DemoWarning from '../components/DemoWarning.jsx'
 import TellMeHow from '../components/TellMeHow.jsx'
 import StepHead from '../components/StepHead.jsx'
+import { InfoHeading } from '../components/Info.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
 import { useT } from '../i18n/index.jsx'
 
@@ -542,16 +543,28 @@ export default function Shelf({ lib, onOwl }) {
           <p style={{ marginTop: 8 }}>{t('shelf.stepThree.note')}</p>
 
             <div className="sunk-panel" style={{ marginTop: 12 }}>
-              <h3 className="panel-head">{t('shelf.extras')}</h3>
-              <p className="tiny faint" style={{ margin: '6px 0 10px' }}>{t('shelf.extrasNote')}</p>
+              <InfoHeading
+                className="panel-head"
+                title={t('shelf.extras')}
+                label={t('common.moreAbout', { what: t('shelf.extras') })}
+              >
+                <p>{t('shelf.extrasNote')}</p>
+                <p>{t('shelf.noCover')}</p>
+              </InfoHeading>
 
               {['read', 'recalled'].map((kind) => (
-                <div key={kind} style={{ marginTop: kind === 'recalled' ? 14 : 0 }}>
-                  <span className="tiny muted">{t(`shelf.extras.${kind}`)}</span>
-                  {kind === 'recalled' && (
-                    <p className="tiny faint" style={{ margin: '4px 0 0' }}>
-                      {t('shelf.extras.recalledWarning')}
-                    </p>
+                <div key={kind} style={{ marginTop: 14 }}>
+                  {kind === 'recalled' ? (
+                    <InfoHeading
+                      as="span"
+                      className="tiny muted"
+                      title={t('shelf.extras.recalled')}
+                      label={t('common.moreAbout', { what: t('shelf.extras.recalled') })}
+                    >
+                      <p>{t('shelf.extras.recalledWarning')}</p>
+                    </InfoHeading>
+                  ) : (
+                    <span className="tiny muted">{t(`shelf.extras.${kind}`)}</span>
                   )}
                   <div style={{ marginTop: 6 }}>
                     {EXTRAS.filter((extra) => extra.kind === kind).map((extra) => (
@@ -567,8 +580,6 @@ export default function Shelf({ lib, onOwl }) {
                   </div>
                 </div>
               ))}
-
-              <p className="tiny faint" style={{ margin: '12px 0 0' }}>{t('shelf.noCover')}</p>
             </div>
         </section>
       )}

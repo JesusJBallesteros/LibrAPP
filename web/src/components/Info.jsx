@@ -28,6 +28,27 @@ export function InfoMark({ disclosure, label, small = false }) {
   )
 }
 
+/**
+ * A heading with its i beside it, and the paragraphs the i opens below.
+ *
+ * The class goes on the row, so a section heading keeps its rule and a panel
+ * heading keeps its size. `aside` is anything that sits at the far end of the
+ * row, such as a count.
+ */
+export function InfoHeading({ as: Tag = 'h3', className = '', title, label, aside, children }) {
+  const disclosure = useDisclosure()
+  return (
+    <>
+      <div className={`${className} info-heading`}>
+        <Tag>{title}</Tag>
+        <InfoMark disclosure={disclosure} label={label} small />
+        {aside && <span className="info-heading-aside">{aside}</span>}
+      </div>
+      <InfoBlock disclosure={disclosure}>{children}</InfoBlock>
+    </>
+  )
+}
+
 export function InfoBlock({ disclosure, children }) {
   if (!disclosure.open) return null
   return (

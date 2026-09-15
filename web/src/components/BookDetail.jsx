@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { byline, callNumber, readState, stillToRecord } from '../lib.js'
 import { useT } from '../i18n/index.jsx'
 import Overlay from './Overlay.jsx'
@@ -52,7 +53,8 @@ export default function BookDetail({ book, authors, onClose, onEdit, onRemove, o
     // before anything else on the panel.
     <Overlay onClose={onClose} label={t('book.panelFor', { title: book.title })}>
         <button className="detail-close" onClick={onClose}>
-          {t('common.close')} ✕
+          {t('common.close')}
+          <X aria-hidden="true" focusable="false" />
         </button>
 
         {/* The one decorated surface in the app: a catalog card, the way a

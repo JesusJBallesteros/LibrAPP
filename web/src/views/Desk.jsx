@@ -16,6 +16,7 @@ import Ring from '../components/Ring.jsx'
 import BookWall from '../components/BookWall.jsx'
 import KeptAnswers from '../components/KeptAnswers.jsx'
 import ApiKeyBox from '../components/ApiKeyBox.jsx'
+import { InfoHeading } from '../components/Info.jsx'
 
 // Imported under another name: `ask` is already the state holding which
 // prompt is selected, and the local binding silently shadows the import.
@@ -474,8 +475,13 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
               largest wedge becomes "everything else". The cloud degrades into
               a smaller cloud instead of into one meaningless slice. */}
           <section className="desk-section">
-            <h3 className="section-head">{t('desk.themes')}</h3>
-            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.themesNote')}</p>
+            <InfoHeading
+              className="section-head"
+              title={t('desk.themes')}
+              label={t('common.moreAbout', { what: t('desk.themes') })}
+            >
+              <p>{t('desk.themesNote')}</p>
+            </InfoHeading>
             <WordCloud
               books={catalog.books}
               least={3}
@@ -484,8 +490,13 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
           </section>
 
           <section className="desk-section">
-            <h3 className="section-head">{t('desk.madeOf')}</h3>
-            <p className="tiny faint" style={{ margin: '6px 0 12px' }}>{t('desk.madeOfNote')}</p>
+            <InfoHeading
+              className="section-head"
+              title={t('desk.madeOf')}
+              label={t('common.moreAbout', { what: t('desk.madeOf') })}
+            >
+              <p>{t('desk.madeOfNote')}</p>
+            </InfoHeading>
             <WordCloud
               books={catalog.books}
               kind="genre"
@@ -497,7 +508,16 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
 
         <div>
           <section className="ask-panel">
-            <p className="eyebrow">{t('desk.askEyebrow')}</p>
+            <InfoHeading
+              as="p"
+              className="eyebrow"
+              title={t('desk.askEyebrow')}
+              label={t('common.moreAbout', { what: t('desk.askEyebrow') })}
+            >
+              <p>
+                {keyStatus?.usable ? t('desk.withKey') : t('desk.withoutKey')} {t('desk.promptsNote')}
+              </p>
+            </InfoHeading>
             {/* Tabs rather than a segmented control: the two are alternative
                 questions to put, not a setting being switched. */}
             <Ring
@@ -666,7 +686,7 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             )}
 
             {written && !proposed && (
-              <div className="notice good" style={{ marginTop: 16 }}>
+              <div className="saved-card" role="status" style={{ marginTop: 16 }}>
                 <p className="tiny">
                   <strong>{t('desk.fill.written', { n: written.books })}</strong>
                 </p>
@@ -712,24 +732,22 @@ export default function Desk({ catalog, onGo, onOwl, lib }) {
             <div style={{ marginTop: 16 }}>
               <ApiKeyBox what={t('desk.whatItIsFor')} onChange={setKeyStatus} />
             </div>
-
-            <div className="notice" style={{ marginTop: 14 }}>
-              <p className="tiny">
-                {keyStatus?.usable ? t('desk.withKey') : t('desk.withoutKey')}{' '}
-                {t('desk.promptsNote')}
-              </p>
-            </div>
           </section>
 
           {context && (
             <section className="desk-section">
-              <div className="section-head spread">
-                <h3>{t('desk.profile')}</h3>
-                <span className="tabular tiny faint">
-                  {t('desk.characters', { n: context.length.toLocaleString() })}
-                </span>
-              </div>
-              <p className="tiny muted" style={{ marginTop: 6 }}>{t('desk.profileNote')}</p>
+              <InfoHeading
+                className="section-head"
+                title={t('desk.profile')}
+                label={t('common.moreAbout', { what: t('desk.profile') })}
+                aside={
+                  <span className="tabular tiny faint">
+                    {t('desk.characters', { n: context.length.toLocaleString() })}
+                  </span>
+                }
+              >
+                <p>{t('desk.profileNote')}</p>
+              </InfoHeading>
               <pre className="snippet" style={{ marginTop: 10, maxHeight: 300 }}>
                 {context}
               </pre>

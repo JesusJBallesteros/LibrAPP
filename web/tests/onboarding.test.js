@@ -103,10 +103,29 @@ describe('the shell', () => {
     expect(app).toContain('data-view={view}')
   })
 
-  it('draws the four ways in as tabs over one page', () => {
+  it('draws the four ways in on the ring the desk uses', () => {
     const add = read('views/Add.jsx')
     for (const id of ['shelf', 'list', 'barcode', 'kindle']) expect(add, id).toContain(`id: '${id}'`)
+    expect(add).toContain('<Ring')
     expect(app).toContain('<Add view={view} onGo={go}>')
+  })
+})
+
+// A Tell me how says how to do the thing beside it. The reasons belong on About
+// and in the docs.
+describe('the tell me how texts', () => {
+  const en = read('i18n/en.js')
+  const how = [...en.matchAll(/'(shelf\.[\w.]*\.how)':\s*'([^']*)'/g)]
+
+  it('are all found', () => {
+    expect(how.length).toBe(5)
+  })
+
+  it('give steps, not reasons', () => {
+    for (const [, key, text] of how) {
+      expect(text, key).not.toMatch(/\bbecause\b|\bso that\b|\bdecides\b/)
+      expect(text.length, key).toBeLessThan(200)
+    }
   })
 })
 

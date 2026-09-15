@@ -173,6 +173,7 @@ export default {
   'common.toTop': 'Back to the top',
   'common.close': 'Close',
   'common.tellMeHow': 'Tell me how',
+  'common.moreAbout': 'More about {what}',
   'common.dismiss': 'Dismiss',
   'common.edit': 'Edit',
   'common.remove': 'Remove',
@@ -512,7 +513,7 @@ export default {
 
   'shelf.intro': 'Photograph the shelf straight on, at your camera’s full resolution.',
   'shelf.intro.how':
-    'Resolution decides how much of the lettering can be read, so a larger photograph produces a better transcription. Shooting straight on keeps the titles square to the camera; a shelf photographed at an angle puts the far end out of focus and out of shape.',
+    'Stand square to the bookcase and fill the frame with it. Take the picture with the camera at its highest resolution, not a screenshot or a copy sent through a messaging app.',
   'shelf.whatItIsFor': 'reading a shelf',
   'shelf.eyebrow': 'Accessions',
   'list.listsFound': '{n} lists found',
@@ -630,7 +631,7 @@ export default {
   'shelf.stepFour': 'Step four · Read the spines',
   'shelf.stepFour.note': 'Read the pieces with a key, or take them to an AI session yourself.',
   'shelf.stepFour.how':
-    'With a key stored, LibrAPP sends the pieces to the service you chose and brings the answer back here. Without one, nothing is sent: copy the prompt, save the pieces, and paste both into whatever AI session you already use. Either way the reading is the same, and either way you see the books before any of them are kept.',
+    'With a key: press Read these pieces for me. Without one: press Copy the prompt and Save all pieces, give both to an AI session, then bring its reply to step five.',
   'shelf.stepFive': 'Step five · Bring a transcription back',
   'shelf.checkWhatItRead': 'Check what it read',
   'shelf.step1': '1 · The photograph',
@@ -644,7 +645,7 @@ export default {
   'shelf.piecesNote':
     'Give these pieces to an AI along with the prompt below, and have it write the transcription.',
   'shelf.piecesNote.how':
-    'The photograph is cut up because a whole bookcase in one image is too small to read. Each piece keeps the resolution of the original, and they overlap, so a book falling on a seam is whole in one of them.',
+    'Press Discard on any piece with no spines in it. Press Save to keep one piece as an image, or Save all pieces in step four for the lot.',
   'shelf.grid': 'Grid · {cols} across × {rows} down',
   'shelf.lessAcross': 'Remove column',
   'shelf.moreAcross': 'Add column',
@@ -652,7 +653,7 @@ export default {
   'shelf.moreDown': 'Add row',
   'shelf.gridNote': 'Aim for a handful of whole spines in each piece.',
   'shelf.gridNote.how':
-    'A wide bookcase needs several columns; a close-up of three books needs one piece and no more. Rows are what split a title in half, so add one only where the photograph really shows shelves stacked above one another.',
+    'Press Add column when a piece holds more than a handful of spines. Press Add row only where the photograph shows one shelf above another.',
   'shelf.backToSuggested': 'back to the suggested {cols}×{rows}',
   'shelf.reading': 'reading the spines…',
   'shelf.needsKey': 'Store a key in the AI service box at the top of this page to read them here.',
@@ -678,7 +679,7 @@ export default {
   'shelf.bringNote':
     'Read the pieces in any AI session using the prompt above, then bring the JSON back here: drop the file, or paste the reply.',
   'shelf.bringNote.how':
-    'This is the route that needs no key: the reading happens wherever you already have an AI session, and LibrAPP only takes the result. A file holding an untitled book or an unknown confidence value is refused here rather than imported.',
+    'Ask the AI session to answer with the JSON only. Save the answer as a .json file and drop it in the box, or copy it into the box below and press Use this text.',
   'shelf.dropTranscription': 'Drop the transcription',
   'shelf.dropTranscriptionHint': 'the JSON file the model wrote',
   'shelf.pasteTranscription': 'Or paste the reply here',
