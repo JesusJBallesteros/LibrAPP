@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Download, Smartphone } from 'lucide-react'
 import { useT } from '../i18n/index.jsx'
 
 /**
@@ -62,14 +63,18 @@ export default function OnYourPhone({ onGo }) {
   const { canInstall, done, install } = useInstall()
 
   return (
-    <section className="landing-next">
-      <h2>{t('phone.title')}</h2>
+    <section className="on-your-phone">
+      <h2 className="section-label">
+        <Smartphone aria-hidden="true" focusable="false" />
+        {t('phone.title')}
+      </h2>
       <p className="muted tiny">{t('phone.body')}</p>
 
       {done ? (
         <p className="tiny" style={{ marginTop: 12 }}>{t('phone.already')}</p>
       ) : canInstall ? (
-        <button className="btn primary" style={{ marginTop: 12 }} onClick={install}>
+        <button className="btn primary with-icon" style={{ marginTop: 12 }} onClick={install}>
+          <Download aria-hidden="true" focusable="false" />
           {t('phone.install')}
         </button>
       ) : null}

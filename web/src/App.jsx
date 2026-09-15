@@ -211,31 +211,36 @@ export default function App() {
     )
   }
 
-  if (view === 'home' || lib.status !== 'ready') {
+  const landing = {
+    onGo: go,
+    hasCatalog: Boolean(counts?.books),
+    // The number, not a sentence. The wording and its plural belong to the
+    // string that shows it, which is the only way the Spanish one can agree
+    // with itself.
+    bookCount: counts?.books ?? 0,
+    browserUsable: capabilities.usable,
+    startHere,
+    lib,
+    onDemo: async () => {
+      await lib.useDemo()
+      // Straight there rather than through go(). That reads lib.status from
+      // the render this closure was built in, which still says no library is
+      // open, so it files the destination as pending and returns. Nothing
+      // collects it: the pending view is only read while the storage question
+      // is on screen, and the demo never asks it. The books loaded and the page
+      // did not move.
+      setPendingView(null)
+      setView('catalog')
+    },
+  }
+
+  // Before a library is open there is nothing for the shell to hold, so the
+  // front door is a page of its own. Once one is open, Start is inside the
+  // shell like every other place.
+  if (lib.status !== 'ready') {
     return (
       <>
-        <Landing
-          onGo={go}
-          hasCatalog={Boolean(counts?.books)}
-          // The number, not a sentence. The wording and its plural belong to
-          // the string that shows it, which is the only way the Spanish one can
-          // agree with itself.
-          bookCount={counts?.books ?? 0}
-          browserUsable={capabilities.usable}
-          startHere={startHere}
-          lib={lib}
-          onDemo={async () => {
-            await lib.useDemo()
-            // Straight there rather than through go(). That reads lib.status
-            // from the render this closure was built in, which still says no
-            // library is open, so it files the destination as pending and
-            // returns. Nothing collects it: the pending view is only read while
-            // the storage question is on screen, and the demo never asks it. The
-            // books loaded and the page did not move.
-            setPendingView(null)
-            setView('catalog')
-          }}
-        />
+        <Landing {...landing} />
         <ToTop />
 
         <Librarian
@@ -257,7 +262,9 @@ export default function App() {
   const inAdd = ADD_VIEWS.includes(view)
 
   const page =
-    view === 'catalog' ? (
+    view === 'home' ? (
+      <Landing {...landing} inShell />
+    ) : view === 'catalog' ? (
           <Catalog catalog={lib.catalog} onGo={go} lib={lib} focus={focus} />
         ) : view === 'shelf' ? (
           <Shelf lib={lib} onOwl={setOwlEvent} />

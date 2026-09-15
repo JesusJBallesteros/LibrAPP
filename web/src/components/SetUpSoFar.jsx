@@ -59,7 +59,7 @@ export default function SetUpSoFar({ lib, bookCount, onGo }) {
 
   return (
     <section className="set-up-so-far">
-      <h2 className="section-head">{t('setUp.title')}</h2>
+      <h2 className="section-label">{t('setUp.title')}</h2>
       <ul>
         {rows.map((row) => (
           <li key={row.id} className={row.done ? 'done' : undefined}>
@@ -69,7 +69,7 @@ export default function SetUpSoFar({ lib, bookCount, onGo }) {
             <span className="what">{t(`setUp.${row.id}`)}</span>
             <span className="said">{row.said}</span>
             {!row.done && (
-              <button className="btn link" onClick={row.go}>
+              <button className="btn small" onClick={row.go}>
                 {t(`setUp.${row.id}.action`)}
               </button>
             )}

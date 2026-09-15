@@ -10,7 +10,7 @@ const read = (path) => readFileSync(new URL(`../src/${path}`, import.meta.url), 
 
 describe('opening the demo', () => {
   const app = read('App.jsx')
-  const onDemo = app.slice(app.indexOf('onDemo={'), app.indexOf('onDemo={') + 900)
+  const onDemo = app.slice(app.indexOf('onDemo: async'), app.indexOf('onDemo: async') + 900)
 
   it('does not route through the guard that was swallowing it', () => {
     // go() reads lib.status from the render its closure was built in. Straight

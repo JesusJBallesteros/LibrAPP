@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Camera, ChevronRight, Languages, Library, ScanLine, Table, Tablet, Upload } from 'lucide-react'
 import ThemeToggle from '../components/ThemeToggle.jsx'
 import OnYourPhone from '../components/OnYourPhone.jsx'
 import SetUpSoFar from '../components/SetUpSoFar.jsx'
@@ -16,39 +17,45 @@ const DEMO_BOOKS = demoSize()
  * is, what it needs, and then offers the ways in.
  *
  * Storage is still required before anything can be saved, but it is no longer
- * the opening question. Each route sets it up at the point where it is needed,
- * and the door that only chose storage is gone: it was the one technical
- * decision on the page, it was first, and the line under the doors already
- * promised that any of the others would do it anyway.
+ * the opening question. Each route sets it up at the point where it is needed.
+ *
+ * Two places draw it. Before a library is open it is a page of its own, with
+ * the name, the language and the theme at the top, since there is no shell to
+ * carry them. Once a library is open it is Start, inside the shell, which
+ * already carries the name and the theme; the language moves to the foot.
  *
  * What is offered depends on whether there is anything here yet. Somebody
- * arriving for the first time has three ways in and sees three. The other two
- * are for a reader who has been here before, and one of them used to render as
- * a disabled button saying there was nothing in it, which is a poor third thing
- * to meet on a front page.
+ * arriving for the first time has four ways in and sees four. The other two
+ * are for a reader who has been here before.
  */
 
 const WAYS_IN = [
-  { id: 'photo', view: 'shelf' },
-  { id: 'list', view: 'list' },
-  { id: 'barcode', view: 'barcode' },
+  { id: 'photo', view: 'shelf', Icon: Camera },
+  { id: 'list', view: 'list', Icon: Table },
+  { id: 'barcode', view: 'barcode', Icon: ScanLine },
   // Not a way of reading books into the app but a way of getting a list out of
-  // somewhere that has no export button, which is the question people arrive
-  // with and the one the other three do not answer.
-  { id: 'kindle', view: 'kindle' },
+  // somewhere that has no export button.
+  { id: 'kindle', view: 'kindle', Icon: Tablet },
 ]
 
-const COMING_BACK = [
-  { id: 'browse', view: 'catalog', primary: true },
-  { id: 'import', view: 'storage', focus: 'import' },
-]
+// First, because a reader who has a catalog came to open it.
+const BROWSE = { id: 'browse', view: 'catalog', primary: true, Icon: Library }
+const IMPORT = { id: 'import', view: 'storage', focus: 'import', Icon: Upload }
 
-export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, onDemo, startHere, lib }) {
+export default function Landing({
+  onGo,
+  hasCatalog,
+  bookCount,
+  browserUsable,
+  onDemo,
+  startHere,
+  lib,
+  inShell = false,
+}) {
   const { t, language, setLanguage } = useT()
   const start = useRef(null)
 
-  // Coming back first, because a reader who has a catalog came to open it.
-  const doors = hasCatalog ? [...COMING_BACK, ...WAYS_IN] : WAYS_IN
+  const doors = hasCatalog ? [BROWSE, ...WAYS_IN, IMPORT] : WAYS_IN
 
   // Arrived from the demo having decided to build one. Put the ways in on
   // screen and hand focus to them, rather than dropping the reader at the top
@@ -59,130 +66,142 @@ export default function Landing({ onGo, hasCatalog, bookCount, browserUsable, on
     start.current.querySelector('h2')?.focus()
   }, [startHere])
 
-  return (
-    <div className="landing">
-      <div className="landing-inner landing-home">
-        <header className="landing-head">
-          <div className="spread" style={{ alignItems: 'flex-start', gap: 16 }}>
-            <h1 className="landing-brand">
-              Libr<em>APP</em>
-            </h1>
-            {/* Language and theme are the two choices that apply before
-                anything has been set up, so both belong on the front door. */}
-            <div className="landing-prefs">
-              <label className="field landing-lang">
-                <span className="tiny">{t('landing.language')}</span>
-                <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                  {LANGUAGES.map((l) => (
-                    <option key={l.code} value={l.code}>
-                      {l.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field landing-theme">
-                <span className="tiny">{t('theme.label')}</span>
-                <ThemeToggle />
-              </label>
-            </div>
+  const languagePicker = (className) => (
+    <label className={className}>
+      <span className="tiny">{t('landing.language')}</span>
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        {LANGUAGES.map((l) => (
+          <option key={l.code} value={l.code}>
+            {l.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+
+  const page = (
+    <>
+      {!inShell && (
+        <div className="landing-head-row">
+          <h1 className="landing-brand">
+            Libr<em>APP</em>
+          </h1>
+          {/* Language and theme are the two choices that apply before anything
+              has been set up, so both belong on the front door. */}
+          <div className="landing-prefs">
+            {languagePicker('field landing-lang')}
+            <label className="field landing-theme">
+              <span className="tiny">{t('theme.label')}</span>
+              <ThemeToggle />
+            </label>
           </div>
+        </div>
+      )}
 
-          <span className="brand-rule" aria-hidden="true" />
-          <p className="eyebrow">{t('app.strapline')}</p>
-
-          <p className="landing-tagline">{t('landing.tagline')}</p>
-          {/* The first thing offered, and the only one that asks for nothing.
-              Everything below wants a photograph or a spreadsheet the visitor
-              has to go and find; somebody deciding whether to bother should not
-              have to read to the bottom of the page to find the way in that
-              costs them nothing. Gone once there is a real catalog. */}
-          {!hasCatalog && onDemo && (
-            <div className="landing-demo">
-              <button className="btn primary" onClick={onDemo}>
-                {t('landing.demo.action', { n: DEMO_BOOKS })}
-              </button>
-            </div>
-          )}
-        </header>
-
-        {!browserUsable && (
-          <div className="notice bad">
-            <p className="tiny">{t('landing.browserWarning')}</p>
+      <header className="start-head">
+        <p className="eyebrow">{t('app.strapline')}</p>
+        <h2 className="start-title">{t('landing.tagline')}</h2>
+        <hr className="start-rule" />
+        {/* The one way in that asks for nothing. Gone once there is a real
+            catalog. */}
+        {!hasCatalog && onDemo && (
+          <div className="landing-demo">
+            <button className="btn primary" onClick={onDemo}>
+              {t('landing.demo.action', { n: DEMO_BOOKS })}
+            </button>
           </div>
         )}
+      </header>
 
-        <section className="landing-start" ref={start}>
-          <h2 tabIndex={-1}>{t('landing.start')}</h2>
+      {!browserUsable && (
+        <div className="notice bad">
+          <p className="tiny">{t('landing.browserWarning')}</p>
+        </div>
+      )}
 
-          <div className="landing-options">
-            {doors.map((option) => (
-              <button
-                key={option.id}
-                className={`landing-option${option.primary ? ' primary' : ''}`}
-                onClick={() => onGo(option.view, option.focus)}
-              >
-                <span className="landing-option-text">
-                  <strong>{t(`landing.option.${option.id}`)}</strong>
-                  <span className="tiny faint">
-                    {option.id === 'browse' && bookCount
-                      ? t('landing.option.browse.count', { n: bookCount })
-                      : t(`landing.option.${option.id}.hint`)}
-                  </span>
+      <section className="landing-start" ref={start}>
+        <h2 className="section-label" tabIndex={-1}>
+          {t('landing.start')}
+        </h2>
+
+        <div className="landing-options">
+          {doors.map(({ id, view, focus, primary, Icon }) => (
+            <button
+              key={id}
+              className={`landing-option${primary ? ' primary' : ''}`}
+              onClick={() => onGo(view, focus)}
+            >
+              <Icon className="landing-option-icon" aria-hidden="true" focusable="false" />
+              <span className="landing-option-text">
+                <strong>{t(`landing.option.${id}`)}</strong>
+                <span className="tiny faint">
+                  {id === 'browse' && bookCount
+                    ? t('landing.option.browse.count', { n: bookCount })
+                    : t(`landing.option.${id}.hint`)}
                 </span>
-                <span className="landing-option-go" aria-hidden="true">
-                  →
-                </span>
-              </button>
-            ))}
+              </span>
+              <ChevronRight className="landing-option-go" aria-hidden="true" focusable="false" />
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <SetUpSoFar lib={lib} bookCount={bookCount} onGo={onGo} />
+
+      <OnYourPhone onGo={onGo} />
+
+      <section className="landing-terms">
+        {inShell ? (
+          <div className="start-lang">
+            <Languages aria-hidden="true" focusable="false" />
+            {languagePicker('landing-lang')}
           </div>
-
-        </section>
-
-        <SetUpSoFar lib={lib} bookCount={bookCount} onGo={onGo} />
-
-        <OnYourPhone onGo={onGo} />
-
-        <section className="landing-terms">
+        ) : (
           <p className="tiny faint">
             {t('landing.storageFirst')}{' '}
             <button className="btn link" onClick={() => onGo('storage')}>
               {t('landing.option.storage')}
             </button>
           </p>
-          <p className="tiny faint" style={{ marginTop: 10 }}>
-            <button className="btn link" onClick={() => onGo('about', 'privacy')}>
-              {t('landing.privacyLink')}
-            </button>
-            <button className="btn link" onClick={() => onGo('about', 'licence')}>
-              {t('landing.licenceName')}
-            </button>
-          </p>
-        </section>
+        )}
+        <p className="tiny faint" style={{ marginTop: 10 }}>
+          <button className="btn link" onClick={() => onGo('about', 'privacy')}>
+            {t('landing.privacyLink')}
+          </button>
+          <button className="btn link" onClick={() => onGo('about', 'licence')}>
+            {t('landing.licenceName')}
+          </button>
+        </p>
+      </section>
 
-        <footer className="landing-foot">
-          {/* Privacy and Licence are named above, in the words of the thing
-              they lead to, and both landed on the same two sections as these
-              did. */}
-          <nav className="foot-links tiny">
-            <button className="btn link tiny" onClick={() => onGo('about', 'what')}>
-              {t('foot.about')}
-            </button>
-            <button className="btn link tiny" onClick={() => onGo('about', 'ai')}>
-              {t('foot.ai')}
-            </button>
-            <a href="https://github.com/JesusJBallesteros/LibrAPP" target="_blank" rel="noreferrer">
-              {t('foot.source')}
-            </a>
-            <a
-              href="https://github.com/JesusJBallesteros/LibrAPP/issues"
-              target="_blank"
-              rel="noreferrer"
-            >
-              {t('foot.report')}
-            </a>
-          </nav>
-        </footer>
-      </div>
+      <footer className="landing-foot">
+        <nav className="foot-links tiny">
+          <button className="btn link tiny" onClick={() => onGo('about', 'what')}>
+            {t('foot.about')}
+          </button>
+          <button className="btn link tiny" onClick={() => onGo('about', 'ai')}>
+            {t('foot.ai')}
+          </button>
+          <a href="https://github.com/JesusJBallesteros/LibrAPP" target="_blank" rel="noreferrer">
+            {t('foot.source')}
+          </a>
+          <a
+            href="https://github.com/JesusJBallesteros/LibrAPP/issues"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {t('foot.report')}
+          </a>
+        </nav>
+      </footer>
+    </>
+  )
+
+  if (inShell) return <div className="view start">{page}</div>
+
+  return (
+    <div className="landing">
+      <div className="landing-inner landing-home">{page}</div>
     </div>
   )
 }
