@@ -13,6 +13,7 @@ import {
 import { PROVIDERS, providerById } from '../ai/providers.js'
 import { listModels } from '../ai/model.js'
 import { useT } from '../i18n/index.jsx'
+import { InfoBlock, InfoMark, useDisclosure } from './Info.jsx'
 
 /**
  * The one place a service is chosen and a key is entered, and the one place
@@ -24,9 +25,16 @@ import { useT } from '../i18n/index.jsx'
  *
  * Switching a key off is separate from deleting it. They answer different
  * questions: "not now" and "not ever".
+ *
+ * Folded to one line until it is opened, and foldable again at any time. Open,
+ * the box stood over the steps of the page it sits on and read as one of them,
+ * when a key is optional on both pages that use it. Folded, the line still says
+ * whether a key is in use.
  */
 export default function ApiKeyBox({ what, onChange }) {
   const { t } = useT()
+  const [open, setOpen] = useState(false)
+  const benefits = useDisclosure()
   const [choice, setChoice] = useState(null)
   const [stocked, setStocked] = useState([])
   const [draft, setDraft] = useState('')
@@ -104,6 +112,26 @@ export default function ApiKeyBox({ what, onChange }) {
       setUnfamiliar(false)
     })
 
+  if (!open) {
+    return (
+      <div className="key-compact">
+        <div className="key-summary">
+          <button className="btn link key-open" aria-expanded="false" onClick={() => setOpen(true)}>
+            {state === 'active'
+              ? t('key.compact.active', { service: provider.label })
+              : state === 'off'
+                ? t('key.compact.off', { service: provider.label })
+                : t('key.compact')}
+          </button>
+          <InfoMark disclosure={benefits} label={t('key.benefitsLabel')} small />
+        </div>
+        <InfoBlock disclosure={benefits}>
+          <p>{t('key.benefits')}</p>
+        </InfoBlock>
+      </div>
+    )
+  }
+
   const field = {
     border: '1px solid var(--rule-strong)',
     background: 'var(--paper)',
@@ -118,12 +146,17 @@ export default function ApiKeyBox({ what, onChange }) {
     <div className="sunk-panel">
       <div className="spread">
         <p className="eyebrow">{t('key.title')}</p>
-        <span className={`tag ${state === 'active' ? 'read' : state === 'off' ? 'unread' : 'unknown'}`}>
-          {state === 'active'
-            ? t('key.inUse')
-            : state === 'off'
-              ? t('key.switchedOff')
-              : t('key.absent')}
+        <span className="row" style={{ gap: 10 }}>
+          <span className={`tag ${state === 'active' ? 'read' : state === 'off' ? 'unread' : 'unknown'}`}>
+            {state === 'active'
+              ? t('key.inUse')
+              : state === 'off'
+                ? t('key.switchedOff')
+                : t('key.absent')}
+          </span>
+          <button className="btn link tiny key-hide" aria-expanded="true" onClick={() => setOpen(false)}>
+            {t('key.hide')}
+          </button>
         </span>
       </div>
 

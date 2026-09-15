@@ -2117,6 +2117,13 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
 @media (min-width: 900px) { .storage-pair { grid-template-columns: 1fr 1fr; } }
 .storage-pair > .desk-section + .desk-section { margin-top: 0; }
 
+/* The key box folded to one line, with its i beside it. */
+.key-compact { margin: 14px 0; }
+.key-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.btn.link.key-open { padding: 4px 0; font-size: 13.5px; }
+.key-compact .info-block { margin-top: 8px; }
+.btn.link.key-hide { padding: 0; }
+
 /* The colour schemes: a row of choices, each with a strip of its own colours. */
 .scheme-choices { display: flex; flex-wrap: wrap; gap: 10px; }
 .scheme-choice {

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### The key box, folded
+
+On the photograph page and at the desk the AI key box starts as one line, *If
+you have an API key…*, with an i beside it saying what a key adds. Pressing the
+line opens the box, and **Hide** inside it folds it again. The line says which
+service is in use when a key is stored.
+
 ### Colours
 
 Stacks has a choice of colours: Walnut, which is the palette until now, Slate,
