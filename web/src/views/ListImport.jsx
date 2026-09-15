@@ -4,6 +4,7 @@ import { FIELDS, detectShape, loadTable, missingFields, readXlsx } from '../inge
 import { stemOf } from '../store/library.js'
 import DemoWarning from '../components/DemoWarning.jsx'
 import { KeepSummary, KeepToggle, useKeepSet } from '../components/Keep.jsx'
+import StepHead from '../components/StepHead.jsx'
 import FillFromIsbn from '../components/FillFromIsbn.jsx'
 import FillFromSearch from '../components/FillFromSearch.jsx'
 import { useT } from '../i18n/index.jsx'
@@ -274,7 +275,7 @@ export default function ListImport({ lib, onGo, onOwl }) {
 
       {/* Step one --------------------------------------------------------- */}
       <section className="shelf-step" style={{ marginTop: 28 }}>
-        <h3 className="step-head">{t('list.stepOne')}</h3>
+        <StepHead n={1} text={t('list.stepOne')} state={pending || result ? 'done' : 'now'} />
         <p style={{ marginTop: 8 }}>{t('list.stepOne.note')}</p>
         <ul className="tiny faint" style={{ margin: '6px 0 0', paddingLeft: 18 }}>
           {['xlsx', 'csv'].map((kind) => (
@@ -314,7 +315,7 @@ export default function ListImport({ lib, onGo, onOwl }) {
           {/* Step two ----------------------------------------------------- */}
           <section className="shelf-step" style={{ marginTop: 34 }}>
             <div className="spread">
-              <h3 className="step-head">{t('list.stepTwo')}</h3>
+              <StepHead n={2} text={t('list.stepTwo')} state="done" />
               <span className="tabular tiny faint">{pending.file.name}</span>
             </div>
 
@@ -463,9 +464,11 @@ export default function ListImport({ lib, onGo, onOwl }) {
 
           {/* Step three --------------------------------------------------- */}
           <section className="shelf-step" style={{ marginTop: 34 }}>
-            <h3 className="step-head">
-              {rows ? t('list.stepThree', { n: rows.length }) : t('list.stepThreeWaiting')}
-            </h3>
+            <StepHead
+              n={3}
+              text={rows ? t('list.stepThree', { n: rows.length }) : t('list.stepThreeWaiting')}
+              state={rows ? 'done' : 'now'}
+            />
 
             {rowError ? (
               <div className="notice bad" role="alert" style={{ marginTop: 12 }}>
@@ -545,7 +548,7 @@ export default function ListImport({ lib, onGo, onOwl }) {
 
           {/* Step four ---------------------------------------------------- */}
           <section className="shelf-step" style={{ marginTop: 34 }}>
-            <h3 className="step-head">{t('list.stepFour')}</h3>
+            <StepHead n={4} text={t('list.stepFour')} state={rows ? 'now' : undefined} />
 
             <div className="import-controls" style={{ marginTop: 14 }}>
               <label className="field">
@@ -588,7 +591,7 @@ export default function ListImport({ lib, onGo, onOwl }) {
       )}
 
       {result && (
-        <div className="notice good">
+        <div className="saved-card" role="status">
           <p>
             <strong>{t('list.imported', { n: result.records })}</strong>{' '}
             {t('list.nowHolds', { n: result.counts.books })}
@@ -615,7 +618,7 @@ export default function ListImport({ lib, onGo, onOwl }) {
       {/* Step five ------------------------------------------------------- */}
       {(result?.codes?.length > 0 || result?.toSearch?.length > 0) && (
         <section className="shelf-step" style={{ marginTop: 34 }}>
-          <h3 className="step-head">{t('list.stepFive')}</h3>
+          <StepHead n={5} text={t('list.stepFive')} state="now" />
           {result.codes.length > 0 && (
             <FillFromIsbn lib={lib} codes={result.codes} format={result.format} />
           )}

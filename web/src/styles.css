@@ -236,25 +236,119 @@
   color: var(--ink);
 }
 
-/* The explanation, folded. Set as a link rather than a control with a box,
-   because it reveals a paragraph rather than doing anything. */
+/* The explanation, folded behind an encircled i with its words beside it, and
+   opened in place on the sunk ground with a tan rule. */
 .tell-me-how { margin-top: 8px; }
 .tell-me-how > summary {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   cursor: pointer;
-  color: var(--accent);
-  font-size: 12.5px;
-  text-decoration: underline;
+  list-style: none;
   padding: 4px 0;
+  font-size: 12.5px;
+  color: var(--ink-faint);
 }
 .tell-me-how > summary::marker { content: ''; }
+.tell-me-how > summary::-webkit-details-marker { display: none; }
+.tell-me-how > summary::before {
+  content: 'i';
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font: italic 400 12px/1 var(--serif);
+}
+.tell-me-how > summary:hover,
+.tell-me-how[open] > summary { color: var(--accent); }
 .tell-me-how-body {
-  margin-top: 4px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  background: var(--paper-sunk);
+  border-left: 2px solid var(--tan);
   color: var(--ink-soft);
   font-size: 13px;
   max-width: 64ch;
+  animation: infoIn .18s ease-out;
 }
 .tell-me-how-body p { margin: 0 0 8px; }
+.tell-me-how-body p:last-child { margin-bottom: 0; }
+
+/* A step's number in a circle: filled for the step being worked on, tinted
+   for one behind it, outlined for one ahead. */
+.step-head.numbered { display: flex; align-items: center; gap: 10px; }
+.step-num {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  font: 400 11.5px/1 var(--mono);
+  color: var(--ink-faint);
+}
+.step-head.now .step-num { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+.step-head.done .step-num { background: var(--accent-soft); border-color: var(--accent-soft); color: var(--accent); }
+
+/* Keep or discard, on every list an import proposes. */
+.keep-toggle {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--paper);
+  cursor: pointer;
+}
+.keep-toggle svg { width: 14px; height: 14px; }
+.keep-toggle.off { border-color: var(--control-line); background: transparent; color: var(--ink-faint); }
+.keep-toggle:disabled { opacity: .5; cursor: default; }
+
+/* One book a photograph proposed: the toggle, the book, how sure the read is. */
+.review-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.review-main { display: grid; flex: 1 1 auto; min-width: 0; }
+.review-main .title { font: 400 17px/1.3 var(--serif); overflow-wrap: anywhere; }
+.review-main .tiny.muted { font-size: 12.5px; color: var(--ink-soft); }
+.review-main .why { font-size: 12px; color: var(--ink-faint); }
+.conf {
+  flex: 0 0 auto;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-faint);
+}
+.conf.medium { color: var(--warn); }
+.conf.low { color: var(--bad); }
+
+/* What was just written, on the tinted ground the design gives a finished step. */
+.saved-card {
+  margin: 34px 0 0;
+  padding: 14px 16px;
+  border: 1px solid var(--tan);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  font-size: 13.5px;
+  color: var(--ink);
+}
+.saved-card p { margin: 0; }
+.saved-card p + p { margin-top: 4px; font-size: 12.5px; color: var(--ink-soft); }
+
+/* Inside Add the tabs already name the page, so its heading is smaller. */
+.add-tabs ~ .view .view-head h2 { font-size: 30px; }
 
 /* Numbers, filenames, costs and anything that should line up in a column. */
 .tabular { font-family: var(--mono); font-variant-numeric: tabular-nums; }
@@ -2364,7 +2458,7 @@ textarea.paste:focus { outline: none; border-color: var(--accent); }
    reflowed under the finger that pressed it would slide the next row into the
    place just tapped, and a discard that cannot be taken back is not a review,
    it is a deletion. */
-.discarded { opacity: .5; }
+.discarded { opacity: .62; }
 .discarded .title { text-decoration: line-through; }
 /* The control on the row is how the discard is undone, so it stays at full
    strength and unstruck. */
