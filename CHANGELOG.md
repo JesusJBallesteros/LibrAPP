@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.7.1
+
+The desk takes the full width between the rail and the holdings on a wide
+screen, as the catalog does. It was held to the same 820px column as the other
+pages and left the right of the screen empty. Its two columns now open when the
+desk itself has the room, measured on its own column rather than on the window.
+
 ## v2.7.0
 
 ### A new shell

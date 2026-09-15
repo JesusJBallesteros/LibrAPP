@@ -694,6 +694,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* The catalog takes the whole width between the rail and the holdings: a
    shelf is the one page that fills whatever room it is given. */
 .shell[data-view='catalog'] .main { max-width: none; }
+/* The desk is two columns of panels side by side, and the same goes for it. */
+.shell[data-view='desk'] .main { max-width: none; }
+.main { container: main / inline-size; }
 
 .search {
   display: flex;
@@ -1922,7 +1925,10 @@ pre.snippet {
 /* ----------------------------------------------------------------- desk -- */
 
 .desk-grid { display: grid; grid-template-columns: 1fr; gap: 34px; }
-@media (min-width: 1000px) { .desk-grid { grid-template-columns: 1.12fr .88fr; align-items: start; } }
+/* Two columns once the desk itself has the room, measured on the column it sits
+   in rather than on the window: the rail and the holdings take their share of a
+   wide screen first. */
+@container main (min-width: 860px) { .desk-grid { grid-template-columns: 1.12fr .88fr; align-items: start; } }
 
 /* Sections rather than boxes. The heading rule does the separating, which is
    what makes the page read as typeset rather than as a dashboard. */
