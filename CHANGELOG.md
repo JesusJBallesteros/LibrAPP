@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v2.7.2
 
 ### The key box, folded
 
