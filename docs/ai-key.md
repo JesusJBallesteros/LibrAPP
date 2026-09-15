@@ -47,7 +47,10 @@ reason a working key is refused.
 
 ### The three states
 
-The key box is in **Shelf picture** and on the **desk**, and always shows one of:
+The key box is in **Shelf picture** and on the **desk**. It starts folded to one
+line, *If you have an API key…*, with an **i** beside it saying what a key adds;
+pressing the line opens it, and **Hide** folds it again. The folded line names
+the service when a key is stored. Open, it always shows one of:
 
 | | |
 |---|---|

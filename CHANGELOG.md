@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.7.2
+
+### The key box, folded
+
+On the photograph page and at the desk the AI key box starts as one line, *If
+you have an API key…*, with an i beside it saying what a key adds. Pressing the
+line opens the box, and **Hide** inside it folds it again. The line says which
+service is in use when a key is stored.
+
+### Colours
+
+Stacks has a choice of colours: Walnut, which is the palette until now, Slate,
+Moss and Plum, or a colour of one's own. A scheme changes the accent, its tints,
+the spines and the genre chart, and leaves paper, ink and rules alone.
+
+Every scheme is walnut turned to the chosen hue, then moved lighter or darker
+until link text, filled buttons, the faintest text on a tint and every spine's
+lettering clear 4.5:1 again. The tests run the presets and a spread of picked
+colours, pure primaries, white, black and a sweep round the hue circle included,
+through those checks.
+
+The choice is stored on the device and painted before the first frame, the way
+the theme is.
+
 ## v2.7.1
 
 The desk takes the full width between the rail and the holdings on a wide

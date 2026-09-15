@@ -70,6 +70,14 @@ foot of **Stacks**.
 opening page has them too. Leave both alone and the theme follows whatever your
 system asks for.
 
+**Colours** are in **Stacks**: Walnut, Slate, Moss and Plum, or a colour of
+your own. A scheme changes the buttons, the marks, the spines and the genre
+chart; paper and text stay as they are. Each is worked out from walnut turned
+to its hue, then made lighter or darker wherever text on it would fall under the
+contrast the rest of the app keeps, so a pale yellow picked by hand comes out as
+an olive that still reads. The choice is kept on the device and works in Day and
+Night alike.
+
 **An i beside a heading** opens a short note about that section in place, and
 closes it again. Nothing opens by itself.
 

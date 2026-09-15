@@ -44,7 +44,8 @@ Photograph the shelf straight on at your camera's **full resolution**.
    stays whole; a wide bookcase is split into several pieces. **Add row**, **Add
    column** and their opposites change the grid if the default does not suit
    your shelf.
-    The key box at the top is optional and the page works without it. Everything up
+    The key box at the top is optional and folded to one line, *If you have an
+    API key…*, until it is pressed; the page works without it. Everything up
     to this point has happened on your device: the photograph has been read, sized
     and cut, and nothing has been sent anywhere.
 3. Check the pieces. Any that hold no readable spine, a wall, a lamp, the edge
