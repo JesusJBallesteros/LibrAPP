@@ -4,51 +4,62 @@
 [![Deploy](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml/badge.svg)](https://github.com/JesusJBallesteros/LibrAPP/actions/workflows/pages.yml)
 [![Licence: AGPL v3](https://img.shields.io/badge/licence-AGPL%20v3-blue)](LICENSE.md)
 
-### Photograph your shelves. Get a catalog that answers questions.
+### Your own e-library at hand.
 
-[![The catalog drawn as a shelf, ninety-one spines standing side by side, thick books wider than thin ones](docs/images/shelf.png)](https://jesusjballesteros.github.io/LibrAPP/#demo)
+Put your books and e-books finally together, have a tiny librarian take care of it.
 
-## → [**See it with books in it**](https://jesusjballesteros.github.io/LibrAPP/#demo) ←
+[![The catalog view as a shelf, book spines standing](docs/images/shelf.png)](https://jesusjballesteros.github.io/LibrAPP/#demo)
 
-That link opens a working library of 91 example books: browse the shelf, open a
-book, ask the desk something. Nothing to install, nothing to sign up for, nothing
-saved to your device. Reload and it is gone.
+## → [**Check the demo library**](https://jesusjballesteros.github.io/LibrAPP/#demo) ←
 
-When you want your own in it, [**open LibrAPP**](https://jesusjballesteros.github.io/LibrAPP/)
-and photograph a shelf.
+At the demo you can browse the catalog, edit read/unread and book info, and then...
+ask something to the LibrAPPrian.
+
+No installation or registration needed. Nothing is saved to your device until you create your own library.
 
 ---
 
-**Point a camera at a bookcase.** LibrAPP cuts the photograph up on your device
-and reads the spines into a catalog you can search, filter and browse. Bring in a
-spreadsheet or a barcode as well, and the same book arriving from three places
-becomes one entry rather than three.
+Then **add your own books:**
 
-**Then ask it things.** The [LibrAPPrian's desk](docs/the-desk.md) takes your own
-shelves as context: what to read next and why, which books by an author you have
-collected unevenly are missing, what threads run through what you own, a list for
-a long flight. The answers are about your books, not about books.
+**Take a picture.** LibrAPP can use a photograph to read the spines and convert it into
+a catalog you can filter and browse. Or you can start with your own spreadsheet or read
+barcodes one by one. 
 
-**It also tells you things you did not ask.** Which books you bought years ago
-and never opened, ranked by how long they have waited and by how much you
-evidently wanted them at the time. What is lent out and to whom. What the
-collection keeps coming back to.
+**Ask your LibrAPPrian.** The [LibrAPPrian's desk](docs/the-desk.md) knows your 
+catalog: it will suggest what to read next and why, which author's books you have
+are missing, what threads run through your library, prepare a list for your next holiday.
+The answers are based on **your** books.
+
+**Know the situation.** Which books are yet to read? What did you lend, and to whom? 
+What are the main topics? From whom did you borrow that book?
 
 ![The desk: a row of shelves the desk singles out with Bought, and never opened chosen, five spines under the years each has waited, the keyword cloud below, and the question panel on the right with Synopsis chosen](docs/images/desk.png)
 
-**Your books stay on your device.** No account, no server, no sync. It works
-offline once loaded and installs as an app on Windows, Linux, Android and, by
-Add to Home Screen, on an iPhone. Three
-optional steps can send something, all of them listed [below](#about-privacy-and-version), and each
-shows you what it is sending first.
+**Your info stays on your device.** No account, no server, no sync. It works
+offline. Three optional features will need internet connection: [below](#about-privacy-and-version)
 
-The interface is in English and Spanish, chosen on the opening page.
+---
+
+## What it does
+
+| | |
+|---|---|
+| **Import** | shelf photographs, spreadsheets, CSV, barcodes |
+| **Browse** | search, filter and group offline |
+| **Ask** | recommendations, synopses and reading lists, with your own catalog as context;
+analyze your library, which book are you missing? |
+| **Mark** | star your favorites, write your own notes, keep track of what's read and what's not |
+| **Track** | who has the book you lent, and whose book you are holding |
+
+*Two steps use AI: reading spines off a photograph and asking questions to the LibrAPPrian.
+Both work better via API without leaving the app. Without an API-key, the app will prepare the
+necessary prompt, so you can paste it into your AI of choice.
 
 ---
 
 ## The guides
 
-The rest of the manual lives in [`docs/`](docs), one page per thing.
+The rest of the manual is at [`docs/`](docs).
 
 | | |
 |---|---|
@@ -59,28 +70,6 @@ The rest of the manual lives in [`docs/`](docs), one page per thing.
 | [Optional AI key](docs/ai-key.md) | Which services, what they cost, and working without one |
 | [Browser support](docs/browsers.md) | What runs where, and what is missing |
 | [Development](docs/development.md) | Running it, testing it, and how the code is laid out |
-
----
-
-## What it does
-
-| | |
-|---|---|
-| **Import** | shelf photographs, spreadsheets, CSV, barcodes |
-| **Merge** | the same book from several sources becomes one entry, not duplicates |
-| **Browse** | search, filter and group offline — no network, no waiting |
-| **Correct** | edit or remove any entry; corrections outlast every rebuild |
-| **Ask** | recommendations, synopses and reading lists, with your own shelves as the context |
-| **Complete** | ask for the details the catalog is missing, and see them before they are kept |
-| **Mark** | star the ones that matter and write your own notes, which the desk then reads |
-| **Track** | who has the book you lent, and whose book you are still holding |
-
-Two steps use AI: reading spines off a photograph, and asking the desk a
-question. Both work without a key, by preparing the request for you to paste into
-any AI session yourself, and both show what a request will cost before it is
-sent. Everything else, meaning importing, merging, searching and filtering, is
-plain code running locally. You choose which service to use and pay for it
-directly.
 
 ---
 
@@ -95,54 +84,24 @@ back to English, so a partial translation still works.
 
 ---
 
-## Getting at it
-
-LibrAPP is built to be used by keyboard and by screen reader, not only by mouse
-and eye. It is checked against WCAG 2.2 rather than guessed at, and the colour
-arithmetic is measured by its own tests, so a later change to the palette has to
-fail there before it can ship.
-
-**Contrast is not a setting.** The palette everyone gets is the raised one:
-quiet text reaches 7:1, which WCAG calls the enhanced level, and the hairlines
-between rows are drawn as strongly as the boundary of a control, since at low
-vision the structure of a page matters as much as the words. There used to be a
-switch offering a lower level; there is nothing to switch to now.
-
-**By keyboard**, a skip link is the first thing Tab reaches, past the rail of
-places and into the catalog. The book panel is a real dialog: it takes focus when it
-opens, keeps it while open, closes on Escape, and hands focus back to the row
-you opened. The current page is marked as such, and the page title names the
-view you are on.
-
-**Everything that carries meaning carries it in words as well.** Read state is
-written out, not only coloured. The genre chart is labelled and every slice is
-named and counted in its legend. Spines keep their titles as their accessible
-names, and word cloud entries say how many books use each word.
-
-Nothing moves for anyone who has asked their system for less motion.
-
 If something here does not work for you, that is a bug and worth
 [reporting](https://github.com/JesusJBallesteros/LibrAPP/issues).
 
 ---
 
-## Install
+## Running it
 
-You do not have to install anything —
-[the app](https://jesusjballesteros.github.io/LibrAPP/) runs in the browser. But
-installing gives it its own icon and window, and makes offline use reliable.
+You do not have to install anything, 
+[the app](https://jesusjballesteros.github.io/LibrAPP/) runs in the browser. 
+Installing gives it its own icon and window, and makes offline use reliable.
 
-**On your phone**, the front page offers to install where the browser supports
-being asked, and writes out the manual route where it does not: on an iPhone,
-*Share* then *Add to Home Screen*; on Android, the browser menu then *Install
-app*. Both do the same thing.
+**On your phone**: on an iPhone, *Share* then *Add to Home Screen*; 
+on Android, the browser menu then *Install app*.
 
 <img src="docs/images/phone-desk.png" alt="The desk on a phone: the six places in a bar along the foot of the screen, and the shelves shown one at a time with the names either side of the chosen one" width="320">
 
-**Your catalog does not travel with it.** Each device keeps its own, so moving
-one across is a file: export it in **Stacks** on one device, and bring that
-file in on the other. A backup works for this too, since a backup is the same
-file.
+**Your catalog is private.** Each device keeps its own copy. You can export it
+via the **Stacks** on one device, and bring that file to another device.
 
 ### Running your own copy
 
@@ -153,7 +112,7 @@ anywhere — a local server, a static host, GitHub Pages.
 cd web && npm install && npm run build
 ```
 
-Requirements: Node 20+ to build. Nothing to run it.
+Requirements: Node 20+ to build.
 
 ---
 
@@ -197,24 +156,13 @@ your library, sources and corrections are stored elsewhere and are not touched.
 
 ---
 
-## How this was built
-
-Written by **Jesús J. Ballesteros** working with **Claude**, an AI assistant.
-Every decision about what to build was human made; most of the code was typed by
-the model. A few early testers used it and said what did not work, and more than
-one thing here exists because of that.
-
-None of this touches the contents of your catalog. No entry is invented, every
-book comes from a source you provided, and the AI features are optional and off
-until you add a key.
+## Written by **Jesús J. Ballesteros**
 
 ---
 
 ## Command-line tools
 
-The Python scripts under [`tools/librapp/`](tools/librapp) predate the app and
-still read and write the same folder layout. They are unmaintained: the app does
-everything they did, and nothing in it depends on them.
+The Python scripts are under [`tools/librapp/`](tools/librapp).
 
 ---
 ## Development
